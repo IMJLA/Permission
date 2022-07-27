@@ -263,8 +263,8 @@ task BuildModule -depends CleanOutputDir {
 } -description 'Build a PowerShell script module based on the source directory'
 
 task CopyCSharpClasses -depends BuildModule {
-    New-Item -Path .\dist\classes -ItemType Directory
-    Copy-Item .\src\classes .\dist\classes -Include *.cs
+    New-Item -Path $env:BHBuildOutput\classes -ItemType Directory
+    Copy-Item .\src\classes $env:BHBuildOutput\classes -Include *.cs
 }
 
 $genMarkdownPreReqs = {

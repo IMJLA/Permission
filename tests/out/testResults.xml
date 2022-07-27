@@ -1,134 +1,134 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="132" errors="0" failures="15" not-run="0" inconclusive="0" ignored="0" skipped="2" invalid="0" date="2022-07-26" time="19:23:36">
+<test-results xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="nunit_schema_2.5.xsd" name="Pester" total="132" errors="0" failures="15" not-run="0" inconclusive="0" ignored="0" skipped="2" invalid="0" date="2022-07-26" time="19:25:22">
   <environment user-domain="JLA-LoftHTPC" os-version="10.0.19044" clr-version="Unknown" platform="Microsoft Windows 10 Pro|C:\WINDOWS|\Device\Harddisk0\Partition2" user="Owner" nunit-version="2.5.8.0" machine-name="JLA-LOFTHTPC" cwd="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests" />
   <culture-info current-culture="en-US" current-uiculture="en-US" />
-  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="2.1137" asserts="0" description="Pester">
+  <test-suite type="TestFixture" name="Pester" executed="True" result="Failure" success="False" time="2.1387" asserts="0" description="Pester">
     <results>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1" executed="True" result="Success" success="True" time="0.2867" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1">
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1" executed="True" result="Success" success="True" time="0.2654" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="function 'Get-FolderAccessList.ps1'" executed="True" result="Success" success="True" time="0.0189" asserts="0" description="function 'Get-FolderAccessList.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-FolderAccessList.ps1'" executed="True" result="Success" success="True" time="0.0256" asserts="0" description="function 'Get-FolderAccessList.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-FolderAccessList.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0059" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-FolderAccessList.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0068" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-FolderAccessList.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1&quot;)" time="0.0059" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-FolderAccessList.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1&quot;)" time="0.0068" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-FolderAccessList.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0093" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-FolderAccessList.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0138" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-FolderAccessList.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1&quot;)" time="0.0093" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-FolderAccessList.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1&quot;)" time="0.0138" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Get-FolderPermissionsBlock.ps1'" executed="True" result="Success" success="True" time="0.0377" asserts="0" description="function 'Get-FolderPermissionsBlock.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-FolderPermissionsBlock.ps1'" executed="True" result="Success" success="True" time="0.0484" asserts="0" description="function 'Get-FolderPermissionsBlock.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-FolderPermissionsBlock.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0105" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-FolderPermissionsBlock.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0099" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-FolderPermissionsBlock.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1&quot;)" time="0.0105" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-FolderPermissionsBlock.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1&quot;)" time="0.0099" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-FolderPermissionsBlock.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0055" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-FolderPermissionsBlock.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0091" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-FolderPermissionsBlock.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1&quot;)" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-FolderPermissionsBlock.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1&quot;)" time="0.0091" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Get-FolderTableHeader.ps1'" executed="True" result="Success" success="True" time="0.0621" asserts="0" description="function 'Get-FolderTableHeader.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-FolderTableHeader.ps1'" executed="True" result="Success" success="True" time="0.0681" asserts="0" description="function 'Get-FolderTableHeader.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-FolderTableHeader.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.007" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-FolderTableHeader.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0083" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-FolderTableHeader.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1&quot;)" time="0.007" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-FolderTableHeader.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1&quot;)" time="0.0083" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-FolderTableHeader.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.011" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-FolderTableHeader.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.008" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-FolderTableHeader.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1&quot;)" time="0.011" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-FolderTableHeader.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1&quot;)" time="0.008" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Get-HtmlBody.ps1'" executed="True" result="Success" success="True" time="0.0801" asserts="0" description="function 'Get-HtmlBody.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-HtmlBody.ps1'" executed="True" result="Success" success="True" time="0.0966" asserts="0" description="function 'Get-HtmlBody.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-HtmlBody.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0063" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-HtmlBody.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0114" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-HtmlBody.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1&quot;)" time="0.0063" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-HtmlBody.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1&quot;)" time="0.0114" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-HtmlBody.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0086" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-HtmlBody.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0082" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-HtmlBody.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1&quot;)" time="0.0086" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-HtmlBody.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1&quot;)" time="0.0082" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Get-HtmlFolderList.ps1'" executed="True" result="Success" success="True" time="0.0999" asserts="0" description="function 'Get-HtmlFolderList.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-HtmlFolderList.ps1'" executed="True" result="Success" success="True" time="0.1243" asserts="0" description="function 'Get-HtmlFolderList.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-HtmlFolderList.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0071" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-HtmlFolderList.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0097" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-HtmlFolderList.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1&quot;)" time="0.0071" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-HtmlFolderList.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1&quot;)" time="0.0097" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-HtmlFolderList.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0068" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-HtmlFolderList.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0131" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-HtmlFolderList.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1&quot;)" time="0.0068" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-HtmlFolderList.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1&quot;)" time="0.0131" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Get-PrtgXmlSensorOutput.ps1'" executed="True" result="Success" success="True" time="0.1187" asserts="0" description="function 'Get-PrtgXmlSensorOutput.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-PrtgXmlSensorOutput.ps1'" executed="True" result="Success" success="True" time="0.1462" asserts="0" description="function 'Get-PrtgXmlSensorOutput.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-PrtgXmlSensorOutput.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0077" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-PrtgXmlSensorOutput.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0078" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-PrtgXmlSensorOutput.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1&quot;)" time="0.0077" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-PrtgXmlSensorOutput.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1&quot;)" time="0.0078" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-PrtgXmlSensorOutput.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.008" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-PrtgXmlSensorOutput.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0064" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-PrtgXmlSensorOutput.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1&quot;)" time="0.008" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-PrtgXmlSensorOutput.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1&quot;)" time="0.0064" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Get-ReportDescription.ps1'" executed="True" result="Success" success="True" time="0.1393" asserts="0" description="function 'Get-ReportDescription.ps1'">
+          <test-suite type="TestFixture" name="function 'Get-ReportDescription.ps1'" executed="True" result="Success" success="True" time="0.1687" asserts="0" description="function 'Get-ReportDescription.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Get-ReportDescription.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0113" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-ReportDescription.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0082" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Get-ReportDescription.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1&quot;)" time="0.0113" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Get-ReportDescription.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1&quot;)" time="0.0082" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Get-ReportDescription.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0064" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Get-ReportDescription.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0072" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-ReportDescription.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1&quot;)" time="0.0064" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Get-ReportDescription.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1&quot;)" time="0.0072" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="function 'Select-FolderTableProperty.ps1'" executed="True" result="Success" success="True" time="0.1578" asserts="0" description="function 'Select-FolderTableProperty.ps1'">
+          <test-suite type="TestFixture" name="function 'Select-FolderTableProperty.ps1'" executed="True" result="Success" success="True" time="0.189" asserts="0" description="function 'Select-FolderTableProperty.ps1'">
             <results>
-              <test-suite type="ParameterizedTest" name="function 'Select-FolderTableProperty.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0076" asserts="0" description="runs without throwing errors">
+              <test-suite type="ParameterizedTest" name="function 'Select-FolderTableProperty.ps1'.runs without throwing errors" executed="True" result="Success" success="True" time="0.0063" asserts="0" description="runs without throwing errors">
                 <results>
-                  <test-case description="runs without throwing errors" name="function 'Select-FolderTableProperty.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1&quot;)" time="0.0076" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="runs without throwing errors" name="function 'Select-FolderTableProperty.ps1'.runs without throwing errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1&quot;)" time="0.0063" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="function 'Select-FolderTableProperty.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0081" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
+              <test-suite type="ParameterizedTest" name="function 'Select-FolderTableProperty.ps1'.can be tokenized by the PowerShell parser without any errors" executed="True" result="Success" success="True" time="0.0091" asserts="0" description="can be tokenized by the PowerShell parser without any errors">
                 <results>
-                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Select-FolderTableProperty.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1&quot;)" time="0.0081" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="can be tokenized by the PowerShell parser without any errors" name="function 'Select-FolderTableProperty.ps1'.can be tokenized by the PowerShell parser without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1&quot;)" time="0.0091" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1" executed="True" result="Failure" success="False" time="0.7704" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1">
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1" executed="True" result="Failure" success="False" time="0.8144" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="help for Get-FolderAccessList" executed="True" result="Failure" success="False" time="0.1012" asserts="0" description="help for Get-FolderAccessList">
+          <test-suite type="TestFixture" name="help for Get-FolderAccessList" executed="True" result="Failure" success="False" time="0.1615" asserts="0" description="help for Get-FolderAccessList">
             <results>
-              <test-suite type="TestFixture" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'" executed="True" result="Failure" success="False" time="0.0613" asserts="0" description="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'">
+              <test-suite type="TestFixture" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'" executed="True" result="Failure" success="False" time="0.1012" asserts="0" description="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'.has a description" time="0.0079" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'.has the correct [mandatory] value" time="0.0053" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'.has the correct parameter type" time="0.0128" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'.has a description" time="0.0146" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'.has the correct [mandatory] value" time="0.0098" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderAccessList.- Help for parameter 'FolderTargets'.has the correct parameter type" time="0.0291" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -143,11 +143,11 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'" executed="True" result="Failure" success="False" time="0.0881" asserts="0" description="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'">
+              <test-suite type="TestFixture" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'" executed="True" result="Failure" success="False" time="0.1454" asserts="0" description="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'.has a description" time="0.0066" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'.has the correct [mandatory] value" time="0.0054" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'.has the correct parameter type" time="0.0108" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'.has a description" time="0.0085" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'.has the correct [mandatory] value" time="0.0176" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderAccessList.- Help for parameter 'LevelsOfSubfolders'.has the correct parameter type" time="0.0119" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -162,19 +162,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-FolderAccessList.is not auto-generated" time="0.0061" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-FolderAccessList.has a description" time="0.0059" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-FolderAccessList.has example code" time="0.0076" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-FolderAccessList.has example help" time="0.0048" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-FolderAccessList.is not auto-generated" time="0.0064" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-FolderAccessList.has a description" time="0.0076" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-FolderAccessList.has example code" time="0.0046" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-FolderAccessList.has example help" time="0.0168" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock" executed="True" result="Failure" success="False" time="0.2454" asserts="0" description="help for Get-FolderPermissionsBlock">
+          <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock" executed="True" result="Failure" success="False" time="0.3065" asserts="0" description="help for Get-FolderPermissionsBlock">
             <results>
-              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'" executed="True" result="Failure" success="False" time="0.0538" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'">
+              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'" executed="True" result="Failure" success="False" time="0.0501" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'.has a description" time="0.0062" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'.has the correct [mandatory] value" time="0.004" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'.has the correct parameter type" time="0.0141" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'.has a description" time="0.0039" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'.has the correct [mandatory] value" time="0.0058" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'AccountsToSkip'.has the correct parameter type" time="0.0118" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -189,11 +189,11 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'" executed="True" result="Failure" success="False" time="0.082" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'">
+              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'" executed="True" result="Failure" success="False" time="0.0783" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'.has a description" time="0.0054" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'.has the correct [mandatory] value" time="0.0057" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'.has the correct parameter type" time="0.0107" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'.has a description" time="0.0046" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'.has the correct [mandatory] value" time="0.0044" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'DomainToIgnore'.has the correct parameter type" time="0.0106" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -208,11 +208,11 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'" executed="True" result="Failure" success="False" time="0.1104" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'">
+              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'" executed="True" result="Failure" success="False" time="0.1062" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'.has a description" time="0.0067" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'.has the correct [mandatory] value" time="0.0087" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'.has the correct parameter type" time="0.0081" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'.has a description" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'.has the correct [mandatory] value" time="0.0045" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'ExcludeEmptyGroups'.has the correct parameter type" time="0.0106" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -227,11 +227,11 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'" executed="True" result="Failure" success="False" time="0.1337" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'">
+              <test-suite type="TestFixture" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'" executed="True" result="Failure" success="False" time="0.134" asserts="0" description="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'.has a description" time="0.0039" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'.has the correct [mandatory] value" time="0.003" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'.has the correct parameter type" time="0.0066" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'.has a description" time="0.0097" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'.has the correct [mandatory] value" time="0.0049" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderPermissionsBlock.- Help for parameter 'FolderPermissions'.has the correct parameter type" time="0.0087" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -246,19 +246,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-FolderPermissionsBlock.is not auto-generated" time="0.0076" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-FolderPermissionsBlock.has a description" time="0.0036" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-FolderPermissionsBlock.has example code" time="0.0082" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-FolderPermissionsBlock.has example help" time="0.0042" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-FolderPermissionsBlock.is not auto-generated" time="0.0048" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-FolderPermissionsBlock.has a description" time="0.0088" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-FolderPermissionsBlock.has example code" time="0.0044" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-FolderPermissionsBlock.has example help" time="0.0038" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Get-FolderTableHeader" executed="True" result="Failure" success="False" time="0.3033" asserts="0" description="help for Get-FolderTableHeader">
+          <test-suite type="TestFixture" name="help for Get-FolderTableHeader" executed="True" result="Failure" success="False" time="0.358" asserts="0" description="help for Get-FolderTableHeader">
             <results>
-              <test-suite type="TestFixture" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'" executed="True" result="Failure" success="False" time="0.0451" asserts="0" description="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'">
+              <test-suite type="TestFixture" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'" executed="True" result="Failure" success="False" time="0.0427" asserts="0" description="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'">
                 <results>
-                  <test-case description="has a description" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'.has a description" time="0.0091" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'.has the correct [mandatory] value" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'.has the correct parameter type" time="0.008" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'.has a description" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'.has the correct [mandatory] value" time="0.0035" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-FolderTableHeader.- Help for parameter 'LevelsOfSubfolders'.has the correct parameter type" time="0.0123" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -273,19 +273,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-FolderTableHeader.is not auto-generated" time="0.0069" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-FolderTableHeader.has a description" time="0.0038" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-FolderTableHeader.has example code" time="0.0044" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-FolderTableHeader.has example help" time="0.0042" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-FolderTableHeader.is not auto-generated" time="0.0084" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-FolderTableHeader.has a description" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-FolderTableHeader.has example code" time="0.003" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-FolderTableHeader.has example help" time="0.0027" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Get-HtmlBody" executed="True" result="Failure" success="False" time="0.3694" asserts="0" description="help for Get-HtmlBody">
+          <test-suite type="TestFixture" name="help for Get-HtmlBody" executed="True" result="Failure" success="False" time="0.4328" asserts="0" description="help for Get-HtmlBody">
             <results>
-              <test-suite type="TestFixture" name="help for Get-HtmlBody.- Help for parameter 'FolderList'" executed="True" result="Failure" success="False" time="0.035" asserts="0" description="help for Get-HtmlBody.- Help for parameter 'FolderList'">
+              <test-suite type="TestFixture" name="help for Get-HtmlBody.- Help for parameter 'FolderList'" executed="True" result="Failure" success="False" time="0.0393" asserts="0" description="help for Get-HtmlBody.- Help for parameter 'FolderList'">
                 <results>
-                  <test-case description="has a description" name="help for Get-HtmlBody.- Help for parameter 'FolderList'.has a description" time="0.003" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlBody.- Help for parameter 'FolderList'.has the correct [mandatory] value" time="0.0027" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-HtmlBody.- Help for parameter 'FolderList'.has the correct parameter type" time="0.0085" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-HtmlBody.- Help for parameter 'FolderList'.has a description" time="0.0042" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlBody.- Help for parameter 'FolderList'.has the correct [mandatory] value" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-HtmlBody.- Help for parameter 'FolderList'.has the correct parameter type" time="0.0123" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -300,11 +300,11 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'" executed="True" result="Failure" success="False" time="0.0523" asserts="0" description="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'">
+              <test-suite type="TestFixture" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'" executed="True" result="Failure" success="False" time="0.0658" asserts="0" description="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'">
                 <results>
-                  <test-case description="has a description" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'.has a description" time="0.0032" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'.has the correct [mandatory] value" time="0.0035" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'.has the correct parameter type" time="0.0072" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'.has a description" time="0.005" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'.has the correct [mandatory] value" time="0.0031" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-HtmlBody.- Help for parameter 'HtmlFolderPermissions'.has the correct parameter type" time="0.0146" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -319,19 +319,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-HtmlBody.is not auto-generated" time="0.0039" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-HtmlBody.has a description" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-HtmlBody.has example code" time="0.0056" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-HtmlBody.has example help" time="0.0025" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-HtmlBody.is not auto-generated" time="0.0057" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-HtmlBody.has a description" time="0.0032" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-HtmlBody.has example code" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-HtmlBody.has example help" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Get-HtmlFolderList" executed="True" result="Failure" success="False" time="0.4406" asserts="0" description="help for Get-HtmlFolderList">
+          <test-suite type="TestFixture" name="help for Get-HtmlFolderList" executed="True" result="Failure" success="False" time="0.5083" asserts="0" description="help for Get-HtmlFolderList">
             <results>
-              <test-suite type="TestFixture" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'" executed="True" result="Failure" success="False" time="0.0372" asserts="0" description="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'">
+              <test-suite type="TestFixture" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'" executed="True" result="Failure" success="False" time="0.0375" asserts="0" description="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'">
                 <results>
-                  <test-case description="has a description" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'.has a description" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'.has the correct [mandatory] value" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'.has the correct parameter type" time="0.0089" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'.has a description" time="0.0032" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'.has the correct [mandatory] value" time="0.0032" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-HtmlFolderList.- Help for parameter 'FolderTableHeader'.has the correct parameter type" time="0.0092" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -346,11 +346,11 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-suite type="TestFixture" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'" executed="True" result="Failure" success="False" time="0.0584" asserts="0" description="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'">
+              <test-suite type="TestFixture" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'" executed="True" result="Failure" success="False" time="0.0643" asserts="0" description="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'">
                 <results>
-                  <test-case description="has a description" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'.has a description" time="0.0044" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'.has the correct [mandatory] value" time="0.0039" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'.has the correct parameter type" time="0.0089" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'.has a description" time="0.008" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'.has the correct [mandatory] value" time="0.0052" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-HtmlFolderList.- Help for parameter 'HtmlTableOfFolders'.has the correct parameter type" time="0.0079" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -365,19 +365,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-HtmlFolderList.is not auto-generated" time="0.0044" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-HtmlFolderList.has a description" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-HtmlFolderList.has example code" time="0.0038" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-HtmlFolderList.has example help" time="0.0032" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-HtmlFolderList.is not auto-generated" time="0.0039" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-HtmlFolderList.has a description" time="0.0026" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-HtmlFolderList.has example code" time="0.0033" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-HtmlFolderList.has example help" time="0.0078" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Get-PrtgXmlSensorOutput" executed="True" result="Failure" success="False" time="0.4908" asserts="0" description="help for Get-PrtgXmlSensorOutput">
+          <test-suite type="TestFixture" name="help for Get-PrtgXmlSensorOutput" executed="True" result="Failure" success="False" time="0.5598" asserts="0" description="help for Get-PrtgXmlSensorOutput">
             <results>
-              <test-suite type="TestFixture" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'" executed="True" result="Failure" success="False" time="0.0422" asserts="0" description="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'">
+              <test-suite type="TestFixture" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'" executed="True" result="Failure" success="False" time="0.0427" asserts="0" description="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'">
                 <results>
-                  <test-case description="has a description" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'.has a description" time="0.0043" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'.has the correct [mandatory] value" time="0.0099" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'.has the correct parameter type" time="0.008" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'.has a description" time="0.0046" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'.has the correct [mandatory] value" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-PrtgXmlSensorOutput.- Help for parameter 'NtfsIssues'.has the correct parameter type" time="0.011" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -392,19 +392,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-PrtgXmlSensorOutput.is not auto-generated" time="0.0048" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-PrtgXmlSensorOutput.has a description" time="0.0047" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-PrtgXmlSensorOutput.has example code" time="0.0035" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-PrtgXmlSensorOutput.has example help" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-PrtgXmlSensorOutput.is not auto-generated" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-PrtgXmlSensorOutput.has a description" time="0.0069" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-PrtgXmlSensorOutput.has example code" time="0.0027" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-PrtgXmlSensorOutput.has example help" time="0.0025" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Get-ReportDescription" executed="True" result="Failure" success="False" time="0.5475" asserts="0" description="help for Get-ReportDescription">
+          <test-suite type="TestFixture" name="help for Get-ReportDescription" executed="True" result="Failure" success="False" time="0.6081" asserts="0" description="help for Get-ReportDescription">
             <results>
-              <test-suite type="TestFixture" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'" executed="True" result="Failure" success="False" time="0.0486" asserts="0" description="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'">
+              <test-suite type="TestFixture" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'" executed="True" result="Failure" success="False" time="0.0392" asserts="0" description="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'">
                 <results>
-                  <test-case description="has a description" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'.has a description" time="0.0046" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'.has the correct [mandatory] value" time="0.0047" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'.has the correct parameter type" time="0.0116" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'.has a description" time="0.0035" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'.has the correct [mandatory] value" time="0.0027" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Get-ReportDescription.- Help for parameter 'LevelsOfSubfolders'.has the correct parameter type" time="0.0085" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -419,19 +419,19 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Get-ReportDescription.is not auto-generated" time="0.006" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Get-ReportDescription.has a description" time="0.0075" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Get-ReportDescription.has example code" time="0.0049" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Get-ReportDescription.has example help" time="0.0045" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Get-ReportDescription.is not auto-generated" time="0.0063" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Get-ReportDescription.has a description" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Get-ReportDescription.has example code" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Get-ReportDescription.has example help" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="help for Select-FolderTableProperty" executed="True" result="Failure" success="False" time="0.6052" asserts="0" description="help for Select-FolderTableProperty">
+          <test-suite type="TestFixture" name="help for Select-FolderTableProperty" executed="True" result="Failure" success="False" time="0.6584" asserts="0" description="help for Select-FolderTableProperty">
             <results>
-              <test-suite type="TestFixture" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'" executed="True" result="Failure" success="False" time="0.0466" asserts="0" description="help for Select-FolderTableProperty.- Help for parameter 'InputObject'">
+              <test-suite type="TestFixture" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'" executed="True" result="Failure" success="False" time="0.0378" asserts="0" description="help for Select-FolderTableProperty.- Help for parameter 'InputObject'">
                 <results>
-                  <test-case description="has a description" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'.has a description" time="0.0042" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct [mandatory] value" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'.has the correct [mandatory] value" time="0.0034" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the correct parameter type" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'.has the correct parameter type" time="0.0126" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="has a description" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'.has a description" time="0.004" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct [mandatory] value" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'.has the correct [mandatory] value" time="0.0032" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the correct parameter type" name="help for Select-FolderTableProperty.- Help for parameter 'InputObject'.has the correct parameter type" time="0.0108" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 6
@@ -446,23 +446,23 @@ at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerSh
                   </test-case>
                 </results>
               </test-suite>
-              <test-case description="is not auto-generated" name="help for Select-FolderTableProperty.is not auto-generated" time="0.0059" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has a description" name="help for Select-FolderTableProperty.has a description" time="0.0033" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example code" name="help for Select-FolderTableProperty.has example code" time="0.0033" asserts="0" success="True" result="Success" executed="True" />
-              <test-case description="has example help" name="help for Select-FolderTableProperty.has example help" time="0.0041" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="is not auto-generated" name="help for Select-FolderTableProperty.is not auto-generated" time="0.0054" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has a description" name="help for Select-FolderTableProperty.has a description" time="0.0031" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example code" name="help for Select-FolderTableProperty.has example code" time="0.0031" asserts="0" success="True" result="Success" executed="True" />
+              <test-case description="has example help" name="help for Select-FolderTableProperty.has example help" time="0.0028" asserts="0" success="True" result="Success" executed="True" />
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1" executed="True" result="Failure" success="False" time="0.271" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1">
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1" executed="True" result="Failure" success="False" time="0.2862" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="module manifest 'Permission.psd1'" executed="True" result="Failure" success="False" time="0.0742" asserts="0" description="module manifest 'Permission.psd1'">
+          <test-suite type="TestFixture" name="module manifest 'Permission.psd1'" executed="True" result="Failure" success="False" time="0.0517" asserts="0" description="module manifest 'Permission.psd1'">
             <results>
-              <test-suite type="TestFixture" name="module manifest 'Permission.psd1'.- Validation" executed="True" result="Failure" success="False" time="0.0711" asserts="0" description="module manifest 'Permission.psd1'.- Validation">
+              <test-suite type="TestFixture" name="module manifest 'Permission.psd1'.- Validation" executed="True" result="Failure" success="False" time="0.049" asserts="0" description="module manifest 'Permission.psd1'.- Validation">
                 <results>
-                  <test-case description="is a valid manifest" name="module manifest 'Permission.psd1'.- Validation.is a valid manifest" time="0.0045" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has a valid name in the manifest" name="module manifest 'Permission.psd1'.- Validation.has a valid name in the manifest" time="0.0031" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has a valid root module" name="module manifest 'Permission.psd1'.- Validation.has a valid root module" time="0.0073" asserts="0" success="False" result="Failure" executed="True">
+                  <test-case description="is a valid manifest" name="module manifest 'Permission.psd1'.- Validation.is a valid manifest" time="0.0049" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid name in the manifest" name="module manifest 'Permission.psd1'.- Validation.has a valid name in the manifest" time="0.0038" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid root module" name="module manifest 'Permission.psd1'.- Validation.has a valid root module" time="0.0119" asserts="0" success="False" result="Failure" executed="True">
                     <failure>
                       <message>Expected strings to be the same, but they were different.
 Expected length: 10
@@ -475,125 +475,125 @@ But was:  'Permission.psm1'
 at &lt;ScriptBlock&gt;, E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1:36</stack-trace>
                     </failure>
                   </test-case>
-                  <test-case description="has a valid version" name="module manifest 'Permission.psd1'.- Validation.has a valid version" time="0.003" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has a valid description" name="module manifest 'Permission.psd1'.- Validation.has a valid description" time="0.0311" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has a valid author" name="module manifest 'Permission.psd1'.- Validation.has a valid author" time="0.0029" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid version" name="module manifest 'Permission.psd1'.- Validation.has a valid version" time="0.0039" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid description" name="module manifest 'Permission.psd1'.- Validation.has a valid description" time="0.0046" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid author" name="module manifest 'Permission.psd1'.- Validation.has a valid author" time="0.0051" asserts="0" success="True" result="Success" executed="True" />
                   <test-case description="has a valid guid" name="module manifest 'Permission.psd1'.- Validation.has a valid guid" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has a valid copyright" name="module manifest 'Permission.psd1'.- Validation.has a valid copyright" time="0.0092" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid copyright" name="module manifest 'Permission.psd1'.- Validation.has a valid copyright" time="0.0045" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="Git tagging" executed="True" result="Ignored" success="True" time="0.0849" asserts="0" description="Git tagging">
+          <test-suite type="TestFixture" name="Git tagging" executed="True" result="Ignored" success="True" time="0.0708" asserts="0" description="Git tagging">
             <results>
-              <test-suite type="TestFixture" name="Git tagging.- Git tag version ''" executed="True" result="Ignored" success="True" time="0.0076" asserts="0" description="Git tagging.- Git tag version ''">
+              <test-suite type="TestFixture" name="Git tagging.- Git tag version ''" executed="True" result="Ignored" success="True" time="0.0132" asserts="0" description="Git tagging.- Git tag version ''">
                 <results>
-                  <test-case description="is a valid version" name="Git tagging.- Git tag version ''.is a valid version" time="0.0031" asserts="0" success="False" result="Ignored" executed="False" />
-                  <test-case description="matches the module manifest version" name="Git tagging.- Git tag version ''.matches the module manifest version" time="0.0018" asserts="0" success="False" result="Ignored" executed="False" />
-                </results>
-              </test-suite>
-            </results>
-          </test-suite>
-        </results>
-      </test-suite>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1" executed="True" result="Success" success="True" time="0.1392" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1">
-        <results>
-          <test-suite type="TestFixture" name="text files" executed="True" result="Success" success="True" time="0.0246" asserts="0" description="text files">
-            <results>
-              <test-suite type="TestFixture" name="text files.- File Encoding" executed="True" result="Success" success="True" time="0.0097" asserts="0" description="text files.- File Encoding">
-                <results>
-                  <test-case description="do not use Unicode/UTF-16 encoding" name="text files.- File Encoding.do not use Unicode/UTF-16 encoding" time="0.0071" asserts="0" success="True" result="Success" executed="True" />
-                </results>
-              </test-suite>
-              <test-suite type="TestFixture" name="text files.- Indentations" executed="True" result="Success" success="True" time="0.019" asserts="0" description="text files.- Indentations">
-                <results>
-                  <test-case description="do not use tabs for indentations" name="text files.- Indentations.do not use tabs for indentations" time="0.0062" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="is a valid version" name="Git tagging.- Git tag version ''.is a valid version" time="0.0066" asserts="0" success="False" result="Ignored" executed="False" />
+                  <test-case description="matches the module manifest version" name="Git tagging.- Git tag version ''.matches the module manifest version" time="0.0027" asserts="0" success="False" result="Ignored" executed="False" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1" executed="True" result="Success" success="True" time="0.408" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1">
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1" executed="True" result="Success" success="True" time="0.1586" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="'Permission.psd1' Module Manifest Tests" executed="True" result="Success" success="True" time="0.1148" asserts="0" description="'Permission.psd1' Module Manifest Tests">
+          <test-suite type="TestFixture" name="text files" executed="True" result="Success" success="True" time="0.0211" asserts="0" description="text files">
             <results>
-              <test-suite type="ParameterizedTest" name="'Permission.psd1' Module Manifest Tests.Module manifest 'Permission.psd1' passes Test-ModuleManifest" executed="True" result="Success" success="True" time="0.1111" asserts="0" description="Module manifest 'Permission.psd1' passes Test-ModuleManifest">
+              <test-suite type="TestFixture" name="text files.- File Encoding" executed="True" result="Success" success="True" time="0.0081" asserts="0" description="text files.- File Encoding">
                 <results>
-                  <test-case description="Module manifest 'Permission.psd1' passes Test-ModuleManifest" name="'Permission.psd1' Module Manifest Tests.Module manifest 'Permission.psd1' passes Test-ModuleManifest(E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psd1)" time="0.1111" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="do not use Unicode/UTF-16 encoding" name="text files.- File Encoding.do not use Unicode/UTF-16 encoding" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="TestFixture" name="text files.- Indentations" executed="True" result="Success" success="True" time="0.0176" asserts="0" description="text files.- Indentations">
+                <results>
+                  <test-case description="do not use tabs for indentations" name="text files.- Indentations.do not use tabs for indentations" time="0.0056" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="'Permission' Function Tests" executed="True" result="Success" success="True" time="0.3031" asserts="0" description="'Permission' Function Tests">
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1" executed="True" result="Success" success="True" time="0.3928" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="'Permission.psd1' Module Manifest Tests" executed="True" result="Success" success="True" time="0.1119" asserts="0" description="'Permission.psd1' Module Manifest Tests">
             <results>
-              <test-suite type="ParameterizedTest" name="'Permission' Function Tests.Script '&lt;Script&gt;' is valid PowerShell" executed="True" result="Success" success="True" time="0.1789" asserts="0" description="Script '&lt;Script&gt;' is valid PowerShell">
+              <test-suite type="ParameterizedTest" name="'Permission.psd1' Module Manifest Tests.Module manifest 'Permission.psd1' passes Test-ModuleManifest" executed="True" result="Success" success="True" time="0.1087" asserts="0" description="Module manifest 'Permission.psd1' passes Test-ModuleManifest">
                 <results>
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psd1' is valid PowerShell" time="0.009" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psm1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psm1' is valid PowerShell" time="0.0104" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" time="0.0071" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1' is valid PowerShell" time="0.0069" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1' is valid PowerShell" time="0.0061" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1' is valid PowerShell" time="0.0107" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1' is valid PowerShell" time="0.0066" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1' is valid PowerShell" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1' is valid PowerShell" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1' is valid PowerShell" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psd1' is valid PowerShell" time="0.0108" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psm1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psm1' is valid PowerShell" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Module manifest 'Permission.psd1' passes Test-ModuleManifest" name="'Permission.psd1' Module Manifest Tests.Module manifest 'Permission.psd1' passes Test-ModuleManifest(E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psd1)" time="0.1087" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="'Permission' Function Tests" executed="True" result="Success" success="True" time="0.2843" asserts="0" description="'Permission' Function Tests">
+            <results>
+              <test-suite type="ParameterizedTest" name="'Permission' Function Tests.Script '&lt;Script&gt;' is valid PowerShell" executed="True" result="Success" success="True" time="0.1674" asserts="0" description="Script '&lt;Script&gt;' is valid PowerShell">
+                <results>
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psd1' is valid PowerShell" time="0.0066" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psm1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psm1' is valid PowerShell" time="0.0069" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" time="0.0059" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderPermissionsBlock.ps1' is valid PowerShell" time="0.0099" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderTableHeader.ps1' is valid PowerShell" time="0.0064" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlBody.ps1' is valid PowerShell" time="0.005" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-HtmlFolderList.ps1' is valid PowerShell" time="0.01" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-PrtgXmlSensorOutput.ps1' is valid PowerShell" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-ReportDescription.ps1' is valid PowerShell" time="0.0051" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Select-FolderTableProperty.ps1' is valid PowerShell" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psd1' is valid PowerShell" time="0.0089" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psm1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\Permission.psm1' is valid PowerShell" time="0.0057" asserts="0" success="True" result="Success" executed="True" />
                   <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\functions\public\Get-FolderAccessList.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\functions\public\Get-FolderAccessList.tests.ps1' is valid PowerShell" time="0.005" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1' is valid PowerShell" time="0.0086" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1' is valid PowerShell" time="0.0075" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1' is valid PowerShell" time="0.0068" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1' is valid PowerShell" time="0.0053" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\MetaFixers.psm1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\MetaFixers.psm1' is valid PowerShell" time="0.0067" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1' is valid PowerShell" time="0.0084" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1' is valid PowerShell" time="0.0082" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\ScriptAnalyzerSettings.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\ScriptAnalyzerSettings.psd1' is valid PowerShell" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\build.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\build.ps1' is valid PowerShell" time="0.0075" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psakeFile.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psakeFile.ps1' is valid PowerShell" time="0.0097" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psdependRequirements.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psdependRequirements.psd1' is valid PowerShell" time="0.0067" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Function.tests.ps1' is valid PowerShell" time="0.0042" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Help.tests.ps1' is valid PowerShell" time="0.0071" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Manifest.tests.ps1' is valid PowerShell" time="0.0096" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Metadata.tests.ps1' is valid PowerShell" time="0.0074" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\MetaFixers.psm1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\MetaFixers.psm1' is valid PowerShell" time="0.0055" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Module.tests.ps1' is valid PowerShell" time="0.0049" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1' is valid PowerShell" time="0.0111" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\ScriptAnalyzerSettings.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\ScriptAnalyzerSettings.psd1' is valid PowerShell" time="0.0056" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\build.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\build.ps1' is valid PowerShell" time="0.0069" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psakeFile.ps1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psakeFile.ps1' is valid PowerShell" time="0.0113" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psdependRequirements.psd1' is valid PowerShell" name="'Permission' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\psdependRequirements.psd1' is valid PowerShell" time="0.0065" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
-          <test-suite type="TestFixture" name="'Permission.psm1' Module Tests" executed="True" result="Success" success="True" time="0.321" asserts="0" description="'Permission.psm1' Module Tests">
+          <test-suite type="TestFixture" name="'Permission.psm1' Module Tests" executed="True" result="Success" success="True" time="0.3011" asserts="0" description="'Permission.psm1' Module Tests">
             <results>
-              <test-suite type="ParameterizedTest" name="'Permission.psm1' Module Tests.Module file '&lt;ThisModule&gt;' can be imported without any errors" executed="True" result="Success" success="True" time="0.0131" asserts="0" description="Module file '&lt;ThisModule&gt;' can be imported without any errors">
+              <test-suite type="ParameterizedTest" name="'Permission.psm1' Module Tests.Module file '&lt;ThisModule&gt;' can be imported without any errors" executed="True" result="Success" success="True" time="0.014" asserts="0" description="Module file '&lt;ThisModule&gt;' can be imported without any errors">
                 <results>
-                  <test-case description="Module file 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psm1' can be imported without any errors" name="'Permission.psm1' Module Tests.Module file 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.8\Permission\Permission.psm1' can be imported without any errors" time="0.0131" asserts="0" success="True" result="Success" executed="True" />
-                </results>
-              </test-suite>
-            </results>
-          </test-suite>
-        </results>
-      </test-suite>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1" executed="True" result="Success" success="True" time="0.1791" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1">
-        <results>
-          <test-suite type="TestFixture" name="change log" executed="True" result="Success" success="True" time="0.0185" asserts="0" description="change log">
-            <results>
-              <test-suite type="TestFixture" name="change log.- Version" executed="True" result="Success" success="True" time="0.0152" asserts="0" description="change log.- Version">
-                <results>
-                  <test-case description="has a valid version" name="change log.- Version.has a valid version" time="0.0049" asserts="0" success="True" result="Success" executed="True" />
-                  <test-case description="has the same version as the manifest" name="change log.- Version.has the same version as the manifest" time="0.0037" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Module file 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psm1' can be imported without any errors" name="'Permission.psm1' Module Tests.Module file 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\dist\0.0.9\Permission\Permission.psm1' can be imported without any errors" time="0.014" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
           </test-suite>
         </results>
       </test-suite>
-      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\functions\public\Get-FolderAccessList.tests.ps1" executed="True" result="Success" success="True" time="0.0591" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\functions\public\Get-FolderAccessList.tests.ps1">
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1" executed="True" result="Success" success="True" time="0.1593" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\Project.tests.ps1">
         <results>
-          <test-suite type="TestFixture" name="'Get-FolderAccessList.ps1' Function Tests" executed="True" result="Success" success="True" time="0.0193" asserts="0" description="'Get-FolderAccessList.ps1' Function Tests">
+          <test-suite type="TestFixture" name="change log" executed="True" result="Success" success="True" time="0.0177" asserts="0" description="change log">
             <results>
-              <test-suite type="ParameterizedTest" name="'Get-FolderAccessList.ps1' Function Tests.Script file 'Get-FolderAccessList.ps1' can be run without any errors" executed="True" result="Success" success="True" time="0.0084" asserts="0" description="Script file 'Get-FolderAccessList.ps1' can be run without any errors">
+              <test-suite type="TestFixture" name="change log.- Version" executed="True" result="Success" success="True" time="0.0114" asserts="0" description="change log.- Version">
                 <results>
-                  <test-case description="Script file 'Get-FolderAccessList.ps1' can be run without any errors" name="'Get-FolderAccessList.ps1' Function Tests.Script file 'Get-FolderAccessList.ps1' can be run without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1&quot;)" time="0.0084" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has a valid version" name="change log.- Version.has a valid version" time="0.0051" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="has the same version as the manifest" name="change log.- Version.has the same version as the manifest" time="0.0035" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
-              <test-suite type="ParameterizedTest" name="'Get-FolderAccessList.ps1' Function Tests.Script '&lt;Script&gt;' is valid PowerShell" executed="True" result="Success" success="True" time="0.0047" asserts="0" description="Script '&lt;Script&gt;' is valid PowerShell">
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="TestFixture" name="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\functions\public\Get-FolderAccessList.tests.ps1" executed="True" result="Success" success="True" time="0.0621" asserts="0" description="E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\tests\functions\public\Get-FolderAccessList.tests.ps1">
+        <results>
+          <test-suite type="TestFixture" name="'Get-FolderAccessList.ps1' Function Tests" executed="True" result="Success" success="True" time="0.0264" asserts="0" description="'Get-FolderAccessList.ps1' Function Tests">
+            <results>
+              <test-suite type="ParameterizedTest" name="'Get-FolderAccessList.ps1' Function Tests.Script file 'Get-FolderAccessList.ps1' can be run without any errors" executed="True" result="Success" success="True" time="0.0074" asserts="0" description="Script file 'Get-FolderAccessList.ps1' can be run without any errors">
                 <results>
-                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" name="'Get-FolderAccessList.ps1' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" time="0.0047" asserts="0" success="True" result="Success" executed="True" />
+                  <test-case description="Script file 'Get-FolderAccessList.ps1' can be run without any errors" name="'Get-FolderAccessList.ps1' Function Tests.Script file 'Get-FolderAccessList.ps1' can be run without any errors(&quot;E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1&quot;)" time="0.0074" asserts="0" success="True" result="Success" executed="True" />
+                </results>
+              </test-suite>
+              <test-suite type="ParameterizedTest" name="'Get-FolderAccessList.ps1' Function Tests.Script '&lt;Script&gt;' is valid PowerShell" executed="True" result="Success" success="True" time="0.0156" asserts="0" description="Script '&lt;Script&gt;' is valid PowerShell">
+                <results>
+                  <test-case description="Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" name="'Get-FolderAccessList.ps1' Function Tests.Script 'E:\Owner\Documents\Google Drive\Programs\Scripts\PowerShell\Permission\src\functions\public\Get-FolderAccessList.ps1' is valid PowerShell" time="0.0156" asserts="0" success="True" result="Success" executed="True" />
                 </results>
               </test-suite>
             </results>
