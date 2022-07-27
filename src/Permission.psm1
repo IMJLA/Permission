@@ -17,4 +17,7 @@ $PublicScriptFiles = $ScriptFiles | Where-Object -FilterScript {
     ($_.PSParentPath | Split-Path -Leaf) -eq 'public'
 }
 $publicFunctions = $PublicScriptFiles.BaseName
-Export-ModuleMember -Function $publicFunctions
+Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty')
+
+
+
