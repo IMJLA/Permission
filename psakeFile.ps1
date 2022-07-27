@@ -262,6 +262,11 @@ task BuildModule -depends CleanOutputDir {
     Build-PSBuildModule @buildParams
 } -description 'Build a PowerShell script module based on the source directory'
 
+task CopyCSharpClasses -depends BuildModule {
+    New-Item -Path .\dist\classes -ItemType Directory
+    Copy-Item .\src\classes .\dist\classes -Include *.cs
+}
+
 $genMarkdownPreReqs = {
     $result = $true
     if (-not (Get-Module PlatyPS -ListAvailable)) {
@@ -271,7 +276,7 @@ $genMarkdownPreReqs = {
     $result
 }
 
-task DeleteMarkdownHelp -depends BuildModule -precondition $genMarkdownPreReqs {
+task DeleteMarkdownHelp -depends CopyCSharpClasses -precondition $genMarkdownPreReqs {
     $MarkdownDir = [IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale)
     "`tDeleting folder: '$MarkdownDir'"
     Get-ChildItem -Path $MarkdownDir -Recurse | Remove-Item
