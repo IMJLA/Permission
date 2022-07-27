@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.12] - 2022-07-27 - Updated origin URL for github repo, testing new build
+
 ## [0.0.11] - 2022-07-27 - Test after renaming GitHub repo to match module name
 
 ## [0.0.10] - 2022-07-26 - First published build to psgallery
