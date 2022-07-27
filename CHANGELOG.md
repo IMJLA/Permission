@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.10] - 2022-07-26 - First published build to psgallery
+
 ## [0.0.9] - 2022-07-26 - Another psakefile bugfix
 
 ## [0.0.8] - 2022-07-26 - bugfix for psakefile
