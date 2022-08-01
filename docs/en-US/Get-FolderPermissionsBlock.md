@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-AccountsToSkip] <Object>]
+Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <String[]>]
  [[-ExcludeEmptyGroups] <Object>] [[-DomainToIgnore] <Object>]
 ```
 
@@ -31,21 +31,6 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AccountsToSkip
-{{ Fill AccountsToSkip Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -DomainToIgnore
 {{ Fill DomainToIgnore Description }}
 
@@ -56,6 +41,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ExcludeAccount
+{{ Fill ExcludeAccount Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

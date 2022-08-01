@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.14
+Help Version: 0.0.15
 Locale: en-US
 ---
 
@@ -18,7 +18,7 @@ Get-FolderAccessList [[-FolderTargets] <Object>] [[-LevelsOfSubfolders] <Object>
 
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
 
-Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-AccountsToSkip] <Object>] [[-ExcludeEmptyGroups] <Object>] [[-DomainToIgnore] <Object>]
+Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeEmptyGroups] <Object>] [[-DomainToIgnore] <Object>]
 
 
 ### [Get-FolderTableHeader](Get-FolderTableHeader.md)

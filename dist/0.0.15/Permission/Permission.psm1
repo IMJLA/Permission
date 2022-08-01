@@ -17,7 +17,8 @@ function Get-FolderAccessList {
 function Get-FolderPermissionsBlock {
     param (
         $FolderPermissions,
-        $AccountsToSkip,
+        # Regular expressions that will identify Users or Groups you do not want included in the Html report
+        [string[]]$ExcludeAccount,
         $ExcludeEmptyGroups,
         $DomainToIgnore
     )
@@ -48,7 +49,7 @@ function Get-FolderPermissionsBlock {
         # Skip the accounts we need to skip
         Where-Object -FilterScript {
             ![bool]$(
-                ForEach ($RegEx in $AccountsToSkip) {
+                ForEach ($RegEx in $ExcludeAccount) {
                     if ($_.Name -match $RegEx) {
                         $true
                     }
@@ -214,6 +215,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty')
+
 
 
 

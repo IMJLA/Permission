@@ -131,13 +131,13 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>AccountsToSkip</maml:name>
+          <maml:name>ExcludeAccount</maml:name>
           <maml:description>
-            <maml:para>{{ Fill AccountsToSkip Description }}</maml:para>
+            <maml:para>{{ Fill ExcludeAccount Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
-            <maml:name>System.Object</maml:name>
+            <maml:name>System.String[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -169,18 +169,6 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>AccountsToSkip</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill AccountsToSkip Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>DomainToIgnore</maml:name>
         <maml:description>
@@ -189,6 +177,18 @@
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
           <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>ExcludeAccount</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ExcludeAccount Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
