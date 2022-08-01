@@ -4,7 +4,7 @@ function Get-FolderPermissionsBlock {
         # Regular expressions that will identify Users or Groups you do not want included in the Html report
         [string[]]$ExcludeAccount,
         $ExcludeEmptyGroups,
-        $DomainToIgnore
+        $IgnoreDomain
     )
 
     ForEach ($ThisFolder in $FolderPermissions) {
@@ -54,7 +54,7 @@ function Get-FolderPermissionsBlock {
         @{Label = 'Access'; Expression = { ($_.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; ' } },
         @{Label = 'Due to Membership In'; Expression = {
                 $GroupString = ($_.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
-                ForEach ($IgnoreThisDomain in $DomainToIgnore) {
+                ForEach ($IgnoreThisDomain in $IgnoreDomain) {
                     $GroupString = $GroupString -replace $IgnoreThisDomain, ''
                 }
                 $GroupString

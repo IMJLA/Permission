@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <String[]>]
- [[-ExcludeEmptyGroups] <Object>] [[-DomainToIgnore] <Object>]
+ [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <Object>]
 ```
 
 ## DESCRIPTION
@@ -30,21 +30,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -DomainToIgnore
-{{ Fill DomainToIgnore Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -ExcludeAccount
 {{ Fill ExcludeAccount Description }}
@@ -86,6 +71,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IgnoreDomain
+{{ Fill IgnoreDomain Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

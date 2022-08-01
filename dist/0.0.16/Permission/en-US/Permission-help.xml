@@ -155,9 +155,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>DomainToIgnore</maml:name>
+          <maml:name>IgnoreDomain</maml:name>
           <maml:description>
-            <maml:para>{{ Fill DomainToIgnore Description }}</maml:para>
+            <maml:para>{{ Fill IgnoreDomain Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -169,18 +169,6 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>DomainToIgnore</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill DomainToIgnore Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>ExcludeAccount</maml:name>
         <maml:description>
@@ -209,6 +197,18 @@
         <maml:name>FolderPermissions</maml:name>
         <maml:description>
           <maml:para>{{ Fill FolderPermissions Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>IgnoreDomain</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill IgnoreDomain Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
