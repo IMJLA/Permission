@@ -49,11 +49,20 @@ function Get-FolderPermissionsBlock {
             )
         }
 
+        # Exclude groups with members (the group will be reflected on the report with its members)
+        $FilteredAccounts = $FilteredAccounts |
+        Where-Object -FilterScript {
+            -not (
+                $_.Group.SchemaClassName -contains 'group' -and
+                $null -eq $_.Group.IdentityReference
+            )
+        }
+
         if ($ExcludeEmptyGroups) {
             $FilteredAccounts = $FilteredAccounts |
             Where-Object -FilterScript {
                 #Eliminate empty groups (not useful to see in the middle of a list of users/job titles/departments/etc).
-                $_.Group.SchemaClassName -notcontains 'Group'
+                $_.Group.SchemaClassName -notcontains 'group'
             }
         }
 
