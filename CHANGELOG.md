@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.17] - 2022-08-05 - More accurate folder table header for parent folder
+
 ## [0.0.16] - 2022-08-01 - Parameter cleanup in Get-FolderPermissionsBlock
 
 ## [0.0.15] - 2022-08-01 - Parameter cleanup in Get-FolderPermissionsBlock

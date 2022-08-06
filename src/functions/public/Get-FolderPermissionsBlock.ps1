@@ -7,6 +7,10 @@ function Get-FolderPermissionsBlock {
         $IgnoreDomain
     )
 
+    $ShortestFolderPath = $ThisFolder.Name |
+    Sort-Object |
+    Select-Object -First 1
+
     ForEach ($ThisFolder in $FolderPermissions) {
 
         $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Name)" -Level 5
@@ -20,7 +24,11 @@ function Get-FolderPermissionsBlock {
         }
         if ('' -ne $ParentLeaf) {
             if (($ThisFolder.Group.FolderInheritanceEnabled | Select-Object -First 1) -eq $true) {
-                $ThisSubHeading = "Accounts with access to the parent folder and subfolders ($ParentLeaf) can access this folder. So can any users listed below:"
+                if ($ThisFolder.Name -eq $ShortestFolderPath) {
+                    $ThisSubHeading = "Inherited permissions from the parent folder ($ParentLeaf) are included.  This folder can only be accessed by the users listed below:"
+                } else {
+                    $ThisSubHeading = "Accounts with access to the parent folder and subfolders ($ParentLeaf) can access this folder. So can any users listed below:"
+                }
             } else {
                 $ThisSubHeading = "Accounts with access to the parent folder and subfolders ($ParentLeaf) cannot access this folder unless they are listed below:"
             }
