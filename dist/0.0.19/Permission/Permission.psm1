@@ -17,10 +17,18 @@ function Get-FolderAccessList {
 function Get-FolderPermissionsBlock {
     param (
         $FolderPermissions,
-        # Regular expressions that will identify Users or Groups you do not want included in the Html report
+
+        # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
+
         $ExcludeEmptyGroups,
+
+        # Regular expressions matching domain NetBIOS names to ignore
+        # They will be removed from NTAccount names ('CONTOSO\User' will become 'User')
+        # Include the trailing \ in the RegEx pattern, and escape it with another \
+        # Example: 'CONTOSO\\'
         $IgnoreDomain
+
     )
 
     $ShortestFolderPath = $ThisFolder.Name |
@@ -77,7 +85,7 @@ function Get-FolderPermissionsBlock {
         if ($ExcludeEmptyGroups) {
             $FilteredAccounts = $FilteredAccounts |
             Where-Object -FilterScript {
-                #Eliminate empty groups (not useful to see in the middle of a list of users/job titles/departments/etc).
+                # Eliminate empty groups (not useful to see in the middle of a list of users/job titles/departments/etc).
                 $_.Group.SchemaClassName -notcontains 'group'
             }
         }
@@ -96,6 +104,7 @@ function Get-FolderPermissionsBlock {
         @{Label = 'Name'; Expression = { $_.Group.Name | Sort-Object -Unique } },
         @{Label = 'Department'; Expression = { $_.Group.Department | Sort-Object -Unique } },
         @{Label = 'Title'; Expression = { $_.Group.Title | Sort-Object -Unique } } |
+        Sort-Object -Property Name |
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
@@ -232,6 +241,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty')
+
 
 
 
