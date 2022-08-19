@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.19
+Help Version: 0.0.20
 Locale: en-US
 ---
 
@@ -13,7 +13,7 @@ Module for working with Access Control Lists
 ## Permission Cmdlets
 ### [Get-FolderAccessList](Get-FolderAccessList.md)
 
-Get-FolderAccessList [[-FolderTargets] <Object>] [[-LevelsOfSubfolders] <Object>]
+Get-FolderAccessList [[-FolderTargets] <Object>] [[-LevelsOfSubfolders] <Object>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
