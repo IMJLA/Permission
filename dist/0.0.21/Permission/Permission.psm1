@@ -43,7 +43,7 @@ function Get-FolderAccessList {
         Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited
         if ($Subfolders) {
             $GetFolderAce = @{
-                Command           = Get-FolderAce
+                Command           = 'Get-FolderAce'
                 InputObject       = $Subfolders
                 InputParameter    = 'LiteralPath'
                 DebugOutputStream = $DebugOutputStream
@@ -282,6 +282,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty')
+
 
 
 

@@ -42,7 +42,7 @@ function Get-FolderAccessList {
         Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited
         if ($Subfolders) {
             $GetFolderAce = @{
-                Command           = Get-FolderAce
+                Command           = 'Get-FolderAce'
                 InputObject       = $Subfolders
                 InputParameter    = 'LiteralPath'
                 DebugOutputStream = $DebugOutputStream
