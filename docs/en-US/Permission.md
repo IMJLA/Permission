@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.21
+Help Version: 0.0.22
 Locale: en-US
 ---
 
@@ -49,6 +49,11 @@ Get-ReportDescription [[-LevelsOfSubfolders] <Object>]
 ### [Select-FolderTableProperty](Select-FolderTableProperty.md)
 
 Select-FolderTableProperty [[-InputObject] <Object>]
+
+
+### [Select-UniqueAccountPermission](Select-UniqueAccountPermission.md)
+
+Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] <string[]>] [[-KnownUsers] <Object>] [<CommonParameters>]
 
 
 
