@@ -28,6 +28,7 @@ function Get-FolderAccessList {
         [hashtable]$LogMsgCache = $Global:LogMessages
 
     )
+
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $TodaysHostname

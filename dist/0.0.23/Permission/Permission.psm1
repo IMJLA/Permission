@@ -29,6 +29,7 @@ function Get-FolderAccessList {
         [hashtable]$LogMsgCache = $Global:LogMessages
 
     )
+
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $TodaysHostname
@@ -333,6 +334,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty','Select-UniqueAccountPermission')
+
 
 
 
