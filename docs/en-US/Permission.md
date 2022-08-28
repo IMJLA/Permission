@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.23
+Help Version: 0.0.24
 Locale: en-US
 ---
 
@@ -54,6 +54,11 @@ Select-FolderTableProperty [[-InputObject] <Object>]
 ### [Select-UniqueAccountPermission](Select-UniqueAccountPermission.md)
 
 Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] <string[]>] [[-KnownUsers] <Object>] [<CommonParameters>]
+
+
+### [Update-CaptionCapitalization](Update-CaptionCapitalization.md)
+
+Update-CaptionCapitalization [[-ThisHostName] <string>] [[-Win32AccountsByCaption] <hashtable>]
 
 
 

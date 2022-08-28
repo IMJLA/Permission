@@ -309,11 +309,13 @@ function Select-UniqueAccountPermission {
             $ThisKnownUser = $KnownUsers[$ShortName]
             if ($null -eq $ThisKnownUser) {
                 $KnownUsers[$ShortName] = [pscustomobject]@{
+                    'Count' = $ThisUser.Group.Count
                     'Name'  = $ShortName
                     'Group' = $ThisUser.Group
                 }
             } else {
                 $KnownUsers[$ShortName] = [pscustomobject]@{
+                    'Count' = $ThisKnownUser.Group.Count + $ThisUser.Group.Count
                     'Name'  = $ShortName
                     'Group' = $ThisKnownUser.Group + $ThisUser.Group
                 }
@@ -326,6 +328,22 @@ function Select-UniqueAccountPermission {
     }
 
 }
+function Update-CaptionCapitalization {
+    param (
+        [string]$ThisHostName,
+        [hashtable]$Win32AccountsByCaption
+    )
+    $Win32AccountsByCaption.Keys |
+    ForEach-Object {
+        $Object = $Win32AccountsByCaption[$_]
+        #$Win32AccountsByCaption.Remove($_)
+        $NewKey = $_ -replace "^$ThisHostname\\$ThisHostname\\", "$ThisHostname\$ThisHostname\"
+        $NewKey = $_ -replace "^$ThisHostname\\", "$ThisHostname\"
+        Write-Host "Old Key: $_"
+        Write-Host "New Key: $NewKey"
+        #$Win32AccountsByCaption[$NewKey] = $Object
+    }
+}
 
 # Add any custom C# classes as usable (exported) types
 $CSharpFiles = Get-ChildItem -Path "$PSScriptRoot\*.cs"
@@ -333,7 +351,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty','Select-UniqueAccountPermission')
+Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

@@ -32,11 +32,13 @@ function Select-UniqueAccountPermission {
             $ThisKnownUser = $KnownUsers[$ShortName]
             if ($null -eq $ThisKnownUser) {
                 $KnownUsers[$ShortName] = [pscustomobject]@{
+                    'Count' = $ThisUser.Group.Count
                     'Name'  = $ShortName
                     'Group' = $ThisUser.Group
                 }
             } else {
                 $KnownUsers[$ShortName] = [pscustomobject]@{
+                    'Count' = $ThisKnownUser.Group.Count + $ThisUser.Group.Count
                     'Name'  = $ShortName
                     'Group' = $ThisKnownUser.Group + $ThisUser.Group
                 }
