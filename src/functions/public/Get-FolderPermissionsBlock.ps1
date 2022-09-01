@@ -7,11 +7,14 @@ function Get-FolderPermissionsBlock {
 
         $ExcludeEmptyGroups,
 
-        # Regular expressions matching domain NetBIOS names to ignore
-        # They will be removed from NTAccount names ('CONTOSO\User' will become 'User')
-        # Include the trailing \ in the RegEx pattern, and escape it with another \
-        # Example: 'CONTOSO\\'
-        $IgnoreDomain
+        <#
+        Domain(s) to ignore (they will be removed from the username)
+
+        Intended when a user has matching SamAccountNames in multiple domains but you only want them to appear once on the report.
+
+        Can also be used to remove all domains simply for brevity in the report.
+        #>
+        [string[]]$IgnoreDomain
 
     )
 
@@ -80,7 +83,7 @@ function Get-FolderPermissionsBlock {
         @{Label = 'Due to Membership In'; Expression = {
                 $GroupString = ($_.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
                 ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                    $GroupString = $GroupString -replace $IgnoreThisDomain, ''
+                    $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
                 }
                 $GroupString
             }

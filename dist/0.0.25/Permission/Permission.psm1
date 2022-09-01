@@ -65,11 +65,14 @@ function Get-FolderPermissionsBlock {
 
         $ExcludeEmptyGroups,
 
-        # Regular expressions matching domain NetBIOS names to ignore
-        # They will be removed from NTAccount names ('CONTOSO\User' will become 'User')
-        # Include the trailing \ in the RegEx pattern, and escape it with another \
-        # Example: 'CONTOSO\\'
-        $IgnoreDomain
+        <#
+        Domain(s) to ignore (they will be removed from the username)
+
+        Intended when a user has matching SamAccountNames in multiple domains but you only want them to appear once on the report.
+
+        Can also be used to remove all domains simply for brevity in the report.
+        #>
+        [string[]]$IgnoreDomain
 
     )
 
@@ -138,7 +141,7 @@ function Get-FolderPermissionsBlock {
         @{Label = 'Due to Membership In'; Expression = {
                 $GroupString = ($_.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
                 ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                    $GroupString = $GroupString -replace $IgnoreThisDomain, ''
+                    $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
                 }
                 $GroupString
             }
@@ -329,20 +332,20 @@ function Select-UniqueAccountPermission {
 
 }
 function Update-CaptionCapitalization {
+    # As of 2022-08-31 this function is still not implemented...need to rethink
     param (
         [string]$ThisHostName,
         [hashtable]$Win32AccountsByCaption
     )
+    $NewDictionary = [hashtable]::Synchronized(@{})
     $Win32AccountsByCaption.Keys |
     ForEach-Object {
         $Object = $Win32AccountsByCaption[$_]
-        #$Win32AccountsByCaption.Remove($_)
         $NewKey = $_ -replace "^$ThisHostname\\$ThisHostname\\", "$ThisHostname\$ThisHostname\"
-        $NewKey = $_ -replace "^$ThisHostname\\", "$ThisHostname\"
-        Write-Host "Old Key: $_"
-        Write-Host "New Key: $NewKey"
-        #$Win32AccountsByCaption[$NewKey] = $Object
+        $NewKey = $NewKey -replace "^$ThisHostname\\", "$ThisHostname\"
+        $NewDictionary[$NewKey] = $Object
     }
+    return $NewDictionary
 }
 
 # Add any custom C# classes as usable (exported) types
@@ -352,6 +355,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
