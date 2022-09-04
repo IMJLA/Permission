@@ -63,7 +63,7 @@ function Get-FolderAccessList {
                     TodaysHostname    = $TodaysHostname
                     WhoAmI            = $WhoAmI
                     LogMsgCache       = $LogMsgCache
-                    ThreadCount       = $ThreadCount
+                    Threads           = $ThreadCount
                 }
                 Split-Thread @GetFolderAce
             }
