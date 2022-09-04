@@ -16,6 +16,9 @@ function Get-FolderAccessList {
         #>
         $LevelsOfSubfolders,
 
+        # Number of asynchronous threads to use
+        [uint16]$ThreadCount = 4,
+
         # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
         [string]$DebugOutputStream = 'Silent',
 
@@ -43,16 +46,28 @@ function Get-FolderAccessList {
         Write-LogMsg @LogParams -Text "Folders (including parent): $($Subfolders.Count + 1)"
         Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited
         if ($Subfolders) {
-            $GetFolderAce = @{
-                Command           = 'Get-FolderAce'
-                InputObject       = $Subfolders
-                InputParameter    = 'LiteralPath'
-                DebugOutputStream = $DebugOutputStream
-                TodaysHostname    = $TodaysHostname
-                WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogMsgCache
+            if ($ThreadCount -eq 1) {
+                $i = 0
+                ForEach ($ThisSubfolder in $Subfolders) {
+                    $PercentComplete = $i / $Subfolders.Count
+                    Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisSubfolder -PercentComplete $PercentComplete
+                    $i++
+                    Get-FolderAce -LiteralPath $ThisSubfolder
+                }
+                Write-Progress -Activity "Get-FolderAce" -Completed
+            } else {
+                $GetFolderAce = @{
+                    Command           = 'Get-FolderAce'
+                    InputObject       = $Subfolders
+                    InputParameter    = 'LiteralPath'
+                    DebugOutputStream = $DebugOutputStream
+                    TodaysHostname    = $TodaysHostname
+                    WhoAmI            = $WhoAmI
+                    LogMsgCache       = $LogMsgCache
+                    ThreadCount       = $ThreadCount
+                }
+                Split-Thread @GetFolderAce
             }
-            Split-Thread @GetFolderAce
         }
     }
 }
@@ -355,6 +370,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
