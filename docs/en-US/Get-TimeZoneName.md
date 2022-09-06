@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-HtmlFolderList
+# Get-TimeZoneName
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-HtmlFolderList [[-FolderTableHeader] <Object>] [[-HtmlTableOfFolders] <Object>]
+Get-TimeZoneName [[-Time] <DateTime>] [[-TimeZone] <CimInstance>]
 ```
 
 ## DESCRIPTION
@@ -22,7 +22,7 @@ Get-HtmlFolderList [[-FolderTableHeader] <Object>] [[-HtmlTableOfFolders] <Objec
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -30,11 +30,11 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -FolderTableHeader
-{{ Fill FolderTableHeader Description }}
+### -Time
+{{ Fill Time Description }}
 
 ```yaml
-Type: System.Object
+Type: System.DateTime
 Parameter Sets: (All)
 Aliases:
 
@@ -45,11 +45,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -HtmlTableOfFolders
-{{ Fill HtmlTableOfFolders Description }}
+### -TimeZone
+{{ Fill TimeZone Description }}
 
 ```yaml
-Type: System.Object
+Type: Microsoft.Management.Infrastructure.CimInstance
 Parameter Sets: (All)
 Aliases:
 
@@ -63,6 +63,7 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object

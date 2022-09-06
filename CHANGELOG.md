@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.31] - 2022-09-05 - Implemented Export-Permission enhancement issue 14
+
 ## [0.0.30] - 2022-09-04 - bugfix in get-folderaccesslist wrong param name for split-thread
 
 ## [0.0.29] - 2022-09-04 - updated default threadcount for get-folderaccesslist

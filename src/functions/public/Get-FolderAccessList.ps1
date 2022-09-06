@@ -1,19 +1,11 @@
 function Get-FolderAccessList {
     param (
 
-        # Path to the item whose permissions to export
-        $FolderTargets,
+        # Path to the item whose permissions to export (inherited ACEs will be included)
+        $Folder,
 
-        <#
-        How many levels of subfolder to enumerate
-
-            Set to 0 to ignore all subfolders
-
-            Set to -1 (default) to recurse infinitely
-
-            Set to any whole number to enumerate that many levels
-        #>
-        $LevelsOfSubfolders,
+        # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
+        $Subfolder,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -39,34 +31,42 @@ function Get-FolderAccessList {
         WhoAmI       = $WhoAmI
     }
 
-    ForEach ($ThisFolder in $FolderTargets) {
-        $Subfolders = $null
-        $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue
-        Write-LogMsg @LogParams -Text "Folders (including parent): $($Subfolders.Count + 1)"
+    # We expect a small number of folders and a large number of subfolders
+    # We will multithread the subfolders but not the folders
+    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
+    $i = 0
+    ForEach ($ThisFolder in $Folder) {
+        $PercentComplete = $i / $Folder.Count
+        Write-Progress -Activity "Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        $i++
         Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited
-        if ($Subfolders) {
-            if ($ThreadCount -eq 1) {
-                $i = 0
-                ForEach ($ThisSubfolder in $Subfolders) {
-                    $PercentComplete = $i / $Subfolders.Count
-                    Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisSubfolder -PercentComplete $PercentComplete
-                    $i++
-                    Get-FolderAce -LiteralPath $ThisSubfolder
-                }
-                Write-Progress -Activity "Get-FolderAce" -Completed
-            } else {
-                $GetFolderAce = @{
-                    Command           = 'Get-FolderAce'
-                    InputObject       = $Subfolders
-                    InputParameter    = 'LiteralPath'
-                    DebugOutputStream = $DebugOutputStream
-                    TodaysHostname    = $TodaysHostname
-                    WhoAmI            = $WhoAmI
-                    LogMsgCache       = $LogMsgCache
-                    Threads           = $ThreadCount
-                }
-                Split-Thread @GetFolderAce
-            }
+    }
+    Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Completed
+
+    if ($ThreadCount -eq 1) {
+
+        $i = 0
+        ForEach ($ThisFolder in $Subfolder) {
+            $PercentComplete = $i / $Subfolder.Count
+            Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+            $i++
+            Get-FolderAce -LiteralPath $ThisFolder
         }
+        Write-Progress -Activity "Get-FolderAce" -Completed
+
+    } else {
+
+        $GetFolderAce = @{
+            Command           = 'Get-FolderAce'
+            InputObject       = $Subfolder
+            InputParameter    = 'LiteralPath'
+            DebugOutputStream = $DebugOutputStream
+            TodaysHostname    = $TodaysHostname
+            WhoAmI            = $WhoAmI
+            LogMsgCache       = $LogMsgCache
+            Threads           = $ThreadCount
+        }
+        Split-Thread @GetFolderAce
+
     }
 }

@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-HtmlBody
+# Get-HtmlReportFooter
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-ReportFooter] <Object>]
- [[-HtmlFileList] <Object>] [[-LogDir] <Object>] [[-HtmlExclusions] <Object>]
+Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <String>] [[-ThisFqdn] <String>]
+ [[-ItemCount] <UInt64>] [[-TotalBytes] <UInt64>]
 ```
 
 ## DESCRIPTION
@@ -31,41 +31,11 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -FolderList
-{{ Fill FolderList Description }}
+### -ItemCount
+{{ Fill ItemCount Description }}
 
 ```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -HtmlExclusions
-{{ Fill HtmlExclusions Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -HtmlFileList
-{{ Fill HtmlFileList Description }}
-
-```yaml
-Type: System.Object
+Type: System.UInt64
 Parameter Sets: (All)
 Aliases:
 
@@ -76,26 +46,41 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -HtmlFolderPermissions
-{{ Fill HtmlFolderPermissions Description }}
+### -StopWatch
+{{ Fill StopWatch Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Diagnostics.Stopwatch
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogDir
-{{ Fill LogDir Description }}
+### -ThisFqdn
+{{ Fill ThisFqdn Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TotalBytes
+{{ Fill TotalBytes Description }}
+
+```yaml
+Type: System.UInt64
 Parameter Sets: (All)
 Aliases:
 
@@ -106,16 +91,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ReportFooter
-{{ Fill ReportFooter Description }}
+### -WhoAmI
+{{ Fill WhoAmI Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

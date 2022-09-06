@@ -1,20 +1,35 @@
 
+function Format-TimeSpan {
+    param (
+        [timespan]$TimeSpan,
+        [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second', 'millisecond')
+    )
+    $StringBuilder = [System.Text.StringBuilder]::new()
+    $aUnitWithAValueHasBeenFound = $false
+    foreach ($Unit in $UnitsToResolve) {
+        if ($TimeSpan."$Unit`s") {
+            if ($aUnitWithAValueHasBeenFound) {
+                $null = $StringBuilder.Append(", ")
+            }
+            $aUnitWithAValueHasBeenFound = $true
+
+            if ($TimeSpan."$Unit`s" -eq 1) {
+                $null = $StringBuilder.Append("$($TimeSpan."$Unit`s") $Unit")
+            } else {
+                $null = $StringBuilder.Append("$($TimeSpan."$Unit`s") $Unit`s")
+            }
+        }
+    }
+    $StringBuilder.ToString()
+}
 function Get-FolderAccessList {
     param (
 
-        # Path to the item whose permissions to export
-        $FolderTargets,
+        # Path to the item whose permissions to export (inherited ACEs will be included)
+        $Folder,
 
-        <#
-        How many levels of subfolder to enumerate
-
-            Set to 0 to ignore all subfolders
-
-            Set to -1 (default) to recurse infinitely
-
-            Set to any whole number to enumerate that many levels
-        #>
-        $LevelsOfSubfolders,
+        # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
+        $Subfolder,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -40,35 +55,43 @@ function Get-FolderAccessList {
         WhoAmI       = $WhoAmI
     }
 
-    ForEach ($ThisFolder in $FolderTargets) {
-        $Subfolders = $null
-        $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue
-        Write-LogMsg @LogParams -Text "Folders (including parent): $($Subfolders.Count + 1)"
+    # We expect a small number of folders and a large number of subfolders
+    # We will multithread the subfolders but not the folders
+    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
+    $i = 0
+    ForEach ($ThisFolder in $Folder) {
+        $PercentComplete = $i / $Folder.Count
+        Write-Progress -Activity "Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        $i++
         Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited
-        if ($Subfolders) {
-            if ($ThreadCount -eq 1) {
-                $i = 0
-                ForEach ($ThisSubfolder in $Subfolders) {
-                    $PercentComplete = $i / $Subfolders.Count
-                    Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisSubfolder -PercentComplete $PercentComplete
-                    $i++
-                    Get-FolderAce -LiteralPath $ThisSubfolder
-                }
-                Write-Progress -Activity "Get-FolderAce" -Completed
-            } else {
-                $GetFolderAce = @{
-                    Command           = 'Get-FolderAce'
-                    InputObject       = $Subfolders
-                    InputParameter    = 'LiteralPath'
-                    DebugOutputStream = $DebugOutputStream
-                    TodaysHostname    = $TodaysHostname
-                    WhoAmI            = $WhoAmI
-                    LogMsgCache       = $LogMsgCache
-                    Threads           = $ThreadCount
-                }
-                Split-Thread @GetFolderAce
-            }
+    }
+    Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Completed
+
+    if ($ThreadCount -eq 1) {
+
+        $i = 0
+        ForEach ($ThisFolder in $Subfolder) {
+            $PercentComplete = $i / $Subfolder.Count
+            Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+            $i++
+            Get-FolderAce -LiteralPath $ThisFolder
         }
+        Write-Progress -Activity "Get-FolderAce" -Completed
+
+    } else {
+
+        $GetFolderAce = @{
+            Command           = 'Get-FolderAce'
+            InputObject       = $Subfolder
+            InputParameter    = 'LiteralPath'
+            DebugOutputStream = $DebugOutputStream
+            TodaysHostname    = $TodaysHostname
+            WhoAmI            = $WhoAmI
+            LogMsgCache       = $LogMsgCache
+            Threads           = $ThreadCount
+        }
+        Split-Thread @GetFolderAce
+
     }
 }
 function Get-FolderPermissionsBlock {
@@ -189,22 +212,63 @@ function Get-FolderTableHeader {
 function Get-HtmlBody {
     param (
         $FolderList,
-        $HtmlFolderPermissions
+        $HtmlFolderPermissions,
+        $ReportFooter,
+        $HtmlFileList,
+        $LogDir,
+        $HtmlExclusions
     )
-    (New-HtmlHeading "Folders with Permissions in This Report" -Level 3) +
-    $FolderList +
-(New-HtmlHeading "Accounts Included in Those Permissions" -Level 3) +
-    $HtmlFolderPermissions
+    $StringBuilder = [System.Text.StringBuilder]::new()
+    $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
+    $null = $StringBuilder.Append($FolderList)
+    $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
+    $HtmlFolderPermissions |
+    ForEach-Object {
+        $null = $StringBuilder.Append($_)
+    }
+    if ($HtmlExclusions) {
+        $null = $StringBuilder.Append((New-HtmlHeading "Exclusions from This Report" -Level 3))
+        $null = $StringBuilder.Append($HtmlExclusions)
+    }
+    $null = $StringBuilder.Append((New-HtmlHeading "Files Generated" -Level 3))
+    $null = $StringBuilder.Append($HtmlFileList)
+    $null = $StringBuilder.Append($ReportFooter)
+    $StringBuilder.ToString()
 }
-function Get-HtmlFolderList {
+function Get-HtmlReportFooter {
     param (
-        $FolderTableHeader,
-        $HtmlTableOfFolders
+        # Stopwatch that was started when report generation began
+        [System.Diagnostics.Stopwatch]$StopWatch,
+
+        # NT Account caption (CONTOSO\User) of the account running this function
+        [string]$WhoAmI = (whoami.EXE),
+
+        <#
+        FQDN of the computer running this function
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        [uint64]$ItemCount,
+
+        [uint64]$TotalBytes
+
     )
-    New-BootstrapDiv -Text (
-    (New-HtmlHeading $FolderTableHeader -Level 5) +
-        $HtmlTableOfFolders
-    )
+    $null = $StopWatch.Stop()
+    $FinishTime = Get-Date
+    $StartTime = $FinishTime.AddTicks(-$FinishTime.ElapsedTicks)
+    $TimeZoneName = Get-TimeZoneName -Time $FinishTime
+    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed
+    if ($TotalBytes) {
+        $Size = " ($($TotalBytes / 1TB) TiB"
+    }
+    $Text = @"
+Report generated by $WhoAmI on $ThisFQDN starting at $StartTime and ending at $FinishTime $TimeZoneName<br />
+Processed permissions for $ItemCount items$Size in $Duration)<br />
+Report instance: $([guid]::NewGuid().ToString())
+"@
+    New-BootstrapAlert -Class Light -Text $Text
 }
 function Get-PrtgXmlSensorOutput {
     param (
@@ -278,6 +342,17 @@ function Get-ReportDescription {
         default {
             "Includes all subfolders with unique permissions (down to $LevelsOfSubfolders levels of subfolders)"
         }
+    }
+}
+function Get-TimeZoneName {
+    param (
+        [datetime]$Time,
+        [Microsoft.Management.Infrastructure.CimInstance]$TimeZone = (Get-CimInstance -ClassName Win32_TimeZone)
+    )
+    if ($Time.IsDaylightSavingTime()) {
+        return $TimeZone.DaylightName
+    } else {
+        return $TimeZone.StandardName
     }
 }
 function Select-FolderTableProperty {
@@ -369,7 +444,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlFolderList','Get-PrtgXmlSensorOutput','Get-ReportDescription','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Format-TimeSpan','Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

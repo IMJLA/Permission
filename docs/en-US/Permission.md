@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.30
+Help Version: 0.0.31
 Locale: en-US
 ---
 
@@ -11,9 +11,14 @@ Locale: en-US
 Module for working with Access Control Lists
 
 ## Permission Cmdlets
+### [Format-TimeSpan](Format-TimeSpan.md)
+
+Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
+
+
 ### [Get-FolderAccessList](Get-FolderAccessList.md)
 
-Get-FolderAccessList [[-FolderTargets] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
@@ -28,12 +33,15 @@ Get-FolderTableHeader [[-LevelsOfSubfolders] <Object>]
 
 ### [Get-HtmlBody](Get-HtmlBody.md)
 
-Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>]
+Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-ReportFooter] <Object>] [[-HtmlFileList] <Object>] [[-LogDir] <Object>] [[-HtmlExclusions] <Object>]
 
 
 ### [Get-HtmlFolderList](Get-HtmlFolderList.md)
+{{ Fill in the Description }}
 
-Get-HtmlFolderList [[-FolderTableHeader] <Object>] [[-HtmlTableOfFolders] <Object>]
+### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
+
+Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <string>] [[-ThisFqdn] <string>] [[-ItemCount] <ulong>] [[-TotalBytes] <ulong>]
 
 
 ### [Get-PrtgXmlSensorOutput](Get-PrtgXmlSensorOutput.md)
@@ -44,6 +52,11 @@ Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 ### [Get-ReportDescription](Get-ReportDescription.md)
 
 Get-ReportDescription [[-LevelsOfSubfolders] <Object>]
+
+
+### [Get-TimeZoneName](Get-TimeZoneName.md)
+
+Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
 
 ### [Select-FolderTableProperty](Select-FolderTableProperty.md)
