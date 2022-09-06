@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.31
+Help Version: 0.0.32
 Locale: en-US
 ---
 
@@ -11,6 +11,11 @@ Locale: en-US
 Module for working with Access Control Lists
 
 ## Permission Cmdlets
+### [Expand-Folder](Expand-Folder.md)
+
+Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+
+
 ### [Format-TimeSpan](Format-TimeSpan.md)
 
 Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
@@ -35,9 +40,6 @@ Get-FolderTableHeader [[-LevelsOfSubfolders] <Object>]
 
 Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-ReportFooter] <Object>] [[-HtmlFileList] <Object>] [[-LogDir] <Object>] [[-HtmlExclusions] <Object>]
 
-
-### [Get-HtmlFolderList](Get-HtmlFolderList.md)
-{{ Fill in the Description }}
 
 ### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
 
