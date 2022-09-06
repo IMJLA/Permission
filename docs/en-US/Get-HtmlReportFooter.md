@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <String>] [[-ThisFqdn] <String>]
- [[-ItemCount] <UInt64>] [[-TotalBytes] <UInt64>]
+ [[-ItemCount] <UInt64>] [[-TotalBytes] <UInt64>] [[-ReportInstanceId] <String>]
 ```
 
 ## DESCRIPTION
@@ -41,6 +41,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ReportInstanceId
+{{ Fill ReportInstanceId Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
