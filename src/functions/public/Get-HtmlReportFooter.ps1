@@ -22,7 +22,7 @@ function Get-HtmlReportFooter {
     )
     $null = $StopWatch.Stop()
     $FinishTime = Get-Date
-    $StartTime = $FinishTime.AddTicks(-$FinishTime.ElapsedTicks)
+    $StartTime = $FinishTime.AddTicks(-$StopWatch.ElapsedTicks)
     $TimeZoneName = Get-TimeZoneName -Time $FinishTime
     $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed
     if ($TotalBytes) {

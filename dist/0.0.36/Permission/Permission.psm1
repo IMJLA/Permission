@@ -333,7 +333,7 @@ function Get-HtmlReportFooter {
     )
     $null = $StopWatch.Stop()
     $FinishTime = Get-Date
-    $StartTime = $FinishTime.AddTicks(-$FinishTime.ElapsedTicks)
+    $StartTime = $FinishTime.AddTicks(-$StopWatch.ElapsedTicks)
     $TimeZoneName = Get-TimeZoneName -Time $FinishTime
     $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed
     if ($TotalBytes) {
@@ -521,6 +521,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Format-TimeSpan','Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
