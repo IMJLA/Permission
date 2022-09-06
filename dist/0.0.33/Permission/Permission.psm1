@@ -43,7 +43,7 @@ function Expand-Folder {
         WhoAmI       = $WhoAmI
     }
 
-    if ($ThreadCount -eq 1) {
+    if ($ThreadCount -eq 1 -or @($Folder).Count -eq 1) {
 
         $i = 0
         ForEach ($ThisFolder in $Folder) {
@@ -519,6 +519,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Format-TimeSpan','Get-FolderAccessList','Get-FolderPermissionsBlock','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

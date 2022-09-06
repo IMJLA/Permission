@@ -42,7 +42,7 @@ function Expand-Folder {
         WhoAmI       = $WhoAmI
     }
 
-    if ($ThreadCount -eq 1) {
+    if ($ThreadCount -eq 1 -or @($Folder).Count -eq 1) {
 
         $i = 0
         ForEach ($ThisFolder in $Folder) {

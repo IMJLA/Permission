@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.33] - 2022-09-05 - disabled multithreading in expand-folder when there is only a single folder to expand
+
 ## [0.0.32] - 2022-09-05 - implemented expand-folder with multithreading
 
 ## [0.0.31] - 2022-09-05 - Implemented Export-Permission enhancement issue 14
