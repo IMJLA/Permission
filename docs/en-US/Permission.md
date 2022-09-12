@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.38
+Help Version: 0.0.39
 Locale: en-US
 ---
 
@@ -83,14 +83,18 @@ Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
 ### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)
 
-Select-FolderPermissionTableProperty [[-InputObject] <Object>]
+Select-FolderPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
 
 
 ### [Select-FolderTableProperty](Select-FolderTableProperty.md)
-{{ Fill in the Synopsis }}
+
+Select-FolderTableProperty [[-InputObject] <Object>]
+
 
 ### [Select-UniqueAccountPermission](Select-UniqueAccountPermission.md)
-{{ Fill in the Synopsis }}
+
+Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] <string[]>] [[-KnownUsers] <Object>] [<CommonParameters>]
+
 
 ### [Update-CaptionCapitalization](Update-CaptionCapitalization.md)
 {{ Fill in the Synopsis }}

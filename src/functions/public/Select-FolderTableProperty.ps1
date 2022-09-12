@@ -1,4 +1,4 @@
-function Select-FolderPermissionTableProperty {
+function Select-FolderTableProperty {
     # For the HTML table
     param (
         $InputObject

@@ -694,7 +694,7 @@ function Select-FolderPermissionTableProperty {
     @{Label = 'Department'; Expression = { $_.Group.Department | Sort-Object -Unique } },
     @{Label = 'Title'; Expression = { $_.Group.Title | Sort-Object -Unique } }
 }
-function Select-FolderPermissionTableProperty {
+function Select-FolderTableProperty {
     # For the HTML table
     param (
         $InputObject
@@ -788,6 +788,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
