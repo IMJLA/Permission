@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Select-FolderTableProperty
+# Get-FolderPermissionTableHeader
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Select-FolderTableProperty [[-InputObject] <Object>]
+Get-FolderPermissionTableHeader [[-ThisFolder] <Object>] [[-ShortestFolderPath] <String>]
 ```
 
 ## DESCRIPTION
@@ -22,7 +22,7 @@ Select-FolderTableProperty [[-InputObject] <Object>]
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -30,8 +30,23 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -InputObject
-{{ Fill InputObject Description }}
+### -ShortestFolderPath
+{{ Fill ShortestFolderPath Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ThisFolder
+{{ Fill ThisFolder Description }}
 
 ```yaml
 Type: System.Object
@@ -48,9 +63,11 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
-### System.Object
+### System.String
+
 ## NOTES
 
 ## RELATED LINKS

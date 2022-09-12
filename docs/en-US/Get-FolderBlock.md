@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Select-FolderTableProperty
+# Get-FolderBlock
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Select-FolderTableProperty [[-InputObject] <Object>]
+Get-FolderBlock [[-FolderPermissions] <Object>]
 ```
 
 ## DESCRIPTION
@@ -22,7 +22,7 @@ Select-FolderTableProperty [[-InputObject] <Object>]
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -30,8 +30,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -InputObject
-{{ Fill InputObject Description }}
+### -FolderPermissions
+{{ Fill FolderPermissions Description }}
 
 ```yaml
 Type: System.Object
@@ -48,6 +48,7 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object

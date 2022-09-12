@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.37
+Help Version: 0.0.38
 Locale: en-US
 ---
 
@@ -16,6 +16,11 @@ Module for working with Access Control Lists
 Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
+### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
+
+Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass] <Object>] [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-CsvFilePath1] <Object>] [[-CsvFilePath2] <Object>] [[-CsvFilePath3] <Object>] [[-XmlFile] <Object>] [[-ReportFile] <Object>] [[-TranscriptFile] <Object>] [[-LogFile] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>]
+
+
 ### [Format-TimeSpan](Format-TimeSpan.md)
 
 Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
@@ -26,9 +31,24 @@ Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
 Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
+### [Get-FolderBlock](Get-FolderBlock.md)
+
+Get-FolderBlock [[-FolderPermissions] <Object>]
+
+
+### [Get-FolderColumnJson](Get-FolderColumnJson.md)
+
+Get-FolderColumnJson [[-InputObject] <Object>]
+
+
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
 
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <string[]>]
+
+
+### [Get-FolderPermissionTableHeader](Get-FolderPermissionTableHeader.md)
+
+Get-FolderPermissionTableHeader [[-ThisFolder] <Object>] [[-ShortestFolderPath] <string>]
 
 
 ### [Get-FolderTableHeader](Get-FolderTableHeader.md)
@@ -61,15 +81,16 @@ Get-ReportDescription [[-LevelsOfSubfolders] <Object>]
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
 
+### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)
+
+Select-FolderPermissionTableProperty [[-InputObject] <Object>]
+
+
 ### [Select-FolderTableProperty](Select-FolderTableProperty.md)
-
-Select-FolderTableProperty [[-InputObject] <Object>]
-
+{{ Fill in the Synopsis }}
 
 ### [Select-UniqueAccountPermission](Select-UniqueAccountPermission.md)
-
-Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] <string[]>] [[-KnownUsers] <Object>] [<CommonParameters>]
-
+{{ Fill in the Synopsis }}
 
 ### [Update-CaptionCapitalization](Update-CaptionCapitalization.md)
 {{ Fill in the Synopsis }}

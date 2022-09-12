@@ -1,13 +1,17 @@
-function Select-FolderTableProperty {
+function Select-FolderPermissionTableProperty {
+    # For the HTML table
     param (
         $InputObject
     )
+    $Culture = Get-Culture
     $InputObject | Select-Object -Property @{
         Label      = 'Folder'
         Expression = { $_.Name }
     },
     @{
         Label      = 'Inheritance'
-        Expression = { $_.Group.FolderInheritanceEnabled | Select-Object -First 1 }
+        Expression = {
+            $Culture.TextInfo.ToTitleCase(($_.Group.FolderInheritanceEnabled | Select-Object -First 1))
+        }
     }
 }

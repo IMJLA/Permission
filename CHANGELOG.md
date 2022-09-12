@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.38] - 2022-09-11 - updates
+
 ## [0.0.37] - 2022-09-05 - bugfix in get-htmlreportfooter (another one)
 
 ## [0.0.36] - 2022-09-05 - bugfix in get-htmlreportfooter

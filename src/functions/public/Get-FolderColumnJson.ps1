@@ -1,0 +1,18 @@
+function Get-FolderColumnJson {
+    # For the JSON that will be used by JavaScript to generate the table
+    param (
+        $InputObject
+    )
+    $PropNames = ($InputObject | Get-Member -MemberType noteproperty).Name
+    $Columns = ForEach ($Prop in $PropNames) {
+        $Props = @{
+            'field' = $Prop -replace '\s', ''
+            'title' = $Prop
+        }
+        if ($Prop -eq 'Inheritance') {
+            $Props['width'] = '1'
+        }
+        [PSCustomObject]$Props
+    }
+    $Columns | ConvertTo-Json
+}
