@@ -63,7 +63,6 @@ function Export-FolderPermissionHtml {
 
     # Convert the folder list to an HTML table
     $FormattedFolders = Get-FolderBlock -FolderPermissions $FolderPermissions
-    $HtmlTableOfFolders = $FormattedFolders.HtmlDiv
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
@@ -74,16 +73,16 @@ function Export-FolderPermissionHtml {
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock
-    $HtmlFolderPermissions = $FormattedFolderPermissions.HtmlDiv
 
     ##Commented the two lines below because actually keeping semicolons means it copy/pastes better into Excel
     ### Convert-ToHtml will not expand in-line HTML
     ### So replace the placeholders (semicolons) with HTML line breaks now, after Convert-ToHtml has already run
-    ##$HtmlFolderPermissions = $HtmlFolderPermissions -replace ' ; ','<br>'
+    ##$FormattedFolderPermissions.HtmlDiv = $FormattedFolderPermissions.HtmlDiv -replace ' ; ','<br>'
 
     # Combine the header and table inside a Bootstrap div
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$HtmlTableOfFolders"
-    $FolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $HtmlTableOfFolders
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedFolders.HtmlDiv"
+    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $FormattedFolders.HtmlDiv
+    $JsonFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $FormattedFolders.JsonDiv
 
     $HeadingText = 'Accounts Excluded by Regular Expression'
     if ($ExcludeAccount) {
@@ -168,8 +167,8 @@ function Export-FolderPermissionHtml {
     $ReportFooter = Get-HtmlReportFooter -StopWatch $StopWatch -ReportInstanceId $ReportInstanceId -WhoAmI $WhoAmI -ThisFqdn $ThisFqdn -ItemCount ($Subfolders.Count + $ResolvedFolderTargets.Count)
 
     # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$FolderList -HtmlFolderPermissions `$HtmlFolderPermissions"
-    [string]$Body = Get-HtmlBody -FolderList $FolderList -HtmlFolderPermissions $HtmlFolderPermissions -HtmlExclusions $ExclusionsDiv -HtmlFileList $FileList -ReportFooter $ReportFooter
+    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedFolderPermissions.HtmlDiv"
+    [string]$Body = Get-HtmlBody -FolderList $HtmlFolderList -HtmlFolderPermissions $FormattedFolderPermissions.HtmlDiv -HtmlExclusions $ExclusionsDiv -HtmlFileList $FileList -ReportFooter $ReportFooter
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
@@ -185,5 +184,27 @@ function Export-FolderPermissionHtml {
 
     # Output the name of the report file to the Information stream
     Write-Information $ReportFile
+
+
+
+    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedFolderPermissions.JsonDiv"
+    [string]$Body = Get-HtmlBody -FolderList $JsonFolderList -HtmlFolderPermissions $FormattedFolderPermissions.JsonDiv -HtmlExclusions $ExclusionsDiv -HtmlFileList $FileList -ReportFooter $ReportFooter
+
+    # Apply the report template to the generated HTML report body and description
+    $ReportParameters = @{
+        Title       = $Title
+        Description = $ReportDescription
+        Body        = $Body
+    }
+    Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+    $Report = New-BootstrapReport @ReportParameters
+
+    # Save the Html report
+    $ReportFile = $ReportFile -replace 'PermissionsReport', 'PermissionsReportJson'
+    $null = Set-Content -LiteralPath $ReportFile -Value $Report
+
+    # Output the name of the report file to the Information stream
+    Write-Information $ReportFile
+
 
 }
