@@ -280,12 +280,15 @@ function Export-FolderPermissionHtml {
     }
     [string]$Body = Get-HtmlBody @BodyParams
 
+    $ScriptHtml = ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolderPermissions.JsonColumns -DataJson $FormattedFolderPermissions.JsonData
+
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
-        Title        = $Title
-        Description  = $ReportDescription
-        Body         = $Body
-        TemplatePath = "$PSScriptRoot\data\Templates\ReportTemplateJson.html"
+        Title                = $Title
+        Description          = $ReportDescription
+        Body                 = $Body
+        JavaScript           = $true
+        AdditionalScriptHtml = $ScriptHtml
     }
     Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
     $Report = New-BootstrapReport @ReportParameters
@@ -824,6 +827,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
