@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.41] - 2022-09-17 - updated export-folderpermissionhtml to use json template with included javascript
+
 ## [0.0.40] - 2022-09-11 - added feature, now saving json version of report (still incomplete)
 
 ## [0.0.39] - 2022-09-11 - bugfix select-foldertableproperty oopsies

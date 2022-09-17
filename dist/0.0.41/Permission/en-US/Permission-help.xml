@@ -323,9 +323,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
-          <maml:name>CsvFilePath1</maml:name>
+          <maml:name>ReportFileList</maml:name>
           <maml:description>
-            <maml:para>{{ Fill CsvFilePath1 Description }}</maml:para>
+            <maml:para>{{ Fill ReportFileList Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -335,9 +335,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
-          <maml:name>CsvFilePath2</maml:name>
+          <maml:name>ReportFile</maml:name>
           <maml:description>
-            <maml:para>{{ Fill CsvFilePath2 Description }}</maml:para>
+            <maml:para>{{ Fill ReportFile Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -347,9 +347,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="none">
-          <maml:name>CsvFilePath3</maml:name>
+          <maml:name>LogFileList</maml:name>
           <maml:description>
-            <maml:para>{{ Fill CsvFilePath3 Description }}</maml:para>
+            <maml:para>{{ Fill LogFileList Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -359,9 +359,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
-          <maml:name>XmlFile</maml:name>
+          <maml:name>ReportInstanceId</maml:name>
           <maml:description>
-            <maml:para>{{ Fill XmlFile Description }}</maml:para>
+            <maml:para>{{ Fill ReportInstanceId Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -371,9 +371,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="19" aliases="none">
-          <maml:name>ReportFile</maml:name>
+          <maml:name>Subfolders</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ReportFile Description }}</maml:para>
+            <maml:para>{{ Fill Subfolders Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -395,54 +395,6 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="20" aliases="none">
-          <maml:name>TranscriptFile</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill TranscriptFile Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
-          <maml:name>LogFile</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill LogFile Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="22" aliases="none">
-          <maml:name>ReportInstanceId</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill ReportInstanceId Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="23" aliases="none">
-          <maml:name>Subfolders</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Subfolders Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="24" aliases="none">
           <maml:name>ResolvedFolderTargets</maml:name>
           <maml:description>
             <maml:para>{{ Fill ResolvedFolderTargets Description }}</maml:para>
@@ -541,42 +493,6 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
-        <maml:name>CsvFilePath1</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill CsvFilePath1 Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
-        <maml:name>CsvFilePath2</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill CsvFilePath2 Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="none">
-        <maml:name>CsvFilePath3</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill CsvFilePath3 Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>ExcludeAccount</maml:name>
         <maml:description>
@@ -649,10 +565,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
-        <maml:name>LogFile</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="none">
+        <maml:name>LogFileList</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogFile Description }}</maml:para>
+          <maml:para>{{ Fill LogFileList Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
@@ -709,7 +625,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="19" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
         <maml:name>ReportFile</maml:name>
         <maml:description>
           <maml:para>{{ Fill ReportFile Description }}</maml:para>
@@ -721,7 +637,19 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="22" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
+        <maml:name>ReportFileList</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ReportFileList Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
         <maml:name>ReportInstanceId</maml:name>
         <maml:description>
           <maml:para>{{ Fill ReportInstanceId Description }}</maml:para>
@@ -733,7 +661,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="24" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="20" aliases="none">
         <maml:name>ResolvedFolderTargets</maml:name>
         <maml:description>
           <maml:para>{{ Fill ResolvedFolderTargets Description }}</maml:para>
@@ -757,7 +685,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="23" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="19" aliases="none">
         <maml:name>Subfolders</maml:name>
         <maml:description>
           <maml:para>{{ Fill Subfolders Description }}</maml:para>
@@ -805,34 +733,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="20" aliases="none">
-        <maml:name>TranscriptFile</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill TranscriptFile Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
         <maml:name>WhoAmI</maml:name>
         <maml:description>
           <maml:para>{{ Fill WhoAmI Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
-        <maml:name>XmlFile</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill XmlFile Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>

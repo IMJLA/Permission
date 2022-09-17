@@ -44,13 +44,9 @@ function Export-FolderPermissionHtml {
         $LogParams,
         $ReportDescription,
         $FolderTableHeader,
-        $CsvFilePath1,
-        $CsvFilePath2,
-        $CsvFilePath3,
-        $XmlFile,
+        $ReportFileList,
         $ReportFile,
-        $TranscriptFile,
-        $LogFile,
+        $LogFileList,
         $ReportInstanceId,
         $Subfolders,
         $ResolvedFolderTargets
@@ -137,13 +133,13 @@ function Export-FolderPermissionHtml {
     $ExclusionsDiv = New-BootstrapColumn -Html "$HtmlExcludedGroupMembers$HtmlClassExclusions", "$HtmlIgnoredDomains$HtmlRegExExclusions" -Width 6
 
     # Convert the list of generated report files to a Bootstrap list group
-    $HtmlListOfReports = $CsvFilePath1, $CsvFilePath2, $CsvFilePath3, $XmlFile, $ReportFile |
+    $HtmlListOfReports = $ReportFileList |
     Split-Path -Leaf |
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
 
     # Convert the list of generated log files to a Bootstrap list group
-    $HtmlListOfLogs = $TranscriptFile, $LogFile |
+    $HtmlListOfLogs = $LogFileList |
     Split-Path -Leaf |
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
@@ -159,16 +155,30 @@ function Export-FolderPermissionHtml {
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary'
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content `$FileListColumns"
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
     $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
 
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-    $ReportFooter = Get-HtmlReportFooter -StopWatch $StopWatch -ReportInstanceId $ReportInstanceId -WhoAmI $WhoAmI -ThisFqdn $ThisFqdn -ItemCount ($Subfolders.Count + $ResolvedFolderTargets.Count)
+    $FooterParams = @{
+        StopWatch        = $StopWatch
+        ReportInstanceId = $ReportInstanceId
+        WhoAmI           = $WhoAmI
+        ThisFqdn         = $ThisFqdn
+        ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
+    }
+    $ReportFooter = Get-HtmlReportFooter @FooterParams
 
     # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
     Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedFolderPermissions.HtmlDiv"
-    [string]$Body = Get-HtmlBody -FolderList $HtmlFolderList -HtmlFolderPermissions $FormattedFolderPermissions.HtmlDiv -HtmlExclusions $ExclusionsDiv -HtmlFileList $FileList -ReportFooter $ReportFooter
+    $BodyParams = @{
+        FolderList            = $HtmlFolderList
+        HtmlFolderPermissions = $FormattedFolderPermissions.HtmlDiv
+        HtmlExclusions        = $ExclusionsDiv
+        HtmlFileList          = $FileList
+        ReportFooter          = $ReportFooter
+    }
+    [string]$Body = Get-HtmlBody @BodyParams
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
@@ -185,16 +195,22 @@ function Export-FolderPermissionHtml {
     # Output the name of the report file to the Information stream
     Write-Information $ReportFile
 
-
-
-    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedFolderPermissions.JsonDiv"
-    [string]$Body = Get-HtmlBody -FolderList $JsonFolderList -HtmlFolderPermissions $FormattedFolderPermissions.JsonDiv -HtmlExclusions $ExclusionsDiv -HtmlFileList $FileList -ReportFooter $ReportFooter
+    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$JsonFolderList -HtmlFolderPermissions `$FormattedFolderPermissions.JsonDiv"
+    $BodyParams = @{
+        FolderList            = $JsonFolderList
+        HtmlFolderPermissions = $FormattedFolderPermissions.JsonDiv
+        HtmlExclusions        = $ExclusionsDiv
+        HtmlFileList          = $FileList
+        ReportFooter          = $ReportFooter
+    }
+    [string]$Body = Get-HtmlBody @BodyParams
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
-        Title       = $Title
-        Description = $ReportDescription
-        Body        = $Body
+        Title        = $Title
+        Description  = $ReportDescription
+        Body         = $Body
+        TemplatePath = "$PSScriptRoot\data\Templates\ReportTemplateJson.html"
     }
     Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
     $Report = New-BootstrapReport @ReportParameters
@@ -205,6 +221,5 @@ function Export-FolderPermissionHtml {
 
     # Output the name of the report file to the Information stream
     Write-Information $ReportFile
-
 
 }

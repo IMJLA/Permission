@@ -17,9 +17,8 @@ Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass]
  [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <Object>] [[-TargetPath] <String[]>]
  [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>]
- [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-CsvFilePath1] <Object>]
- [[-CsvFilePath2] <Object>] [[-CsvFilePath3] <Object>] [[-XmlFile] <Object>] [[-ReportFile] <Object>]
- [[-TranscriptFile] <Object>] [[-LogFile] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
+ [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>]
+ [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
  [[-ResolvedFolderTargets] <Object>]
 ```
 
@@ -36,51 +35,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -CsvFilePath1
-{{ Fill CsvFilePath1 Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 15
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -CsvFilePath2
-{{ Fill CsvFilePath2 Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 16
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -CsvFilePath3
-{{ Fill CsvFilePath3 Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 17
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -ExcludeAccount
 {{ Fill ExcludeAccount Description }}
@@ -172,8 +126,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogFile
-{{ Fill LogFile Description }}
+### -LogFileList
+{{ Fill LogFileList Description }}
 
 ```yaml
 Type: System.Object
@@ -181,7 +135,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 21
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -256,7 +210,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
+Position: 16
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ReportFileList
+{{ Fill ReportFileList Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -271,7 +240,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 22
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -286,7 +255,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 24
+Position: 20
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -316,7 +285,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 23
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -367,21 +336,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -TranscriptFile
-{{ Fill TranscriptFile Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 20
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -WhoAmI
 {{ Fill WhoAmI Description }}
 
@@ -392,21 +346,6 @@ Aliases:
 
 Required: False
 Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -XmlFile
-{{ Fill XmlFile Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
