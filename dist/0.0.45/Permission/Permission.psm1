@@ -281,8 +281,10 @@ function Export-FolderPermissionHtml {
     }
     [string]$Body = Get-HtmlBody @BodyParams
 
-    [string]$ScriptHtml = ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolderPermissions.JsonColumns -DataJson $FormattedFolderPermissions.JsonData
-    Write-LogMsg @LogParams -Text $ScriptHtml
+    [string]$ScriptHtml = $FormattedFolderPermissions |
+    ForEach-Object {
+        ConvertTo-BootstrapTableScript -TableId "#$($_.Path)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData
+    }
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
@@ -522,6 +524,7 @@ function Get-FolderPermissionsBlock {
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
             JsonData    = $ObjectsForFolderPermissionTable | ConvertTo-Json
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable
+            Path        = $ThisFolder.Name
         }
     }
 }
@@ -829,6 +832,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

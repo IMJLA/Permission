@@ -75,6 +75,7 @@ function Get-FolderPermissionsBlock {
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
             JsonData    = $ObjectsForFolderPermissionTable | ConvertTo-Json
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable
+            Path        = $ThisFolder.Name
         }
     }
 }

@@ -206,8 +206,10 @@ function Export-FolderPermissionHtml {
     }
     [string]$Body = Get-HtmlBody @BodyParams
 
-    [string]$ScriptHtml = ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolderPermissions.JsonColumns -DataJson $FormattedFolderPermissions.JsonData
-    Write-LogMsg @LogParams -Text $ScriptHtml
+    [string]$ScriptHtml = $FormattedFolderPermissions |
+    ForEach-Object {
+        ConvertTo-BootstrapTableScript -TableId "#$($_.Path)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData
+    }
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
