@@ -74,6 +74,7 @@ function Expand-Folder {
     }
 }
 function Export-FolderPermissionHtml {
+
     param (
 
         # Regular expressions matching names of security principals to exclude from the HTML report
@@ -208,7 +209,7 @@ function Export-FolderPermissionHtml {
     $ExclusionsDiv = New-BootstrapColumn -Html "$HtmlExcludedGroupMembers$HtmlClassExclusions", "$HtmlIgnoredDomains$HtmlRegExExclusions" -Width 6
 
     # Convert the list of generated report files to a Bootstrap list group
-    $HtmlListOfReports = $ReportFileList |
+    $HtmlListOfReports = $ReportFileList + $ReportFile |
     Split-Path -Leaf |
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
@@ -280,7 +281,7 @@ function Export-FolderPermissionHtml {
     }
     [string]$Body = Get-HtmlBody @BodyParams
 
-    $ScriptHtml = ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolderPermissions.JsonColumns -DataJson $FormattedFolderPermissions.JsonData
+    [string]$ScriptHtml = ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolderPermissions.JsonColumns -DataJson $FormattedFolderPermissions.JsonData
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
@@ -827,6 +828,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
