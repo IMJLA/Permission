@@ -206,12 +206,15 @@ function Export-FolderPermissionHtml {
     }
     [string]$Body = Get-HtmlBody @BodyParams
 
-    [string[]]$ScriptHtml = $FormattedFolderPermissions |
+    $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
+
+    $FormattedFolderPermissions |
     ForEach-Object {
-        ConvertTo-BootstrapTableScript -TableId $_.Path -ColumnJson $_.JsonColumns -DataJson $_.JsonData
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($_.Path)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
     }
 
-    $ScriptHtml += ConvertTo-BootstrapTableScript -TableId 'Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData
+    $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData))
+    $ScriptHtml = $ScriptHtmlBuilder.ToString()
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{

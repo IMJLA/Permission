@@ -68,7 +68,7 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "#$($ThisFolder.Name)" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id $ThisFolder.Name -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)

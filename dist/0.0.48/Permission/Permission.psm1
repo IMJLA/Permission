@@ -281,12 +281,15 @@ function Export-FolderPermissionHtml {
     }
     [string]$Body = Get-HtmlBody @BodyParams
 
-    [string[]]$ScriptHtml = $FormattedFolderPermissions |
+    $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
+
+    $FormattedFolderPermissions |
     ForEach-Object {
-        ConvertTo-BootstrapTableScript -TableId $_.Path -ColumnJson $_.JsonColumns -DataJson $_.JsonData
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($_.Path)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
     }
 
-    $ScriptHtml += ConvertTo-BootstrapTableScript -TableId 'Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData
+    $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData))
+    $ScriptHtml = $ScriptHtmlBuilder.ToString()
 
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
@@ -421,7 +424,7 @@ function Get-FolderBlock {
     ConvertTo-Json
 
     $JsonColumns = Get-FolderColumnJson -InputObject $FolderObjectsForTable
-    $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id '#Folders' -InputObject $FolderObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
+    $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $FolderObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
 
     return [pscustomobject]@{
         HtmlDiv     = $HtmlTable
@@ -519,7 +522,7 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "#$($ThisFolder.Name)" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id $ThisFolder.Name -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
@@ -834,6 +837,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

@@ -17,7 +17,7 @@ function Get-FolderBlock {
     ConvertTo-Json
 
     $JsonColumns = Get-FolderColumnJson -InputObject $FolderObjectsForTable
-    $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id '#Folders' -InputObject $FolderObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
+    $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $FolderObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
 
     return [pscustomobject]@{
         HtmlDiv     = $HtmlTable
