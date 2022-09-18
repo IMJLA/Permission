@@ -71,7 +71,7 @@ function Get-FolderPermissionsBlock {
         $TableId = $ThisFolder.Name -replace '[^A-Za-z0-9\-_:.]', '-'
 
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable -PropNames Account, Access, 'Due to Membership In', Name, Department, Title
 
         # Remove spaces from property titles
         $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
