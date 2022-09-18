@@ -285,7 +285,7 @@ function Export-FolderPermissionHtml {
 
     $FormattedFolderPermissions |
     ForEach-Object {
-        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($_.Path)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#Perms_$($_.Path -replace '[^A-Za-z0-9\-_:.]', '-')" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
     }
 
     $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData))
@@ -522,12 +522,19 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id $ThisFolder.Name -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+        $TableId = $ThisFolder.Name -replace '[^A-Za-z0-9\-_:.]', '-'
+
+
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+
+        # Remove spaces from property titles
+        $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
+        Select-Object -Property Account, Access, @{Label = 'DuetoMembershipIn'; Expression = { $_.'Due to Membership In' } }, Name, Department, Title
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
-            JsonData    = $ObjectsForFolderPermissionTable | ConvertTo-Json
+            JsonData    = $ObjectsForJsonData | ConvertTo-Json
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable
             Path        = $ThisFolder.Name
         }
@@ -728,6 +735,7 @@ function Select-FolderPermissionTableProperty {
         $InputObject,
         $IgnoreDomain
     )
+    <#
     $InputObject |
     Select-Object -Property @{Label = 'Account'; Expression = { $_.Name } },
     @{Label = 'Access'; Expression = { ($_.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; ' } },
@@ -742,6 +750,22 @@ function Select-FolderPermissionTableProperty {
     @{Label = 'Name'; Expression = { $_.Group.Name | Sort-Object -Unique } },
     @{Label = 'Department'; Expression = { $_.Group.Department | Sort-Object -Unique } },
     @{Label = 'Title'; Expression = { $_.Group.Title | Sort-Object -Unique } }
+    #>
+    ForEach ($Object in $InputObject) {
+        $GroupString = ($Object.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
+        ForEach ($IgnoreThisDomain in $IgnoreDomain) {
+            $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
+        }
+        [pscustomobject]@{
+            'Account'              = $Object.Name
+            'Access'               = ($Object.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; '
+            'Due to Membership In' = $GroupString
+            'Name'                 = $Object.Group.Name | Sort-Object -Unique
+            'Department'           = $Object.Group.Department | Sort-Object -Unique
+            'Title'                = $Object.Group.Title | Sort-Object -Unique
+        }
+    }
+
 }
 function Select-FolderTableProperty {
     # For the HTML table
@@ -837,6 +861,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
