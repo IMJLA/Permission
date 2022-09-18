@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.46] - 2022-09-18 - bugfix should not have pound sign when setting table id
+
 ## [0.0.45] - 2022-09-17 - troubleshooting
 
 ## [0.0.44] - 2022-09-17 - Added debug output
