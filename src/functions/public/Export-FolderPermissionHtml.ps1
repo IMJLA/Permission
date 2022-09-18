@@ -211,6 +211,8 @@ function Export-FolderPermissionHtml {
         ConvertTo-BootstrapTableScript -TableId $_.Path -ColumnJson $_.JsonColumns -DataJson $_.JsonData
     }
 
+    $ScriptHtml += ConvertTo-BootstrapTableScript -TableId 'Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData
+
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
         Title                = $Title

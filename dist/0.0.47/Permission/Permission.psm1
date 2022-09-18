@@ -286,6 +286,8 @@ function Export-FolderPermissionHtml {
         ConvertTo-BootstrapTableScript -TableId $_.Path -ColumnJson $_.JsonColumns -DataJson $_.JsonData
     }
 
+    $ScriptHtml += ConvertTo-BootstrapTableScript -TableId 'Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData
+
     # Apply the report template to the generated HTML report body and description
     $ReportParameters = @{
         Title                = $Title
@@ -832,6 +834,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
