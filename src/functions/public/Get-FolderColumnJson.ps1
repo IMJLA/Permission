@@ -1,9 +1,14 @@
 function Get-FolderColumnJson {
     # For the JSON that will be used by JavaScript to generate the table
     param (
-        $InputObject
+        $InputObject,
+        [string[]]$PropNames
     )
-    $PropNames = ($InputObject | Get-Member -MemberType noteproperty).Name
+
+    if (-not $PSBoundParameters.ContainsKey('PropNames')) {
+        $PropNames = ($InputObject | Get-Member -MemberType noteproperty).Name
+    }
+
     $Columns = ForEach ($Prop in $PropNames) {
         $Props = @{
             'field' = $Prop -replace '\s', ''
@@ -14,5 +19,7 @@ function Get-FolderColumnJson {
         }
         [PSCustomObject]$Props
     }
-    $Columns | ConvertTo-Json
+
+    $Columns |
+    ConvertTo-Json
 }

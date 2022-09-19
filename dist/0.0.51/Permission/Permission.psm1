@@ -437,9 +437,14 @@ function Get-FolderBlock {
 function Get-FolderColumnJson {
     # For the JSON that will be used by JavaScript to generate the table
     param (
-        $InputObject
+        $InputObject,
+        [string[]]$PropNames
     )
-    $PropNames = ($InputObject | Get-Member -MemberType noteproperty).Name
+
+    if (-not $PSBoundParameters.ContainsKey('PropNames')) {
+        $PropNames = ($InputObject | Get-Member -MemberType noteproperty).Name
+    }
+
     $Columns = ForEach ($Prop in $PropNames) {
         $Props = @{
             'field' = $Prop -replace '\s', ''
@@ -450,7 +455,9 @@ function Get-FolderColumnJson {
         }
         [PSCustomObject]$Props
     }
-    $Columns | ConvertTo-Json
+
+    $Columns |
+    ConvertTo-Json
 }
 function Get-FolderPermissionsBlock {
     param (
@@ -525,7 +532,7 @@ function Get-FolderPermissionsBlock {
         $TableId = $ThisFolder.Name -replace '[^A-Za-z0-9\-_:.]', '-'
 
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable -PropNames Account, Access, 'Due to Membership In', Name, Department, Title
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
         # Remove spaces from property titles
         $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
@@ -535,7 +542,7 @@ function Get-FolderPermissionsBlock {
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
             JsonData    = $ObjectsForJsonData | ConvertTo-Json
-            JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable
+            JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access, 'Due to Membership In', Name, Department, Title
             Path        = $ThisFolder.Name
         }
     }
@@ -861,6 +868,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

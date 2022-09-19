@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-FolderColumnJson [[-InputObject] <Object>]
+Get-FolderColumnJson [[-InputObject] <Object>] [[-PropNames] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -40,6 +40,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PropNames
+{{ Fill PropNames Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
