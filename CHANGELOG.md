@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.55] - 2024-01-13 - testing cicd pipeline
+
+## [0.0.54] - 2024-01-13 - testing cicd pipeline
+
 ## [0.0.53] - 2024-01-13 - breaking change; Export-FolderPermissionHtml will no longer save a file with the JavaScript-less Html by default, unless the new -NoJavaScript switch parameter is used
 
 ## [0.0.52] - 2024-01-13 - breaking change; default behavior of Export-FolderPermissionHtml will no longer generate javascript-less html file by default but this behavior is available with a new -NoJavaScript switch parameter
