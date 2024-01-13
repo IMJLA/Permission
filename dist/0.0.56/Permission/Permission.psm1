@@ -211,6 +211,11 @@ function Export-FolderPermissionHtml {
     Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlExcludedGroupMembers`$HtmlClassExclusions',`$HtmlIgnoredDomains`$HtmlRegExExclusions"
     $ExclusionsDiv = New-BootstrapColumn -Html "$HtmlExcludedGroupMembers$HtmlClassExclusions", "$HtmlIgnoredDomains$HtmlRegExExclusions" -Width 6
 
+    if ($NoJavaScript) {
+        $NoJavaScriptReportFile = $ReportFile -replace 'PermissionsReport', 'PermissionsReport_NoJavaScript'
+        $ReportFileList += $NoJavaScriptReportFile
+    }
+
     # Convert the list of generated report files to a Bootstrap list group
     $HtmlListOfReports = $ReportFileList + $ReportFile |
     Split-Path -Leaf |
@@ -270,7 +275,6 @@ function Export-FolderPermissionHtml {
 
     if ($NoJavaScript) {
         # Save the Html report
-        $NoJavaScriptReportFile = $ReportFile -replace 'PermissionsReport', 'PermissionsReport_NoJavaScript'
         $null = Set-Content -LiteralPath $NoJavaScriptReportFile -Value $Report
 
         # Output the name of the report file to the Information stream
@@ -875,6 +879,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

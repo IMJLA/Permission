@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.56] - 2024-01-13 - bugfix with list of report files after modifying defualt behavior last version
+
 ## [0.0.55] - 2024-01-13 - testing cicd pipeline
 
 ## [0.0.54] - 2024-01-13 - testing cicd pipeline
