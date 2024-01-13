@@ -16,10 +16,10 @@ schema: 2.0.0
 Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass] <Object>]
  [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <Object>] [[-TargetPath] <String[]>]
  [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>]
- [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>]
- [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>]
- [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
- [[-ResolvedFolderTargets] <Object>]
+ [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript] [[-FolderPermissions] <Object>]
+ [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>]
+ [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
+ [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>]
 ```
 
 ## DESCRIPTION
@@ -166,6 +166,21 @@ Aliases:
 
 Required: False
 Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -NoJavaScript
+{{ Fill NoJavaScript Description }}
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

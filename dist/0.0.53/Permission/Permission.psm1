@@ -116,6 +116,9 @@ function Export-FolderPermissionHtml {
         # Title at the top of the HTML report
         $Title,
 
+        # Generate a report with only HTML and CSS but no JavaScript
+        [switch]$NoJavaScript,
+
         $FolderPermissions,
         $LogParams,
         $ReportDescription,
@@ -146,7 +149,7 @@ function Export-FolderPermissionHtml {
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock
 
-    ##Commented the two lines below because actually keeping semicolons means it copy/pastes better into Excel
+    ##Commented the three lines below because actually keeping semicolons means it copy/pastes better into Excel
     ### Convert-ToHtml will not expand in-line HTML
     ### So replace the placeholders (semicolons) with HTML line breaks now, after Convert-ToHtml has already run
     ##$FormattedFolderPermissions.HtmlDiv = $FormattedFolderPermissions.HtmlDiv -replace ' ; ','<br>'
@@ -265,11 +268,15 @@ function Export-FolderPermissionHtml {
     Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
     $Report = New-BootstrapReport @ReportParameters
 
-    # Save the Html report
-    $null = Set-Content -LiteralPath $ReportFile -Value $Report
+    if ($NoJavaScript) {
+        # Save the Html report
+        $NoJavaScriptReportFile = $ReportFile -replace 'PermissionsReport', 'PermissionsReport_NoJavaScript'
+        $null = Set-Content -LiteralPath $NoJavaScriptReportFile -Value $Report
 
-    # Output the name of the report file to the Information stream
-    Write-Information $ReportFile
+        # Output the name of the report file to the Information stream
+        Write-Information $NoJavaScriptReportFile
+    }
+
 
     Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$JsonFolderList -HtmlFolderPermissions `$FormattedFolderPermissions.JsonDiv"
     $BodyParams = @{
@@ -868,6 +875,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
+
 
 
 
