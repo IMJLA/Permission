@@ -314,7 +314,6 @@ function Export-FolderPermissionHtml {
     $Report = New-BootstrapReport @ReportParameters
 
     # Save the Html report
-    $ReportFile = $ReportFile -replace 'PermissionsReport', 'PermissionsReportJson'
     $null = Set-Content -LiteralPath $ReportFile -Value $Report
 
     # Output the name of the report file to the Information stream
@@ -879,6 +878,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

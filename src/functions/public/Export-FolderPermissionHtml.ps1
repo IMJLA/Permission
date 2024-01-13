@@ -239,7 +239,6 @@ function Export-FolderPermissionHtml {
     $Report = New-BootstrapReport @ReportParameters
 
     # Save the Html report
-    $ReportFile = $ReportFile -replace 'PermissionsReport', 'PermissionsReportJson'
     $null = Set-Content -LiteralPath $ReportFile -Value $Report
 
     # Output the name of the report file to the Information stream
