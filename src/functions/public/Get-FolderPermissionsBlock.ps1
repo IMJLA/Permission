@@ -23,7 +23,7 @@ function Get-FolderPermissionsBlock {
     # Convert the $ExcludeAccountClass array into a dictionary for fast lookups
     $ClassExclusions = @{}
     ForEach ($ThisClass in $ExcludeAccountClass) {
-        $ClassExclusions[$_] = $true
+        $ClassExclusions[$ThisClass] = $true
     }
 
     $ShortestFolderPath = $FolderPermissions.Name |

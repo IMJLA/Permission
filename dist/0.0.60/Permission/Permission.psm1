@@ -491,7 +491,7 @@ function Get-FolderPermissionsBlock {
     # Convert the $ExcludeAccountClass array into a dictionary for fast lookups
     $ClassExclusions = @{}
     ForEach ($ThisClass in $ExcludeAccountClass) {
-        $ClassExclusions[$_] = $true
+        $ClassExclusions[$ThisClass] = $true
     }
 
     $ShortestFolderPath = $FolderPermissions.Name |
@@ -888,6 +888,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
