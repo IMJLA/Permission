@@ -6,10 +6,7 @@ function Export-FolderPermissionHtml {
         $ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
-        $ExcludeAccountClass,
-
-        # Exclude empty groups from the HTML report (this param will be replaced by ExcludeAccountClass in the future)
-        $ExcludeEmptyGroups,
+        [string[]]$ExcludeAccountClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -66,10 +63,10 @@ function Export-FolderPermissionHtml {
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
-        FolderPermissions  = $FolderPermissions
-        ExcludeAccount     = $ExcludeAccount
-        ExcludeEmptyGroups = $ExcludeEmptyGroups
-        IgnoreDomain       = $IgnoreDomain
+        FolderPermissions   = $FolderPermissions
+        ExcludeAccount      = $ExcludeAccount
+        ExcludeAccountClass = $ExcludeAccountClass
+        IgnoreDomain        = $IgnoreDomain
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock

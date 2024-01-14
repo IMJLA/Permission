@@ -6,7 +6,8 @@ function Get-FolderPermissionsBlock {
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
 
-        $ExcludeEmptyGroups,
+        # Accounts whose objectClass property is in this list are excluded from the HTML report
+        [string[]]$ExcludeAccountClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -18,6 +19,12 @@ function Get-FolderPermissionsBlock {
         [string[]]$IgnoreDomain
 
     )
+
+    # Convert the $ExcludeAccountClass array into a dictionary for fast lookups
+    $ClassExclusions = @{}
+    ForEach ($ThisClass in $ExcludeAccountClass) {
+        $ClassExclusions[$_] = $true
+    }
 
     $ShortestFolderPath = $FolderPermissions.Name |
     Sort-Object |
@@ -53,11 +60,16 @@ function Get-FolderPermissionsBlock {
             )
         }
 
-        if ($ExcludeEmptyGroups) {
+        # Eliminate the specified classes, such as groups
+        # (any remaining groups are empty and not useful to see in the middle of a list of users/job titles/departments/etc)
+        if ($ExcludeAccountClass.Count -ge 0) {
             $FilteredAccounts = $FilteredAccounts |
             Where-Object -FilterScript {
-                # Eliminate empty groups (not useful to see in the middle of a list of users/job titles/departments/etc).
-                $_.Group.SchemaClassName -notcontains 'group'
+                ForEach ($Schema in $_.Group.SchemaClassName) {
+                    if ($ClassExclusions[$Schema]) {
+                        $true
+                    }
+                }
             }
         }
 

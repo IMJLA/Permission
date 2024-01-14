@@ -13,13 +13,13 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass] <Object>]
- [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <Object>] [[-TargetPath] <String[]>]
- [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>]
- [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript] [[-FolderPermissions] <Object>]
- [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>]
- [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
- [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>]
+Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass] <String[]>]
+ [[-IgnoreDomain] <Object>] [[-TargetPath] <String[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>]
+ [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript]
+ [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>]
+ [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>]
+ [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
+ [[-ResolvedFolderTargets] <Object>]
 ```
 
 ## DESCRIPTION
@@ -55,27 +55,12 @@ Accept wildcard characters: False
 {{ Fill ExcludeAccountClass Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExcludeEmptyGroups
-{{ Fill ExcludeEmptyGroups Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -90,7 +75,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -105,7 +90,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -120,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -135,7 +120,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 17
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -150,7 +135,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -165,7 +150,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -195,7 +180,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -210,7 +195,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -225,7 +210,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -240,7 +225,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +240,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 18
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -270,7 +255,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 20
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -285,7 +270,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -300,7 +285,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -315,7 +300,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -330,7 +315,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -345,7 +330,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -360,7 +345,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

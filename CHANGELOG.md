@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.58] - 2024-01-14 - implemented ExcludeAccountClass param and deprecated ExcludeEmptyGroups switch
+
 ## [0.0.57] - 2024-01-13 - bugfix in export-folderpermissionhtml with default report file name (should no longer include json in name by default)
 
 ## [0.0.56] - 2024-01-13 - bugfix with list of report files after modifying defualt behavior last version

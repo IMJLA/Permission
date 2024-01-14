@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <String[]>]
- [[-ExcludeEmptyGroups] <Object>] [[-IgnoreDomain] <String[]>]
+ [[-ExcludeAccountClass] <String[]>] [[-IgnoreDomain] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -46,11 +46,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ExcludeEmptyGroups
-{{ Fill ExcludeEmptyGroups Description }}
+### -ExcludeAccountClass
+{{ Fill ExcludeAccountClass Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 

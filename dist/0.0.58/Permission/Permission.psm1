@@ -81,10 +81,7 @@ function Export-FolderPermissionHtml {
         $ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
-        $ExcludeAccountClass,
-
-        # Exclude empty groups from the HTML report (this param will be replaced by ExcludeAccountClass in the future)
-        $ExcludeEmptyGroups,
+        [string[]]$ExcludeAccountClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -141,10 +138,10 @@ function Export-FolderPermissionHtml {
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
-        FolderPermissions  = $FolderPermissions
-        ExcludeAccount     = $ExcludeAccount
-        ExcludeEmptyGroups = $ExcludeEmptyGroups
-        IgnoreDomain       = $IgnoreDomain
+        FolderPermissions   = $FolderPermissions
+        ExcludeAccount      = $ExcludeAccount
+        ExcludeAccountClass = $ExcludeAccountClass
+        IgnoreDomain        = $IgnoreDomain
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock
@@ -477,7 +474,8 @@ function Get-FolderPermissionsBlock {
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
 
-        $ExcludeEmptyGroups,
+        # Accounts whose objectClass property is in this list are excluded from the HTML report
+        [string[]]$ExcludeAccountClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -489,6 +487,12 @@ function Get-FolderPermissionsBlock {
         [string[]]$IgnoreDomain
 
     )
+
+    # Convert the $ExcludeAccountClass array into a dictionary for fast lookups
+    $ClassExclusions = @{}
+    ForEach ($ThisClass in $ExcludeAccountClass) {
+        $ClassExclusions[$_] = $true
+    }
 
     $ShortestFolderPath = $FolderPermissions.Name |
     Sort-Object |
@@ -524,11 +528,16 @@ function Get-FolderPermissionsBlock {
             )
         }
 
-        if ($ExcludeEmptyGroups) {
+        # Eliminate the specified classes, such as groups
+        # (any remaining groups are empty and not useful to see in the middle of a list of users/job titles/departments/etc)
+        if ($ExcludeAccountClass.Count -ge 0) {
             $FilteredAccounts = $FilteredAccounts |
             Where-Object -FilterScript {
-                # Eliminate empty groups (not useful to see in the middle of a list of users/job titles/departments/etc).
-                $_.Group.SchemaClassName -notcontains 'group'
+                ForEach ($Schema in $_.Group.SchemaClassName) {
+                    if ($ClassExclusions[$Schema]) {
+                        $true
+                    }
+                }
             }
         }
 
@@ -878,6 +887,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
