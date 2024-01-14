@@ -533,11 +533,12 @@ function Get-FolderPermissionsBlock {
         if ($ExcludeAccountClass.Count -ge 0) {
             $FilteredAccounts = $FilteredAccounts |
             Where-Object -FilterScript {
-                ForEach ($Schema in $_.Group.SchemaClassName) {
+                $TestResult = ForEach ($Schema in $_.Group.SchemaClassName) {
                     if ($ClassExclusions[$Schema]) {
                         $true
                     }
                 }
+                -not $TestResult
             }
         }
 
@@ -887,6 +888,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 

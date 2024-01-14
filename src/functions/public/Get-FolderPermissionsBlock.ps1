@@ -65,11 +65,12 @@ function Get-FolderPermissionsBlock {
         if ($ExcludeAccountClass.Count -ge 0) {
             $FilteredAccounts = $FilteredAccounts |
             Where-Object -FilterScript {
-                ForEach ($Schema in $_.Group.SchemaClassName) {
+                $TestResult = ForEach ($Schema in $_.Group.SchemaClassName) {
                     if ($ClassExclusions[$Schema]) {
                         $true
                     }
                 }
+                -not $TestResult
             }
         }
 
