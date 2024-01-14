@@ -200,7 +200,7 @@ function Export-FolderPermissionHtml {
     if ($NoGroupMembers) {
         $Description = 'Group members were excluded from the report.<br />Only accounts directly from the ACLs are included in the report.'
     } else {
-        $Description = 'No accounts were excluded based on group membership.'
+        $Description = 'No accounts were excluded based on group membership.<br />Members of groups from the ACLs are included in the report.'
     }
     $HtmlExcludedGroupMembers = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content $Description
 
@@ -888,6 +888,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
