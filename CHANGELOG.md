@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.63] - 2024-01-15 - bugfix for object filtering in Get-FolderPermissionsBlock
+
+## [0.0.62] - 2024-01-15 - bugfix for object filtering in Get-FolderPermissionsBlock
+
 ## [0.0.61] - 2024-01-14 - minor verbiage update in html report by export-folderpermissionhtml
 
 ## [0.0.60] - 2024-01-14 - bug fix in classexclusions dictionary construction in get-folderpermissionsblock

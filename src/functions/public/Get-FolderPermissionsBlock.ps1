@@ -1,6 +1,7 @@
 function Get-FolderPermissionsBlock {
     param (
 
+        # Output from Format-FolderPermission in the PsNtfsModule which has already been piped to Group-Object using the Folder property
         $FolderPermissions,
 
         # Regular expressions matching names of Users or Groups to exclude from the Html report
@@ -37,10 +38,29 @@ function Get-FolderPermissionsBlock {
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
 
         $FilterContents = @{}
+
         $FilteredAccounts = $ThisFolder.Group |
         Group-Object -Property Account |
-        # Skip the accounts we need to skip
         Where-Object -FilterScript {
+
+            # On built-in groups like 'Authenticated Users' or 'Administrators' the SchemaClassName is null but we have an ObjectType instead.
+            # TODO: Research where this difference came from, should these be normalized earlier in the process?
+            # A user who was found by being a member of a local group not have an ObjectType (because they are not directly part of the AccessControlEntry)
+            # They should have their parent group's AccessControlEntry there...do they?  Doesn't it have a Group ObjectType there?
+            if ($_.Group.AccessControlEntry.ObjectType) {
+                $Schema = $_.Group.AccessControlEntry.ObjectType | Select-Object -First 1
+            } else {
+                $Schema = $_.Group.SchemaClassName | Select-Object -First 1
+                #TODO: Why is $_.Group.SchemaClassName 'user' for the local Administrators group?
+            }
+
+            # Exclude the object whose classes were specified in the parameters
+            $SchemaExclusionResult = if ($ExcludeAccountClass.Count -gt 0) {
+                $ClassExclusions[$Schema]
+            }
+            -not $SchemaExclusionResult -and
+
+            # Exclude the objects whose names match the regular expressions specified in the parameters
             ![bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($_.Name -match $RegEx) {
@@ -48,29 +68,31 @@ function Get-FolderPermissionsBlock {
                         $true
                     }
                 }
-            )
-        }
+            ) -and
 
-        # Exclude groups with members (the group will be reflected on the report with its members)
-        $FilteredAccounts = $FilteredAccounts |
-        Where-Object -FilterScript {
+            # Exclude groups with members (the group will be reflected on the report with its members)
             -not (
-                $_.Group.SchemaClassName -contains 'group' -and
+                #$_.Group.SchemaClassName -contains 'group' -and
+                $Schema -eq 'group' -and
                 $null -eq $_.Group.IdentityReference
             )
+
         }
 
-        # Eliminate the specified classes, such as groups
-        # (any remaining groups are empty and not useful to see in the middle of a list of users/job titles/departments/etc)
-        if ($ExcludeAccountClass.Count -ge 0) {
-            $FilteredAccounts = $FilteredAccounts |
-            Where-Object -FilterScript {
-                $TestResult = ForEach ($Schema in $_.Group.SchemaClassName) {
-                    if ($ClassExclusions[$Schema]) {
-                        $true
-                    }
+        # Bugfix #48 https://github.com/IMJLA/Export-Permission/issues/48
+        # Sending a dummy object down the line to avoid errors
+        # TODO: More elegant solution needed. Downstream code should be able to handle null input.
+        # TODO: Why does this suppress errors, but the object never appears in the tables?
+        if ($null -eq $FilteredAccounts) {
+            $FilteredAccounts = [pscustomobject]@{
+                'Name'  = 'NoAccountsMatchingCriteria'
+                'Group' = [pscustomobject]@{
+                    'IdentityReference' = '.'
+                    'Access'            = '.'
+                    'Name'              = '.'
+                    'Department'        = '.'
+                    'Title'             = '.'
                 }
-                -not $TestResult
             }
         }
 
@@ -82,7 +104,6 @@ function Get-FolderPermissionsBlock {
         New-BootstrapTable
 
         $TableId = $ThisFolder.Name -replace '[^A-Za-z0-9\-_:.]', '-'
-
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
