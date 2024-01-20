@@ -362,7 +362,10 @@ function Get-FolderAccessList {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # Thread-safe cache of items and their owners
+        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new()
 
     )
 
@@ -392,7 +395,7 @@ function Get-FolderAccessList {
             $PercentComplete = $i / $Subfolder.Count
             Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
             $i++
-            Get-FolderAce -LiteralPath $ThisFolder
+            Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache
         }
         Write-Progress -Activity "Get-FolderAce" -Completed
 
@@ -407,10 +410,50 @@ function Get-FolderAccessList {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
+            AddParam          = @{
+                OwnerCache = $OwnerCache
+            }
         }
         Split-Thread @GetFolderAce
 
     }
+
+    # Return ACEs for the item owners (if they do not match the owner of the item's parent folder)
+    # First return the owner of the parent item
+    Get-OwnerAce -Item $Folder
+    # Then return the owners of any items that differ from their parents' owners
+    if ($ThreadCount -eq 1) {
+
+        $i = 0
+        ForEach ($Child in $Subfolder) {
+            $PercentComplete = $i / $Subfolder.Count
+            Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
+            $i++
+
+            Get-OwnerAce -Item $Child
+
+        }
+        Write-Progress -Activity "Get-OwnerAce" -Completed
+
+    } else {
+
+        $GetOwnerAce = @{
+            Command           = 'Get-OwnerAce'
+            InputObject       = $Subfolder
+            InputParameter    = 'Item'
+            DebugOutputStream = $DebugOutputStream
+            TodaysHostname    = $TodaysHostname
+            WhoAmI            = $WhoAmI
+            LogMsgCache       = $LogMsgCache
+            Threads           = $ThreadCount
+            AddParam          = @{
+                OwnerCache = $OwnerCache
+            }
+        }
+        Split-Thread @GetOwnerAce
+
+    }
+
 }
 function Get-FolderBlock {
     param (
@@ -909,6 +952,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
+
 
 
 
