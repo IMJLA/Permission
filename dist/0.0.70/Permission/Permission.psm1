@@ -558,11 +558,13 @@ function Get-FolderPermissionsBlock {
             # TODO: Research where this difference came from, should these be normalized earlier in the process?
             # A user who was found by being a member of a local group not have an ObjectType (because they are not directly part of the AccessControlEntry)
             # They should have their parent group's AccessControlEntry there...do they?  Doesn't it have a Group ObjectType there?
+
             if ($_.Group.AccessControlEntry.ObjectType) {
                 $Schema = $_.Group.AccessControlEntry.ObjectType | Select-Object -First 1
             } else {
                 $Schema = $_.Group.SchemaClassName | Select-Object -First 1
-                #TODO: Why is $_.Group.SchemaClassName 'user' for the local Administrators group?
+                # ToDo: SchemaClassName is a real property but may not exist on all objects.  ObjectType is my own property.  Need to verify+test all usage of both for accuracy.
+                # ToDo: Why is $_.Group.SchemaClassName 'user' for the local Administrators group and Authenticated Users group, and it is 'Group' for the TestPC\Owner user?
             }
 
             # Exclude the object whose classes were specified in the parameters
@@ -579,13 +581,6 @@ function Get-FolderPermissionsBlock {
                         $true
                     }
                 }
-            ) -and
-
-            # Exclude groups with members (the group will be reflected on the report with its members)
-            -not (
-                #$_.Group.SchemaClassName -contains 'group' -and
-                $Schema -eq 'group' -and
-                $null -eq $_.Group.IdentityReference
             )
 
         }
@@ -622,25 +617,25 @@ function Get-FolderPermissionsBlock {
         # Remove spaces from property titles
         $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
         Select-Object -Property Account,
-            Access,
-            @{
-                    Label = 'DuetoMembershipIn'
-                    Expression = { $_.'Due to Membership In' }
-            },
-            @{
-                    Label = 'SourceofAccess'
-                    Expression = { $_.'Source of Access' }
-            },
-            Name,
-            Department,
-            Title
+        Access,
+        @{
+            Label      = 'DuetoMembershipIn'
+            Expression = { $_.'Due to Membership In' }
+        },
+        @{
+            Label      = 'SourceofAccess'
+            Expression = { $_.'Source of Access' }
+        },
+        Name,
+        Department,
+        Title
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
             JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
-                'Due to Membership In', 'Source of Access', Name, Department, Title
+            'Due to Membership In', 'Source of Access', Name, Department, Title
             Path        = $ThisFolder.Name
         }
     }
@@ -956,6 +951,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

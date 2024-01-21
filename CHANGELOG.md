@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.70] - 2024-01-21 - housekeeping Get-FolderPermissionsBlock
+
 ## [0.0.69] - 2024-01-20 - bugfix case sensitive Get-FolderPermissionsBlock
 
 ## [0.0.68] - 2024-01-20 - housekeeping removed test.ps1
