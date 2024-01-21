@@ -114,7 +114,7 @@ function Get-FolderPermissionsBlock {
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
-            JsonData    = $ObjectsForJsonData | ConvertTo-Json
+            JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access, 'Due to Membership In', Name, Department, Title
             Path        = $ThisFolder.Name
         }
