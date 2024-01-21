@@ -849,9 +849,9 @@ function Select-FolderPermissionTableProperty {
             'Access'               = ($Object.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; '
             'Due to Membership In' = $GroupString
             'Source of Access'     = ($Object.Group.AccessControlEntry.ACESource | Sort-Object -Unique) -join ' ; '
-            'Name'                 = ($Object.Group.Name | Sort-Object -Unique) -join ' ; '
-            'Department'           = ($Object.Group.Department | Sort-Object -Unique) -join ' ; '
-            'Title'                = ($Object.Group.Title | Sort-Object -Unique) -join ' ; '
+            'Name'                 = @($Object.Group.Name)[0]
+            'Department'           = @($Object.Group.Department)[0]
+            'Title'                = @($Object.Group.Title)[0]
         }
     }
 
@@ -950,6 +950,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
