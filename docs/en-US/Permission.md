@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.67
+Help Version: 0.0.68
 Locale: en-US
 ---
 
@@ -97,6 +97,8 @@ Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] 
 
 
 ### [Update-CaptionCapitalization](Update-CaptionCapitalization.md)
-{{ Fill in the Synopsis }}
+
+Update-CaptionCapitalization [[-ThisHostName] <string>] [[-Win32AccountsByCaption] <hashtable>]
+
 
 

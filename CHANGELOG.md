@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.68] - 2024-01-20 - housekeeping removed test.ps1
+
 ## [0.0.67] - 2024-01-20 - add -AsArray to ConvertTo-Json to bugfix single results (must be js array to appear as row in table)
 
 ## [0.0.66] - 2024-01-20 - bugfix owner feature in get-folderaccesslist
