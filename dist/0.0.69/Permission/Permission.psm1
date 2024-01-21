@@ -593,13 +593,14 @@ function Get-FolderPermissionsBlock {
         # Bugfix #48 https://github.com/IMJLA/Export-Permission/issues/48
         # Sending a dummy object down the line to avoid errors
         # TODO: More elegant solution needed. Downstream code should be able to handle null input.
-        # TODO: Why does this suppress errors, but the object never appears in the tables?
+        # TODO: Why does this suppress errors, but the object never appears in the tables? NOTE: Suspect this is now resolved by using -AsArray on ConvertTo-Json (lack of this was causing single objects to not be an array therefore not be displayed)
         if ($null -eq $FilteredAccounts) {
             $FilteredAccounts = [pscustomobject]@{
                 'Name'  = 'NoAccountsMatchingCriteria'
                 'Group' = [pscustomobject]@{
                     'IdentityReference' = '.'
                     'Access'            = '.'
+
                     'Name'              = '.'
                     'Department'        = '.'
                     'Title'             = '.'
@@ -620,13 +621,26 @@ function Get-FolderPermissionsBlock {
 
         # Remove spaces from property titles
         $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
-        Select-Object -Property Account, Access, @{Label = 'DuetoMembershipIn'; Expression = { $_.'Due to Membership In' } }, Name, Department, Title
+        Select-Object -Property Account,
+            Access,
+            @{
+                    Label = 'DuetoMembershipIn'
+                    Expression = { $_.'Due to Membership In' }
+            },
+            @{
+                    Label = 'SourceofAccess'
+                    Expression = { $_.'Source of Access' }
+            },
+            Name,
+            Department,
+            Title
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
             JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray
-            JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access, 'Due to Membership In', Name, Department, Title
+            JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
+                'Due to Membership In', 'Source of Access', Name, Department, Title
             Path        = $ThisFolder.Name
         }
     }
@@ -826,34 +840,24 @@ function Select-FolderPermissionTableProperty {
         $InputObject,
         $IgnoreDomain
     )
-    <#
-    $InputObject |
-    Select-Object -Property @{Label = 'Account'; Expression = { $_.Name } },
-    @{Label = 'Access'; Expression = { ($_.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; ' } },
-    @{Label = 'Due to Membership In'; Expression = {
-            $GroupString = ($_.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
-            ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
-            }
-            $GroupString
-        }
-    },
-    @{Label = 'Name'; Expression = { $_.Group.Name | Sort-Object -Unique } },
-    @{Label = 'Department'; Expression = { $_.Group.Department | Sort-Object -Unique } },
-    @{Label = 'Title'; Expression = { $_.Group.Title | Sort-Object -Unique } }
-    #>
     ForEach ($Object in $InputObject) {
         $GroupString = ($Object.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
+        # ToDo: param to allow setting [self] instead of the objects own name for this property
+        #if ($GroupString -eq $Object.Name) {
+        #    $GroupString = '[self]'
+        #} else {
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
             $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
         }
+        #}
         [pscustomobject]@{
             'Account'              = $Object.Name
             'Access'               = ($Object.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; '
             'Due to Membership In' = $GroupString
-            'Name'                 = $Object.Group.Name | Sort-Object -Unique
-            'Department'           = $Object.Group.Department | Sort-Object -Unique
-            'Title'                = $Object.Group.Title | Sort-Object -Unique
+            'Source of Access'     = ($Object.Group.AccessControlEntry.ACESource | Sort-Object -Unique) -join ' ; '
+            'Name'                 = ($Object.Group.Name | Sort-Object -Unique) -join ' ; '
+            'Department'           = ($Object.Group.Department | Sort-Object -Unique) -join ' ; '
+            'Title'                = ($Object.Group.Title | Sort-Object -Unique) -join ' ; '
         }
     }
 
@@ -952,6 +956,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

@@ -82,13 +82,14 @@ function Get-FolderPermissionsBlock {
         # Bugfix #48 https://github.com/IMJLA/Export-Permission/issues/48
         # Sending a dummy object down the line to avoid errors
         # TODO: More elegant solution needed. Downstream code should be able to handle null input.
-        # TODO: Why does this suppress errors, but the object never appears in the tables?
+        # TODO: Why does this suppress errors, but the object never appears in the tables? NOTE: Suspect this is now resolved by using -AsArray on ConvertTo-Json (lack of this was causing single objects to not be an array therefore not be displayed)
         if ($null -eq $FilteredAccounts) {
             $FilteredAccounts = [pscustomobject]@{
                 'Name'  = 'NoAccountsMatchingCriteria'
                 'Group' = [pscustomobject]@{
                     'IdentityReference' = '.'
                     'Access'            = '.'
+
                     'Name'              = '.'
                     'Department'        = '.'
                     'Title'             = '.'
@@ -109,13 +110,26 @@ function Get-FolderPermissionsBlock {
 
         # Remove spaces from property titles
         $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
-        Select-Object -Property Account, Access, @{Label = 'DuetoMembershipIn'; Expression = { $_.'Due to Membership In' } }, Name, Department, Title
+        Select-Object -Property Account,
+            Access,
+            @{
+                    Label = 'DuetoMembershipIn'
+                    Expression = { $_.'Due to Membership In' }
+            },
+            @{
+                    Label = 'SourceofAccess'
+                    Expression = { $_.'Source of Access' }
+            },
+            Name,
+            Department,
+            Title
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
             JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray
-            JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access, 'Due to Membership In', Name, Department, Title
+            JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
+                'Due to Membership In', 'Source of Access', Name, Department, Title
             Path        = $ThisFolder.Name
         }
     }
