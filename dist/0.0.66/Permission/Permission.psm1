@@ -384,7 +384,7 @@ function Get-FolderAccessList {
         $PercentComplete = $i / $Folder.Count
         Write-Progress -Activity "Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited
+        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited
     }
     Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Completed
 
@@ -420,7 +420,7 @@ function Get-FolderAccessList {
 
     # Return ACEs for the item owners (if they do not match the owner of the item's parent folder)
     # First return the owner of the parent item
-    Get-OwnerAce -Item $Folder
+    Get-OwnerAce -Item $Folder -OwnerCache $OwnerCache
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
@@ -430,7 +430,7 @@ function Get-FolderAccessList {
             Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
             $i++
 
-            Get-OwnerAce -Item $Child
+            Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
 
         }
         Write-Progress -Activity "Get-OwnerAce" -Completed
@@ -952,6 +952,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','test','Update-CaptionCapitalization')
+
 
 
 
