@@ -27,9 +27,8 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = $FolderPermissions.Name |
-    Sort-Object |
-    Select-Object -First 1
+    $ShortestFolderPath = @($FolderPermissions.Name |
+        Sort-Object)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
@@ -49,9 +48,9 @@ function Get-FolderPermissionsBlock {
             # They should have their parent group's AccessControlEntry there...do they?  Doesn't it have a Group ObjectType there?
 
             if ($_.Group.AccessControlEntry.ObjectType) {
-                $Schema = $_.Group.AccessControlEntry.ObjectType | Select-Object -First 1
+                $Schema = @($_.Group.AccessControlEntry.ObjectType)[0]
             } else {
-                $Schema = $_.Group.SchemaClassName | Select-Object -First 1
+                $Schema = @($_.Group.SchemaClassName)[0]
                 # ToDo: SchemaClassName is a real property but may not exist on all objects.  ObjectType is my own property.  Need to verify+test all usage of both for accuracy.
                 # ToDo: Why is $_.Group.SchemaClassName 'user' for the local Administrators group and Authenticated Users group, and it is 'Group' for the TestPC\Owner user?
             }

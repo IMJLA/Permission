@@ -11,7 +11,7 @@ function Get-FolderPermissionTableHeader {
         $ParentLeaf = $ThisFolder.Name | Split-Path -Parent
     }
     if ('' -ne $ParentLeaf) {
-        if (($ThisFolder.Group.FolderInheritanceEnabled | Select-Object -First 1) -eq $true) {
+        if (@($ThisFolder.Group.FolderInheritanceEnabled)[0] -eq $true) {
             if ($ThisFolder.Name -eq $ShortestFolderPath) {
                 return "Inherited permissions from the parent folder ($ParentLeaf) are included. This folder can only be accessed by the accounts listed below:"
             } else {

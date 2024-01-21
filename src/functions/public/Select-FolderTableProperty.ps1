@@ -11,7 +11,7 @@ function Select-FolderTableProperty {
     @{
         Label      = 'Inheritance'
         Expression = {
-            $Culture.TextInfo.ToTitleCase(($_.Group.FolderInheritanceEnabled | Select-Object -First 1))
+            $Culture.TextInfo.ToTitleCase(@($_.Group.FolderInheritanceEnabled)[0])
         }
     }
 }
