@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass] <String[]>]
+Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <String[]>]
  [[-IgnoreDomain] <Object>] [[-TargetPath] <String[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>]
  [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript]
  [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>]
@@ -51,8 +51,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ExcludeAccountClass
-{{ Fill ExcludeAccountClass Description }}
+### -ExcludeClass
+{{ Fill ExcludeClass Description }}
 
 ```yaml
 Type: System.String[]

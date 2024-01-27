@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.73] - 2024-01-27 - shortened param names
+
 ## [0.0.72] - 2024-01-21 - https://github.com/IMJLA/Export-Permission/issues/61
 
 ## [0.0.71] - 2024-01-21 - enhancement-performance remove usage of select-object -first

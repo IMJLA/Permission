@@ -81,7 +81,7 @@ function Export-FolderPermissionHtml {
         $ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
-        [string[]]$ExcludeAccountClass = @('group', 'computer'),
+        [string[]]$ExcludeClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -138,10 +138,10 @@ function Export-FolderPermissionHtml {
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
-        FolderPermissions   = $FolderPermissions
-        ExcludeAccount      = $ExcludeAccount
-        ExcludeAccountClass = $ExcludeAccountClass
-        IgnoreDomain        = $IgnoreDomain
+        FolderPermissions = $FolderPermissions
+        ExcludeAccount    = $ExcludeAccount
+        ExcludeClass      = $ExcludeClass
+        IgnoreDomain      = $IgnoreDomain
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock
@@ -171,8 +171,8 @@ function Export-FolderPermissionHtml {
     }
 
     $HeadingText = 'Accounts Excluded by Class'
-    if ($ExcludeAccountClass) {
-        $ListGroup = $ExcludeAccountClass |
+    if ($ExcludeClass) {
+        $ListGroup = $ExcludeClass |
         ConvertTo-HtmlList |
         ConvertTo-BootstrapListGroup
 
@@ -519,7 +519,7 @@ function Get-FolderPermissionsBlock {
         [string[]]$ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
-        [string[]]$ExcludeAccountClass = @('group', 'computer'),
+        [string[]]$ExcludeClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -532,9 +532,9 @@ function Get-FolderPermissionsBlock {
 
     )
 
-    # Convert the $ExcludeAccountClass array into a dictionary for fast lookups
+    # Convert the $ExcludeClass array into a dictionary for fast lookups
     $ClassExclusions = @{}
-    ForEach ($ThisClass in $ExcludeAccountClass) {
+    ForEach ($ThisClass in $ExcludeClass) {
         $ClassExclusions[$ThisClass] = $true
     }
 
@@ -567,7 +567,7 @@ function Get-FolderPermissionsBlock {
             }
 
             # Exclude the object whose classes were specified in the parameters
-            $SchemaExclusionResult = if ($ExcludeAccountClass.Count -gt 0) {
+            $SchemaExclusionResult = if ($ExcludeClass.Count -gt 0) {
                 $ClassExclusions[$Schema]
             }
             -not $SchemaExclusionResult -and
@@ -950,6 +950,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

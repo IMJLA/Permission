@@ -251,9 +251,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>ExcludeAccountClass</maml:name>
+          <maml:name>ExcludeClass</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ExcludeAccountClass Description }}</maml:para>
+            <maml:para>{{ Fill ExcludeClass Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -505,9 +505,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>ExcludeAccountClass</maml:name>
+        <maml:name>ExcludeClass</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ExcludeAccountClass Description }}</maml:para>
+          <maml:para>{{ Fill ExcludeClass Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
         <dev:type>
@@ -1353,9 +1353,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>ExcludeAccountClass</maml:name>
+          <maml:name>ExcludeClass</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ExcludeAccountClass Description }}</maml:para>
+            <maml:para>{{ Fill ExcludeClass Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -1392,9 +1392,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>ExcludeAccountClass</maml:name>
+        <maml:name>ExcludeClass</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ExcludeAccountClass Description }}</maml:para>
+          <maml:para>{{ Fill ExcludeClass Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
         <dev:type>

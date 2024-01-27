@@ -6,7 +6,7 @@ function Export-FolderPermissionHtml {
         $ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
-        [string[]]$ExcludeAccountClass = @('group', 'computer'),
+        [string[]]$ExcludeClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -63,10 +63,10 @@ function Export-FolderPermissionHtml {
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
-        FolderPermissions   = $FolderPermissions
-        ExcludeAccount      = $ExcludeAccount
-        ExcludeAccountClass = $ExcludeAccountClass
-        IgnoreDomain        = $IgnoreDomain
+        FolderPermissions = $FolderPermissions
+        ExcludeAccount    = $ExcludeAccount
+        ExcludeClass      = $ExcludeClass
+        IgnoreDomain      = $IgnoreDomain
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock
@@ -96,8 +96,8 @@ function Export-FolderPermissionHtml {
     }
 
     $HeadingText = 'Accounts Excluded by Class'
-    if ($ExcludeAccountClass) {
-        $ListGroup = $ExcludeAccountClass |
+    if ($ExcludeClass) {
+        $ListGroup = $ExcludeClass |
         ConvertTo-HtmlList |
         ConvertTo-BootstrapListGroup
 

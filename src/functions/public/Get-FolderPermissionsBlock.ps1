@@ -8,7 +8,7 @@ function Get-FolderPermissionsBlock {
         [string[]]$ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
-        [string[]]$ExcludeAccountClass = @('group', 'computer'),
+        [string[]]$ExcludeClass = @('group', 'computer'),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -21,9 +21,9 @@ function Get-FolderPermissionsBlock {
 
     )
 
-    # Convert the $ExcludeAccountClass array into a dictionary for fast lookups
+    # Convert the $ExcludeClass array into a dictionary for fast lookups
     $ClassExclusions = @{}
-    ForEach ($ThisClass in $ExcludeAccountClass) {
+    ForEach ($ThisClass in $ExcludeClass) {
         $ClassExclusions[$ThisClass] = $true
     }
 
@@ -56,7 +56,7 @@ function Get-FolderPermissionsBlock {
             }
 
             # Exclude the object whose classes were specified in the parameters
-            $SchemaExclusionResult = if ($ExcludeAccountClass.Count -gt 0) {
+            $SchemaExclusionResult = if ($ExcludeClass.Count -gt 0) {
                 $ClassExclusions[$Schema]
             }
             -not $SchemaExclusionResult -and

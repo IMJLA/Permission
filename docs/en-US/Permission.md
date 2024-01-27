@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.72
+Help Version: 0.0.73
 Locale: en-US
 ---
 
@@ -18,7 +18,7 @@ Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCou
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
 
-Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeAccountClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [-NoJavaScript]
+Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [-NoJavaScript]
 
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
@@ -43,7 +43,7 @@ Get-FolderColumnJson [[-InputObject] <Object>] [[-PropNames] <string[]>]
 
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
 
-Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeAccountClass] <string[]>] [[-IgnoreDomain] <string[]>]
+Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>]
 
 
 ### [Get-FolderPermissionTableHeader](Get-FolderPermissionTableHeader.md)
