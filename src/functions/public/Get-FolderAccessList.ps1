@@ -48,11 +48,18 @@ function Get-FolderAccessList {
 
     if ($ThreadCount -eq 1) {
 
+        [int]$ProgressInterval = $Subfolder.Count / 100
+        $ProgressCounter = 0
         $i = 0
+        Write-Progress -Activity "Get-FolderAce" -CurrentOperation 'Starting' -PercentComplete 0
         ForEach ($ThisFolder in $Subfolder) {
-            $PercentComplete = $i / $Subfolder.Count
-            Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $Subfolder.Count * 100
+                Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+            }
             $i++
+            $ProgressCounter++
+
             Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache
         }
         Write-Progress -Activity "Get-FolderAce" -Completed
@@ -82,11 +89,15 @@ function Get-FolderAccessList {
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
+        $ProgressCounter = 0
         $i = 0
         ForEach ($Child in $Subfolder) {
-            $PercentComplete = $i / $Subfolder.Count
-            Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $Subfolder.Count * 100
+                Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
+            }
             $i++
+            $ProgressCounter++
 
             Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
 
