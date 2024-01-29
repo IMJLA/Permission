@@ -43,13 +43,21 @@ function Expand-Folder {
         WhoAmI       = $WhoAmI
     }
 
-    if ($ThreadCount -eq 1 -or @($Folder).Count -eq 1) {
+    $FolderCount = @($Folder).Count
+    if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
+        [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
+        $ProgressCounter = 0
         $i = 0
         ForEach ($ThisFolder in $Folder) {
-            $PercentComplete = $i / $Folder.Count
-            Write-Progress -Activity "Get-Subfolder" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-            $i++
+            $ProgressCounter++
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $FolderCount * 100
+                Write-Progress -Activity "Get-Subfolder" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+            }
+            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
+
             $Subfolders = $null
             $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
@@ -390,17 +398,18 @@ function Get-FolderAccessList {
 
     if ($ThreadCount -eq 1) {
 
-        [int]$ProgressInterval = $Subfolder.Count / 100
+        [int]$ProgressInterval = [math]::max(($Subfolder.Count / 100), 1)
         $ProgressCounter = 0
         $i = 0
         Write-Progress -Activity "Get-FolderAce" -CurrentOperation 'Starting' -PercentComplete 0
         ForEach ($ThisFolder in $Subfolder) {
+            $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Subfolder.Count * 100
                 Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                $ProgressCounter = 0
             }
-            $i++
-            $ProgressCounter++
+            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache
         }
@@ -434,13 +443,13 @@ function Get-FolderAccessList {
         $ProgressCounter = 0
         $i = 0
         ForEach ($Child in $Subfolder) {
+            $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Subfolder.Count * 100
                 Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
+                $ProgressCounter = 0
             }
             $i++
-            $ProgressCounter++
-
             Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
 
         }
@@ -961,6 +970,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

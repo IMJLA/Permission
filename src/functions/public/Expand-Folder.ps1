@@ -42,13 +42,21 @@ function Expand-Folder {
         WhoAmI       = $WhoAmI
     }
 
-    if ($ThreadCount -eq 1 -or @($Folder).Count -eq 1) {
+    $FolderCount = @($Folder).Count
+    if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
+        [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
+        $ProgressCounter = 0
         $i = 0
         ForEach ($ThisFolder in $Folder) {
-            $PercentComplete = $i / $Folder.Count
-            Write-Progress -Activity "Get-Subfolder" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-            $i++
+            $ProgressCounter++
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $FolderCount * 100
+                Write-Progress -Activity "Get-Subfolder" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+            }
+            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
+
             $Subfolders = $null
             $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
