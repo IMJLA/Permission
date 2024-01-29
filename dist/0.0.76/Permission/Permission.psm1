@@ -43,6 +43,13 @@ function Expand-Folder {
         WhoAmI       = $WhoAmI
     }
 
+    $GetSubfolderParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $TodaysHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+    }
+
     $FolderCount = @($Folder).Count
     if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
@@ -59,7 +66,7 @@ function Expand-Folder {
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             $Subfolders = $null
-            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue
+            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue @GetSubfolderParams
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
         }
@@ -76,6 +83,12 @@ function Expand-Folder {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
+            AddParam          = @{
+                LogMsgCache       = $LogMsgCache
+                ThisHostname      = $TodaysHostname
+                DebugOutputStream = $DebugOutputStream
+                WhoAmI            = $WhoAmI
+            }
         }
         Split-Thread @GetSubfolder
 
@@ -361,7 +374,7 @@ function Get-FolderAccessList {
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
 
         # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [string]$DebugOutputStream = 'Silent',
+        [string]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [string]$TodaysHostname = (HOSTNAME.EXE),
@@ -377,11 +390,11 @@ function Get-FolderAccessList {
 
     )
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
-        ThisHostname = $TodaysHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
+    $GetFolderAceParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $TodaysHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
     }
 
     # We expect a small number of folders and a large number of subfolders
@@ -392,7 +405,7 @@ function Get-FolderAccessList {
         $PercentComplete = $i / $Folder.Count
         Write-Progress -Activity "Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited
+        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited @GetFolderAceParams
     }
     Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Completed
 
@@ -411,7 +424,7 @@ function Get-FolderAccessList {
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
-            Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache
+            Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache @GetFolderAceParams
         }
         Write-Progress -Activity "Get-FolderAce" -Completed
 
@@ -427,7 +440,11 @@ function Get-FolderAccessList {
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
             AddParam          = @{
-                OwnerCache = $OwnerCache
+                OwnerCache        = $OwnerCache
+                LogMsgCache       = $LogMsgCache
+                ThisHostname      = $TodaysHostname
+                DebugOutputStream = $DebugOutputStream
+                WhoAmI            = $WhoAmI
             }
         }
         Split-Thread @GetFolderAce
@@ -970,6 +987,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

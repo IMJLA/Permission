@@ -42,6 +42,13 @@ function Expand-Folder {
         WhoAmI       = $WhoAmI
     }
 
+    $GetSubfolderParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $TodaysHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+    }
+
     $FolderCount = @($Folder).Count
     if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
@@ -58,7 +65,7 @@ function Expand-Folder {
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             $Subfolders = $null
-            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue
+            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue @GetSubfolderParams
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
         }
@@ -75,6 +82,12 @@ function Expand-Folder {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
+            AddParam          = @{
+                LogMsgCache       = $LogMsgCache
+                ThisHostname      = $TodaysHostname
+                DebugOutputStream = $DebugOutputStream
+                WhoAmI            = $WhoAmI
+            }
         }
         Split-Thread @GetSubfolder
 
