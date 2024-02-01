@@ -23,8 +23,7 @@ function Get-FolderAccessList {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         # Thread-safe cache of items and their owners
-        #[System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new()
-        [hashtable]$OwnerCache = ([hashtable]::Synchronized(@{}))
+        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new()
 
     )
 

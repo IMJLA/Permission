@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.78
+Help Version: 0.0.79
 Locale: en-US
 ---
 
@@ -28,7 +28,7 @@ Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
 
 ### [Get-FolderAccessList](Get-FolderAccessList.md)
 
-Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <hashtable>]
+Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>]
 
 
 ### [Get-FolderBlock](Get-FolderBlock.md)
