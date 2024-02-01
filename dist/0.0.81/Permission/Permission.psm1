@@ -405,7 +405,7 @@ function Get-FolderAccessList {
         [int]$PercentComplete = $i / $Folder.Count
         Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Status "$PercentComplete%" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited @GetFolderAceParams
+        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
     }
     Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Completed
 
@@ -424,7 +424,7 @@ function Get-FolderAccessList {
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
-            Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache @GetFolderAceParams
+            Get-FolderAce -LiteralPath $ThisFolder -LogMsgCache $LogMsgCache -OwnerCache $OwnerCache @GetFolderAceParams
         }
         Write-Progress -Activity "Get-FolderAce" -Completed
 
@@ -987,6 +987,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
