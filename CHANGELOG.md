@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.78] - 2024-01-31 - bug get-folderace in get-folderaccesslist
+
 ## [0.0.77] - 2024-01-31 - troubleshooting bug in get-folderace
 
 ## [0.0.76] - 2024-01-28 - reduce calls to external executables
