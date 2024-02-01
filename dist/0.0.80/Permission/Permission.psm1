@@ -402,8 +402,8 @@ function Get-FolderAccessList {
     # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
     $i = 0
     ForEach ($ThisFolder in $Folder) {
-        $PercentComplete = $i / $Folder.Count
-        Write-Progress -Activity "Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        [int]$PercentComplete = $i / $Folder.Count
+        Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Status "$PercentComplete%" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited @GetFolderAceParams
     }
@@ -418,8 +418,8 @@ function Get-FolderAccessList {
         ForEach ($ThisFolder in $Subfolder) {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $Subfolder.Count * 100
-                Write-Progress -Activity "Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $Subfolder.Count * 100
+                Write-Progress -Activity "Get-FolderAce" -Status "$PercentComplete%" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -462,7 +462,7 @@ function Get-FolderAccessList {
         ForEach ($Child in $Subfolder) {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $Subfolder.Count * 100
+                [int]$PercentComplete = $i / $Subfolder.Count * 100
                 Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
@@ -987,6 +987,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
