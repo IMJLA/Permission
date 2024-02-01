@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
+ [[-OwnerCache] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -81,7 +81,7 @@ Accept wildcard characters: False
 {{ Fill OwnerCache Description }}
 
 ```yaml
-Type: System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
