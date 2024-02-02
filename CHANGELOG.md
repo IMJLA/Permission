@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.88] - 2024-02-02 - bugfix export-resolvedpermissioncsv literalpath
+
 ## [0.0.87] - 2024-02-02 - bugfix Type vs DebugOutputStream as param for Write-LogMsg calls
 
 ## [0.0.86] - 2024-02-02 - added functionality from controller script export-permission.ps1

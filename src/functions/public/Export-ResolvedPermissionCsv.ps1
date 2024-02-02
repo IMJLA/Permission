@@ -42,7 +42,7 @@ function Export-ResolvedPermissionCsv {
         Label      = 'Path'
         Expression = { $_.SourceAccessList.Path }
     }, * |
-    Export-Csv -NoTypeInformation -LiteralPath $CsvFiLiteralPathlePath2
+    Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
     Write-Progress -Activity 'Export-ResolvedPermissionCsv' -Completed
     Write-Information $LiteralPath
