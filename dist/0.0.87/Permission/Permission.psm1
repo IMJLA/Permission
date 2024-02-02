@@ -584,10 +584,10 @@ function Export-RawPermissionCsv {
     )
 
     $LogParams = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
     }
 
     $Activity = "`$Formatted = ForEach (`$Obj in $`Permissions) {`[PSCustomObject]@{Path=`$Obj.SourceAccessList.Path;IdentityReference=`$Obj.IdentityReference;AccessControlType=`$Obj.AccessControlType;FileSystemRights=`$Obj.FileSystemRights;IsInherited=`$Obj.IsInherited;PropagationFlags=`$Obj.PropagationFlags;InheritanceFlags=`$Obj.InheritanceFlags;Source=`$Obj.Source}"
@@ -648,10 +648,10 @@ function Export-ResolvedPermissionCsv {
     Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
 
     $LogParams = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
     }
 
     Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences |"
@@ -1410,10 +1410,10 @@ function Initialize-Cache {
     )
 
     $LogParams = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
     }
 
     if ($ThreadCount -eq 1) {
@@ -1739,6 +1739,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

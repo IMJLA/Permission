@@ -71,10 +71,10 @@ function Initialize-Cache {
     )
 
     $LogParams = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
     }
 
     if ($ThreadCount -eq 1) {

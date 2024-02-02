@@ -26,10 +26,10 @@ function Export-ResolvedPermissionCsv {
     Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
 
     $LogParams = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
     }
 
     Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences |"
