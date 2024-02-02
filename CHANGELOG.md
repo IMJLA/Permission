@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.90] - 2024-02-02 - undo troubleshoot expand-permissionidentity (confirmed bug is in expand-identityreference)
+
 ## [0.0.89] - 2024-02-02 - troubleshoot expand-permissionidentity
 
 ## [0.0.88] - 2024-02-02 - bugfix export-resolvedpermissioncsv literalpath

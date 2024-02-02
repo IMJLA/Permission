@@ -103,7 +103,7 @@ function Expand-PermissionIdentity {
 
             $ExpandIdentityReferenceParams['AccessControlEntry'] = $ThisID
             Write-LogMsg @LogParams -Text "Expand-IdentityReference -AccessControlEntry $($ThisID.Name)"
-            #Expand-IdentityReference @ExpandIdentityReferenceParams
+            Expand-IdentityReference @ExpandIdentityReferenceParams
         }
         Write-Progress -Activity 'Expand-IdentityReference' -Completed
 
