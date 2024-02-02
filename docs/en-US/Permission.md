@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.81
+Help Version: 0.0.86
 Locale: en-US
 ---
 
@@ -11,14 +11,39 @@ Locale: en-US
 Module for working with Access Control Lists
 
 ## Permission Cmdlets
+### [Expand-AcctPermission](Expand-AcctPermission.md)
+
+Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
+
+
 ### [Expand-Folder](Expand-Folder.md)
 
 Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
+### [Expand-PermissionIdentity](Expand-PermissionIdentity.md)
+
+Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-NoGroupMembers] [<CommonParameters>]
+
+
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
 
 Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [-NoJavaScript]
+
+
+### [Export-RawPermissionCsv](Export-RawPermissionCsv.md)
+
+Export-RawPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+
+
+### [Export-ResolvedPermissionCsv](Export-ResolvedPermissionCsv.md)
+
+Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+
+
+### [Format-PermissionAccount](Format-PermissionAccount.md)
+
+Format-PermissionAccount [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
 
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
@@ -79,6 +104,21 @@ Get-ReportDescription [[-LevelsOfSubfolders] <Object>]
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
+
+
+### [Get-UniqueServerFqdn](Get-UniqueServerFqdn.md)
+
+Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn] <string>]
+
+
+### [Initialize-Cache](Initialize-Cache.md)
+
+Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
+
+
+### [Resolve-PermissionIdentity](Resolve-PermissionIdentity.md)
+
+Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
 
 
 ### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)

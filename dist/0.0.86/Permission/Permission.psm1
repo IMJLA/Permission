@@ -1,4 +1,83 @@
 
+function Expand-AcctPermission {
+
+    param (
+
+        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
+        [Parameter(ValueFromPipeline)]
+        [object[]]$SecurityPrincipal,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Maximum number of concurrent threads to allow
+        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    $Count = $SecurityPrincipal.Count
+
+    if ($ThreadCount -eq 1) {
+
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
+        $ProgressCounter = 0
+        $i = 0
+        ForEach ($ThisPrinc in $SecurityPrincipal) {
+            $ProgressCounter++
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $Count * 100
+                Write-Progress -Activity 'Expand-AcctPermission' -Status "$([int]$PercentComplete)%" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+            }
+            $i++
+
+            Write-LogMsg @LogParams -Text "Expand-AccountPermission -AccountPermission $($ThisPrinc.Name)"
+            Expand-AccountPermission -AccountPermission $ThisPrinc
+        }
+        Write-Progress -Activity 'Expand-AcctPermission' -Completed
+
+    } else {
+        $ExpandAccountPermissionParams = @{
+            Command              = 'Expand-AccountPermission'
+            InputObject          = $SecurityPrincipal
+            InputParameter       = 'AccountPermission'
+            TodaysHostname       = $ThisHostname
+            ObjectStringProperty = 'Name'
+            Timeout              = 1200
+            Threads              = $ThreadCount
+            AddParam             = @{
+                WhoAmI      = $WhoAmI
+                LogMsgCache = $LogMsgCache
+            }
+        }
+
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Expand-AccountPermission' -InputParameter 'AccountPermission' -InputObject `$SecurityPrincipal -ObjectStringProperty 'Name'"
+        Split-Thread @ExpandAccountPermissionParams
+
+    }
+
+}
 function Expand-Folder {
 
     # Expand a folder path into the paths of its subfolders
@@ -60,7 +139,7 @@ function Expand-Folder {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
-                Write-Progress -Activity "Get-Subfolder" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress -Activity 'Expand-Folder' -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder $($ThisFolder)" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -70,7 +149,7 @@ function Expand-Folder {
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
         }
-        Write-Progress -Activity "Get-Subfolder" -Completed
+        Write-Progress -Activity "Expand-Folder" -Completed
 
     } else {
 
@@ -92,6 +171,144 @@ function Expand-Folder {
         }
         Split-Thread @GetSubfolder
 
+    }
+}
+function Expand-PermissionIdentity {
+
+    param (
+
+        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
+        [Parameter(ValueFromPipeline)]
+        [object[]]$Identity,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Maximum number of concurrent threads to allow
+        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Dictionary to cache directory entries to avoid redundant lookups
+
+        Defaults to an empty thread-safe hashtable
+        #>
+        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        <#
+        Do not get group members (only report the groups themselves)
+
+        Note: By default, the -ExcludeClass parameter will exclude groups from the report.
+          If using -NoGroupMembers, you most likely want to modify the value of -ExcludeClass.
+          Remove the 'group' class from ExcludeClass in order to see groups on the report.
+        #>
+        [switch]$NoGroupMembers
+
+    )
+
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    if ($ThreadCount -eq 1) {
+        $ExpandIdentityReferenceParams = @{
+            DirectoryEntryCache    = $DirectoryEntryCache
+            IdentityReferenceCache = $IdentityReferenceCache
+            DomainsBySID           = $DomainsBySID
+            DomainsByNetbios       = $DomainsByNetbios
+            DomainsByFqdn          = $DomainsByFqdn
+            ThisHostName           = $ThisHostName
+            ThisFqdn               = $ThisFqdn
+            WhoAmI                 = $WhoAmI
+            LogMsgCache            = $LogMsgCache
+        }
+        if ($NoGroupMembers) {
+            $ExpandIdentityReferenceParams['NoGroupMembers'] = $true
+        }
+
+        [int]$ProgressInterval = [math]::max(($Identity.Count / 100), 1)
+        $ProgressCounter = 0
+        $i = 0
+        ForEach ($ThisID in $Identity) {
+            $ProgressCounter++
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $Identity.Count * 100
+                Write-Progress -Activity 'Expand-IdentityReference' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+            }
+            $i++
+
+            $ExpandIdentityReferenceParams['AccessControlEntry'] = $ThisID
+            Write-LogMsg @LogParams -Text "Expand-IdentityReference -AccessControlEntry $($ThisID.Name)"
+            Expand-IdentityReference @ExpandIdentityReferenceParams
+        }
+        Write-Progress -Activity 'Expand-IdentityReference' -Completed
+
+    } else {
+        $ExpandIdentityReferenceParams = @{
+            Command              = 'Expand-IdentityReference'
+            InputObject          = $Identity
+            InputParameter       = 'AccessControlEntry'
+            TodaysHostname       = $ThisHostname
+            WhoAmI               = $WhoAmI
+            LogMsgCache          = $LogMsgCache
+            Threads              = $ThreadCount
+            AddParam             = @{
+                DirectoryEntryCache    = $DirectoryEntryCache
+                IdentityReferenceCache = $IdentityReferenceCache
+                DomainsBySID           = $DomainsBySID
+                DomainsByNetbios       = $DomainsByNetbios
+                DomainsByFqdn          = $DomainsByFqdn
+                ThisHostName           = $ThisHostName
+                ThisFqdn               = $ThisFqdn
+                WhoAmI                 = $WhoAmI
+                LogMsgCache            = $LogMsgCache
+            }
+            ObjectStringProperty = 'Name'
+        }
+        if ($NoGroupMembers) {
+            $ExpandIdentityReferenceParams['AddSwitch'] = 'NoGroupMembers'
+        }
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Expand-IdentityReference' -InputParameter 'AccessControlEntry' -InputObject `$Identity"
+        Split-Thread @ExpandIdentityReferenceParams
     }
 }
 function Export-FolderPermissionHtml {
@@ -336,6 +553,206 @@ function Export-FolderPermissionHtml {
 
     # Output the name of the report file to the Information stream
     Write-Information $ReportFile
+
+}
+function Export-RawPermissionCsv {
+
+    # Export permissions to CSV
+
+    param (
+
+        # Permission objects from Get-FolderAccessList to export to CSV
+        [Object[]]$Permission,
+
+        # Path to the CSV file to create
+        # Will be passed to the LiteralPath parameter of Export-Csv
+        [string]$LiteralPath,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Hostname to use in the log messages and/or output object
+        [string]$ThisHostname = (HOSTNAME.EXE),
+
+        # Hostname to use in the log messages and/or output object
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    $LogParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+    }
+
+    $Activity = "`$Formatted = ForEach (`$Obj in $`Permissions) {`[PSCustomObject]@{Path=`$Obj.SourceAccessList.Path;IdentityReference=`$Obj.IdentityReference;AccessControlType=`$Obj.AccessControlType;FileSystemRights=`$Obj.FileSystemRights;IsInherited=`$Obj.IsInherited;PropagationFlags=`$Obj.PropagationFlags;InheritanceFlags=`$Obj.InheritanceFlags;Source=`$Obj.Source}"
+    Write-LogMsg @LogParams -Text $Activity
+    Write-Progress -Activity $Activity -PercentComplete 50
+
+
+    $Formatted = ForEach ($Obj in $Permission) {
+        [PSCustomObject]@{
+            Path              = $Obj.SourceAccessList.Path
+            IdentityReference = $Obj.IdentityReference
+            AccessControlType = $Obj.AccessControlType
+            FileSystemRights  = $Obj.FileSystemRights
+            IsInherited       = $Obj.IsInherited
+            PropagationFlags  = $Obj.PropagationFlags
+            InheritanceFlags  = $Obj.InheritanceFlags
+            Source            = $Obj.Source
+        }
+    }
+
+    Write-Progress -Activity $Activity -Completed
+    $Activity = "`$Formatted | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
+    Write-LogMsg @LogParams -Text $Activity
+    Write-Progress -Activity $Activity -PercentComplete 50
+
+    $Formatted |
+    Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
+
+    Write-Progress -Activity $Activity -Completed
+    Write-Information $LiteralPath
+
+}
+function Export-ResolvedPermissionCsv {
+
+    param (
+
+        # Permission objects from Get-FolderAccessList to export to CSV
+        [Object[]]$Permission,
+
+        # Path to the CSV file to create
+        # Will be passed to the LiteralPath parameter of Export-Csv
+        [string]$LiteralPath,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Hostname to use in the log messages and/or output object
+        [string]$ThisHostname = (HOSTNAME.EXE),
+
+        # Hostname to use in the log messages and/or output object
+        [string]$WhoAmI = (whoami.EXE),
+
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
+
+    $LogParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+    }
+
+    Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences |"
+    Write-LogMsg @LogParams -Text "`Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * |"
+    Write-LogMsg @LogParams -Text "Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
+    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation "Export-Csv '$LiteralPath'" -Status "$([int]$PercentComplete)%" -PercentComplete 50
+
+    $Permission |
+    Select-Object -Property @{
+        Label      = 'Path'
+        Expression = { $_.SourceAccessList.Path }
+    }, * |
+    Export-Csv -NoTypeInformation -LiteralPath $CsvFiLiteralPathlePath2
+
+    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -Completed
+    Write-Information $LiteralPath
+
+}
+function Format-PermissionAccount {
+
+    param (
+
+        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
+        [Parameter(ValueFromPipeline)]
+        [object[]]$SecurityPrincipal,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Maximum number of concurrent threads to allow
+        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    $Count = $SecurityPrincipal.Count
+
+    if ($ThreadCount -eq 1) {
+
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
+        $ProgressCounter = 0
+        $i = 0
+
+        ForEach ($ThisPrinc in $SecurityPrincipal) {
+
+            $ProgressCounter++
+
+            if ($ProgressCounter -eq $ProgressInterval) {
+
+                $PercentComplete = $i / $Count * 100
+                Write-Progress -Activity 'Format-SecurityPrincipal' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+
+            }
+            $i++
+
+            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -SecurityPrincipal $($ThisPrinc.Name)"
+            Format-SecurityPrincipal -SecurityPrincipal $ThisPrinc
+
+        }
+
+        Write-Progress -Activity 'Format-SecurityPrincipal' -Completed
+
+    } else {
+
+        $FormatSecurityPrincipalParams = @{
+            Command              = 'Format-SecurityPrincipal'
+            InputObject          = $SecurityPrincipal
+            InputParameter       = 'SecurityPrincipal'
+            Timeout              = 1200
+            ObjectStringProperty = 'Name'
+            TodaysHostname       = $ThisHostname
+            WhoAmI               = $WhoAmI
+            LogMsgCache          = $LogMsgCache
+            Threads              = $ThreadCount
+        }
+
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Format-SecurityPrincipal' -InputParameter 'SecurityPrincipal' -InputObject `$SecurityPrincipal -ObjectStringProperty 'Name'"
+        Split-Thread @FormatSecurityPrincipalParams
+
+    }
 
 }
 function Format-TimeSpan {
@@ -865,6 +1282,341 @@ function Get-TimeZoneName {
         return $TimeZone.StandardName
     }
 }
+
+# Build a list of known ADSI server names to use to populate the caches
+# Include the FQDN of the current computer and the known trusted domains
+function Get-UniqueServerFqdn {
+
+    param (
+
+        # Known server FQDNs to include in the output
+        [string[]]$Known,
+
+        # File paths whose server FQDNs to include in the output
+        [string[]]$FilePath,
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName)
+
+    )
+
+    Write-Progress -Activity 'Get-UniqueAdsiServerName' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
+
+    $UniqueValues = @{}
+
+    ForEach ($Value in $Known) {
+        $UniqueValues[$Value] = $null
+    }
+
+    ForEach ($Value in $FilePath) {
+        $UniqueValues[$Value] = $null
+    }
+
+    # Add server names from the ACL paths
+    [int]$ProgressInterval = [math]::max(($Permissions.Count / 100), 1)
+    $ProgressCounter = 0
+    $i = 0
+
+    ForEach ($ThisPath in $Permissions.SourceAccessList.Path) {
+        $ProgressCounter++
+        if ($ProgressCounter -eq $ProgressInterval) {
+            $PercentComplete = $i / $Permissions.Count * 100
+            Write-Progress -Activity 'Get-UniqueAdsiServerName' -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -Status "$([int]$PercentComplete)%" -PercentComplete 50
+            $ProgressCounter = 0
+        }
+        $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+        $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
+    }
+
+    Write-Progress -Activity 'Get-UniqueAdsiServerName' -Completed
+
+    return $UniqueValues.Keys
+
+}
+function Initialize-Cache {
+
+    <# Use the list of known ADSI server FQDNs to populate six caches:
+       Three caches of known ADSI directory servers
+         The first cache is keyed on domain SID (e.g. S-1-5-2)
+         The second cache is keyed on domain FQDN (e.g. ad.contoso.com)
+         The first cache is keyed on domain NetBIOS name (e.g. CONTOSO)
+       Two caches of known Win32_Account instances
+         The first cache is keyed on SID (e.g. S-1-5-2)
+         The second cache is keyed on the Caption (NT Account name e.g. CONTOSO\user1)
+       Also populate a cache of DirectoryEntry objects for any domains that have them
+     This prevents threads that start near the same time from finding the cache empty and attempting costly operations to populate it
+     This prevents repetitive queries to the same directory servers
+    #>
+
+    param (
+
+        # FQDNs of the ADSI servers to use to populate the cache
+        [Parameter(ValueFromPipeline)]
+        [string[]]$Fqdn,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Maximum number of concurrent threads to allow
+        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Dictionary to cache directory entries to avoid redundant lookups
+
+        Defaults to an empty thread-safe hashtable
+        #>
+        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    $LogParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+    }
+
+    if ($ThreadCount -eq 1) {
+        $GetAdsiServerParams = @{
+            Win32AccountsBySID     = $Win32AccountsBySID
+            Win32AccountsByCaption = $Win32AccountsByCaption
+            DirectoryEntryCache    = $DirectoryEntryCache
+            DomainsByFqdn          = $DomainsByFqdn
+            DomainsByNetbios       = $DomainsByNetbios
+            DomainsBySid           = $DomainsBySid
+            ThisHostName           = $ThisHostName
+            ThisFqdn               = $ThisFqdn
+            WhoAmI                 = $WhoAmI
+            LogMsgCache            = $LogMsgCache
+        }
+
+        [int]$ProgressInterval = [math]::max(($ServerFqdns.Count / 100), 1)
+        $ProgressCounter = 0
+        $i = 0
+        ForEach ($ThisServerName in $ServerFqdns) {
+            $ProgressCounter++
+            if ($ProgressCounter -eq $ProgressInterval) {
+                $PercentComplete = $i / $ServerFqdns.Count * 100
+                Write-Progress -Activity 'Initialize-Cache' -CurrentOperation "Get-AdsiServer '$ThisServerName'" -Status "$([int]$PercentComplete)%" -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+            }
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+
+            Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
+            $null = Get-AdsiServer @GetAdsiServerParams -Fqdn $ThisServerName
+        }
+        Write-Progress -Activity 'Initialize-Cache' -Completed
+
+    } else {
+        $GetAdsiServerParams = @{
+            Command        = 'Get-AdsiServer'
+            InputObject    = $ServerFqdns
+            InputParameter = 'Fqdn'
+            TodaysHostname = $ThisHostname
+            WhoAmI         = $WhoAmI
+            LogMsgCache    = $LogMsgCache
+            Timeout        = 600
+            Threads        = $ThreadCount
+            AddParam       = @{
+                Win32AccountsBySID     = $Win32AccountsBySID
+                Win32AccountsByCaption = $Win32AccountsByCaption
+                DirectoryEntryCache    = $DirectoryEntryCache
+                DomainsByFqdn          = $DomainsByFqdn
+                DomainsByNetbios       = $DomainsByNetbios
+                DomainsBySid           = $DomainsBySid
+                ThisHostName           = $ThisHostName
+                ThisFqdn               = $ThisFqdn
+                WhoAmI                 = $WhoAmI
+                LogMsgCache            = $LogMsgCache
+            }
+        }
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"
+        $null = Split-Thread @GetAdsiServerParams
+    }
+}
+function Resolve-PermissionIdentity {
+
+    param (
+
+        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
+        [Parameter(ValueFromPipeline)]
+        [object[]]$Permission,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Maximum number of concurrent threads to allow
+        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Dictionary to cache directory entries to avoid redundant lookups
+
+        Defaults to an empty thread-safe hashtable
+        #>
+        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    if ($ThreadCount -eq 1) {
+
+        $ResolveAceParams = @{
+            DirectoryEntryCache    = $DirectoryEntryCache
+            Win32AccountsBySID     = $Win32AccountsBySID
+            Win32AccountsByCaption = $Win32AccountsByCaption
+            DomainsBySID           = $DomainsBySID
+            DomainsByNetbios       = $DomainsByNetbios
+            DomainsByFqdn          = $DomainsByFqdn
+            ThisHostName           = $ThisHostName
+            ThisFqdn               = $ThisFqdn
+            WhoAmI                 = $WhoAmI
+            LogMsgCache            = $LogMsgCache
+        }
+
+        [int]$ProgressInterval = [math]::max(($Permission.Count / 100), 1)
+        $ProgressCounter = 0
+        $i = 0
+
+        ForEach ($ThisPermission in $Permission) {
+
+            $ProgressCounter++
+
+            if ($ProgressCounter -eq $ProgressInterval) {
+
+                $PercentComplete = $i / $Permission.Count * 100
+                Write-Progress -Activity 'Resolve-PermissionIdentity' -Status "$([int]$PercentComplete)%" -CurrentOperation "Resolve-Ace $($ThisPermission.IdentityReference)" -PercentComplete $PercentComplete
+                $ProgressCounter = 0
+
+            }
+
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            $ResolveAceParams['InputObject'] = $ThisPermission
+            Write-LogMsg @LogParams -Text "Resolve-Ace -InputObject $($ThisPermission.IdentityReference)"
+            Resolve-Ace @ResolveAceParams
+
+        }
+
+        Write-Progress -Activity 'Resolve-PermissionIdentity' -Completed
+
+    } else {
+
+        $ResolveAceParams = @{
+
+            Command              = 'Resolve-Ace'
+            InputObject          = $Permission
+            InputParameter       = 'InputObject'
+            ObjectStringProperty = 'IdentityReference'
+            TodaysHostname       = $ThisHostname
+            #DebugOutputStream    = 'Debug'
+            WhoAmI               = $WhoAmI
+            LogMsgCache          = $LogMsgCache
+            Threads              = $ThreadCount
+            AddParam             = @{
+                DirectoryEntryCache    = $DirectoryEntryCache
+                Win32AccountsBySID     = $Win32AccountsBySID
+                Win32AccountsByCaption = $Win32AccountsByCaption
+                DomainsBySID           = $DomainsBySID
+                DomainsByNetbios       = $DomainsByNetbios
+                DomainsByFqdn          = $DomainsByFqdn
+                ThisHostName           = $ThisHostName
+                ThisFqdn               = $ThisFqdn
+                WhoAmI                 = $WhoAmI
+                LogMsgCache            = $LogMsgCache
+
+
+            }
+
+        }
+
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Ace' -InputParameter InputObject -InputObject `$Permission -ObjectStringProperty 'IdentityReference' -DebugOutputStream 'Debug'"
+
+        Split-Thread @ResolveAceParams
+
+    }
+
+}
 function Select-FolderPermissionTableProperty {
     # For the HTML table
     param (
@@ -986,7 +1738,12 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-Folder','Export-FolderPermissionHtml','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
+
+
+
+
 
 
 

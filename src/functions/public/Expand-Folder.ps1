@@ -59,7 +59,7 @@ function Expand-Folder {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
-                Write-Progress -Activity "Get-Subfolder" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress -Activity 'Expand-Folder' -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder $($ThisFolder)" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -69,7 +69,7 @@ function Expand-Folder {
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
         }
-        Write-Progress -Activity "Get-Subfolder" -Completed
+        Write-Progress -Activity "Expand-Folder" -Completed
 
     } else {
 
