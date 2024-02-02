@@ -84,6 +84,7 @@ function Expand-PermissionIdentity {
             ThisFqdn               = $ThisFqdn
             WhoAmI                 = $WhoAmI
             LogMsgCache            = $LogMsgCache
+            DebugOutputStream      = $DebugOutputStream
         }
         if ($NoGroupMembers) {
             $ExpandIdentityReferenceParams['NoGroupMembers'] = $true
@@ -126,6 +127,7 @@ function Expand-PermissionIdentity {
                 ThisFqdn               = $ThisFqdn
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
+                DebugOutputStream      = $DebugOutputStream
             }
             ObjectStringProperty = 'Name'
         }
