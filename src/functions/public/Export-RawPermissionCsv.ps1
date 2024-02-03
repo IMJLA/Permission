@@ -34,7 +34,7 @@ function Export-RawPermissionCsv {
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId++
+        $ProgressId = $ProgressParentId + 1
     } else {
         $ProgressId = 0
     }
@@ -71,7 +71,7 @@ function Export-RawPermissionCsv {
 
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -Status "$PercentComplete% (entry $($i++) of $Count)" -PercentComplete $PercentComplete  @ChildProgress
-            $ProgressCounter = 0
+            $IntervalCounter = 0
 
         }
 

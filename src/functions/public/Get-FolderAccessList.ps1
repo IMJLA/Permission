@@ -35,7 +35,7 @@ function Get-FolderAccessList {
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId++
+        $ProgressId = $ProgressParentId + 1
     } else {
         $ProgressId = 0
     }
