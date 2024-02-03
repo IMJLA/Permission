@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.129
+Help Version: 0.0.130
 Locale: en-US
 ---
 
@@ -124,6 +124,11 @@ Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadC
 ### [Resolve-PermissionIdentity](Resolve-PermissionIdentity.md)
 
 Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+
+
+### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
+
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [<CommonParameters>]
 
 
 ### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)
