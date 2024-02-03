@@ -831,14 +831,14 @@ function Get-FolderAccessList {
     $Count = $Folder.Count
     ForEach ($ThisFolder in $Folder) {
         [int]$PercentComplete = $i / $Count
-        Write-Progress -Activity 'Get-FolderAccessList (parent folders)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
+        Write-Progress -Activity 'Get-FolderAccessList (parent folder DACLs)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
     }
-    Write-Progress -Activity 'Get-FolderAccessList (parent folders)' -Completed -Id 1
+    Write-Progress -Activity 'Get-FolderAccessList (parent folder DACLs)' -Completed -Id 1
 
     if ($ThreadCount -eq 1) {
-
+        Write-Progress -Activity 'Get-FolderAccessList (subfolder DACLs)' -Status '0%' -CurrentOperation 'Initializing' -ParentId 0 -Id 1
         [int]$ProgressInterval = [math]::max(($Subfolder.Count / 100), 1)
         $ProgressCounter = 0
         $i = 0
@@ -1767,6 +1767,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
