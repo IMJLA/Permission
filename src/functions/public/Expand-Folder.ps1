@@ -109,5 +109,6 @@ function Expand-Folder {
     }
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }
