@@ -25,8 +25,9 @@ function Resolve-PermissionTarget {
     )
 
     $LogParams = @{
-        ThisHostname = $ThisHostname
         LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
