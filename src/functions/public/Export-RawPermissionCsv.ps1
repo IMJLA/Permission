@@ -26,6 +26,9 @@ function Export-RawPermissionCsv {
 
     )
 
+    $Activity = "`$Formatted = ForEach (`$Obj in $`Permissions) {`[PSCustomObject]@{Path=`$Obj.SourceAccessList.Path;IdentityReference=`$Obj.IdentityReference;AccessControlType=`$Obj.AccessControlType;FileSystemRights=`$Obj.FileSystemRights;IsInherited=`$Obj.IsInherited;PropagationFlags=`$Obj.PropagationFlags;InheritanceFlags=`$Obj.InheritanceFlags;Source=`$Obj.Source}"
+    Write-Progress -Activity $Activity -PercentComplete 50
+
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
@@ -33,10 +36,7 @@ function Export-RawPermissionCsv {
         WhoAmI       = $WhoAmI
     }
 
-    $Activity = "`$Formatted = ForEach (`$Obj in $`Permissions) {`[PSCustomObject]@{Path=`$Obj.SourceAccessList.Path;IdentityReference=`$Obj.IdentityReference;AccessControlType=`$Obj.AccessControlType;FileSystemRights=`$Obj.FileSystemRights;IsInherited=`$Obj.IsInherited;PropagationFlags=`$Obj.PropagationFlags;InheritanceFlags=`$Obj.InheritanceFlags;Source=`$Obj.Source}"
     Write-LogMsg @LogParams -Text $Activity
-    Write-Progress -Activity $Activity -PercentComplete 50
-
 
     $Formatted = ForEach ($Obj in $Permission) {
         [PSCustomObject]@{

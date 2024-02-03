@@ -27,6 +27,8 @@ function Get-FolderAccessList {
 
     )
 
+    Write-Progress -Activity 'Get-FolderAccessList' -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0 -Id 0
+
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
         ThisHostname      = $TodaysHostname
@@ -40,30 +42,35 @@ function Get-FolderAccessList {
     $i = 0
     ForEach ($ThisFolder in $Folder) {
         [int]$PercentComplete = $i / $Folder.Count
-        Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Status "$PercentComplete%" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Write-Progress -Activity 'Get-FolderAccessList (parent folders)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
+
+        # Return ACEs for the item owners (if they do not match the owner of the item's parent folder)
+        # First return the owner of the parent item
+        Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
-    Write-Progress -Activity "Get-FolderAce -IncludeInherited" -Completed
+    Write-Progress -Activity 'Get-FolderAccessList (parent folders)' -Completed -Id 1
 
     if ($ThreadCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($Subfolder.Count / 100), 1)
         $ProgressCounter = 0
         $i = 0
-        Write-Progress -Activity "Get-FolderAce" -CurrentOperation 'Starting' -PercentComplete 0
         ForEach ($ThisFolder in $Subfolder) {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $Subfolder.Count * 100
-                Write-Progress -Activity "Get-FolderAce" -Status "$PercentComplete%" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress -Activity 'Get-FolderAccessList (subfolders)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             Get-FolderAce -LiteralPath $ThisFolder -LogMsgCache $LogMsgCache -OwnerCache $OwnerCache @GetFolderAceParams
+            # Return ACEs for the owners of any child items (if they do not match the owner of the item's parent)
+            Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
         }
-        Write-Progress -Activity "Get-FolderAce" -Completed
+        Write-Progress -Activity 'Get-FolderAccessList (subfolders)' -Completed -Id 1
 
     } else {
 
@@ -83,33 +90,10 @@ function Get-FolderAccessList {
                 DebugOutputStream = $DebugOutputStream
                 WhoAmI            = $WhoAmI
             }
+
         }
+
         Split-Thread @GetFolderAce
-
-    }
-
-    # Return ACEs for the item owners (if they do not match the owner of the item's parent folder)
-    # First return the owner of the parent item
-    Get-OwnerAce -Item $Folder -OwnerCache $OwnerCache
-    # Then return the owners of any items that differ from their parents' owners
-    if ($ThreadCount -eq 1) {
-
-        $ProgressCounter = 0
-        $i = 0
-        ForEach ($Child in $Subfolder) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
-                [int]$PercentComplete = $i / $Subfolder.Count * 100
-                Write-Progress -Activity "Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
-                $ProgressCounter = 0
-            }
-            $i++
-            Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
-
-        }
-        Write-Progress -Activity "Get-OwnerAce" -Completed
-
-    } else {
 
         $GetOwnerAce = @{
             Command           = 'Get-OwnerAce'
@@ -124,8 +108,11 @@ function Get-FolderAccessList {
                 OwnerCache = $OwnerCache
             }
         }
+
         Split-Thread @GetOwnerAce
 
     }
+
+    Write-Progress -Activity 'Get-FolderAccessList' -Completed -Id 0
 
 }
