@@ -49,8 +49,9 @@ function Expand-Folder {
     }
     Write-Host "Id is $($Progress['Id'])"
     Write-Host "ParentId is $($Progress['ParentId'])"
+    pause
     Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
-pause
+    pause
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
