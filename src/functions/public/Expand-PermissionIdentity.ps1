@@ -92,6 +92,7 @@ function Expand-PermissionIdentity {
     }
 
     if ($ThreadCount -eq 1) {
+
         $ExpandIdentityReferenceParams = @{
             DirectoryEntryCache    = $DirectoryEntryCache
             IdentityReferenceCache = $IdentityReferenceCache
@@ -104,6 +105,7 @@ function Expand-PermissionIdentity {
             LogMsgCache            = $LogMsgCache
             DebugOutputStream      = $DebugOutputStream
         }
+
         if ($NoGroupMembers) {
             $ExpandIdentityReferenceParams['NoGroupMembers'] = $true
         }
@@ -111,25 +113,32 @@ function Expand-PermissionIdentity {
         [int]$ProgressInterval = [math]::max(($Identity.Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
+
         ForEach ($ThisID in $Identity) {
+
             $IntervalCounter++
+
             if ($IntervalCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $Identity.Count * 100
-                Write-Progress @Progress -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
+
+                [int]$PercentComplete = $i / $Identity.Count * 100
+                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation "Expand-IdentityReference '$($ThisID.Name)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
+
             }
+
             $i++
 
             Write-LogMsg @LogParams -Text "Expand-IdentityReference -AccessControlEntry $($ThisID.Name)"
             Expand-IdentityReference -AccessControlEntry $ThisID @ExpandIdentityReferenceParams
         }
-        Write-Progress -Activity 'Expand-IdentityReference' -Completed
 
     } else {
+
         $ExpandIdentityReferenceParams = @{
             Command              = 'Expand-IdentityReference'
             InputObject          = $Identity
             InputParameter       = 'AccessControlEntry'
+            ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
@@ -146,12 +155,17 @@ function Expand-PermissionIdentity {
                 LogMsgCache            = $LogMsgCache
                 DebugOutputStream      = $DebugOutputStream
             }
-            ObjectStringProperty = 'Name'
         }
+
         if ($NoGroupMembers) {
             $ExpandIdentityReferenceParams['AddSwitch'] = 'NoGroupMembers'
         }
+
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Expand-IdentityReference' -InputParameter 'AccessControlEntry' -InputObject `$Identity"
         Split-Thread @ExpandIdentityReferenceParams
+
     }
+
+    Write-Progress @Progress -Completed
+
 }

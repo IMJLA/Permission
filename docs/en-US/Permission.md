@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.125
+Help Version: 0.0.126
 Locale: en-US
 ---
 
@@ -43,7 +43,7 @@ Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>
 
 ### [Format-FolderPermission](Format-FolderPermission.md)
 
-Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <string[]>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <string[]>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
 
 
 ### [Format-PermissionAccount](Format-PermissionAccount.md)

@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <String[]>]
- [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
 ```
 
 ## DESCRIPTION
@@ -56,6 +56,21 @@ Aliases:
 
 Required: False
 Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
