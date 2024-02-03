@@ -39,9 +39,9 @@ function Export-RawPermissionCsv {
         $ProgressId = 0
     }
     $Progress['Id'] = $ProgressId
-    $ChildProgress = {
+    $ChildProgress = @{
         Activity = 'Flatten the raw access control entries for CSV export'
-        Id = $ProgressId + 1
+        Id       = $ProgressId + 1
         ParentId = $ProgressId
     }
 
@@ -92,7 +92,7 @@ function Export-RawPermissionCsv {
     }
 
     Start-Sleep -Seconds 5
-    Write-Progress @ChildProgress -Status '99%' -PercentComplete 99
+    Write-Progress @ChildProgress -Completed
     Start-Sleep -Seconds 5
     Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
     Start-Sleep -Seconds 5
