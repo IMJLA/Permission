@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.92
+Help Version: 0.0.93
 Locale: en-US
 ---
 
@@ -18,7 +18,7 @@ Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <s
 
 ### [Expand-Folder](Expand-Folder.md)
 
-Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
 ### [Expand-PermissionIdentity](Expand-PermissionIdentity.md)

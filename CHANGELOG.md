@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.93] - 2024-02-02 - butfix thishostname vs todayshostname param expandfolder
+
 ## [0.0.92] - 2024-02-02 - add identityreferencecache param to expand-permissionidentity
 
 ## [0.0.91] - 2024-02-02 - add debugoutputstream param to expand-identityreference

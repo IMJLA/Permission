@@ -105,7 +105,7 @@ function Expand-Folder {
         [string]$DebugOutputStream = 'Silent',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$TodaysHostname = (HOSTNAME.EXE),
+        [string]$ThisHostname = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [string]$WhoAmI = (whoami.EXE),
@@ -117,14 +117,14 @@ function Expand-Folder {
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
-        ThisHostname = $TodaysHostname
+        ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
 
     $GetSubfolderParams = @{
         LogMsgCache       = $LogMsgCache
-        ThisHostname      = $TodaysHostname
+        ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
     }
@@ -158,13 +158,13 @@ function Expand-Folder {
             InputObject       = $Folder
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
-            TodaysHostname    = $TodaysHostname
+            TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
             AddParam          = @{
                 LogMsgCache       = $LogMsgCache
-                ThisHostname      = $TodaysHostname
+                ThisHostname      = $ThisHostname
                 DebugOutputStream = $DebugOutputStream
                 WhoAmI            = $WhoAmI
             }
@@ -1744,6 +1744,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
