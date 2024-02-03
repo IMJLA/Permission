@@ -16,8 +16,9 @@ schema: 2.0.0
 Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-Win32AccountsBySID] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
- [[-DomainsByFqdn] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [-NoGroupMembers] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-DomainsByFqdn] <Hashtable>] [[-IdentityReferenceCache] <Hashtable>] [[-ThisHostName] <String>]
+ [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-NoGroupMembers]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -125,6 +126,21 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
+### -IdentityReferenceCache
+{{ Fill IdentityReferenceCache Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -LogMsgCache
 {{ Fill LogMsgCache Description }}
 
@@ -134,7 +150,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -179,7 +195,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -194,7 +210,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -224,7 +240,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

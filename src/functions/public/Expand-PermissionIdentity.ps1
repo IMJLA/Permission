@@ -35,6 +35,9 @@ function Expand-PermissionIdentity {
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
         [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
 
+        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
+        [hashtable]$IdentityReferenceCache = ([hashtable]::Synchronized(@{})),
+
         <#
         Hostname of the computer running this function.
 

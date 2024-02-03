@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.91
+Help Version: 0.0.92
 Locale: en-US
 ---
 
@@ -23,7 +23,7 @@ Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCou
 
 ### [Expand-PermissionIdentity](Expand-PermissionIdentity.md)
 
-Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-NoGroupMembers] [<CommonParameters>]
+Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityReferenceCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-NoGroupMembers] [<CommonParameters>]
 
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
