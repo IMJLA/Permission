@@ -1723,11 +1723,22 @@ function Initialize-Cache {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Initialize-Cache' -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Initialize-Cache'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -1751,15 +1762,16 @@ function Initialize-Cache {
             LogMsgCache            = $LogMsgCache
         }
 
-        [int]$ProgressInterval = [math]::max(($ServerFqdns.Count / 100), 1)
+        $Count = $ServerFqdns.Count
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $ServerFqdns.Count * 100
-                Write-Progress -Activity 'Initialize-Cache' -CurrentOperation "Get-AdsiServer '$ThisServerName'" -Status "$([int]$PercentComplete)%" -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count FQDNs)" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -1799,7 +1811,7 @@ function Initialize-Cache {
 
     }
 
-    Write-Progress -Activity 'Initialize-Cache' -Completed
+    Write-Progress @Progress -Completed
 
 }
 function Resolve-PermissionIdentity {
@@ -1857,11 +1869,24 @@ function Resolve-PermissionIdentity {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Resolve-PermissionIdentity' -Status "0%" -CurrentOperation 'Initializing' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Resolve-PermissionIdentity'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status "0%" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -1885,7 +1910,8 @@ function Resolve-PermissionIdentity {
             LogMsgCache            = $LogMsgCache
         }
 
-        [int]$ProgressInterval = [math]::max(($Permission.Count / 100), 1)
+        $Count = $Permission.Count
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
@@ -1895,8 +1921,8 @@ function Resolve-PermissionIdentity {
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
-                $PercentComplete = $i / $Permission.Count * 100
-                Write-Progress -Activity 'Resolve-PermissionIdentity' -Status "$([int]$PercentComplete)%" -CurrentOperation "Resolve-Ace $($ThisPermission.IdentityReference)" -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count permissions)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -1943,7 +1969,7 @@ function Resolve-PermissionIdentity {
 
     }
 
-    Write-Progress -Activity 'Resolve-PermissionIdentity' -Completed
+    Write-Progress @Progress -Completed
 
 }
 function Select-FolderPermissionTableProperty {
@@ -2068,6 +2094,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

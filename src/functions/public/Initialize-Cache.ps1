@@ -66,11 +66,22 @@ function Initialize-Cache {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Initialize-Cache' -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Initialize-Cache'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -94,15 +105,16 @@ function Initialize-Cache {
             LogMsgCache            = $LogMsgCache
         }
 
-        [int]$ProgressInterval = [math]::max(($ServerFqdns.Count / 100), 1)
+        $Count = $ServerFqdns.Count
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $ServerFqdns.Count * 100
-                Write-Progress -Activity 'Initialize-Cache' -CurrentOperation "Get-AdsiServer '$ThisServerName'" -Status "$([int]$PercentComplete)%" -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count FQDNs)" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -142,6 +154,6 @@ function Initialize-Cache {
 
     }
 
-    Write-Progress -Activity 'Initialize-Cache' -Completed
+    Write-Progress @Progress -Completed
 
 }
