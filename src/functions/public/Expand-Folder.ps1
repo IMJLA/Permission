@@ -47,6 +47,8 @@ function Expand-Folder {
     } else {
         $Progress['Id'] = 0
     }
+    Write-Host "Id is $($Progress['Id'])"
+    Write-Host "ParentId is $($Progress['ParentId'])"
     Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
 pause
     $LogParams = @{
