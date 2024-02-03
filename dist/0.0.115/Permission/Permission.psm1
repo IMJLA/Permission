@@ -124,11 +124,11 @@ function Expand-Folder {
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId++
+        Write-Host "ParentId is $($Progress['ParentId'])"
+        Write-Host "Id is $($Progress['Id'])"
     } else {
         $Progress['Id'] = 0
     }
-    Write-Host "Id is $($Progress['Id'])"
-    Write-Host "ParentId is $($Progress['ParentId'])"
     pause
     Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
     pause
@@ -2055,6 +2055,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

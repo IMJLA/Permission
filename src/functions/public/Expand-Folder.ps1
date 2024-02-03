@@ -44,11 +44,11 @@ function Expand-Folder {
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId++
+        Write-Host "ParentId is $($Progress['ParentId'])"
+        Write-Host "Id is $($Progress['Id'])"
     } else {
         $Progress['Id'] = 0
     }
-    Write-Host "Id is $($Progress['Id'])"
-    Write-Host "ParentId is $($Progress['ParentId'])"
     pause
     Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
     pause
