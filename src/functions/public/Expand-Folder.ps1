@@ -61,6 +61,7 @@ function Expand-Folder {
                 $PercentComplete = $i / $FolderCount * 100
                 Write-Progress -Activity 'Expand-Folder' -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder $($ThisFolder)" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
+                start-sleep -seconds 1
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
