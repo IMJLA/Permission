@@ -109,6 +109,7 @@ function Expand-Folder {
     }
 
     Write-Progress -Activity 'Expand-Folder' -Id $Progress['Id'] -Completed
+    Write-Progress -Activity 'Export-FolderPermission' -Id $Progress['ParentId'] -Status '15% (step 4 of 20)' -CurrentOperation 'Get the relevant permissions for each folder and subfolder' -PercentComplete 15
     Start-Sleep -Seconds 5
 
 }
