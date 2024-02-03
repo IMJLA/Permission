@@ -1076,9 +1076,9 @@ function Get-FolderAccessList {
         $ProgressId = 0
     }
     $Progress['Id'] = $ProgressId
-    $ChildProgress = {
+    $ChildProgress = @{
         Activity = 'Flatten the raw access control entries for CSV export'
-        Id = $ProgressId++
+        Id       = $ProgressId + 1
         ParentId = $ProgressId
     }
 
@@ -2053,6 +2053,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
