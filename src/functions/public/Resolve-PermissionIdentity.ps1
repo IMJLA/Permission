@@ -57,6 +57,8 @@ function Resolve-PermissionIdentity {
 
     )
 
+    Write-Progress -Activity 'Resolve-PermissionIdentity' -Status "0%" -CurrentOperation 'Initializing' -PercentComplete 0
+
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
