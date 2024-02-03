@@ -35,7 +35,6 @@ function Export-ResolvedPermissionCsv {
     } else {
         $Progress['Id'] = 0
     }
-    $Progress['Id'] = $ProgressId
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
