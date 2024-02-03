@@ -72,7 +72,6 @@ function Export-RawPermissionCsv {
 
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress @ChildProgress -Status "$PercentComplete% (access control entry $($i + 1) of $Count)" -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -PercentComplete $PercentComplete
-            Start-Sleep -Seconds 5
             $IntervalCounter = 0
 
         }
@@ -92,7 +91,8 @@ function Export-RawPermissionCsv {
 
     }
 
-    Write-Progress @ChildProgress -Completed
+    Start-Sleep -Seconds 5
+    Write-Progress @ChildProgress -Status '99%' -PercentComplete 99
     Start-Sleep -Seconds 5
     Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
     Start-Sleep -Seconds 5

@@ -724,7 +724,7 @@ function Export-RawPermissionCsv {
 
     }
 
-    Write-Progress @ChildProgress -Completed
+    Write-Progress @ChildProgress -Status '99%' -PercentComplete 99
     Start-Sleep -Seconds 5
     Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
     Start-Sleep -Seconds 5
@@ -2226,6 +2226,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
