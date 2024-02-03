@@ -70,7 +70,7 @@ function Export-RawPermissionCsv {
         if ($IntervalCounter -eq $ProgressInterval) {
 
             [int]$PercentComplete = $i / $Count * 100
-            Write-Progress -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -Status "$PercentComplete% (entry $($i++) of $Count)" -PercentComplete $PercentComplete  @ChildProgress
+            Write-Progress -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -Status "$PercentComplete% (entry $($i + 1) of $Count)" -PercentComplete $PercentComplete  @ChildProgress
             $IntervalCounter = 0
 
         }

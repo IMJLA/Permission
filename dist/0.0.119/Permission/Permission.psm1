@@ -154,7 +154,7 @@ function Expand-Folder {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
-                Write-Progress @Progress -Status "$([int]$PercentComplete)% (item $($i++) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$([int]$PercentComplete)% (item $($i + 1) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -649,7 +649,7 @@ function Export-RawPermissionCsv {
         if ($IntervalCounter -eq $ProgressInterval) {
 
             [int]$PercentComplete = $i / $Count * 100
-            Write-Progress -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -Status "$PercentComplete% (entry $($i++) of $Count)" -PercentComplete $PercentComplete  @ChildProgress
+            Write-Progress -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -Status "$PercentComplete% (entry $($i + 1) of $Count)" -PercentComplete $PercentComplete  @ChildProgress
             $IntervalCounter = 0
 
         }
@@ -1098,7 +1098,7 @@ function Get-FolderAccessList {
     $Count = $Folder.Count
     ForEach ($ThisFolder in $Folder) {
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i++) of $Count)" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count)" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
     }
@@ -1117,7 +1117,7 @@ function Get-FolderAccessList {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i++) of $SubfolderCount)" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount)" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -1162,7 +1162,7 @@ function Get-FolderAccessList {
     $i = 0
     ForEach ($ThisFolder in $Folder) {
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i++) of $Count)" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count)" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
@@ -1180,7 +1180,7 @@ function Get-FolderAccessList {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i++) of $SubfolderCount))" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount))" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++
@@ -2053,6 +2053,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
