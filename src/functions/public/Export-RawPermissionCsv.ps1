@@ -45,7 +45,8 @@ function Export-RawPermissionCsv {
         ParentId = $ProgressId
     }
 
-    Write-Progress -CurrentOperation 'Flattening the raw access control entries for CSV export' -Status '0% (step 1 of 2)' -PercentComplete 0 @Progress
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -70,7 +71,8 @@ function Export-RawPermissionCsv {
         if ($IntervalCounter -eq $ProgressInterval) {
 
             [int]$PercentComplete = $i / $Count * 100
-            Write-Progress -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -Status "$PercentComplete% (entry $($i + 1) of $Count)" -PercentComplete $PercentComplete  @ChildProgress
+            Write-Progress @ChildProgress -Status "$PercentComplete% (access control entry $($i + 1) of $Count)" -CurrentOperation "'$($Obj.IdentityReference)' on '$($Obj.SourceAccessList.Path)'" -PercentComplete $PercentComplete
+            Start-Sleep -Seconds 5
             $IntervalCounter = 0
 
         }
@@ -91,7 +93,9 @@ function Export-RawPermissionCsv {
     }
 
     Write-Progress @ChildProgress -Completed
+    Start-Sleep -Seconds 5
     Write-Progress -CurrentOperation "Saving '$LiteralPath'" @Progress -PercentComplete 50 -Status '50% (step 2 of 2)'
+    Start-Sleep -Seconds 5
     Write-LogMsg @LogParams -Text "`$Formatted | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
 
     $Formatted |
@@ -99,5 +103,6 @@ function Export-RawPermissionCsv {
 
     Write-Information $LiteralPath
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }
