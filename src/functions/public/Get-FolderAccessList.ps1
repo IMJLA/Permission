@@ -46,7 +46,8 @@ function Get-FolderAccessList {
         ParentId = $ProgressId
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Parent DACLs' -PercentComplete 0
+    Write-Progress @Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Get parent access control lists' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
