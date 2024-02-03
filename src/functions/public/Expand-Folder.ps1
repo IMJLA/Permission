@@ -48,7 +48,7 @@ function Expand-Folder {
         $Progress['Id'] = 0
     }
     Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
-
+pause
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
