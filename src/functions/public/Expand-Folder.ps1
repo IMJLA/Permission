@@ -74,8 +74,8 @@ function Expand-Folder {
         ForEach ($ThisFolder in $Folder) {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $FolderCount * 100
-                Write-Progress @Progress -Status "$([int]$PercentComplete)% (item $($i + 1) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $FolderCount * 100
+                Write-Progress @Progress -Status "$PercentComplete% (item $($i + 1) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -108,8 +108,8 @@ function Expand-Folder {
 
     }
 
-    Write-Progress -Activity 'Expand-Folder' -Id $Progress['Id'] -Completed
-    Write-Progress -Activity 'Export-FolderPermission' -Id $Progress['ParentId'] -Status '14% (step 4 of 20)' -CurrentOperation 'Get the relevant permissions for each folder and subfolder' -PercentComplete 15
+    Start-Sleep -Seconds 5
+    Write-Progress @Progress -Completed
     Start-Sleep -Seconds 5
 
 }
