@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.122
+Help Version: 0.0.123
 Locale: en-US
 ---
 
@@ -13,7 +13,7 @@ Module for working with Access Control Lists
 ## Permission Cmdlets
 ### [Expand-AcctPermission](Expand-AcctPermission.md)
 
-Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
+Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
 
 
 ### [Expand-Folder](Expand-Folder.md)
@@ -23,7 +23,7 @@ Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCou
 
 ### [Expand-PermissionIdentity](Expand-PermissionIdentity.md)
 
-Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityReferenceCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-NoGroupMembers] [<CommonParameters>]
+Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityReferenceCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers] [<CommonParameters>]
 
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
@@ -38,7 +38,7 @@ Export-RawPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-
 
 ### [Export-ResolvedPermissionCsv](Export-ResolvedPermissionCsv.md)
 
-Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
 
 
 ### [Format-FolderPermission](Format-FolderPermission.md)
@@ -48,7 +48,7 @@ Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore
 
 ### [Format-PermissionAccount](Format-PermissionAccount.md)
 
-Format-PermissionAccount [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
+Format-PermissionAccount [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
 
 
 ### [Format-TimeSpan](Format-TimeSpan.md)

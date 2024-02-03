@@ -19,11 +19,23 @@ function Export-ResolvedPermissionCsv {
         # Hostname to use in the log messages and/or output object
         [string]$WhoAmI = (whoami.EXE),
 
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Export-RawPermissionCsv'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+    $Progress['Id'] = $ProgressId
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -32,10 +44,8 @@ function Export-ResolvedPermissionCsv {
         WhoAmI       = $WhoAmI
     }
 
-    Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences |"
-    Write-LogMsg @LogParams -Text "`Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * |"
-    Write-LogMsg @LogParams -Text "Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
-    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation "Export-Csv '$LiteralPath'" -Status "$([int]$PercentComplete)%" -PercentComplete 50
+    Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences | `Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
+    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation "Export-Csv '$LiteralPath'" -PercentComplete 50
 
     $Permission |
     Select-Object -Property @{
@@ -44,7 +54,7 @@ function Export-ResolvedPermissionCsv {
     }, * |
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
-    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -Completed
+    Write-Progress @Progress -Completed
     Write-Information $LiteralPath
 
 }

@@ -65,9 +65,24 @@ function Expand-PermissionIdentity {
           If using -NoGroupMembers, you most likely want to modify the value of -ExcludeClass.
           Remove the 'group' class from ExcludeClass in order to see groups on the report.
         #>
-        [switch]$NoGroupMembers
+        [switch]$NoGroupMembers,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
+
+    $Progress = @{
+        Activity = 'Expand-PermissionIdentity'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -100,14 +115,13 @@ function Expand-PermissionIdentity {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Identity.Count * 100
-                Write-Progress -Activity 'Expand-IdentityReference' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
             $i++
 
-            $ExpandIdentityReferenceParams['AccessControlEntry'] = $ThisID
             Write-LogMsg @LogParams -Text "Expand-IdentityReference -AccessControlEntry $($ThisID.Name)"
-            Expand-IdentityReference @ExpandIdentityReferenceParams
+            Expand-IdentityReference -AccessControlEntry $ThisID @ExpandIdentityReferenceParams
         }
         Write-Progress -Activity 'Expand-IdentityReference' -Completed
 

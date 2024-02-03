@@ -18,7 +18,7 @@ Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <String
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-IdentityReferenceCache] <Hashtable>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-NoGroupMembers]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-ProgressParentId] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -181,6 +181,21 @@ Aliases: proga
 
 Required: False
 Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

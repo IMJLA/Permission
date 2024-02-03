@@ -24,9 +24,24 @@ function Format-PermissionAccount {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
+
+    $Progress = @{
+        Activity = 'Format-PermissionAccount'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -49,8 +64,8 @@ function Format-PermissionAccount {
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
-                $PercentComplete = $i / $Count * 100
-                Write-Progress -Activity 'Format-SecurityPrincipal' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -60,8 +75,6 @@ function Format-PermissionAccount {
             Format-SecurityPrincipal -SecurityPrincipal $ThisPrinc
 
         }
-
-        Write-Progress -Activity 'Format-SecurityPrincipal' -Completed
 
     } else {
 
@@ -81,5 +94,7 @@ function Format-PermissionAccount {
         Split-Thread @FormatSecurityPrincipalParams
 
     }
+
+    Write-Progress @Progress -Completed
 
 }

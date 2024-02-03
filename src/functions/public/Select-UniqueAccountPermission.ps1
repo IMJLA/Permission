@@ -19,6 +19,7 @@ function Select-UniqueAccountPermission {
         $KnownUsers = [hashtable]::Synchronized(@{})
 
     )
+
     process {
 
         ForEach ($ThisUser in $AccountPermission) {

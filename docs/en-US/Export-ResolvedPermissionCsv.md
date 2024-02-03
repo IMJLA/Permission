@@ -15,6 +15,7 @@ schema: 2.0.0
 ```
 Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <String>]
  [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-ProgressParentId] <Int32>]
 ```
 
 ## DESCRIPTION
@@ -87,6 +88,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

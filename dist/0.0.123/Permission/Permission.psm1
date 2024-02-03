@@ -25,9 +25,24 @@ function Expand-AcctPermission {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
+
+    $Progress = @{
+        Activity = 'Expand-AcctPermission'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -43,21 +58,26 @@ function Expand-AcctPermission {
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        ForEach ($ThisPrinc in $SecurityPrincipal) {
-            $IntervalCounter++
-            if ($IntervalCounter -eq $ProgressInterval) {
-                $PercentComplete = $i / $Count * 100
-                Write-Progress -Activity 'Expand-AcctPermission' -Status "$([int]$PercentComplete)%" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-            }
-            $i++
 
+        ForEach ($ThisPrinc in $SecurityPrincipal) {
+
+            $IntervalCounter++
+
+            if ($IntervalCounter -eq $ProgressInterval) {
+
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
+                $IntervalCounter = 0
+
+            }
+
+            $i++
             Write-LogMsg @LogParams -Text "Expand-AccountPermission -AccountPermission $($ThisPrinc.Name)"
             Expand-AccountPermission -AccountPermission $ThisPrinc
         }
-        Write-Progress -Activity 'Expand-AcctPermission' -Completed
 
     } else {
+
         $ExpandAccountPermissionParams = @{
             Command              = 'Expand-AccountPermission'
             InputObject          = $SecurityPrincipal
@@ -76,6 +96,8 @@ function Expand-AcctPermission {
         Split-Thread @ExpandAccountPermissionParams
 
     }
+
+    Write-Progress @Progress 'Expand-AcctPermission' -Completed
 
 }
 function Expand-Folder {
@@ -257,9 +279,24 @@ function Expand-PermissionIdentity {
           If using -NoGroupMembers, you most likely want to modify the value of -ExcludeClass.
           Remove the 'group' class from ExcludeClass in order to see groups on the report.
         #>
-        [switch]$NoGroupMembers
+        [switch]$NoGroupMembers,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
+
+    $Progress = @{
+        Activity = 'Expand-PermissionIdentity'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -292,14 +329,13 @@ function Expand-PermissionIdentity {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Identity.Count * 100
-                Write-Progress -Activity 'Expand-IdentityReference' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
             $i++
 
-            $ExpandIdentityReferenceParams['AccessControlEntry'] = $ThisID
             Write-LogMsg @LogParams -Text "Expand-IdentityReference -AccessControlEntry $($ThisID.Name)"
-            Expand-IdentityReference @ExpandIdentityReferenceParams
+            Expand-IdentityReference -AccessControlEntry $ThisID @ExpandIdentityReferenceParams
         }
         Write-Progress -Activity 'Expand-IdentityReference' -Completed
 
@@ -701,11 +737,23 @@ function Export-ResolvedPermissionCsv {
         # Hostname to use in the log messages and/or output object
         [string]$WhoAmI = (whoami.EXE),
 
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Export-RawPermissionCsv'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+    $Progress['Id'] = $ProgressId
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -714,10 +762,8 @@ function Export-ResolvedPermissionCsv {
         WhoAmI       = $WhoAmI
     }
 
-    Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences |"
-    Write-LogMsg @LogParams -Text "`Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * |"
-    Write-LogMsg @LogParams -Text "Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
-    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -CurrentOperation "Export-Csv '$LiteralPath'" -Status "$([int]$PercentComplete)%" -PercentComplete 50
+    Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences | `Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
+    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation "Export-Csv '$LiteralPath'" -PercentComplete 50
 
     $Permission |
     Select-Object -Property @{
@@ -726,7 +772,7 @@ function Export-ResolvedPermissionCsv {
     }, * |
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
-    Write-Progress -Activity 'Export-ResolvedPermissionCsv' -Completed
+    Write-Progress @Progress -Completed
     Write-Information $LiteralPath
 
 }
@@ -952,9 +998,24 @@ function Format-PermissionAccount {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
+
+    $Progress = @{
+        Activity = 'Format-PermissionAccount'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -977,8 +1038,8 @@ function Format-PermissionAccount {
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
-                $PercentComplete = $i / $Count * 100
-                Write-Progress -Activity 'Format-SecurityPrincipal' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -988,8 +1049,6 @@ function Format-PermissionAccount {
             Format-SecurityPrincipal -SecurityPrincipal $ThisPrinc
 
         }
-
-        Write-Progress -Activity 'Format-SecurityPrincipal' -Completed
 
     } else {
 
@@ -1009,6 +1068,8 @@ function Format-PermissionAccount {
         Split-Thread @FormatSecurityPrincipalParams
 
     }
+
+    Write-Progress @Progress -Completed
 
 }
 function Format-TimeSpan {
@@ -2037,6 +2098,7 @@ function Select-UniqueAccountPermission {
         $KnownUsers = [hashtable]::Synchronized(@{})
 
     )
+
     process {
 
         ForEach ($ThisUser in $AccountPermission) {
@@ -2093,6 +2155,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
