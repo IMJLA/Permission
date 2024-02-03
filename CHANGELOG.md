@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.143] - 2024-02-03 - troubleshoot prog bar
+
 ## [0.0.142] - 2024-02-03 - troubleshoot prog bar
 
 ## [0.0.141] - 2024-02-03 - troubleshoot prog bar
