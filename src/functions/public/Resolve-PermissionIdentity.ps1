@@ -104,8 +104,6 @@ function Resolve-PermissionIdentity {
 
         }
 
-        Write-Progress -Activity 'Resolve-PermissionIdentity' -Completed
-
     } else {
 
         $ResolveAceParams = @{
@@ -141,5 +139,7 @@ function Resolve-PermissionIdentity {
         Split-Thread @ResolveAceParams
 
     }
+
+    Write-Progress -Activity 'Resolve-PermissionIdentity' -Completed
 
 }

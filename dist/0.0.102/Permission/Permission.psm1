@@ -1439,6 +1439,8 @@ function Initialize-Cache {
 
     )
 
+    Write-Progress -Activity 'Initialize-Cache' -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
+
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
@@ -1447,6 +1449,7 @@ function Initialize-Cache {
     }
 
     if ($ThreadCount -eq 1) {
+
         $GetAdsiServerParams = @{
             Win32AccountsBySID     = $Win32AccountsBySID
             Win32AccountsByCaption = $Win32AccountsByCaption
@@ -1463,6 +1466,7 @@ function Initialize-Cache {
         [int]$ProgressInterval = [math]::max(($ServerFqdns.Count / 100), 1)
         $ProgressCounter = 0
         $i = 0
+
         ForEach ($ThisServerName in $ServerFqdns) {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
@@ -1475,9 +1479,9 @@ function Initialize-Cache {
             Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
             $null = Get-AdsiServer @GetAdsiServerParams -Fqdn $ThisServerName
         }
-        Write-Progress -Activity 'Initialize-Cache' -Completed
 
     } else {
+
         $GetAdsiServerParams = @{
             Command        = 'Get-AdsiServer'
             InputObject    = $ServerFqdns
@@ -1499,10 +1503,16 @@ function Initialize-Cache {
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
             }
+
         }
+
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"
         $null = Split-Thread @GetAdsiServerParams
+
     }
+
+    Write-Progress -Activity 'Initialize-Cache' -Completed
+
 }
 function Resolve-PermissionIdentity {
 
@@ -1610,8 +1620,6 @@ function Resolve-PermissionIdentity {
 
         }
 
-        Write-Progress -Activity 'Resolve-PermissionIdentity' -Completed
-
     } else {
 
         $ResolveAceParams = @{
@@ -1647,6 +1655,8 @@ function Resolve-PermissionIdentity {
         Split-Thread @ResolveAceParams
 
     }
+
+    Write-Progress -Activity 'Resolve-PermissionIdentity' -Completed
 
 }
 function Select-FolderPermissionTableProperty {
@@ -1771,6 +1781,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
