@@ -49,6 +49,7 @@ function Expand-Folder {
     }
 
     Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
