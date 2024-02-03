@@ -153,7 +153,7 @@ function Expand-Folder {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
-                Write-Progress @Progress -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$([int]$PercentComplete)% (item $($i++) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -1096,7 +1096,7 @@ function Get-FolderAccessList {
     $i = 0
     $Count = $Folder.Count
     ForEach ($ThisFolder in $Folder) {
-        [int]$PercentComplete = $i / $Count
+        [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i++) of $Count)" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
@@ -1160,7 +1160,7 @@ function Get-FolderAccessList {
     $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
     $i = 0
     ForEach ($ThisFolder in $Folder) {
-        [int]$PercentComplete = $i / $Count
+        [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i++) of $Count)" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
@@ -2052,6 +2052,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

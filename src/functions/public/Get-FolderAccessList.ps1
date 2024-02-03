@@ -61,7 +61,7 @@ function Get-FolderAccessList {
     $i = 0
     $Count = $Folder.Count
     ForEach ($ThisFolder in $Folder) {
-        [int]$PercentComplete = $i / $Count
+        [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i++) of $Count)" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
@@ -125,7 +125,7 @@ function Get-FolderAccessList {
     $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
     $i = 0
     ForEach ($ThisFolder in $Folder) {
-        [int]$PercentComplete = $i / $Count
+        [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i++) of $Count)" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
