@@ -1182,8 +1182,10 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @ChildProgress -Completed
+    Start-Sleep -Seconds 5
     $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation $ChildProgress['Activity'] -PercentComplete 25
+    Start-Sleep -Seconds 5
     $SubfolderCount = $Subfolder.Count
 
     if ($ThreadCount -eq 1) {
@@ -1204,7 +1206,9 @@ function Get-FolderAccessList {
         }
 
         Write-Progress @ChildProgress -Completed
+        Start-Sleep -Seconds 5
         Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
+        Start-Sleep -Seconds 5
 
     } else {
 
@@ -1245,7 +1249,9 @@ function Get-FolderAccessList {
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
     Write-Progress @ChildProgress -Completed
+    Start-Sleep -Seconds 5
     Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
+    Start-Sleep -Seconds 5
     $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
 
     # Then return the owners of any items that differ from their parents' owners
@@ -1266,6 +1272,7 @@ function Get-FolderAccessList {
 
         }
         Write-Progress @ChildProgress -Completed
+        Start-Sleep -Seconds 5
 
     } else {
 
@@ -1288,6 +1295,7 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }
 function Get-FolderBlock {
@@ -2213,6 +2221,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
