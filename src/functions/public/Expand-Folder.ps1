@@ -108,7 +108,7 @@ function Expand-Folder {
 
     }
 
-    Write-Progress -Activity 'Expand-Folder' -Completed
+    Write-Progress -Activity 'Expand-Folder' -Id $Progress['Id'] -Completed
     Start-Sleep -Seconds 5
 
 }
