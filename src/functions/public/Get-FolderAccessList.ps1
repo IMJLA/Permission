@@ -75,14 +75,14 @@ function Get-FolderAccessList {
     if ($ThreadCount -eq 1) {
         Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
         [int]$ProgressInterval = [math]::max(($SubfolderCount / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisFolder in $Subfolder) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
                 Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount)" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
@@ -137,15 +137,15 @@ function Get-FolderAccessList {
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($Child in $Subfolder) {
             Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
                 Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount))" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++
             Get-OwnerAce -Item $Child -OwnerCache $OwnerCache

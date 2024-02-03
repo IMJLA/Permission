@@ -16,11 +16,24 @@ function Get-UniqueServerFqdn {
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName)
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Get-UniqueAdsiServerName' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Expand-Folder'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{}
 
@@ -28,27 +41,29 @@ function Get-UniqueServerFqdn {
         $UniqueValues[$Value] = $null
     }
 
-    ForEach ($Value in $FilePath) {
-        $UniqueValues[$Value] = $null
-    }
+    #why would this be needed?  why add the full path?  I am expecting only fqdns as output right?
+    #ForEach ($Value in $FilePath) {
+    #    $UniqueValues[$Value] = $null
+    #}
 
     # Add server names from the ACL paths
-    [int]$ProgressInterval = [math]::max(($Permissions.Count / 100), 1)
-    $ProgressCounter = 0
+    $Count = $FilePath.Count
+    [int]$ProgressInterval = [math]::max(($Count / 100), 1)
+    $IntervalCounter = 0
     $i = 0
 
-    ForEach ($ThisPath in $Permissions.SourceAccessList.Path) {
-        $ProgressCounter++
-        if ($ProgressCounter -eq $ProgressInterval) {
-            $PercentComplete = $i / $Permissions.Count * 100
-            Write-Progress -Activity 'Get-UniqueAdsiServerName' -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -Status "$([int]$PercentComplete)%" -PercentComplete 50
-            $ProgressCounter = 0
+    ForEach ($ThisPath in $FilePath) {
+        $IntervalCounter++
+        if ($IntervalCounter -eq $ProgressInterval) {
+            [int]$PercentComplete = $i / $Count * 100
+            Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count paths)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
         $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
     }
 
-    Write-Progress -Activity 'Get-UniqueAdsiServerName' -Completed
+    Write-Progress @Progress -Completed
 
     return $UniqueValues.Keys
 

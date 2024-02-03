@@ -68,14 +68,14 @@ function Expand-Folder {
     if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisFolder in $Folder) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
                 Write-Progress @Progress -Status "$([int]$PercentComplete)% (item $($i + 1) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 

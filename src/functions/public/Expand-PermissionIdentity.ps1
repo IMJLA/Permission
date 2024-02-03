@@ -94,14 +94,14 @@ function Expand-PermissionIdentity {
         }
 
         [int]$ProgressInterval = [math]::max(($Identity.Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisID in $Identity) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Identity.Count * 100
                 Write-Progress -Activity 'Expand-IdentityReference' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++
 

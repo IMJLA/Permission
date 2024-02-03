@@ -14,6 +14,7 @@ schema: 2.0.0
 
 ```
 Get-UniqueServerFqdn [[-Known] <String[]>] [[-FilePath] <String[]>] [[-ThisFqdn] <String>]
+ [[-ProgressParentId] <Int32>]
 ```
 
 ## DESCRIPTION
@@ -55,6 +56,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

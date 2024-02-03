@@ -41,7 +41,7 @@ function Export-RawPermissionCsv {
     $Progress['Id'] = $ProgressId
     $ChildProgress = {
         Activity = 'Flatten the raw access control entries for CSV export'
-        Id = $ProgressId++
+        Id = $ProgressId + 1
         ParentId = $ProgressId
     }
 

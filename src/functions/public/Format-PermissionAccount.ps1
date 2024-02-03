@@ -40,18 +40,18 @@ function Format-PermissionAccount {
     if ($ThreadCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisPrinc in $SecurityPrincipal) {
 
-            $ProgressCounter++
+            $IntervalCounter++
 
-            if ($ProgressCounter -eq $ProgressInterval) {
+            if ($IntervalCounter -eq $ProgressInterval) {
 
                 $PercentComplete = $i / $Count * 100
                 Write-Progress -Activity 'Format-SecurityPrincipal' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
 
             }
             $i++

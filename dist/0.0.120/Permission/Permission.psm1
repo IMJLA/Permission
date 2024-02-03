@@ -41,14 +41,14 @@ function Expand-AcctPermission {
     if ($ThreadCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisPrinc in $SecurityPrincipal) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Count * 100
                 Write-Progress -Activity 'Expand-AcctPermission' -Status "$([int]$PercentComplete)%" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++
 
@@ -148,14 +148,14 @@ function Expand-Folder {
     if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisFolder in $Folder) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
                 Write-Progress @Progress -Status "$([int]$PercentComplete)% (item $($i + 1) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
@@ -286,14 +286,14 @@ function Expand-PermissionIdentity {
         }
 
         [int]$ProgressInterval = [math]::max(($Identity.Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisID in $Identity) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $Identity.Count * 100
                 Write-Progress -Activity 'Expand-IdentityReference' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisID.Name -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++
 
@@ -620,7 +620,7 @@ function Export-RawPermissionCsv {
     $Progress['Id'] = $ProgressId
     $ChildProgress = {
         Activity = 'Flatten the raw access control entries for CSV export'
-        Id = $ProgressId++
+        Id = $ProgressId + 1
         ParentId = $ProgressId
     }
 
@@ -968,18 +968,18 @@ function Format-PermissionAccount {
     if ($ThreadCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisPrinc in $SecurityPrincipal) {
 
-            $ProgressCounter++
+            $IntervalCounter++
 
-            if ($ProgressCounter -eq $ProgressInterval) {
+            if ($IntervalCounter -eq $ProgressInterval) {
 
                 $PercentComplete = $i / $Count * 100
                 Write-Progress -Activity 'Format-SecurityPrincipal' -Status "$([int]$PercentComplete)%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
 
             }
             $i++
@@ -1111,14 +1111,14 @@ function Get-FolderAccessList {
     if ($ThreadCount -eq 1) {
         Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
         [int]$ProgressInterval = [math]::max(($SubfolderCount / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($ThisFolder in $Subfolder) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
                 Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount)" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
@@ -1173,15 +1173,15 @@ function Get-FolderAccessList {
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
         ForEach ($Child in $Subfolder) {
             Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
                 Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount))" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++
             Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
@@ -1603,11 +1603,24 @@ function Get-UniqueServerFqdn {
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName)
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Get-UniqueAdsiServerName' -CurrentOperation 'Initializing' -Status '0%' -PercentComplete 0
+    $Progress = @{
+        Activity = 'Expand-Folder'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    Write-Progress @Progress -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{}
 
@@ -1615,27 +1628,29 @@ function Get-UniqueServerFqdn {
         $UniqueValues[$Value] = $null
     }
 
-    ForEach ($Value in $FilePath) {
-        $UniqueValues[$Value] = $null
-    }
+    #why would this be needed?  why add the full path?  I am expecting only fqdns as output right?
+    #ForEach ($Value in $FilePath) {
+    #    $UniqueValues[$Value] = $null
+    #}
 
     # Add server names from the ACL paths
-    [int]$ProgressInterval = [math]::max(($Permissions.Count / 100), 1)
-    $ProgressCounter = 0
+    $Count = $FilePath.Count
+    [int]$ProgressInterval = [math]::max(($Count / 100), 1)
+    $IntervalCounter = 0
     $i = 0
 
-    ForEach ($ThisPath in $Permissions.SourceAccessList.Path) {
-        $ProgressCounter++
-        if ($ProgressCounter -eq $ProgressInterval) {
-            $PercentComplete = $i / $Permissions.Count * 100
-            Write-Progress -Activity 'Get-UniqueAdsiServerName' -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -Status "$([int]$PercentComplete)%" -PercentComplete 50
-            $ProgressCounter = 0
+    ForEach ($ThisPath in $FilePath) {
+        $IntervalCounter++
+        if ($IntervalCounter -eq $ProgressInterval) {
+            [int]$PercentComplete = $i / $Count * 100
+            Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count paths)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
         $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
     }
 
-    Write-Progress -Activity 'Get-UniqueAdsiServerName' -Completed
+    Write-Progress @Progress -Completed
 
     return $UniqueValues.Keys
 
@@ -1737,15 +1752,15 @@ function Initialize-Cache {
         }
 
         [int]$ProgressInterval = [math]::max(($ServerFqdns.Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $ServerFqdns.Count * 100
                 Write-Progress -Activity 'Initialize-Cache' -CurrentOperation "Get-AdsiServer '$ThisServerName'" -Status "$([int]$PercentComplete)%" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
@@ -1871,18 +1886,18 @@ function Resolve-PermissionIdentity {
         }
 
         [int]$ProgressInterval = [math]::max(($Permission.Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisPermission in $Permission) {
 
-            $ProgressCounter++
+            $IntervalCounter++
 
-            if ($ProgressCounter -eq $ProgressInterval) {
+            if ($IntervalCounter -eq $ProgressInterval) {
 
                 $PercentComplete = $i / $Permission.Count * 100
                 Write-Progress -Activity 'Resolve-PermissionIdentity' -Status "$([int]$PercentComplete)%" -CurrentOperation "Resolve-Ace $($ThisPermission.IdentityReference)" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
 
             }
 
@@ -2053,6 +2068,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

@@ -82,18 +82,18 @@ function Resolve-PermissionIdentity {
         }
 
         [int]$ProgressInterval = [math]::max(($Permission.Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisPermission in $Permission) {
 
-            $ProgressCounter++
+            $IntervalCounter++
 
-            if ($ProgressCounter -eq $ProgressInterval) {
+            if ($IntervalCounter -eq $ProgressInterval) {
 
                 $PercentComplete = $i / $Permission.Count * 100
                 Write-Progress -Activity 'Resolve-PermissionIdentity' -Status "$([int]$PercentComplete)%" -CurrentOperation "Resolve-Ace $($ThisPermission.IdentityReference)" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
 
             }
 

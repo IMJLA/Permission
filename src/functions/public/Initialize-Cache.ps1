@@ -95,15 +95,15 @@ function Initialize-Cache {
         }
 
         [int]$ProgressInterval = [math]::max(($ServerFqdns.Count / 100), 1)
-        $ProgressCounter = 0
+        $IntervalCounter = 0
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
-            $ProgressCounter++
-            if ($ProgressCounter -eq $ProgressInterval) {
+            $IntervalCounter++
+            if ($IntervalCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $ServerFqdns.Count * 100
                 Write-Progress -Activity 'Initialize-Cache' -CurrentOperation "Get-AdsiServer '$ThisServerName'" -Status "$([int]$PercentComplete)%" -PercentComplete $PercentComplete
-                $ProgressCounter = 0
+                $IntervalCounter = 0
             }
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
