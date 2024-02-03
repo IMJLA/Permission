@@ -129,7 +129,6 @@ function Resolve-PermissionIdentity {
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
 
-
             }
 
         }

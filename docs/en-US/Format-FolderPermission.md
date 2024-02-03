@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Expand-Folder
+# Format-FolderPermission
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,9 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <UInt16>]
- [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [[-ProgressParentId] <Int32>]
+Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <String[]>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -32,41 +31,11 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -DebugOutputStream
-{{ Fill DebugOutputStream Description }}
+### -FileSystemRightsToIgnore
+{{ Fill FileSystemRightsToIgnore Description }}
 
 ```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Folder
-{{ Fill Folder Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LevelsOfSubfolders
-{{ Fill LevelsOfSubfolders Description }}
-
-```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -86,29 +55,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ThisHostname
-{{ Fill ThisHostname Description }}
+### -ThisHostName
+{{ Fill ThisHostName Description }}
 
 ```yaml
 Type: System.String
@@ -116,22 +70,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ThreadCount
-{{ Fill ThreadCount Description }}
+### -UserPermission
+{{ Fill UserPermission Description }}
 
 ```yaml
-Type: System.UInt16
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -146,7 +100,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

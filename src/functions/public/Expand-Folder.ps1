@@ -31,10 +31,21 @@ function Expand-Folder {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
-    Write-Progress -Activity 'Expand-Folder' -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
+
+    $Progress = @{
+        Activity = 'Expand-Folder'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId++
+    }
+    Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -60,7 +71,7 @@ function Expand-Folder {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
-                Write-Progress -Activity 'Expand-Folder' -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -93,6 +104,6 @@ function Expand-Folder {
 
     }
 
-    Write-Progress -Activity "Expand-Folder" -Completed
+    Write-Progress @Progress -Completed
 
 }

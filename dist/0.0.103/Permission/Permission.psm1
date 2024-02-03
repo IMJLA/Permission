@@ -111,10 +111,21 @@ function Expand-Folder {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
-    Write-Progress -Activity 'Expand-Folder' -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
+
+    $Progress = @{
+        Activity = 'Expand-Folder'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId++
+    }
+    Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -140,7 +151,7 @@ function Expand-Folder {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 $PercentComplete = $i / $FolderCount * 100
-                Write-Progress -Activity 'Expand-Folder' -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$([int]$PercentComplete)%" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
@@ -173,7 +184,7 @@ function Expand-Folder {
 
     }
 
-    Write-Progress -Activity "Expand-Folder" -Completed
+    Write-Progress @Progress -Completed
 
 }
 function Expand-PermissionIdentity {
@@ -678,6 +689,202 @@ function Export-ResolvedPermissionCsv {
     Write-Information $LiteralPath
 
 }
+function Format-FolderPermission {
+
+    <#
+     Format the objects
+
+     * SchemaClassName
+     * Name,Dept,Title (TODO: Param to work with any specified props)
+     * InheritanceFlags
+     * Access Rights
+    #>
+
+    Param (
+
+        # Expects ACEs grouped using Group-Object
+        $UserPermission,
+
+        # Ignore these FileSystemRights
+        [string[]]$FileSystemRightsToIgnore = @('Synchronize'),
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+
+    )
+
+    begin {
+        $i = 0
+
+        $LogParams = @{
+            ThisHostname = $ThisHostname
+            Type         = 'Verbose'
+            LogMsgCache  = $LogMsgCache
+            WhoAmI       = $WhoAmI
+        }
+
+        $Activity = "Format-FolderPermission -FileSystemRightsToIgnore @('$($FileSystemRightsToIgnore -join "','")')"
+
+    }
+    process {
+
+        $Count = ($UserPermission | Measure-Object).Count
+
+        ForEach ($ThisUser in $UserPermission) {
+
+            #Calculate the completion percentage, and format it to show 0 decimal places
+            $i++
+            $NewPercentComplete = $i / $Count * 100
+
+            #Update the log with the current status
+            [string]$statusMsg = "$([int]$NewPercentComplete)% ($($Count - $i) of $Count remain) Formatting user permission $i of $Count`: $($ThisUser.Name)"
+            Write-LogMsg @LogParams -Text $statusMsg
+
+            # Update the progress bar if at least 1% has completed since last loop iteration
+            if (($NewPercentComplete - $OldPercentComplete) -ge 1) {
+                $OldPercentComplete = $NewPercentComplete
+                $Progress = @{
+                    Activity         = $Activity
+                    CurrentOperation = $statusMsg
+                    PercentComplete  = $NewPercentComplete
+                    Status           = $statusMsg
+                }
+                Write-Progress @Progress
+            }
+            if ($ThisUser.Group.DirectoryEntry.Properties) {
+                if (
+                    (
+                        $ThisUser.Group.DirectoryEntry |
+                        ForEach-Object {
+                            if ($null -ne $_) {
+                                $_.GetType().FullName 2>$null
+                            }
+                        }
+                    ) -contains 'System.Management.Automation.PSCustomObject'
+                ) {
+                    $Names = $ThisUser.Group.DirectoryEntry.Properties.Name
+                    $Depts = $ThisUser.Group.DirectoryEntry.Properties.Department
+                    $Titles = $ThisUser.Group.DirectoryEntry.Properties.Title
+                }
+                else {
+                    $Names = $ThisUser.Group.DirectoryEntry |
+                    ForEach-Object {
+                        if ($_.Properties) {
+                            $_.Properties['name']
+                        }
+                    }
+
+                    $Depts = $ThisUser.Group.DirectoryEntry |
+                    ForEach-Object {
+                        if ($_.Properties) {
+                            $_.Properties['department']
+                        }
+                    }
+
+                    $Titles = $ThisUser.Group.DirectoryEntry |
+                    ForEach-Object {
+                        if ($_.Properties) {
+                            $_.Properties['title']
+                        }
+                    }
+
+                    if ($ThisUser.Group.DirectoryEntry.Properties['objectclass'] -contains 'group' -or
+                        "$($ThisUser.Group.DirectoryEntry.Properties['groupType'])" -ne ''
+                    ) {
+                        $SchemaClassName = 'group'
+                    }
+                    else {
+                        $SchemaClassName = 'user'
+                    }
+                }
+                $Name = @($Names)[0]
+                $Dept = @($Depts)[0]
+                $Title = @($Titles)[0]
+            }
+            else {
+                $Name = @($ThisUser.Group.name)[0]
+                $Dept = @($ThisUser.Group.department)[0]
+                $Title = @($ThisUser.Group.title)[0]
+
+                if ($ThisUser.Group.Properties) {
+                    if (
+                        $ThisUser.Group.Properties['objectclass'] -contains 'group' -or
+                        "$($ThisUser.Group.Properties['groupType'])" -ne ''
+                    ) {
+                        $SchemaClassName = 'group'
+                    }
+                    else {
+                        $SchemaClassName = 'user'
+                    }
+                }
+                else {
+                    if ($ThisUser.Group.DirectoryEntry.SchemaClassName) {
+                        $SchemaClassName = @($ThisUser.Group.DirectoryEntry.SchemaClassName)[0]
+                    }
+                    else {
+                        $SchemaClassName = @($ThisUser.Group.SchemaClassName)[0]
+                    }
+                }
+            }
+            if ("$Name" -eq '') {
+                $Name = $ThisUser.Name
+            }
+
+            ForEach ($ThisACE in $ThisUser.Group) {
+
+                switch ($ThisACE.ACEInheritanceFlags) {
+                    'ContainerInherit, ObjectInherit' { $Scope = 'this folder, subfolders, and files' }
+                    'ContainerInherit' { $Scope = 'this folder and subfolders' }
+                    'ObjectInherit' { $Scope = 'this folder and files, but not subfolders' }
+                    default { $Scope = 'this folder but not subfolders' }
+                }
+
+                if ($null -eq $ThisUser.Group.IdentityReference) {
+                    $IdentityReference = $null
+                }
+                else {
+                    $IdentityReference = $ThisACE.ACEIdentityReferenceResolved
+                }
+
+                $FileSystemRights = $ThisACE.ACEFileSystemRights
+                ForEach ($Ignore in $FileSystemRightsToIgnore) {
+                    $FileSystemRights = $FileSystemRights -replace ", $Ignore\Z", '' -replace "$Ignore,", ''
+                }
+
+                [pscustomobject]@{
+                    Folder                   = $ThisACE.ACESourceAccessList.Path
+                    FolderInheritanceEnabled = !($ThisACE.ACESourceAccessList.AreAccessRulesProtected)
+                    Access                   = "$($ThisACE.ACEAccessControlType) $FileSystemRights $Scope"
+                    Account                  = $ThisUser.Name
+                    Name                     = $Name
+                    Department               = $Dept
+                    Title                    = $Title
+                    IdentityReference        = $IdentityReference
+                    AccessControlEntry       = $ThisACE
+                    SchemaClassName          = $SchemaClassName
+                }
+
+            }
+
+        }
+
+    }
+
+    end {
+        Write-Progress -Activity $Activity -Completed
+    }
+
+}
 function Format-PermissionAccount {
 
     param (
@@ -811,11 +1018,26 @@ function Get-FolderAccessList {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         # Thread-safe cache of items and their owners
-        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new()
+        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
-    Write-Progress -Activity 'Get-FolderAccessList' -Status '0% (step 1 of 4)' -CurrentOperation 'Parent DACLs' -PercentComplete 0 -Id 0
+    $Progress = @{
+        Activity = 'Get-FolderAccessList'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId++
+        $ChildId = $ProgressParentId + 2
+    } else {
+        $Progress['Id'] = 0
+        $ChildId = 1
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Parent DACLs' -PercentComplete 0
 
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
@@ -831,15 +1053,15 @@ function Get-FolderAccessList {
     $Count = $Folder.Count
     ForEach ($ThisFolder in $Folder) {
         [int]$PercentComplete = $i / $Count
-        Write-Progress -Activity 'Get-FolderAccessList (parent DACLs)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
+        Write-Progress -Activity 'Get-FolderAccessList (parent DACLs)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id $ChildId
         $i++
         Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
     }
-    Write-Progress -Activity 'Get-FolderAccessList (parent DACLs)' -Completed -Id 1
-    Write-Progress -Activity 'Get-FolderAccessList' -Status '25% (step 2 of 4)' -CurrentOperation 'Child DACLs' -PercentComplete 25 -Id 0
+    Write-Progress -Activity 'Get-FolderAccessList (parent DACLs)' -Completed -Id $ChildId
+    Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Child DACLs' -PercentComplete 25
 
     if ($ThreadCount -eq 1) {
-        Write-Progress -Activity 'Get-FolderAccessList (child DACLs)' -Status '0%' -CurrentOperation 'Initializing' -ParentId 0 -Id 1
+        Write-Progress -Activity 'Get-FolderAccessList (child DACLs)' -Status '0%' -CurrentOperation 'Initializing' -ParentId 0 -Id $ChildId
         [int]$ProgressInterval = [math]::max(($Subfolder.Count / 100), 1)
         $ProgressCounter = 0
         $i = 0
@@ -847,15 +1069,15 @@ function Get-FolderAccessList {
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $Subfolder.Count * 100
-                Write-Progress -Activity 'Get-FolderAccessList (child DACLs)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
+                Write-Progress -Activity 'Get-FolderAccessList (child DACLs)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id $ChildId
                 $ProgressCounter = 0
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             Get-FolderAce -LiteralPath $ThisFolder -LogMsgCache $LogMsgCache -OwnerCache $OwnerCache @GetFolderAceParams
         }
-        Write-Progress -Activity 'Get-FolderAccessList (subfolder DACLs)' -Completed -Id 1
-        Write-Progress -Activity 'Get-FolderAccessList' -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50 -Id 0
+        Write-Progress -Activity 'Get-FolderAccessList (subfolder DACLs)' -Completed -Id $ChildId
+        Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
 
     } else {
 
@@ -890,12 +1112,12 @@ function Get-FolderAccessList {
     $i = 0
     ForEach ($ThisFolder in $Folder) {
         [int]$PercentComplete = $i / $Count
-        Write-Progress -Activity 'Get-FolderAccessList (parent owners)' -Status "$PercentComplete%" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
+        Write-Progress -Activity 'Get-FolderAccessList (parent owners)' -Status "$PercentComplete%" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete -ParentId 0 -Id $ChildId
         $i++
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
-    Write-Progress -Activity 'Get-FolderAccessList (parent owners)' -Completed -Id 1
-    Write-Progress -Activity 'Get-FolderAccessList' -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75 -Id 0
+    Write-Progress -Activity 'Get-FolderAccessList (parent owners)' -Completed -Id $ChildId
+    Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
@@ -903,18 +1125,18 @@ function Get-FolderAccessList {
         $ProgressCounter = 0
         $i = 0
         ForEach ($Child in $Subfolder) {
-            Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Status '0%' -CurrentOperation 'Initializing' -ParentId 0 -Id 1
+            Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Status '0%' -CurrentOperation 'Initializing' -ParentId 0 -Id $ChildId
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $Subfolder.Count * 100
-                Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
+                Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete -ParentId 0 -Id $ChildId
                 $ProgressCounter = 0
             }
             $i++
             Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
 
         }
-        Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Completed -Id 1
+        Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Completed -Id $ChildId
 
     } else {
 
@@ -936,7 +1158,7 @@ function Get-FolderAccessList {
 
     }
 
-    Write-Progress -Activity 'Get-FolderAccessList' -Completed -Id 0
+    Write-Progress @Progress -Completed
 
 }
 function Get-FolderBlock {
@@ -1645,7 +1867,6 @@ function Resolve-PermissionIdentity {
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
 
-
             }
 
         }
@@ -1780,7 +2001,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
