@@ -903,18 +903,18 @@ function Get-FolderAccessList {
         $ProgressCounter = 0
         $i = 0
         ForEach ($Child in $Subfolder) {
-            start-sleep -seconds 1
+            Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Status '0%' -CurrentOperation 'Initializing' -ParentId 0 -Id 1
             $ProgressCounter++
             if ($ProgressCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $Subfolder.Count * 100
-                Write-Progress -Activity 'Get-FolderAccessList (subfolder owners)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
+                Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Status "$PercentComplete%" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete -ParentId 0 -Id 1
                 $ProgressCounter = 0
             }
             $i++
             Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
 
         }
-        Write-Progress -Activity 'Get-FolderAccessList (subfolder owners)' -Completed -Id 1
+        Write-Progress -Activity 'Get-FolderAccessList (child owners)' -Completed -Id 1
 
     } else {
 
@@ -1771,6 +1771,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
