@@ -1777,7 +1777,7 @@ function Initialize-Cache {
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
             Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
-            $null = Get-AdsiServer @GetAdsiServerParams -Fqdn $ThisServerName
+            $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServerParams
         }
 
     } else {
@@ -1928,9 +1928,8 @@ function Resolve-PermissionIdentity {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            $ResolveAceParams['InputObject'] = $ThisPermission
             Write-LogMsg @LogParams -Text "Resolve-Ace -InputObject $($ThisPermission.IdentityReference)"
-            Resolve-Ace @ResolveAceParams
+            Resolve-Ace -InputObject $ThisPermission @ResolveAceParams
 
         }
 
@@ -2094,6 +2093,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

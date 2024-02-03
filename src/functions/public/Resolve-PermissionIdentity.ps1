@@ -112,9 +112,8 @@ function Resolve-PermissionIdentity {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            $ResolveAceParams['InputObject'] = $ThisPermission
             Write-LogMsg @LogParams -Text "Resolve-Ace -InputObject $($ThisPermission.IdentityReference)"
-            Resolve-Ace @ResolveAceParams
+            Resolve-Ace -InputObject $ThisPermission @ResolveAceParams
 
         }
 

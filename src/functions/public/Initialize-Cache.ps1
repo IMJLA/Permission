@@ -120,7 +120,7 @@ function Initialize-Cache {
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
             Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
-            $null = Get-AdsiServer @GetAdsiServerParams -Fqdn $ThisServerName
+            $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServerParams
         }
 
     } else {
