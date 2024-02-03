@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.132
+Help Version: 0.0.133
 Locale: en-US
 ---
 
@@ -128,7 +128,7 @@ Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <str
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
 
 
 ### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)

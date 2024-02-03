@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.133] - 2024-02-03 - bugfix missing params for write-logmsg
+
 ## [0.0.132] - 2024-02-03 - troubleshoot prog bar
 
 ## [0.0.131] - 2024-02-03 - troubleshoot prog bar
