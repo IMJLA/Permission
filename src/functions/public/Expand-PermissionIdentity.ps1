@@ -83,6 +83,7 @@ function Expand-PermissionIdentity {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -167,5 +168,6 @@ function Expand-PermissionIdentity {
     }
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }

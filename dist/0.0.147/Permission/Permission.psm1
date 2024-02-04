@@ -43,6 +43,7 @@ function Expand-AcctPermission {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -97,7 +98,8 @@ function Expand-AcctPermission {
 
     }
 
-    Write-Progress @Progress 'Expand-AcctPermission' -Completed
+    Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }
 function Expand-Folder {
@@ -300,6 +302,7 @@ function Expand-PermissionIdentity {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -384,6 +387,7 @@ function Expand-PermissionIdentity {
     }
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }
 function Export-FolderPermissionHtml {
@@ -785,6 +789,7 @@ function Export-ResolvedPermissionCsv {
 
     Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences | `Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation "Export-Csv '$LiteralPath'" -PercentComplete 50
+    Start-Sleep -Seconds 5
 
     $Permission |
     Select-Object -Property @{
@@ -794,6 +799,7 @@ function Export-ResolvedPermissionCsv {
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
     Write-Information $LiteralPath
 
 }
@@ -1037,6 +1043,7 @@ function Format-PermissionAccount {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -1091,6 +1098,7 @@ function Format-PermissionAccount {
     }
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
 }
 function Format-TimeSpan {
@@ -2226,6 +2234,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Expand-PermissionIdentity','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
