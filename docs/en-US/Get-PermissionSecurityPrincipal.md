@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Expand-PermissionIdentity
+# Get-PermissionSecurityPrincipal
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-Win32AccountsBySID] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
+Get-PermissionSecurityPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <String>]
+ [[-ThreadCount] <Int32>] [[-Win32AccountsBySID] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-IdentityReferenceCache] <Hashtable>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-NoGroupMembers]

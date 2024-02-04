@@ -1,8 +1,8 @@
-function Expand-PermissionIdentity {
+function Get-PermissionSecurityPrincipal {
 
     param (
 
-        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
+        # Objects from Resolve-PermissionIdentity whose corresponding ADSI security principals to retrieve
         [Parameter(ValueFromPipeline)]
         [object[]]$Identity,
 
@@ -73,7 +73,7 @@ function Expand-PermissionIdentity {
     )
 
     $Progress = @{
-        Activity = 'Expand-PermissionIdentity'
+        Activity = 'Get-PermissionSecurityPrincipal'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
@@ -94,7 +94,7 @@ function Expand-PermissionIdentity {
 
     if ($ThreadCount -eq 1) {
 
-        $ExpandIdentityReferenceParams = @{
+        $ADSIConversionParams = @{
             DirectoryEntryCache    = $DirectoryEntryCache
             IdentityReferenceCache = $IdentityReferenceCache
             DomainsBySID           = $DomainsBySID
@@ -108,7 +108,7 @@ function Expand-PermissionIdentity {
         }
 
         if ($NoGroupMembers) {
-            $ExpandIdentityReferenceParams['NoGroupMembers'] = $true
+            $ADSIConversionParams['NoGroupMembers'] = $true
         }
 
         [int]$ProgressInterval = [math]::max(($Identity.Count / 100), 1)
@@ -122,23 +122,24 @@ function Expand-PermissionIdentity {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Identity.Count * 100
-                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation "Expand-IdentityReference '$($ThisID.Name)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count)" -CurrentOperation "ConvertFrom-IdentityReferenceResolved for '$($ThisID.Name)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++
 
-            Write-LogMsg @LogParams -Text "Expand-IdentityReference -AccessControlEntry $($ThisID.Name)"
-            Expand-IdentityReference -AccessControlEntry $ThisID @ExpandIdentityReferenceParams
+            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.Name)"
+            ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
+
         }
 
     } else {
 
-        $ExpandIdentityReferenceParams = @{
-            Command              = 'Expand-IdentityReference'
+        $ADSIConversionParams = @{
+            Command              = 'ConvertFrom-IdentityReferenceResolved'
             InputObject          = $Identity
-            InputParameter       = 'AccessControlEntry'
+            InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
@@ -159,11 +160,11 @@ function Expand-PermissionIdentity {
         }
 
         if ($NoGroupMembers) {
-            $ExpandIdentityReferenceParams['AddSwitch'] = 'NoGroupMembers'
+            $ADSIConversionParams['AddSwitch'] = 'NoGroupMembers'
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Expand-IdentityReference' -InputParameter 'AccessControlEntry' -InputObject `$Identity"
-        Split-Thread @ExpandIdentityReferenceParams
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$Identity"
+        Split-Thread @ADSIConversionParams
 
     }
 

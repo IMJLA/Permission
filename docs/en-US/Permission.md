@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.151
+Help Version: 0.0.152
 Locale: en-US
 ---
 
@@ -19,11 +19,6 @@ Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <s
 ### [Expand-Folder](Expand-Folder.md)
 
 Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
-
-
-### [Expand-PermissionIdentity](Expand-PermissionIdentity.md)
-
-Expand-PermissionIdentity [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityReferenceCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers] [<CommonParameters>]
 
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
@@ -94,6 +89,11 @@ Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-Rep
 ### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
 
 Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <string>] [[-ThisFqdn] <string>] [[-ItemCount] <ulong>] [[-TotalBytes] <ulong>] [[-ReportInstanceId] <string>]
+
+
+### [Get-PermissionSecurityPrincipal](Get-PermissionSecurityPrincipal.md)
+
+Get-PermissionSecurityPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityReferenceCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers] [<CommonParameters>]
 
 
 ### [Get-PrtgXmlSensorOutput](Get-PrtgXmlSensorOutput.md)
