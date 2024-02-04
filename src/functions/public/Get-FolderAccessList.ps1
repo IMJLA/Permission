@@ -65,7 +65,7 @@ function Get-FolderAccessList {
         [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count)" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -LogMsgCache $LogMsgCache -IncludeInherited @GetFolderAceParams
+        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited @GetFolderAceParams
     }
 
     Write-Progress @ChildProgress -Completed
@@ -89,7 +89,7 @@ function Get-FolderAccessList {
             }
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
-            Get-FolderAce -LiteralPath $ThisFolder -LogMsgCache $LogMsgCache -OwnerCache $OwnerCache @GetFolderAceParams
+            Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache @GetFolderAceParams
         }
 
         Write-Progress @ChildProgress -Completed
