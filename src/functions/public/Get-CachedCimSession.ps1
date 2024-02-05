@@ -45,7 +45,7 @@ function Get-CachedCimSession {
     if ($CimCacheResult) {
 
         Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCache['CimSession']
+        $CimCacheSubresult = $CimCacheResult['CimSession']
 
         if ($CimCacheSubresult) {
             Write-LogMsg @LogParams -Text " # CIM session cache hit for '$ComputerName'"

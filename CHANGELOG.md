@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.158] - 2024-02-04 - add feature to cleanup cim sessions
+
 ## [0.0.157] - 2024-02-04 - add debug logging to new cim cache feature
 
 ## [0.0.156] - 2024-02-04 - add cim caching
