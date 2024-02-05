@@ -65,7 +65,10 @@ function Get-CachedCimSession {
         $ComputerName -eq $ThisHostname -or
         $ComputerName -eq "$ThisHostname." -or
         $ComputerName -eq $ThisFqdn -or
-        $ComputerName -eq "$ThisFqdn."
+        $ComputerName -eq "$ThisFqdn." -or
+        $ComputerName -eq 'localhost' -or
+        $ComputerName -eq '127.0.0.1' -or
+        [string]::IsNullOrEmpty($ComputerName)
     ) {
         Write-LogMsg @LogParams -Text '$CimSession = New-CimSession'
         $CimSession = New-CimSession
