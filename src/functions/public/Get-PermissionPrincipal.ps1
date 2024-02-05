@@ -76,7 +76,7 @@ function Get-PermissionPrincipal {
     )
 
     $Progress = @{
-        Activity = 'Get-PermissionSecurityPrincipal'
+        Activity = 'Get-PermissionPrincipal'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
@@ -94,27 +94,28 @@ function Get-PermissionPrincipal {
         WhoAmI       = $WhoAmI
     }
 
-    if ($ThreadCount -eq 1) {
+    $ADSIConversionParams = @{
+        DirectoryEntryCache    = $DirectoryEntryCache
+        IdentityReferenceCache = $IdentityCache
+        DomainsBySID           = $DomainsBySID
+        DomainsByNetbios       = $DomainsByNetbios
+        DomainsByFqdn          = $DomainsByFqdn
+        ThisHostName           = $ThisHostName
+        ThisFqdn               = $ThisFqdn
+        WhoAmI                 = $WhoAmI
+        LogMsgCache            = $LogMsgCache
+        CimCache               = $CimCache
+        DebugOutputStream      = $DebugOutputStream
+    }
 
-        $ADSIConversionParams = @{
-            DirectoryEntryCache    = $DirectoryEntryCache
-            IdentityReferenceCache = $IdentityCache
-            DomainsBySID           = $DomainsBySID
-            DomainsByNetbios       = $DomainsByNetbios
-            DomainsByFqdn          = $DomainsByFqdn
-            ThisHostName           = $ThisHostName
-            ThisFqdn               = $ThisFqdn
-            WhoAmI                 = $WhoAmI
-            LogMsgCache            = $LogMsgCache
-            CimCache               = $CimCache
-            DebugOutputStream      = $DebugOutputStream
-        }
+    if ($ThreadCount -eq 1) {
 
         if ($NoGroupMembers) {
             $ADSIConversionParams['NoGroupMembers'] = $true
         }
 
-        [int]$ProgressInterval = [math]::max(($Identity.Count / 100), 1)
+        $Count = $Identity.Count
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
@@ -124,14 +125,13 @@ function Get-PermissionPrincipal {
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
-                [int]$PercentComplete = $i / $Identity.Count * 100
+                [int]$PercentComplete = $i / $Count * 100
                 Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count)" -CurrentOperation "ConvertFrom-IdentityReferenceResolved for '$($ThisID.Name)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++
-
             Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.Name)"
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
@@ -139,7 +139,7 @@ function Get-PermissionPrincipal {
 
     } else {
 
-        $ADSIConversionParams = @{
+        $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
             InputObject          = $Identity
             InputParameter       = 'IdentityReference'
@@ -148,19 +148,7 @@ function Get-PermissionPrincipal {
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
-            AddParam             = @{
-                DirectoryEntryCache    = $DirectoryEntryCache
-                IdentityReferenceCache = $IdentityCache
-                DomainsBySID           = $DomainsBySID
-                DomainsByNetbios       = $DomainsByNetbios
-                DomainsByFqdn          = $DomainsByFqdn
-                ThisHostName           = $ThisHostName
-                ThisFqdn               = $ThisFqdn
-                WhoAmI                 = $WhoAmI
-                LogMsgCache            = $LogMsgCache
-                DebugOutputStream      = $DebugOutputStream
-                CimCache               = $CimCache
-            }
+            AddParam             = $ADSIConversionParams
         }
 
         if ($NoGroupMembers) {
@@ -168,7 +156,7 @@ function Get-PermissionPrincipal {
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$Identity"
-        Split-Thread @ADSIConversionParams
+        Split-Thread @SplitThreadParams
 
     }
 
