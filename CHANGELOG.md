@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.163] - 2024-02-04 - add info to prog bar
+
 ## [0.0.162] - 2024-02-04 - bugfix null string when query param used
 
 ## [0.0.161] - 2024-02-04 - bugfix and improve code readability

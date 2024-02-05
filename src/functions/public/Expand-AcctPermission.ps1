@@ -65,7 +65,7 @@ function Expand-AcctPermission {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% ($($i+1) of $Count)" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
