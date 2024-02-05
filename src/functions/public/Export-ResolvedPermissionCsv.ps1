@@ -45,7 +45,6 @@ function Export-ResolvedPermissionCsv {
 
     Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences | `Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation "Export-Csv '$LiteralPath'" -PercentComplete 50
-    Start-Sleep -Seconds 5
 
     $Permission |
     Select-Object -Property @{
@@ -55,7 +54,6 @@ function Export-ResolvedPermissionCsv {
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
-    Write-Information $LiteralPath
+        Write-Information $LiteralPath
 
 }

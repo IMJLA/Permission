@@ -48,8 +48,8 @@ function Expand-Folder {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
-    Start-Sleep -Seconds 5
+    $FolderCount = @($Folder).Count
+    Write-Progress @Progress -Status "0% (item 0 of $FolderCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -65,7 +65,6 @@ function Expand-Folder {
         WhoAmI            = $WhoAmI
     }
 
-    $FolderCount = @($Folder).Count
     if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
@@ -108,8 +107,6 @@ function Expand-Folder {
 
     }
 
-    Start-Sleep -Seconds 5
-    Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
+        Write-Progress @Progress -Completed
 
 }

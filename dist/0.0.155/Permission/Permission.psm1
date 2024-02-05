@@ -43,7 +43,6 @@ function Expand-AcctPermission {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -99,7 +98,6 @@ function Expand-AcctPermission {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
 function Expand-Folder {
@@ -152,8 +150,8 @@ function Expand-Folder {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status "0%" -CurrentOperation "Initializing..." -PercentComplete 0
-    Start-Sleep -Seconds 5
+    $FolderCount = @($Folder).Count
+    Write-Progress @Progress -Status "0% (item 0 of $FolderCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -169,7 +167,6 @@ function Expand-Folder {
         WhoAmI            = $WhoAmI
     }
 
-    $FolderCount = @($Folder).Count
     if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
@@ -212,9 +209,7 @@ function Expand-Folder {
 
     }
 
-    Start-Sleep -Seconds 5
-    Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
+        Write-Progress @Progress -Completed
 
 }
 function Export-FolderPermissionHtml {
@@ -509,7 +504,6 @@ function Export-RawPermissionCsv {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -554,19 +548,15 @@ function Export-RawPermissionCsv {
 
     }
 
-    Start-Sleep -Seconds 5
-    Write-Progress @ChildProgress -Completed
-    Start-Sleep -Seconds 5
-    Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
-    Start-Sleep -Seconds 5
-    Write-LogMsg @LogParams -Text "`$Formatted | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
+        Write-Progress @ChildProgress -Completed
+        Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
+        Write-LogMsg @LogParams -Text "`$Formatted | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
 
     $Formatted |
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
     Write-Information $LiteralPath
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
 function Export-ResolvedPermissionCsv {
@@ -616,7 +606,6 @@ function Export-ResolvedPermissionCsv {
 
     Write-LogMsg @LogParams -Text "`$PermissionsWithResolvedIdentityReferences | `Select-Object -Property @{ Label = 'Path'; Expression = { `$_.SourceAccessList.Path } }, * | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation "Export-Csv '$LiteralPath'" -PercentComplete 50
-    Start-Sleep -Seconds 5
 
     $Permission |
     Select-Object -Property @{
@@ -626,8 +615,7 @@ function Export-ResolvedPermissionCsv {
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
-    Write-Information $LiteralPath
+        Write-Information $LiteralPath
 
 }
 function Format-FolderPermission {
@@ -677,8 +665,7 @@ function Format-FolderPermission {
         $Progress['Id'] = 0
     }
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
-    Start-Sleep -Seconds 5
-    $i = 0
+        $i = 0
     $IntervalCounter = 0
 
     $Count = ($UserPermission | Measure-Object).Count
@@ -825,7 +812,6 @@ function Format-FolderPermission {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
 function Format-PermissionAccount {
@@ -872,7 +858,6 @@ function Format-PermissionAccount {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -927,7 +912,6 @@ function Format-PermissionAccount {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
 function Format-TimeSpan {
@@ -1002,7 +986,6 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Get parent access control lists' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
@@ -1024,11 +1007,9 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @ChildProgress -Completed
-    Start-Sleep -Seconds 5
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
+        $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation $ChildProgress['Activity'] -PercentComplete 25
-    Start-Sleep -Seconds 5
-    $SubfolderCount = $Subfolder.Count
+        $SubfolderCount = $Subfolder.Count
 
     if ($ThreadCount -eq 1) {
         Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
@@ -1048,9 +1029,7 @@ function Get-FolderAccessList {
         }
 
         Write-Progress @ChildProgress -Completed
-        Start-Sleep -Seconds 5
-        Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
-        Start-Sleep -Seconds 5
+                Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
 
     } else {
 
@@ -1091,10 +1070,8 @@ function Get-FolderAccessList {
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
     Write-Progress @ChildProgress -Completed
-    Start-Sleep -Seconds 5
-    Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
-    Start-Sleep -Seconds 5
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
+        Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
+        $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
@@ -1114,7 +1091,6 @@ function Get-FolderAccessList {
 
         }
         Write-Progress @ChildProgress -Completed
-        Start-Sleep -Seconds 5
 
     } else {
 
@@ -1137,7 +1113,6 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
 function Get-FolderBlock {
@@ -1514,7 +1489,6 @@ function Get-PermissionPrincipal {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -1600,7 +1574,6 @@ function Get-PermissionPrincipal {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
 function Get-PrtgXmlSensorOutput {
@@ -2272,6 +2245,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

@@ -46,7 +46,6 @@ function Export-RawPermissionCsv {
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -91,18 +90,14 @@ function Export-RawPermissionCsv {
 
     }
 
-    Start-Sleep -Seconds 5
-    Write-Progress @ChildProgress -Completed
-    Start-Sleep -Seconds 5
-    Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
-    Start-Sleep -Seconds 5
-    Write-LogMsg @LogParams -Text "`$Formatted | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
+        Write-Progress @ChildProgress -Completed
+        Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation "Saving '$LiteralPath'" -PercentComplete 50
+        Write-LogMsg @LogParams -Text "`$Formatted | Export-Csv -NoTypeInformation -LiteralPath '$LiteralPath'"
 
     $Formatted |
     Export-Csv -NoTypeInformation -LiteralPath $LiteralPath
 
     Write-Information $LiteralPath
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }

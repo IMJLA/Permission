@@ -45,8 +45,7 @@ function Format-FolderPermission {
         $Progress['Id'] = 0
     }
     Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
-    Start-Sleep -Seconds 5
-    $i = 0
+        $i = 0
     $IntervalCounter = 0
 
     $Count = ($UserPermission | Measure-Object).Count
@@ -193,6 +192,5 @@ function Format-FolderPermission {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
 }
