@@ -13,6 +13,9 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
@@ -103,6 +106,7 @@ function Get-PermissionPrincipal {
             ThisFqdn               = $ThisFqdn
             WhoAmI                 = $WhoAmI
             LogMsgCache            = $LogMsgCache
+            CimCache               = $CimCache
             DebugOutputStream      = $DebugOutputStream
         }
 
@@ -155,6 +159,7 @@ function Get-PermissionPrincipal {
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
                 DebugOutputStream      = $DebugOutputStream
+                CimCache               = $CimCache
             }
         }
 

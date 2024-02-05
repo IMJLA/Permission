@@ -947,7 +947,7 @@ function Get-CachedCimInstance {
         # Name of the CIM class whose instances to return
         [string]$ClassName,
 
-        # CIM query to run
+        # CIM query to run. Overrides ClassName if used (but not efficiently, so don't use both)
         [string]$Query,
 
         # Cache of CIM sessions and instances to reduce connections and queries
@@ -1014,14 +1014,15 @@ function Get-CachedCimInstance {
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
 
     if ($CimSession) {
+
         if ($PSBoundParameters.ContainsKey('ClassName')) {
             Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
-            $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession
+            $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession -ErrorAction SilentlyContinue
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
             Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
-            $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession
+            $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession -ErrorAction SilentlyContinue
         }
 
         if ($CimInstance) {
@@ -1598,6 +1599,9 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
@@ -1688,6 +1692,7 @@ function Get-PermissionPrincipal {
             ThisFqdn               = $ThisFqdn
             WhoAmI                 = $WhoAmI
             LogMsgCache            = $LogMsgCache
+            CimCache               = $CimCache
             DebugOutputStream      = $DebugOutputStream
         }
 
@@ -1740,6 +1745,7 @@ function Get-PermissionPrincipal {
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
                 DebugOutputStream      = $DebugOutputStream
+                CimCache               = $CimCache
             }
         }
 
@@ -1940,13 +1946,8 @@ function Initialize-Cache {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{
-                    'localhost' = [hashtable]::Synchronized(@{
-                            CimSession             = ''
-                            Win32AccountsBySID     = [hashtable]::Synchronized(@{})
-                            Win32AccountsByCaption = [hashtable]::Synchronized(@{})
-                        })
-                })),
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
@@ -2025,6 +2026,7 @@ function Initialize-Cache {
             ThisFqdn               = $ThisFqdn
             WhoAmI                 = $WhoAmI
             LogMsgCache            = $LogMsgCache
+            CimCache               = $CimCache
         }
 
         $Count = $ServerFqdns.Count
@@ -2067,6 +2069,7 @@ function Initialize-Cache {
                 ThisFqdn               = $ThisFqdn
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
+                CimCache               = $CimCache
             }
 
         }
@@ -2192,6 +2195,9 @@ function Resolve-PermissionIdentity {
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
 
@@ -2229,6 +2235,7 @@ function Resolve-PermissionIdentity {
             ThisFqdn               = $ThisFqdn
             WhoAmI                 = $WhoAmI
             LogMsgCache            = $LogMsgCache
+            CimCache               = $CimCache
         }
 
         $Count = $Permission.Count
@@ -2278,7 +2285,7 @@ function Resolve-PermissionIdentity {
                 ThisFqdn               = $ThisFqdn
                 WhoAmI                 = $WhoAmI
                 LogMsgCache            = $LogMsgCache
-
+                CimCache               = $CimCache
             }
 
         }
@@ -2476,6 +2483,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
