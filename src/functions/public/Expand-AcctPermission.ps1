@@ -85,10 +85,6 @@ function Expand-AcctPermission {
             ObjectStringProperty = 'Name'
             Timeout              = 1200
             Threads              = $ThreadCount
-            AddParam             = @{
-                WhoAmI      = $WhoAmI
-                LogMsgCache = $LogMsgCache
-            }
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Expand-AccountPermission' -InputParameter 'AccountPermission' -InputObject `$SecurityPrincipal -ObjectStringProperty 'Name'"
