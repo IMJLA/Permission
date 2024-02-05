@@ -86,7 +86,7 @@ function Initialize-Cache {
         $Progress['Id'] = 0
     }
     $Count = $ServerFqdns.Count
-    Write-Progress @Progress -Status "$PercentComplete% (0 of $Count FQDNs)" -CurrentOperation 'Initializing' -PercentComplete $PercentComplete
+    Write-Progress @Progress -Status "$PercentComplete% (0 of $Count FQDNs)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
