@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.154] - 2024-02-04 - updated param names
+
+## [0.0.153] - 2024-02-04 - updated param names
+
 ## [0.0.152] - 2024-02-04 - rename expand-permissionidenity to get-permissionsecurityprincipal
 
 ## [0.0.151] - 2024-02-03 - ps 5.1 workaround

@@ -16,7 +16,7 @@ function Expand-Folder {
 
             Set to any whole number to enumerate that many levels
         #>
-        $LevelsOfSubfolders,
+        $RecurseDepth,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -81,7 +81,7 @@ function Expand-Folder {
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             $Subfolders = $null
-            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue @GetSubfolderParams
+            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $RecurseDepth -ErrorAction Continue @GetSubfolderParams
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
         }

@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-FolderTableHeader [[-LevelsOfSubfolders] <Object>]
+Get-FolderTableHeader [[-RecurseDepth] <Object>]
 ```
 
 ## DESCRIPTION
@@ -30,8 +30,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -LevelsOfSubfolders
-{{ Fill LevelsOfSubfolders Description }}
+### -RecurseDepth
+{{ Fill RecurseDepth Description }}
 
 ```yaml
 Type: System.Object

@@ -1,7 +1,7 @@
 ﻿function Get-ReportDescription {
-    param ($LevelsOfSubfolders)
+    param ($RecurseDepth)
 
-    switch ($LevelsOfSubfolders ) {
+    switch ($RecurseDepth ) {
         0 {
             'Does not include permissions on subfolders (option was declined)'
         }
@@ -9,7 +9,7 @@
             'Includes all subfolders with unique permissions (including ∞ levels of subfolders)'
         }
         default {
-            "Includes all subfolders with unique permissions (down to $LevelsOfSubfolders levels of subfolders)"
+            "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"
         }
     }
 }

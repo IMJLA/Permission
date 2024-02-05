@@ -1,4 +1,4 @@
-function Get-PermissionSecurityPrincipal {
+function Get-PermissionPrincipal {
 
     param (
 
@@ -36,7 +36,7 @@ function Get-PermissionSecurityPrincipal {
         [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
 
         # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
-        [hashtable]$IdentityReferenceCache = ([hashtable]::Synchronized(@{})),
+        [hashtable]$IdentityCache = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -96,7 +96,7 @@ function Get-PermissionSecurityPrincipal {
 
         $ADSIConversionParams = @{
             DirectoryEntryCache    = $DirectoryEntryCache
-            IdentityReferenceCache = $IdentityReferenceCache
+            IdentityReferenceCache = $IdentityCache
             DomainsBySID           = $DomainsBySID
             DomainsByNetbios       = $DomainsByNetbios
             DomainsByFqdn          = $DomainsByFqdn
@@ -147,7 +147,7 @@ function Get-PermissionSecurityPrincipal {
             Threads              = $ThreadCount
             AddParam             = @{
                 DirectoryEntryCache    = $DirectoryEntryCache
-                IdentityReferenceCache = $IdentityReferenceCache
+                IdentityReferenceCache = $IdentityCache
                 DomainsBySID           = $DomainsBySID
                 DomainsByNetbios       = $DomainsByNetbios
                 DomainsByFqdn          = $DomainsByFqdn

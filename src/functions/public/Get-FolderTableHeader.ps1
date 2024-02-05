@@ -1,7 +1,7 @@
 function Get-FolderTableHeader {
-    param ($LevelsOfSubfolders)
+    param ($RecurseDepth)
 
-    switch ($LevelsOfSubfolders ) {
+    switch ($RecurseDepth ) {
         0 {
             'Includes the target folder only (option to report on subfolders was declined)'
         }
@@ -9,7 +9,7 @@ function Get-FolderTableHeader {
             'Includes the target folder and all subfolders with unique permissions'
         }
         default {
-            "Includes the target folder and $LevelsOfSubfolders levels of subfolders with unique permissions"
+            "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
         }
     }
 }

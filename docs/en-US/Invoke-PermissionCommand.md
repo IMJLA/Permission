@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-ReportDescription
+# Invoke-PermissionCommand
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-ReportDescription [[-RecurseDepth] <Object>]
+Invoke-PermissionCommand [[-Command] <String>]
 ```
 
 ## DESCRIPTION
@@ -30,11 +30,11 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -RecurseDepth
-{{ Fill RecurseDepth Description }}
+### -Command
+{{ Fill Command Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 

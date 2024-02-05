@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <UInt16>]
+Expand-Folder [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-ProgressParentId] <Int32>]
 ```
@@ -62,21 +62,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LevelsOfSubfolders
-{{ Fill LevelsOfSubfolders Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -LogMsgCache
 {{ Fill LogMsgCache Description }}
 
@@ -102,6 +87,21 @@ Aliases:
 
 Required: False
 Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -RecurseDepth
+{{ Fill RecurseDepth Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

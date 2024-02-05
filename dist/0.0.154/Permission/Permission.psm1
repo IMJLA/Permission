@@ -120,7 +120,7 @@ function Expand-Folder {
 
             Set to any whole number to enumerate that many levels
         #>
-        $LevelsOfSubfolders,
+        $RecurseDepth,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -185,7 +185,7 @@ function Expand-Folder {
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
             $Subfolders = $null
-            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $LevelsOfSubfolders -ErrorAction Continue @GetSubfolderParams
+            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $RecurseDepth -ErrorAction Continue @GetSubfolderParams
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
         }
@@ -1352,9 +1352,9 @@ function Get-FolderPermissionTableHeader {
     }
 }
 function Get-FolderTableHeader {
-    param ($LevelsOfSubfolders)
+    param ($RecurseDepth)
 
-    switch ($LevelsOfSubfolders ) {
+    switch ($RecurseDepth ) {
         0 {
             'Includes the target folder only (option to report on subfolders was declined)'
         }
@@ -1362,7 +1362,7 @@ function Get-FolderTableHeader {
             'Includes the target folder and all subfolders with unique permissions'
         }
         default {
-            "Includes the target folder and $LevelsOfSubfolders levels of subfolders with unique permissions"
+            "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
         }
     }
 }
@@ -1429,7 +1429,7 @@ Report instance: $ReportInstanceId
 "@
     New-BootstrapAlert -Class Light -Text $Text
 }
-function Get-PermissionSecurityPrincipal {
+function Get-PermissionPrincipal {
 
     param (
 
@@ -1467,7 +1467,7 @@ function Get-PermissionSecurityPrincipal {
         [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
 
         # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
-        [hashtable]$IdentityReferenceCache = ([hashtable]::Synchronized(@{})),
+        [hashtable]$IdentityCache = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -1527,7 +1527,7 @@ function Get-PermissionSecurityPrincipal {
 
         $ADSIConversionParams = @{
             DirectoryEntryCache    = $DirectoryEntryCache
-            IdentityReferenceCache = $IdentityReferenceCache
+            IdentityReferenceCache = $IdentityCache
             DomainsBySID           = $DomainsBySID
             DomainsByNetbios       = $DomainsByNetbios
             DomainsByFqdn          = $DomainsByFqdn
@@ -1578,7 +1578,7 @@ function Get-PermissionSecurityPrincipal {
             Threads              = $ThreadCount
             AddParam             = @{
                 DirectoryEntryCache    = $DirectoryEntryCache
-                IdentityReferenceCache = $IdentityReferenceCache
+                IdentityReferenceCache = $IdentityCache
                 DomainsBySID           = $DomainsBySID
                 DomainsByNetbios       = $DomainsByNetbios
                 DomainsByFqdn          = $DomainsByFqdn
@@ -1663,9 +1663,9 @@ function Get-PrtgXmlSensorOutput {
 
 }
 function Get-ReportDescription {
-    param ($LevelsOfSubfolders)
+    param ($RecurseDepth)
 
-    switch ($LevelsOfSubfolders ) {
+    switch ($RecurseDepth ) {
         0 {
             'Does not include permissions on subfolders (option was declined)'
         }
@@ -1673,7 +1673,7 @@ function Get-ReportDescription {
             'Includes all subfolders with unique permissions (including ∞ levels of subfolders)'
         }
         default {
-            "Includes all subfolders with unique permissions (down to $LevelsOfSubfolders levels of subfolders)"
+            "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"
         }
     }
 }
@@ -1725,7 +1725,9 @@ function Get-UniqueServerFqdn {
 
     Write-Progress @Progress -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
 
-    $UniqueValues = @{}
+    $UniqueValues = @{
+        $ThisFqdn = $null
+    }
 
     ForEach ($Value in $Known) {
         $UniqueValues[$Value] = $null
@@ -1915,6 +1917,38 @@ function Initialize-Cache {
     }
 
     Write-Progress @Progress -Completed
+
+}
+function Invoke-PermissionCommand {
+
+    param (
+
+        [string]$Command
+
+    )
+
+    $Steps = [System.Collections.Specialized.OrderedDictionary]::New()
+    $Steps.Add(
+        'Get the NTAccount caption of the user running the script, with the correct capitalization',
+        { HOSTNAME.EXE }
+    )
+    $Steps.Add(
+        'Get the hostname of the computer running the script',
+        { Get-CurrentWhoAmI -LogMsgCache $LogMsgCache -ThisHostName $ThisHostname }
+    )
+
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        #Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    $StepCount = $Steps.Count
+    Write-LogMsg @LogParams -Type Verbose -Text $Command
+    $ScriptBlock = $Steps[$Command]
+    Write-LogMsg @LogParams -Type Debug -Text $ScriptBlock
+    Invoke-Command -ScriptBlock $ScriptBlock
 
 }
 function Resolve-PermissionIdentity {
@@ -2237,7 +2271,9 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionSecurityPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
+
 
 
 

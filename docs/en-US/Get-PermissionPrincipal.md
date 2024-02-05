@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-PermissionSecurityPrincipal
+# Get-PermissionPrincipal
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,10 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-PermissionSecurityPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <String>]
- [[-ThreadCount] <Int32>] [[-Win32AccountsBySID] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
+Get-PermissionPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
+ [[-Win32AccountsBySID] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
- [[-DomainsByFqdn] <Hashtable>] [[-IdentityReferenceCache] <Hashtable>] [[-ThisHostName] <String>]
+ [[-DomainsByFqdn] <Hashtable>] [[-IdentityCache] <Hashtable>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-NoGroupMembers]
  [[-ProgressParentId] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -126,8 +126,8 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
-### -IdentityReferenceCache
-{{ Fill IdentityReferenceCache Description }}
+### -IdentityCache
+{{ Fill IdentityCache Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

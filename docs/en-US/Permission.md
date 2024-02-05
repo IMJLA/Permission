@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.152
+Help Version: 0.0.154
 Locale: en-US
 ---
 
@@ -18,7 +18,7 @@ Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <s
 
 ### [Expand-Folder](Expand-Folder.md)
 
-Expand-Folder [[-Folder] <Object>] [[-LevelsOfSubfolders] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
+Expand-Folder [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
 
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
@@ -78,7 +78,7 @@ Get-FolderPermissionTableHeader [[-ThisFolder] <Object>] [[-ShortestFolderPath] 
 
 ### [Get-FolderTableHeader](Get-FolderTableHeader.md)
 
-Get-FolderTableHeader [[-LevelsOfSubfolders] <Object>]
+Get-FolderTableHeader [[-RecurseDepth] <Object>]
 
 
 ### [Get-HtmlBody](Get-HtmlBody.md)
@@ -91,9 +91,9 @@ Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-Rep
 Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <string>] [[-ThisFqdn] <string>] [[-ItemCount] <ulong>] [[-TotalBytes] <ulong>] [[-ReportInstanceId] <string>]
 
 
-### [Get-PermissionSecurityPrincipal](Get-PermissionSecurityPrincipal.md)
+### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
-Get-PermissionSecurityPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityReferenceCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers] [<CommonParameters>]
+Get-PermissionPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityCache] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers] [<CommonParameters>]
 
 
 ### [Get-PrtgXmlSensorOutput](Get-PrtgXmlSensorOutput.md)
@@ -103,7 +103,7 @@ Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
 ### [Get-ReportDescription](Get-ReportDescription.md)
 
-Get-ReportDescription [[-LevelsOfSubfolders] <Object>]
+Get-ReportDescription [[-RecurseDepth] <Object>]
 
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
@@ -119,6 +119,11 @@ Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn]
 ### [Initialize-Cache](Initialize-Cache.md)
 
 Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+
+
+### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)
+
+Invoke-PermissionCommand [[-Command] <string>]
 
 
 ### [Resolve-PermissionIdentity](Resolve-PermissionIdentity.md)

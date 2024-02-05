@@ -35,7 +35,9 @@ function Get-UniqueServerFqdn {
 
     Write-Progress @Progress -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
 
-    $UniqueValues = @{}
+    $UniqueValues = @{
+        $ThisFqdn = $null
+    }
 
     ForEach ($Value in $Known) {
         $UniqueValues[$Value] = $null
