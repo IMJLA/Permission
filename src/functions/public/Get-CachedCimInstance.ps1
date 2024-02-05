@@ -8,6 +8,9 @@ function Get-CachedCimInstance {
         # Name of the CIM class whose instances to return
         [string]$ClassName,
 
+        # CIM query to run
+        [string]$Query,
+
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
@@ -43,12 +46,20 @@ function Get-CachedCimInstance {
         WhoAmI       = $WhoAmI
     }
 
+    if ($PSBoundParameters.ContainsKey('ClassName')) {
+        $CacheKey = $ClassName
+    }
+
+    if ($PSBoundParameters.ContainsKey('Query')) {
+        $CacheKey = $Query
+    }
+
     $CimCacheResult = $CimCache[$ComputerName]
 
     if ($CimCacheResult) {
 
         Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCacheResult[$ClassName]
+        $CimCacheSubresult = $CimCacheResult[$CacheKey]
 
         if ($CimCacheSubresult) {
             Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$ClassName' on '$ComputerName'"
@@ -64,10 +75,21 @@ function Get-CachedCimInstance {
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
 
     if ($CimSession) {
-        Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
-        $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession
-        $CimCache[$ComputerName][$ClassName] = $CimInstance
-        return $CimInstance
+        if ($PSBoundParameters.ContainsKey('ClassName')) {
+            Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
+            $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession
+        }
+
+        if ($PSBoundParameters.ContainsKey('Query')) {
+            Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
+            $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession
+        }
+
+        if ($CimInstance) {
+            $CimCache[$ComputerName][$ClassName] = $CimInstance
+            return $CimInstance
+        }
+
     }
 
 }

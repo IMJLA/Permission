@@ -947,6 +947,9 @@ function Get-CachedCimInstance {
         # Name of the CIM class whose instances to return
         [string]$ClassName,
 
+        # CIM query to run
+        [string]$Query,
+
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
@@ -982,12 +985,20 @@ function Get-CachedCimInstance {
         WhoAmI       = $WhoAmI
     }
 
+    if ($PSBoundParameters.ContainsKey('ClassName')) {
+        $CacheKey = $ClassName
+    }
+
+    if ($PSBoundParameters.ContainsKey('Query')) {
+        $CacheKey = $Query
+    }
+
     $CimCacheResult = $CimCache[$ComputerName]
 
     if ($CimCacheResult) {
 
         Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCacheResult[$ClassName]
+        $CimCacheSubresult = $CimCacheResult[$CacheKey]
 
         if ($CimCacheSubresult) {
             Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$ClassName' on '$ComputerName'"
@@ -1003,10 +1014,21 @@ function Get-CachedCimInstance {
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
 
     if ($CimSession) {
-        Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
-        $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession
-        $CimCache[$ComputerName][$ClassName] = $CimInstance
-        return $CimInstance
+        if ($PSBoundParameters.ContainsKey('ClassName')) {
+            Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
+            $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession
+        }
+
+        if ($PSBoundParameters.ContainsKey('Query')) {
+            Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
+            $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession
+        }
+
+        if ($CimInstance) {
+            $CimCache[$ComputerName][$ClassName] = $CimInstance
+            return $CimInstance
+        }
+
     }
 
 }
@@ -2454,6 +2476,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
