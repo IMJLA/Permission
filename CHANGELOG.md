@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.167] - 2024-02-05 - bugfix wrong key
+
 ## [0.0.166] - 2024-02-05 - add resolve-folder
 
 ## [0.0.165] - 2024-02-04 - add info to prog bar

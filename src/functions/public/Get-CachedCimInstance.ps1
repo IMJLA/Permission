@@ -87,7 +87,7 @@ function Get-CachedCimInstance {
         }
 
         if ($CimInstance) {
-            $CimCache[$ComputerName][$ClassName] = $CimInstance
+            $CimCache[$ComputerName][$CacheKey] = $CimInstance
             return $CimInstance
         }
 
