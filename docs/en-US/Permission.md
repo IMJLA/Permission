@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.165
+Help Version: 0.0.166
 Locale: en-US
 ---
 
@@ -139,6 +139,11 @@ Invoke-PermissionCommand [[-Command] <string>]
 ### [Remove-CachedCimSession](Remove-CachedCimSession.md)
 
 Remove-CachedCimSession [[-CimCache] <hashtable>]
+
+
+### [Resolve-Folder](Resolve-Folder.md)
+
+Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
 ### [Resolve-PermissionIdentity](Resolve-PermissionIdentity.md)

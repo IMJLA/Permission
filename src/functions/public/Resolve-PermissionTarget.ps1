@@ -53,7 +53,6 @@ function Resolve-PermissionTarget {
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-
         Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
 
     }
