@@ -986,12 +986,18 @@ function Get-CachedCimInstance {
 
     if ($CimCacheResult) {
 
+        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCacheResult[$ClassName]
 
         if ($CimCacheSubresult) {
+            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$ClassName' on '$ComputerName'"
             return $CimCacheSubresult
+        } else {
+            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$ClassName' on '$ComputerName'"
         }
 
+    } else {
+        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
     }
 
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
@@ -1050,14 +1056,19 @@ function Get-CachedCimSession {
 
     if ($CimCacheResult) {
 
+        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCache['CimSession']
 
         if ($CimCacheSubresult) {
+            Write-LogMsg @LogParams -Text " # CIM session cache hit for '$ComputerName'"
             return $CimCacheSubresult
+        } else {
+            Write-LogMsg @LogParams -Text " # CIM session cache miss for '$ComputerName'"
         }
 
     } else {
 
+        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
         $CimCache[$ComputerName] = [hashtable]::Synchronized(@{})
 
     }
@@ -2419,6 +2430,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

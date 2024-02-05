@@ -47,12 +47,18 @@ function Get-CachedCimInstance {
 
     if ($CimCacheResult) {
 
+        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCacheResult[$ClassName]
 
         if ($CimCacheSubresult) {
+            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$ClassName' on '$ComputerName'"
             return $CimCacheSubresult
+        } else {
+            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$ClassName' on '$ComputerName'"
         }
 
+    } else {
+        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
     }
 
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams

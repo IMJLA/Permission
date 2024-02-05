@@ -44,14 +44,19 @@ function Get-CachedCimSession {
 
     if ($CimCacheResult) {
 
+        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCache['CimSession']
 
         if ($CimCacheSubresult) {
+            Write-LogMsg @LogParams -Text " # CIM session cache hit for '$ComputerName'"
             return $CimCacheSubresult
+        } else {
+            Write-LogMsg @LogParams -Text " # CIM session cache miss for '$ComputerName'"
         }
 
     } else {
 
+        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
         $CimCache[$ComputerName] = [hashtable]::Synchronized(@{})
 
     }
