@@ -1001,10 +1001,10 @@ function Get-CachedCimInstance {
         $CimCacheSubresult = $CimCacheResult[$CacheKey]
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$ClassName' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$CacheKey' on '$ComputerName'"
             return $CimCacheSubresult
         } else {
-            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$ClassName' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$CacheKey' on '$ComputerName'"
         }
 
     } else {
@@ -2471,6 +2471,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

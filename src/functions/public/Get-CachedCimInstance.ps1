@@ -62,10 +62,10 @@ function Get-CachedCimInstance {
         $CimCacheSubresult = $CimCacheResult[$CacheKey]
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$ClassName' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$CacheKey' on '$ComputerName'"
             return $CimCacheSubresult
         } else {
-            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$ClassName' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$CacheKey' on '$ComputerName'"
         }
 
     } else {
