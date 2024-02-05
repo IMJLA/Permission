@@ -42,7 +42,8 @@ function Expand-AcctPermission {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
+    $Count = $SecurityPrincipal.Count
+    Write-Progress @Progress -Status "0% (account 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -50,8 +51,6 @@ function Expand-AcctPermission {
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
-
-    $Count = $SecurityPrincipal.Count
 
     if ($ThreadCount -eq 1) {
 
@@ -66,7 +65,7 @@ function Expand-AcctPermission {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% ($($i+1) of $Count)" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (account $($i+1) of $Count)" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -74,6 +73,7 @@ function Expand-AcctPermission {
             $i++
             Write-LogMsg @LogParams -Text "Expand-AccountPermission -AccountPermission $($ThisPrinc.Name)"
             Expand-AccountPermission -AccountPermission $ThisPrinc
+
         }
 
     } else {
@@ -2467,6 +2467,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

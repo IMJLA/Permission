@@ -41,7 +41,8 @@ function Expand-AcctPermission {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
+    $Count = $SecurityPrincipal.Count
+    Write-Progress @Progress -Status "0% (account 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -49,8 +50,6 @@ function Expand-AcctPermission {
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
-
-    $Count = $SecurityPrincipal.Count
 
     if ($ThreadCount -eq 1) {
 
@@ -65,7 +64,7 @@ function Expand-AcctPermission {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% ($($i+1) of $Count)" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (account $($i+1) of $Count)" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -73,6 +72,7 @@ function Expand-AcctPermission {
             $i++
             Write-LogMsg @LogParams -Text "Expand-AccountPermission -AccountPermission $($ThisPrinc.Name)"
             Expand-AccountPermission -AccountPermission $ThisPrinc
+
         }
 
     } else {
