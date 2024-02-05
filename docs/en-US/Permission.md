@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.155
+Help Version: 0.0.156
 Locale: en-US
 ---
 
@@ -49,6 +49,16 @@ Format-PermissionAccount [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream]
 ### [Format-TimeSpan](Format-TimeSpan.md)
 
 Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
+
+
+### [Get-CachedCimInstance](Get-CachedCimInstance.md)
+
+Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+
+
+### [Get-CachedCimSession](Get-CachedCimSession.md)
+
+Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
 ### [Get-FolderAccessList](Get-FolderAccessList.md)
@@ -118,7 +128,7 @@ Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn]
 
 ### [Initialize-Cache](Initialize-Cache.md)
 
-Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-CimCache] <hashtable>] [[-Win32AccountsBySID] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
 
 
 ### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)
@@ -133,7 +143,7 @@ Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <str
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
 
 
 ### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)

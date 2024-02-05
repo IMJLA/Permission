@@ -937,6 +937,152 @@ function Format-TimeSpan {
     }
     $StringBuilder.ToString()
 }
+function Get-CachedCimInstance {
+
+    param (
+
+        # Name of the computer to query via CIM
+        [string]$ComputerName,
+
+        # Name of the CIM class whose instances to return
+        [string]$ClassName,
+
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+    )
+
+    $LogParams = @{
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        LogMsgCache  = $LogMsgCache
+        WhoAmI       = $WhoAmI
+    }
+
+    $CimCacheResult = $CimCache[$ComputerName]
+
+    if ($CimCacheResult) {
+
+        $CimCacheSubresult = $CimCacheResult[$ClassName]
+
+        if ($CimCacheSubresult) {
+            return $CimCacheSubresult
+        }
+
+    }
+
+    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
+
+    if ($CimSession) {
+        Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
+        $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession
+        $CimCache[$ComputerName][$ClassName] = $CimInstance
+        return $CimInstance
+    }
+
+}
+function Get-CachedCimSession {
+
+    param (
+
+        # Name of the computer to query via CIM
+        [string]$ComputerName,
+
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages
+    )
+
+    $LogParams = @{
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        LogMsgCache  = $LogMsgCache
+        WhoAmI       = $WhoAmI
+    }
+
+    $CimCacheResult = $CimCache[$ComputerName]
+
+    if ($CimCacheResult) {
+
+        $CimCacheSubresult = $CimCache['CimSession']
+
+        if ($CimCacheSubresult) {
+            return $CimCacheSubresult
+        }
+
+    } else {
+
+        $CimCache[$ComputerName] = [hashtable]::Synchronized(@{})
+
+    }
+
+    if (
+        $ComputerName -eq $ThisHostname -or
+        $ComputerName -eq "$ThisHostname." -or
+        $ComputerName -eq $ThisFqdn -or
+        $ComputerName -eq "$ThisFqdn."
+    ) {
+        Write-LogMsg @LogParams -Text '$CimSession = New-CimSession'
+        $CimSession = New-CimSession
+    } else {
+        # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
+        # Suppress errors and return nothing in that case
+        Write-LogMsg @LogParams -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
+        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue
+    }
+
+    if ($CimSession) {
+        $CimCache[$ComputerName]['CimSession'] = $CimSession
+        return $CimSession
+    }
+
+}
 function Get-FolderAccessList {
     param (
 
@@ -1761,6 +1907,14 @@ function Initialize-Cache {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{
+                    'localhost' = [hashtable]::Synchronized(@{
+                            CimSession             = ''
+                            Win32AccountsBySID     = [hashtable]::Synchronized(@{})
+                            Win32AccountsByCaption = [hashtable]::Synchronized(@{})
+                        })
+                })),
+
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
@@ -2092,12 +2246,22 @@ function Resolve-PermissionTarget {
         [ValidateScript({ Test-Path $_ })]
         [System.IO.DirectoryInfo[]]$TargetPath,
 
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [string]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [string]$ThisHostname = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [string]$WhoAmI = (whoami.EXE),
@@ -2114,10 +2278,20 @@ function Resolve-PermissionTarget {
         WhoAmI       = $WhoAmI
     }
 
+    $ResolveFolderParams = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+        CimCache          = $CimCache
+        ThisFqdn          = $ThisFqdn
+    }
+
     ForEach ($ThisTargetPath in $TargetPath) {
 
-        Write-LogMsg @LogParams -Text "Resolve-Folder -FolderPath '$ThisTargetPath'"
-        Resolve-Folder -FolderPath $ThisTargetPath
+        Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
+
+        Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
 
     }
 
@@ -2244,7 +2418,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

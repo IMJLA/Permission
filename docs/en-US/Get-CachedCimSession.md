@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Resolve-PermissionTarget
+# Get-CachedCimSession
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,9 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <Hashtable>]
- [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-CachedCimSession [[-ComputerName] <String>] [[-CimCache] <Hashtable>] [[-DebugOutputStream] <String>]
+ [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -42,6 +41,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ComputerName
+{{ Fill ComputerName Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -78,36 +92,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressAction
-{{ Fill ProgressAction Description }}
-
-```yaml
-Type: System.Management.Automation.ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TargetPath
-{{ Fill TargetPath Description }}
-
-```yaml
-Type: System.IO.DirectoryInfo[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
 ### -ThisFqdn
 {{ Fill ThisFqdn Description }}
 
@@ -123,8 +107,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ThisHostname
-{{ Fill ThisHostname Description }}
+### -ThisHostName
+{{ Fill ThisHostName Description }}
 
 ```yaml
 Type: System.String
@@ -153,12 +137,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
-
 ## INPUTS
 
-### System.IO.DirectoryInfo[]
+### None
 
 ## OUTPUTS
 

@@ -26,6 +26,14 @@ function Initialize-Cache {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{
+                    'localhost' = [hashtable]::Synchronized(@{
+                            CimSession             = ''
+                            Win32AccountsBySID     = [hashtable]::Synchronized(@{})
+                            Win32AccountsByCaption = [hashtable]::Synchronized(@{})
+                        })
+                })),
+
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
