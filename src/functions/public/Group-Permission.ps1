@@ -27,10 +27,12 @@ function Group-Permission {
 
     ForEach ($Key in $Cache.Keys) {
 
+        $CacheResult = $Cache[$Key]
         [pscustomobject]@{
             PSType = "Permission.$Property`Permission"
-            Group  = $Cache[$Key]
+            Group  = $CacheResult
             Name   = $Key
+            Count  = $CacheResult.Count
         }
 
     }
