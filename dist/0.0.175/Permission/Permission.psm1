@@ -805,7 +805,7 @@ function Format-FolderPermission {
                 IdentityReference        = $IdentityReference
                 AccessControlEntry       = $ThisACE
                 SchemaClassName          = $SchemaClassName
-                PSTypeName               = 'Permission.FolderPermission'
+                PSTypeName               = 'Permission.PassThruPermission'
             }
 
         }
@@ -1923,6 +1923,39 @@ function Get-UniqueServerFqdn {
     return $UniqueValues.Keys
 
 }
+function Group-Permission {
+
+    param (
+
+        [object[]]$InputObject,
+
+        [string]$Property
+
+    )
+
+    $Cache = @{}
+
+    ForEach ($Permission in $InputObject) {
+
+        if ($Cache[$Permission.$Property]) {
+            $Cache[$Permission.$Property].Add($Permission)
+        } else {
+            $Cache[$Permission.$Property] = [System.Collections.Generic.List[object]]::new().Add($Permission)
+        }
+
+    }
+
+    ForEach ($Key in $Cache.Keys) {
+
+        [pscustomobject]@{
+            PSType = "Permission.$Property`Permission"
+            Group  = $Cache[$Key]
+            Name   = $Key
+        }
+
+    }
+
+}
 function Initialize-Cache {
 
     <# Use the list of known ADSI server FQDNs to populate six caches:
@@ -2597,7 +2630,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

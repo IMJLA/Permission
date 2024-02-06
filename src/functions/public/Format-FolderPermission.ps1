@@ -185,7 +185,7 @@ function Format-FolderPermission {
                 IdentityReference        = $IdentityReference
                 AccessControlEntry       = $ThisACE
                 SchemaClassName          = $SchemaClassName
-                PSTypeName               = 'Permission.FolderPermission'
+                PSTypeName               = 'Permission.PassThruPermission'
             }
 
         }
