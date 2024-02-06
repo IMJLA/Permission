@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.171
+Help Version: 0.0.172
 Locale: en-US
 ---
 
@@ -23,7 +23,7 @@ Expand-Folder [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <u
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
 
-Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [-NoJavaScript]
+Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [[-ExpandedAccountPermissions] <Object>] [[-FormattedSecurityPrincipals] <Object>] [-NoJavaScript]
 
 
 ### [Export-RawPermissionCsv](Export-RawPermissionCsv.md)
@@ -98,7 +98,7 @@ Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-Rep
 
 ### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
 
-Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <string>] [[-ThisFqdn] <string>] [[-ItemCount] <ulong>] [[-TotalBytes] <ulong>] [[-ReportInstanceId] <string>]
+Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <string>] [[-ThisFqdn] <string>] [[-ItemCount] <ulong>] [[-TotalBytes] <ulong>] [[-ReportInstanceId] <string>] [[-PermissionCount] <ulong>] [[-PrincipalCount] <ulong>]
 
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)

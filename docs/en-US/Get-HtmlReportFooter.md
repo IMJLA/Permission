@@ -14,7 +14,8 @@ schema: 2.0.0
 
 ```
 Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <String>] [[-ThisFqdn] <String>]
- [[-ItemCount] <UInt64>] [[-TotalBytes] <UInt64>] [[-ReportInstanceId] <String>]
+ [[-ItemCount] <UInt64>] [[-TotalBytes] <UInt64>] [[-ReportInstanceId] <String>] [[-PermissionCount] <UInt64>]
+ [[-PrincipalCount] <UInt64>]
 ```
 
 ## DESCRIPTION
@@ -41,6 +42,36 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PermissionCount
+{{ Fill PermissionCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrincipalCount
+{{ Fill PrincipalCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -19,7 +19,8 @@ Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <Strin
  [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>]
  [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>]
  [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
- [[-ResolvedFolderTargets] <Object>]
+ [[-ResolvedFolderTargets] <Object>] [[-ExpandedAccountPermissions] <Object>]
+ [[-FormattedSecurityPrincipals] <Object>]
 ```
 
 ## DESCRIPTION
@@ -66,6 +67,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ExpandedAccountPermissions
+{{ Fill ExpandedAccountPermissions Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 20
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -FolderPermissions
 {{ Fill FolderPermissions Description }}
 
@@ -91,6 +107,21 @@ Aliases:
 
 Required: False
 Position: 13
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -FormattedSecurityPrincipals
+{{ Fill FormattedSecurityPrincipals Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 21
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
