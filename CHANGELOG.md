@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.176] - 2024-02-05 - bugfix group-permission
+
 ## [0.0.175] - 2024-02-05 - add group-permission
 
 ## [0.0.174] - 2024-02-05 - add pstype to output of format-folderpermission to try formatting final output
