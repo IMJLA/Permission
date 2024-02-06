@@ -664,11 +664,11 @@ function Format-FolderPermission {
     } else {
         $Progress['Id'] = 0
     }
-    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
-        $i = 0
-    $IntervalCounter = 0
 
     $Count = ($UserPermission | Measure-Object).Count
+    Write-Progress @Progress -Status "0% (item 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    $i = 0
+    $IntervalCounter = 0
     [int]$ProgressInterval = [math]::max(($Count / 100), 1)
 
     ForEach ($ThisUser in $UserPermission) {
@@ -805,6 +805,7 @@ function Format-FolderPermission {
                 IdentityReference        = $IdentityReference
                 AccessControlEntry       = $ThisACE
                 SchemaClassName          = $SchemaClassName
+                PSTypeName               = 'Permission.FolderPermission'
             }
 
         }
@@ -2597,6 +2598,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

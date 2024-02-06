@@ -44,11 +44,11 @@ function Format-FolderPermission {
     } else {
         $Progress['Id'] = 0
     }
-    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
-        $i = 0
-    $IntervalCounter = 0
 
     $Count = ($UserPermission | Measure-Object).Count
+    Write-Progress @Progress -Status "0% (item 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    $i = 0
+    $IntervalCounter = 0
     [int]$ProgressInterval = [math]::max(($Count / 100), 1)
 
     ForEach ($ThisUser in $UserPermission) {
@@ -185,6 +185,7 @@ function Format-FolderPermission {
                 IdentityReference        = $IdentityReference
                 AccessControlEntry       = $ThisACE
                 SchemaClassName          = $SchemaClassName
+                PSTypeName               = 'Permission.FolderPermission'
             }
 
         }
