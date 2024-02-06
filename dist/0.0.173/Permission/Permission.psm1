@@ -1885,8 +1885,8 @@ function Get-UniqueServerFqdn {
     } else {
         $Progress['Id'] = 0
     }
-
-    Write-Progress @Progress -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
+    $Count = $FilePath.Count
+    Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -1902,7 +1902,6 @@ function Get-UniqueServerFqdn {
     #}
 
     # Add server names from the ACL paths
-    $Count = $FilePath.Count
     [int]$ProgressInterval = [math]::max(($Count / 100), 1)
     $IntervalCounter = 0
     $i = 0
@@ -1911,7 +1910,7 @@ function Get-UniqueServerFqdn {
         $IntervalCounter++
         if ($IntervalCounter -eq $ProgressInterval) {
             [int]$PercentComplete = $i / $Count * 100
-            Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count paths)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
             $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -2011,7 +2010,7 @@ function Initialize-Cache {
         $Progress['Id'] = 0
     }
     $Count = $ServerFqdns.Count
-    Write-Progress @Progress -Status "$PercentComplete% (0 of $Count FQDNs)" -CurrentOperation 'Initializing' -PercentComplete 0
+    Write-Progress @Progress -Status "0% (FQDN 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -2046,7 +2045,7 @@ function Initialize-Cache {
 
             if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count FQDNs)" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count)" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
 
@@ -2329,7 +2328,8 @@ function Resolve-PermissionIdentity {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status "0%" -CurrentOperation 'Initializing' -PercentComplete 0
+    $Count = $Permission.Count
+    Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -2354,7 +2354,6 @@ function Resolve-PermissionIdentity {
             CimCache               = $CimCache
         }
 
-        $Count = $Permission.Count
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
@@ -2366,7 +2365,7 @@ function Resolve-PermissionIdentity {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count permissions)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -2598,6 +2597,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

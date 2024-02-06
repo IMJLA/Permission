@@ -32,8 +32,8 @@ function Get-UniqueServerFqdn {
     } else {
         $Progress['Id'] = 0
     }
-
-    Write-Progress @Progress -Status '0%' -CurrentOperation 'Initializing' -PercentComplete 0
+    $Count = $FilePath.Count
+    Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -49,7 +49,6 @@ function Get-UniqueServerFqdn {
     #}
 
     # Add server names from the ACL paths
-    $Count = $FilePath.Count
     [int]$ProgressInterval = [math]::max(($Count / 100), 1)
     $IntervalCounter = 0
     $i = 0
@@ -58,7 +57,7 @@ function Get-UniqueServerFqdn {
         $IntervalCounter++
         if ($IntervalCounter -eq $ProgressInterval) {
             [int]$PercentComplete = $i / $Count * 100
-            Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count paths)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
             $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically

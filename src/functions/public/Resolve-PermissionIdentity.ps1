@@ -73,7 +73,8 @@ function Resolve-PermissionIdentity {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status "0%" -CurrentOperation 'Initializing' -PercentComplete 0
+    $Count = $Permission.Count
+    Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -98,7 +99,6 @@ function Resolve-PermissionIdentity {
             CimCache               = $CimCache
         }
 
-        $Count = $Permission.Count
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
@@ -110,7 +110,7 @@ function Resolve-PermissionIdentity {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% ($($i + 1) of $Count permissions)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
