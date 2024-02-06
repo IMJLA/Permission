@@ -1937,15 +1937,12 @@ function Group-Permission {
 
     ForEach ($Permission in $InputObject) {
 
-        [string]$Key = $Permission.$Property
+        $Key = $Permission.$Property
         $CacheResult = $Cache[$Key]
-
-        if ($CacheResult) {
-            $CacheResult.Add($Permission)
-        } else {
-            $CacheResult = [System.Collections.Generic.List[object]]::new().Add($Permission)
+        if (-not $CacheResult) {
+            $CacheResult = [System.Collections.Generic.List[object]]::new()
         }
-
+        $CacheResult.Add($Permission)
         $Cache[$Key] = $CacheResult
 
     }
@@ -1954,15 +1951,17 @@ function Group-Permission {
 
         $CacheResult = $Cache[$Key]
         [pscustomobject]@{
-            PSType = "Permission.$Property`Permission"
-            Group  = $CacheResult
-            Name   = $Key
-            Count  = $CacheResult.Count
+            PSTypeName = "Permission.$Property`Permission"
+            Group      = $CacheResult
+            Name       = $Key
+            Count      = $CacheResult.Count
         }
 
     }
 
 }
+
+
 function Initialize-Cache {
 
     <# Use the list of known ADSI server FQDNs to populate six caches:
@@ -2638,6 +2637,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

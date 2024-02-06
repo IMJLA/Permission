@@ -12,15 +12,12 @@ function Group-Permission {
 
     ForEach ($Permission in $InputObject) {
 
-        [string]$Key = $Permission.$Property
+        $Key = $Permission.$Property
         $CacheResult = $Cache[$Key]
-
-        if ($CacheResult) {
-            $CacheResult.Add($Permission)
-        } else {
-            $CacheResult = [System.Collections.Generic.List[object]]::new().Add($Permission)
+        if (-not $CacheResult) {
+            $CacheResult = [System.Collections.Generic.List[object]]::new()
         }
-
+        $CacheResult.Add($Permission)
         $Cache[$Key] = $CacheResult
 
     }
@@ -29,12 +26,14 @@ function Group-Permission {
 
         $CacheResult = $Cache[$Key]
         [pscustomobject]@{
-            PSType = "Permission.$Property`Permission"
-            Group  = $CacheResult
-            Name   = $Key
-            Count  = $CacheResult.Count
+            PSTypeName = "Permission.$Property`Permission"
+            Group      = $CacheResult
+            Name       = $Key
+            Count      = $CacheResult.Count
         }
 
     }
 
 }
+
+
