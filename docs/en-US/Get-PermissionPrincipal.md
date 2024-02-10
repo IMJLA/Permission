@@ -18,7 +18,7 @@ Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>]
  [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [-NoGroupMembers] [[-ProgressParentId] <Int32>]
+ [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
 ```
 
 ## DESCRIPTION
@@ -75,6 +75,21 @@ Aliases:
 
 Required: False
 Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -CurrentDomain
+{{ Fill CurrentDomain Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

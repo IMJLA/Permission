@@ -70,7 +70,11 @@ function Get-PermissionPrincipal {
         [switch]$NoGroupMembers,
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # The current domain
+        # Can be passed as a parameter to reduce calls to Get-CurrentDomain
+        [string]$CurrentDomain = (Get-CurrentDomain)
 
     )
 
@@ -107,6 +111,7 @@ function Get-PermissionPrincipal {
         DebugOutputStream    = $DebugOutputStream
         ACEsByPrincipal      = $ACEsByPrincipal # end state
         ACEbyResolvedIDCache = $ACEbyResolvedIDCache # start state
+        CurrentDomain        = $CurrentDomain
     }
 
     if ($ThreadCount -eq 1) {
