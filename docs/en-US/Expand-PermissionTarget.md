@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Expand-Folder
+# Expand-PermissionTarget
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,9 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-Folder [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>]
+Expand-PermissionTarget [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [[-ProgressParentId] <Int32>]
+ [[-ProgressParentId] <Int32>] [[-TargetCache] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -102,6 +102,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetCache
+{{ Fill TargetCache Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

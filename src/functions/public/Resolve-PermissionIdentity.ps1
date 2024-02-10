@@ -1,5 +1,7 @@
 function Resolve-PermissionIdentity {
 
+    # Resolve an identity in an access control list to its SID and NTAccount name
+
     param (
 
         # Permission objects from Get-FolderAccessList whose IdentityReference to resolve

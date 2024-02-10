@@ -1,6 +1,8 @@
 function Initialize-Cache {
 
-    <# Use the list of known ADSI server FQDNs to populate six caches:
+    <#
+    Pre-populate caches in memory to avoid redundant ADSI and CIM queries
+    Use known ADSI and CIM server FQDNs to populate six caches:
        Three caches of known ADSI directory servers
          The first cache is keyed on domain SID (e.g. S-1-5-2)
          The second cache is keyed on domain FQDN (e.g. ad.contoso.com)

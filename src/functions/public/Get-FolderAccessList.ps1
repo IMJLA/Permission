@@ -1,4 +1,9 @@
 function Get-FolderAccessList {
+
+    # Get folder access control lists
+    # Returns an object representing each effective permission on a folder
+    # This includes each Access Control Entry in the Discretionary Access List, as well as the folder's Owner
+
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
@@ -68,9 +73,9 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @ChildProgress -Completed
-        $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
+    $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation $ChildProgress['Activity'] -PercentComplete 25
-        $SubfolderCount = $Subfolder.Count
+    $SubfolderCount = $Subfolder.Count
 
     if ($ThreadCount -eq 1) {
         Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
@@ -90,7 +95,7 @@ function Get-FolderAccessList {
         }
 
         Write-Progress @ChildProgress -Completed
-                Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
+        Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
 
     } else {
 
@@ -131,8 +136,8 @@ function Get-FolderAccessList {
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
     Write-Progress @ChildProgress -Completed
-        Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
-        $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
+    Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
+    $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {

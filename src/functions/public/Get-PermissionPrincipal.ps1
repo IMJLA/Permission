@@ -139,6 +139,10 @@ function Get-PermissionPrincipal {
 
     } else {
 
+        if ($NoGroupMembers) {
+            $ADSIConversionParams['AddSwitch'] = 'NoGroupMembers'
+        }
+
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
             InputObject          = $Identity
@@ -149,10 +153,6 @@ function Get-PermissionPrincipal {
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
             AddParam             = $ADSIConversionParams
-        }
-
-        if ($NoGroupMembers) {
-            $ADSIConversionParams['AddSwitch'] = 'NoGroupMembers'
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$Identity"

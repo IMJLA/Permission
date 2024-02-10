@@ -96,7 +96,7 @@ function Expand-AcctPermission {
     Write-Progress @Progress -Completed
 
 }
-function Expand-Folder {
+function Expand-PermissionTarget {
 
     # Expand a folder path into the paths of its subfolders
 
@@ -132,7 +132,10 @@ function Expand-Folder {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # Hashtable of target items with access control lists
+        [hashtable]$TargetCache = [hashtable]::Synchronized(@{})
 
     )
 
@@ -146,7 +149,7 @@ function Expand-Folder {
         $Progress['Id'] = 0
     }
 
-    $FolderCount = @($Folder).Count
+    $FolderCount = $TargetCache.Keys.Count
     Write-Progress @Progress -Status "0% (item 0 of $FolderCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
@@ -168,7 +171,7 @@ function Expand-Folder {
         [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        ForEach ($ThisFolder in $Folder) {
+        ForEach ($ThisFolder in $TargetCache.Keys) {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $FolderCount * 100
@@ -187,7 +190,7 @@ function Expand-Folder {
 
         $GetSubfolder = @{
             Command           = 'Get-Subfolder'
-            InputObject       = $Folder
+            InputObject       = $TargetCache.Keys
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
@@ -205,7 +208,7 @@ function Expand-Folder {
 
     }
 
-        Write-Progress @Progress -Completed
+    Write-Progress @Progress -Completed
 
 }
 function Export-FolderPermissionHtml {
@@ -1122,6 +1125,11 @@ function Get-CachedCimSession {
 
 }
 function Get-FolderAccessList {
+
+    # Get folder access control lists
+    # Returns an object representing each effective permission on a folder
+    # This includes each Access Control Entry in the Discretionary Access List, as well as the folder's Owner
+
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
@@ -1191,9 +1199,9 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @ChildProgress -Completed
-        $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
+    $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation $ChildProgress['Activity'] -PercentComplete 25
-        $SubfolderCount = $Subfolder.Count
+    $SubfolderCount = $Subfolder.Count
 
     if ($ThreadCount -eq 1) {
         Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
@@ -1213,7 +1221,7 @@ function Get-FolderAccessList {
         }
 
         Write-Progress @ChildProgress -Completed
-                Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
+        Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
 
     } else {
 
@@ -1254,8 +1262,8 @@ function Get-FolderAccessList {
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
     }
     Write-Progress @ChildProgress -Completed
-        Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
-        $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
+    Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
+    $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
@@ -1602,6 +1610,150 @@ $FormattedSecurityPrincipals principals represented by those identities
 $UniqueAccountPermissions.Count unique accounts after filtering out any specified domain names
 $ExpandedAccountPermissions.Count effective permissions belonging to those principals and applying to those folders
 #>
+function Get-Permission {
+
+    # Get detailed info about permissions and the accounts with them
+
+    <#
+    Get-FolderAccessList
+      Get-FolderAce
+    Resolve-AccessList (foreach AccessControlEntry)
+      Resolve-PermissionIdentity
+        Resolve-Ace
+          Resolve-IdentityReference
+      Get-PermissionPrincipal
+        ConvertFrom-IdentityReferenceResolved
+      Format-PermissionAccount
+        Format-SecurityPrincipal
+      Select-UniqueAccountPermission
+      Format-FolderPermission
+    #>
+
+    param (
+
+        # Path to the item whose permissions to export (inherited ACEs will be included)
+        $Folder,
+
+        # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
+        $Subfolder,
+
+        # Number of asynchronous threads to use
+        [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
+
+        # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
+        [string]$DebugOutputStream = 'Debug',
+
+        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$ThisHostname = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Dictionary to cache directory entries to avoid redundant lookups
+
+        Defaults to an empty thread-safe hashtable
+        #>
+        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # Thread-safe cache of items and their owners
+        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId,
+
+        [string[]]$KnownFqdn
+
+    )
+
+    # Create a splat of the progress parameters for code readability
+    $Progress = @{
+        Activity = 'Get-Permission'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $ProgressId = $ProgressParentId + 1
+    } else {
+        $ProgressId = 0
+    }
+    $Progress['Id'] = $ProgressId
+
+    # Start the progress bar for this function
+    Write-Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Initialize' -PercentComplete 0 @Progress
+
+    # Create a splat of the child progress bar ID to pass to various functions for code readability
+    $ChildProgress = @{
+        ProgressParentId = $ProgressId
+    }
+
+    # Create a splat of the ThreadCount parameter to pass to various functions for code readability
+    $Threads = @{
+        ThreadCount = $ThreadCount
+    }
+
+    # Create a splat of log-related parameters to pass to various functions for code readability
+    $LoggingParams = @{
+        ThisHostname = $ThisHostname
+        LogMsgCache  = $LogCache
+        WhoAmI       = $WhoAmI
+    }
+
+    # Create a splat of caching-related parameters to pass to various functions for code readability
+    $CacheParams = @{
+        Win32AccountsBySID     = $Win32AccountsBySID
+        Win32AccountsByCaption = $Win32AccountsByCaption
+        DirectoryEntryCache    = $DirectoryEntryCache
+        DomainsByFqdn          = $DomainsByFqdn
+        DomainsByNetbios       = $DomainsByNetbios
+        DomainsBySid           = $DomainsBySid
+        ThisFqdn               = $ThisFqdn
+        ThreadCount            = $ThreadCount
+    }
+
+    Write-Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get folder access control lists' -PercentComplete 15 @Progress
+    Write-LogMsg @LogParams -Text "`$AccessLists = Get-FolderAccessList -Folder @('$($Folder -join "','")') -Subfolder @('$($Subfolder -join "','")')"
+    $AccessLists = Get-FolderAccessList -Folder $Folder -Subfolder $Subfolder @Threads @ChildProgress @LoggingParams
+
+    # Without this step, threads that start simulataneously would all find the cache empty and would all perform queries to populate it
+    Write-Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Pre-populate caches in memory to avoid redundant ADSI and CIM queries' -PercentComplete 30 @Progress
+    Write-LogMsg @LogParams -Text "Initialize-Cache -Fqdn @('$($KnownFqdn -join "',")')"
+    Initialize-Cache -Fqdn $KnownFqdn -CimCache $CimCache @ProgressParent @LoggingParams @CacheParams
+
+    Write-Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Resolve and expand the identities in access control lists to the accounts they represent' -PercentComplete 30 @Progress
+    Write-LogMsg @LogParams -Text "Resolve-AccessList -AccessList `$AccessLists"
+    Resolve-AccessList -AccessList $AccessLists @Threads @ChildProgress @LoggingParams
+
+    Write-Progress @Progress -Completed
+
+}
 function Get-PermissionPrincipal {
 
     param (
@@ -1743,6 +1895,10 @@ function Get-PermissionPrincipal {
 
     } else {
 
+        if ($NoGroupMembers) {
+            $ADSIConversionParams['AddSwitch'] = 'NoGroupMembers'
+        }
+
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
             InputObject          = $Identity
@@ -1753,10 +1909,6 @@ function Get-PermissionPrincipal {
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
             AddParam             = $ADSIConversionParams
-        }
-
-        if ($NoGroupMembers) {
-            $ADSIConversionParams['AddSwitch'] = 'NoGroupMembers'
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$Identity"
@@ -1962,7 +2114,9 @@ function Group-Permission {
 }
 function Initialize-Cache {
 
-    <# Use the list of known ADSI server FQDNs to populate six caches:
+    <#
+    Pre-populate caches in memory to avoid redundant ADSI and CIM queries
+    Use known ADSI and CIM server FQDNs to populate six caches:
        Three caches of known ADSI directory servers
          The first cache is keyed on domain SID (e.g. S-1-5-2)
          The second cache is keyed on domain FQDN (e.g. ad.contoso.com)
@@ -2171,6 +2325,140 @@ function Remove-CachedCimSession {
     }
 
 }
+function Resolve-AccessList {
+
+    <#
+    Resolve and expand the identities in access control lists to the accounts they represent
+
+    Resolve-PermissionIdentity
+      Resolve-Ace
+        Resolve-IdentityReference
+    Get-PermissionPrincipal
+      ConvertFrom-IdentityReferenceResolved
+    Format-PermissionAccount
+      Format-SecurityPrincipal
+    Select-UniqueAccountPermission
+    Format-FolderPermission
+    #>
+
+    param (
+
+        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
+        [Parameter(ValueFromPipeline)]
+        [object[]]$AccessList,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
+        # Maximum number of concurrent threads to allow
+        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Dictionary to cache directory entries to avoid redundant lookups
+
+        Defaults to an empty thread-safe hashtable
+        #>
+        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
+
+    )
+
+    # Create a splat of the progress parameters for code readability
+    $Progress = @{
+        Activity = 'Resolve-AccessList'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $ProgressId = $ProgressParentId + 1
+    } else {
+        $ProgressId = 0
+    }
+    $Progress['Id'] = $ProgressId
+
+    # Start the progress bar for this function
+    Write-Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Initialize' -PercentComplete 0 @Progress
+
+    $Count = $AccessList.Count
+    Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+
+    # Create a splat of constant Write-LogMsg parameters for code readability
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    # Create a splat of log-related parameters to pass to various functions for code readability
+    $LoggingParams = @{
+        ThisHostname = $ThisHostname
+        LogMsgCache  = $LogCache
+        WhoAmI       = $WhoAmI
+    }
+
+    # Create a splat of caching-related parameters to pass to various functions for code readability
+    $CacheParams = @{
+        Win32AccountsBySID     = $Win32AccountsBySID
+        Win32AccountsByCaption = $Win32AccountsByCaption
+        DirectoryEntryCache    = $DirectoryEntryCache
+        DomainsByFqdn          = $DomainsByFqdn
+        DomainsByNetbios       = $DomainsByNetbios
+        DomainsBySid           = $DomainsBySid
+        ThisFqdn               = $ThisFqdn
+        ThreadCount            = $ThreadCount
+    }
+
+    # The resolved name will include the domain name (or local computer name for local accounts)
+    Write-Progress -Status '35% (step 8 of 20)' -CurrentOperation 'Resolve identities in access control lists to their SIDs and NTAccount names' -PercentComplete 35 @Progress
+    Write-LogMsg @LogParams -Text '$PermissionsWithResolvedIdentities = Resolve-PermissionIdentity -Permission $Permissions'
+    $PermissionsWithResolvedIdentities = Resolve-PermissionIdentity -CimCache $CimCache @LoggingParams @CacheParams -Permission $Permissions @ProgressParent
+
+
+
+    Write-Progress @Progress -Completed
+
+}
 function Resolve-Folder {
 
     # Resolve the provided FolderPath to all of its associated UNC paths, including all DFS folder targets
@@ -2292,6 +2580,8 @@ function Resolve-Folder {
 
 }
 function Resolve-PermissionIdentity {
+
+    # Resolve an identity in an access control list to its SID and NTAccount name
 
     param (
 
@@ -2484,7 +2774,10 @@ function Resolve-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # Hashtable of target items with access control lists
+        [hashtable]$TargetCache = [hashtable]::Synchronized(@{})
 
     )
 
@@ -2507,7 +2800,11 @@ function Resolve-PermissionTarget {
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
+        $Resolved = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
+
+        ForEach ($ThisOne in $Resolved) {
+            $TargetCache[$ThisOne] = $null
+        }
 
     }
 
@@ -2634,7 +2931,9 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-Folder','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
+
 
 
 

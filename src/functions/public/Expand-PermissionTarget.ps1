@@ -1,4 +1,4 @@
-function Expand-Folder {
+function Expand-PermissionTarget {
 
     # Expand a folder path into the paths of its subfolders
 
@@ -34,7 +34,10 @@ function Expand-Folder {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # Hashtable of target items with access control lists
+        [hashtable]$TargetCache = [hashtable]::Synchronized(@{})
 
     )
 
@@ -48,7 +51,7 @@ function Expand-Folder {
         $Progress['Id'] = 0
     }
 
-    $FolderCount = @($Folder).Count
+    $FolderCount = $TargetCache.Keys.Count
     Write-Progress @Progress -Status "0% (item 0 of $FolderCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
@@ -70,7 +73,7 @@ function Expand-Folder {
         [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        ForEach ($ThisFolder in $Folder) {
+        ForEach ($ThisFolder in $TargetCache.Keys) {
             $IntervalCounter++
             if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $FolderCount * 100
@@ -89,7 +92,7 @@ function Expand-Folder {
 
         $GetSubfolder = @{
             Command           = 'Get-Subfolder'
-            InputObject       = $Folder
+            InputObject       = $TargetCache.Keys
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
@@ -107,6 +110,6 @@ function Expand-Folder {
 
     }
 
-        Write-Progress @Progress -Completed
+    Write-Progress @Progress -Completed
 
 }
