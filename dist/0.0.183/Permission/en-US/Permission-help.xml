@@ -4463,9 +4463,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
-          <maml:name>IdentityCache</maml:name>
+          <maml:name>Win32AccountsByCaption</maml:name>
           <maml:description>
-            <maml:para>{{ Fill IdentityCache Description }}</maml:para>
+            <maml:para>{{ Fill Win32AccountsByCaption Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -4475,6 +4475,18 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+          <maml:name>Win32AccountsBySID</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill Win32AccountsBySID Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
           <maml:name>ThisHostName</maml:name>
           <maml:description>
             <maml:para>{{ Fill ThisHostName Description }}</maml:para>
@@ -4486,7 +4498,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
           <maml:name>ThisFqdn</maml:name>
           <maml:description>
             <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
@@ -4498,7 +4510,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
           <maml:name>WhoAmI</maml:name>
           <maml:description>
             <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -4510,7 +4522,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
           <maml:name>LogMsgCache</maml:name>
           <maml:description>
             <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -4522,7 +4534,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
           <maml:name>ProgressParentId</maml:name>
           <maml:description>
             <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -4547,6 +4559,18 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+          <maml:name>ACEbyResolvedIDCache</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>CimCache</maml:name>
           <maml:description>
             <maml:para>{{ Fill CimCache Description }}</maml:para>
@@ -4558,31 +4582,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-          <maml:name>Win32AccountsBySID</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Win32AccountsBySID Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-          <maml:name>Win32AccountsByCaption</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Win32AccountsByCaption Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
           <maml:name>DirectoryEntryCache</maml:name>
           <maml:description>
             <maml:para>{{ Fill DirectoryEntryCache Description }}</maml:para>
@@ -4594,7 +4594,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
           <maml:name>DomainsByNetbios</maml:name>
           <maml:description>
             <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
@@ -4606,7 +4606,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
           <maml:name>DomainsBySid</maml:name>
           <maml:description>
             <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
@@ -4618,10 +4618,22 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
           <maml:name>DomainsByFqdn</maml:name>
           <maml:description>
             <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+          <maml:name>IdentityCache</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill IdentityCache Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -4657,6 +4669,18 @@
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>ACEbyResolvedIDCache</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>CimCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill CimCache Description }}</maml:para>
@@ -4680,7 +4704,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
         <maml:name>DirectoryEntryCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill DirectoryEntryCache Description }}</maml:para>
@@ -4692,7 +4716,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
         <maml:name>DomainsByFqdn</maml:name>
         <maml:description>
           <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
@@ -4704,7 +4728,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
         <maml:name>DomainsByNetbios</maml:name>
         <maml:description>
           <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
@@ -4716,7 +4740,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
         <maml:name>DomainsBySid</maml:name>
         <maml:description>
           <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
@@ -4740,7 +4764,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
         <maml:name>IdentityCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill IdentityCache Description }}</maml:para>
@@ -4752,7 +4776,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
         <maml:name>LogMsgCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -4788,7 +4812,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
         <maml:name>ProgressParentId</maml:name>
         <maml:description>
           <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -4800,7 +4824,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
         <maml:name>ThisFqdn</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
@@ -4812,7 +4836,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
         <maml:name>ThisHostName</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisHostName Description }}</maml:para>
@@ -4836,7 +4860,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
         <maml:name>WhoAmI</maml:name>
         <maml:description>
           <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -4848,7 +4872,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
         <maml:name>Win32AccountsByCaption</maml:name>
         <maml:description>
           <maml:para>{{ Fill Win32AccountsByCaption Description }}</maml:para>
@@ -4860,7 +4884,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
         <maml:name>Win32AccountsBySID</maml:name>
         <maml:description>
           <maml:para>{{ Fill Win32AccountsBySID Description }}</maml:para>
@@ -6775,6 +6799,30 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+          <maml:name>Win32AccountsBySID</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill Win32AccountsBySID Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+          <maml:name>ThisHostName</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
           <maml:name>ThisFqdn</maml:name>
           <maml:description>
             <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
@@ -6786,7 +6834,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
           <maml:name>WhoAmI</maml:name>
           <maml:description>
             <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -6798,7 +6846,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
           <maml:name>LogMsgCache</maml:name>
           <maml:description>
             <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -6810,19 +6858,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
-          <maml:name>CimCache</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill CimCache Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
           <maml:name>ProgressParentId</maml:name>
           <maml:description>
             <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -6847,9 +6883,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>Win32AccountsBySID</maml:name>
+          <maml:name>ACEbyResolvedIDCache</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Win32AccountsBySID Description }}</maml:para>
+            <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -6859,9 +6895,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-          <maml:name>Win32AccountsByCaption</maml:name>
+          <maml:name>CimCache</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Win32AccountsByCaption Description }}</maml:para>
+            <maml:para>{{ Fill CimCache Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -6883,30 +6919,6 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-          <maml:name>DomainsByNetbios</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
-          <maml:name>DomainsBySid</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
           <maml:name>DomainsByFqdn</maml:name>
           <maml:description>
             <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
@@ -6918,14 +6930,38 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
-          <maml:name>ThisHostName</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+          <maml:name>DomainsByNetbios</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+            <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+          <maml:name>DomainsBySid</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+          <maml:name>Win32AccountsByCaption</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill Win32AccountsByCaption Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -6945,7 +6981,19 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>ACEbyResolvedIDCache</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>CimCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill CimCache Description }}</maml:para>
@@ -6981,7 +7029,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
         <maml:name>DomainsByFqdn</maml:name>
         <maml:description>
           <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
@@ -6993,7 +7041,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
         <maml:name>DomainsByNetbios</maml:name>
         <maml:description>
           <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
@@ -7005,7 +7053,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
         <maml:name>DomainsBySid</maml:name>
         <maml:description>
           <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
@@ -7017,7 +7065,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
         <maml:name>LogMsgCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -7053,7 +7101,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
         <maml:name>ProgressParentId</maml:name>
         <maml:description>
           <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -7065,7 +7113,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
         <maml:name>ThisFqdn</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
@@ -7077,7 +7125,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
         <maml:name>ThisHostName</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisHostName Description }}</maml:para>
@@ -7101,7 +7149,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
         <maml:name>WhoAmI</maml:name>
         <maml:description>
           <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -7113,7 +7161,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
         <maml:name>Win32AccountsByCaption</maml:name>
         <maml:description>
           <maml:para>{{ Fill Win32AccountsByCaption Description }}</maml:para>
@@ -7125,7 +7173,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
         <maml:name>Win32AccountsBySID</maml:name>
         <maml:description>
           <maml:para>{{ Fill Win32AccountsBySID Description }}</maml:para>

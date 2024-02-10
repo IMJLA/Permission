@@ -14,10 +14,10 @@ schema: 2.0.0
 
 ```
 Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-Win32AccountsBySID] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
- [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
- [[-DomainsByFqdn] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [[-CimCache] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-ACEbyResolvedIDCache] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
+ [[-DomainsByFqdn] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
+ [[-Win32AccountsByCaption] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>] [[-ThisHostName] <String>]
+ [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -35,6 +35,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -ACEbyResolvedIDCache
+{{ Fill ACEbyResolvedIDCache Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -CimCache
 {{ Fill CimCache Description }}
 
@@ -44,7 +59,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -90,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -105,7 +120,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -120,7 +135,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -135,7 +150,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -180,7 +195,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -195,7 +210,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -210,7 +225,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -240,7 +255,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +270,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -270,7 +285,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

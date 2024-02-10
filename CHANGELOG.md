@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.183] - 2024-02-10 - add caching to resolve-permissionidentity to avoid using group-object
+
 ## [0.0.182] - 2024-02-09 - add folder target caching
 
 ## [0.0.181] - 2024-02-09 - add folder target caching

@@ -13,14 +13,11 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
+        # Cache of access control entries keyed by their resolved identities
+        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
+
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
-
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
@@ -40,6 +37,12 @@ function Get-PermissionPrincipal {
 
         # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
         [hashtable]$IdentityCache = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -106,6 +109,7 @@ function Get-PermissionPrincipal {
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
+        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
     }
 
     if ($ThreadCount -eq 1) {
@@ -114,12 +118,12 @@ function Get-PermissionPrincipal {
             $ADSIConversionParams['NoGroupMembers'] = $true
         }
 
-        $Count = $Identity.Count
+        $Count = $ACEbyResolvedIDCache.Keys.Count
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisID in $Identity) {
+        ForEach ($ResolvedIdentityReferenceString in $ACEbyResolvedIDCache.Keys) {
 
             $IntervalCounter++
 
@@ -132,7 +136,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.Name)"
+            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.IdentityReferenceResolved)"
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -145,7 +149,7 @@ function Get-PermissionPrincipal {
 
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
-            InputObject          = $Identity
+            InputObject          = $ACEbyResolvedIDCache.Keys
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
@@ -155,7 +159,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$Identity"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEbyResolvedIDCache.Keys"
         Split-Thread @SplitThreadParams
 
     }

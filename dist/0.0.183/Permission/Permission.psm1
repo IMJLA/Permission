@@ -1769,14 +1769,11 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
+        # Cache of access control entries keyed by their resolved identities
+        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
+
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
-
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
@@ -1796,6 +1793,12 @@ function Get-PermissionPrincipal {
 
         # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
         [hashtable]$IdentityCache = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -1862,6 +1865,7 @@ function Get-PermissionPrincipal {
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
+        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
     }
 
     if ($ThreadCount -eq 1) {
@@ -1870,12 +1874,12 @@ function Get-PermissionPrincipal {
             $ADSIConversionParams['NoGroupMembers'] = $true
         }
 
-        $Count = $Identity.Count
+        $Count = $ACEbyResolvedIDCache.Keys.Count
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisID in $Identity) {
+        ForEach ($ResolvedIdentityReferenceString in $ACEbyResolvedIDCache.Keys) {
 
             $IntervalCounter++
 
@@ -1888,7 +1892,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.Name)"
+            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.IdentityReferenceResolved)"
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -1901,7 +1905,7 @@ function Get-PermissionPrincipal {
 
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
-            InputObject          = $Identity
+            InputObject          = $ACEbyResolvedIDCache.Keys
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
@@ -1911,7 +1915,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$Identity"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEbyResolvedIDCache.Keys"
         Split-Thread @SplitThreadParams
 
     }
@@ -2202,7 +2206,7 @@ function Initialize-Cache {
         $Progress['Id'] = 0
     }
     $Count = $ServerFqdns.Count
-    Write-Progress @Progress -Status "0% (FQDN 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    Write-Progress -Status "0% (FQDN 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0 @Progress
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -2237,7 +2241,7 @@ function Initialize-Cache {
 
             if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count)" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
 
@@ -2581,7 +2585,7 @@ function Resolve-Folder {
 }
 function Resolve-PermissionIdentity {
 
-    # Resolve an identity in an access control list to its SID and NTAccount name
+    # Resolve identities in access control lists to their SIDs and NTAccount names
 
     param (
 
@@ -2596,11 +2600,11 @@ function Resolve-PermissionIdentity {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+        # Cache of access control entries keyed by their resolved identities
+        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
@@ -2609,14 +2613,20 @@ function Resolve-PermissionIdentity {
         #>
         [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
 
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
 
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -2637,9 +2647,6 @@ function Resolve-PermissionIdentity {
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
         [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -2666,21 +2673,23 @@ function Resolve-PermissionIdentity {
         WhoAmI       = $WhoAmI
     }
 
+    $ResolveAceParams = @{
+        DirectoryEntryCache    = $DirectoryEntryCache
+        Win32AccountsBySID     = $Win32AccountsBySID
+        Win32AccountsByCaption = $Win32AccountsByCaption
+        DomainsBySID           = $DomainsBySID
+        DomainsByNetbios       = $DomainsByNetbios
+        DomainsByFqdn          = $DomainsByFqdn
+        ThisHostName           = $ThisHostName
+        ThisFqdn               = $ThisFqdn
+        WhoAmI                 = $WhoAmI
+        LogMsgCache            = $LogMsgCache
+        CimCache               = $CimCache
+        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
+    }
+
     if ($ThreadCount -eq 1) {
 
-        $ResolveAceParams = @{
-            DirectoryEntryCache    = $DirectoryEntryCache
-            Win32AccountsBySID     = $Win32AccountsBySID
-            Win32AccountsByCaption = $Win32AccountsByCaption
-            DomainsBySID           = $DomainsBySID
-            DomainsByNetbios       = $DomainsByNetbios
-            DomainsByFqdn          = $DomainsByFqdn
-            ThisHostName           = $ThisHostName
-            ThisFqdn               = $ThisFqdn
-            WhoAmI                 = $WhoAmI
-            LogMsgCache            = $LogMsgCache
-            CimCache               = $CimCache
-        }
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
@@ -2717,19 +2726,7 @@ function Resolve-PermissionIdentity {
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
-            AddParam             = @{
-                DirectoryEntryCache    = $DirectoryEntryCache
-                Win32AccountsBySID     = $Win32AccountsBySID
-                Win32AccountsByCaption = $Win32AccountsByCaption
-                DomainsBySID           = $DomainsBySID
-                DomainsByNetbios       = $DomainsByNetbios
-                DomainsByFqdn          = $DomainsByFqdn
-                ThisHostName           = $ThisHostName
-                ThisFqdn               = $ThisFqdn
-                WhoAmI                 = $WhoAmI
-                LogMsgCache            = $LogMsgCache
-                CimCache               = $CimCache
-            }
+            AddParam             = $ResolveAceParams
 
         }
 
@@ -2932,6 +2929,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

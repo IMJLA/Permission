@@ -1,6 +1,6 @@
 function Resolve-PermissionIdentity {
 
-    # Resolve an identity in an access control list to its SID and NTAccount name
+    # Resolve identities in access control lists to their SIDs and NTAccount names
 
     param (
 
@@ -15,11 +15,11 @@ function Resolve-PermissionIdentity {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
+        # Cache of access control entries keyed by their resolved identities
+        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
@@ -28,14 +28,20 @@ function Resolve-PermissionIdentity {
         #>
         [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
 
+        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
+        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
 
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
+        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -56,9 +62,6 @@ function Resolve-PermissionIdentity {
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
         [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -85,21 +88,23 @@ function Resolve-PermissionIdentity {
         WhoAmI       = $WhoAmI
     }
 
+    $ResolveAceParams = @{
+        DirectoryEntryCache    = $DirectoryEntryCache
+        Win32AccountsBySID     = $Win32AccountsBySID
+        Win32AccountsByCaption = $Win32AccountsByCaption
+        DomainsBySID           = $DomainsBySID
+        DomainsByNetbios       = $DomainsByNetbios
+        DomainsByFqdn          = $DomainsByFqdn
+        ThisHostName           = $ThisHostName
+        ThisFqdn               = $ThisFqdn
+        WhoAmI                 = $WhoAmI
+        LogMsgCache            = $LogMsgCache
+        CimCache               = $CimCache
+        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
+    }
+
     if ($ThreadCount -eq 1) {
 
-        $ResolveAceParams = @{
-            DirectoryEntryCache    = $DirectoryEntryCache
-            Win32AccountsBySID     = $Win32AccountsBySID
-            Win32AccountsByCaption = $Win32AccountsByCaption
-            DomainsBySID           = $DomainsBySID
-            DomainsByNetbios       = $DomainsByNetbios
-            DomainsByFqdn          = $DomainsByFqdn
-            ThisHostName           = $ThisHostName
-            ThisFqdn               = $ThisFqdn
-            WhoAmI                 = $WhoAmI
-            LogMsgCache            = $LogMsgCache
-            CimCache               = $CimCache
-        }
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
@@ -136,19 +141,7 @@ function Resolve-PermissionIdentity {
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
-            AddParam             = @{
-                DirectoryEntryCache    = $DirectoryEntryCache
-                Win32AccountsBySID     = $Win32AccountsBySID
-                Win32AccountsByCaption = $Win32AccountsByCaption
-                DomainsBySID           = $DomainsBySID
-                DomainsByNetbios       = $DomainsByNetbios
-                DomainsByFqdn          = $DomainsByFqdn
-                ThisHostName           = $ThisHostName
-                ThisFqdn               = $ThisFqdn
-                WhoAmI                 = $WhoAmI
-                LogMsgCache            = $LogMsgCache
-                CimCache               = $CimCache
-            }
+            AddParam             = $ResolveAceParams
 
         }
 
