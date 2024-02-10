@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.183
+Help Version: 0.0.184
 Locale: en-US
 ---
 
@@ -108,7 +108,7 @@ Get-Permission [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ush
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
-Get-PermissionPrincipal [[-Identity] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEbyResolvedIDCache] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityCache] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-Win32AccountsBySID] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers] [<CommonParameters>]
+Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEbyResolvedIDCache] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-IdentityCache] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-Win32AccountsBySID] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [-NoGroupMembers]
 
 
 ### [Get-PrtgXmlSensorOutput](Get-PrtgXmlSensorOutput.md)

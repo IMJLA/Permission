@@ -2,10 +2,6 @@ function Get-PermissionPrincipal {
 
     param (
 
-        # Objects from Resolve-PermissionIdentity whose corresponding ADSI security principals to retrieve
-        [Parameter(ValueFromPipeline)]
-        [object[]]$Identity,
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [string]$DebugOutputStream = 'Debug',
@@ -88,7 +84,8 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Flattening the raw access control entries for CSV export' -PercentComplete 0
+    $Count = $ACEbyResolvedIDCache.Keys.Count
+    Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -118,7 +115,6 @@ function Get-PermissionPrincipal {
             $ADSIConversionParams['NoGroupMembers'] = $true
         }
 
-        $Count = $ACEbyResolvedIDCache.Keys.Count
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
@@ -136,8 +132,8 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $($ThisID.IdentityReferenceResolved)"
-            ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
+            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $ResolvedIdentityReferenceString"
+            ConvertFrom-IdentityReferenceResolved -IdentityReference $ResolvedIdentityReferenceString @ADSIConversionParams
 
         }
 
