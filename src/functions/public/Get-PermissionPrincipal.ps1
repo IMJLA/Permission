@@ -9,7 +9,10 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of access control entries keyed by their resolved identities
+        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries. END STATE
+        [hashtable]$ACEsByPrincipal = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entries keyed by their resolved identities. STARTING STATE
         [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
@@ -30,9 +33,6 @@ function Get-PermissionPrincipal {
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
         [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
-
-        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
-        [hashtable]$IdentityCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
         [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
@@ -95,18 +95,18 @@ function Get-PermissionPrincipal {
     }
 
     $ADSIConversionParams = @{
-        DirectoryEntryCache    = $DirectoryEntryCache
-        IdentityReferenceCache = $IdentityCache
-        DomainsBySID           = $DomainsBySID
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsByFqdn          = $DomainsByFqdn
-        ThisHostName           = $ThisHostName
-        ThisFqdn               = $ThisFqdn
-        WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogMsgCache
-        CimCache               = $CimCache
-        DebugOutputStream      = $DebugOutputStream
-        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
+        DirectoryEntryCache  = $DirectoryEntryCache
+        DomainsBySID         = $DomainsBySID
+        DomainsByNetbios     = $DomainsByNetbios
+        DomainsByFqdn        = $DomainsByFqdn
+        ThisHostName         = $ThisHostName
+        ThisFqdn             = $ThisFqdn
+        WhoAmI               = $WhoAmI
+        LogMsgCache          = $LogMsgCache
+        CimCache             = $CimCache
+        DebugOutputStream    = $DebugOutputStream
+        ACEsByPrincipal      = $ACEsByPrincipal # end state
+        ACEbyResolvedIDCache = $ACEbyResolvedIDCache # start state
     }
 
     if ($ThreadCount -eq 1) {
