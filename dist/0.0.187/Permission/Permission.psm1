@@ -1766,7 +1766,7 @@ function Get-PermissionPrincipal {
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries. END STATE
-        [hashtable]$ACEsByPrincipal = ([hashtable]::Synchronized(@{})),
+        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
         [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
@@ -1855,19 +1855,19 @@ function Get-PermissionPrincipal {
     }
 
     $ADSIConversionParams = @{
-        DirectoryEntryCache  = $DirectoryEntryCache
-        DomainsBySID         = $DomainsBySID
-        DomainsByNetbios     = $DomainsByNetbios
-        DomainsByFqdn        = $DomainsByFqdn
-        ThisHostName         = $ThisHostName
-        ThisFqdn             = $ThisFqdn
-        WhoAmI               = $WhoAmI
-        LogMsgCache          = $LogMsgCache
-        CimCache             = $CimCache
-        DebugOutputStream    = $DebugOutputStream
-        ACEsByPrincipal      = $ACEsByPrincipal # end state
-        ACEbyResolvedIDCache = $ACEbyResolvedIDCache # start state
-        CurrentDomain        = $CurrentDomain
+        DirectoryEntryCache    = $DirectoryEntryCache
+        DomainsBySID           = $DomainsBySID
+        DomainsByNetbios       = $DomainsByNetbios
+        DomainsByFqdn          = $DomainsByFqdn
+        ThisHostName           = $ThisHostName
+        ThisFqdn               = $ThisFqdn
+        WhoAmI                 = $WhoAmI
+        LogMsgCache            = $LogMsgCache
+        CimCache               = $CimCache
+        DebugOutputStream      = $DebugOutputStream
+        PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
+        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache # start state
+        CurrentDomain          = $CurrentDomain
     }
 
     if ($ThreadCount -eq 1) {
@@ -2930,6 +2930,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
