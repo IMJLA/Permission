@@ -13,9 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-PermissionTarget [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>]
- [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [[-ProgressParentId] <Int32>] [[-TargetCache] <Hashtable>]
+Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
+ [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-ACLsByPath] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -32,6 +32,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -ACLsByPath
+{{ Fill ACLsByPath Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -DebugOutputStream
 {{ Fill DebugOutputStream Description }}
 
@@ -41,22 +56,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Folder
-{{ Fill Folder Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -71,7 +71,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -86,7 +86,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -101,22 +101,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TargetCache
-{{ Fill TargetCache Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -131,7 +116,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -146,7 +131,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -161,7 +146,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

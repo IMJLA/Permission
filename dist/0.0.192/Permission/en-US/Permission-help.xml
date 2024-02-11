@@ -512,18 +512,6 @@
       <command:syntaxItem>
         <maml:name>Expand-PermissionTarget</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>Folder</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Folder Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>RecurseDepth</maml:name>
           <maml:description>
             <maml:para>{{ Fill RecurseDepth Description }}</maml:para>
@@ -535,7 +523,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>ThreadCount</maml:name>
           <maml:description>
             <maml:para>{{ Fill ThreadCount Description }}</maml:para>
@@ -547,7 +535,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>DebugOutputStream</maml:name>
           <maml:description>
             <maml:para>{{ Fill DebugOutputStream Description }}</maml:para>
@@ -559,7 +547,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>ThisHostname</maml:name>
           <maml:description>
             <maml:para>{{ Fill ThisHostname Description }}</maml:para>
@@ -571,7 +559,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>WhoAmI</maml:name>
           <maml:description>
             <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -583,7 +571,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
           <maml:name>LogMsgCache</maml:name>
           <maml:description>
             <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -595,7 +583,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
           <maml:name>ProgressParentId</maml:name>
           <maml:description>
             <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -607,10 +595,10 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
-          <maml:name>TargetCache</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+          <maml:name>ACLsByPath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TargetCache Description }}</maml:para>
+            <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -622,7 +610,19 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <maml:name>ACLsByPath</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>DebugOutputStream</maml:name>
         <maml:description>
           <maml:para>{{ Fill DebugOutputStream Description }}</maml:para>
@@ -634,19 +634,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Folder</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Folder Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
         <maml:name>LogMsgCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -658,7 +646,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
         <maml:name>ProgressParentId</maml:name>
         <maml:description>
           <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -670,7 +658,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>RecurseDepth</maml:name>
         <maml:description>
           <maml:para>{{ Fill RecurseDepth Description }}</maml:para>
@@ -682,19 +670,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
-        <maml:name>TargetCache</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill TargetCache Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>ThisHostname</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisHostname Description }}</maml:para>
@@ -706,7 +682,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>ThreadCount</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThreadCount Description }}</maml:para>
@@ -718,7 +694,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>WhoAmI</maml:name>
         <maml:description>
           <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -2790,9 +2766,33 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+          <maml:name>ACLsByPath</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+        <maml:name>ACLsByPath</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>DebugOutputStream</maml:name>
         <maml:description>
@@ -7287,9 +7287,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
-          <maml:name>TargetCache</maml:name>
+          <maml:name>ACLsByPath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TargetCache Description }}</maml:para>
+            <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -7313,6 +7313,18 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <maml:name>ACLsByPath</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>CimCache</maml:name>
         <maml:description>
@@ -7357,18 +7369,6 @@
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.ActionPreference</command:parameterValue>
         <dev:type>
           <maml:name>System.Management.Automation.ActionPreference</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
-        <maml:name>TargetCache</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill TargetCache Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

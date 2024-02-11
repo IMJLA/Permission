@@ -16,7 +16,7 @@ schema: 2.0.0
 Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
- [[-ProgressParentId] <Int32>]
+ [[-ProgressParentId] <Int32>] [[-ACLsByPath] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -32,6 +32,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -ACLsByPath
+{{ Fill ACLsByPath Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -DebugOutputStream
 {{ Fill DebugOutputStream Description }}

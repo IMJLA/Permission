@@ -32,8 +32,8 @@ function Resolve-PermissionTarget {
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
-        # Hashtable of target items with access control lists
-        [hashtable]$TargetCache = [hashtable]::Synchronized(@{})
+        # Cache of access control lists keyed by path
+        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
 
     )
 
@@ -59,7 +59,7 @@ function Resolve-PermissionTarget {
         $Resolved = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
 
         ForEach ($ThisOne in $Resolved) {
-            $TargetCache[$ThisOne] = $null
+            $ACLsByPath[$ThisOne] = $null
         }
 
     }

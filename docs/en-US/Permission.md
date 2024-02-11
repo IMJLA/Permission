@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.191
+Help Version: 0.0.192
 Locale: en-US
 ---
 
@@ -23,7 +23,7 @@ Expand-PermissionPrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-DebugOutpu
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
-Expand-PermissionTarget [[-Folder] <Object>] [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-TargetCache] <hashtable>]
+Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-ACLsByPath] <hashtable>]
 
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
@@ -63,7 +63,7 @@ Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-Deb
 
 ### [Get-FolderAccessList](Get-FolderAccessList.md)
 
-Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>]
+Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-ACLsByPath] <hashtable>]
 
 
 ### [Get-FolderBlock](Get-FolderBlock.md)
@@ -168,7 +168,7 @@ Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <str
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-TargetCache] <hashtable>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ACLsByPath] <hashtable>] [<CommonParameters>]
 
 
 ### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)

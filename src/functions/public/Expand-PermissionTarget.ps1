@@ -4,9 +4,6 @@ function Expand-PermissionTarget {
 
     param (
 
-        # Path to return along, with the paths to its subfolders
-        $Folder,
-
         <#
         How many levels of subfolder to enumerate
 
@@ -36,13 +33,13 @@ function Expand-PermissionTarget {
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        # Hashtable of target items with access control lists
-        [hashtable]$TargetCache = [hashtable]::Synchronized(@{})
+        # Cache of access control lists keyed by path
+        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
 
     )
 
     $Progress = @{
-        Activity = 'Expand-Folder'
+        Activity = 'Expand-PermissionTarget'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
@@ -51,8 +48,9 @@ function Expand-PermissionTarget {
         $Progress['Id'] = 0
     }
 
-    $FolderCount = $TargetCache.Keys.Count
-    Write-Progress @Progress -Status "0% (item 0 of $FolderCount)" -CurrentOperation "Initializing..." -PercentComplete 0
+    $Targets = $ACLsByPath.Keys
+    $TargetCount = $Targets.Count
+    Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -68,45 +66,47 @@ function Expand-PermissionTarget {
         WhoAmI            = $WhoAmI
     }
 
-    if ($ThreadCount -eq 1 -or $FolderCount -eq 1) {
+    if ($ThreadCount -eq 1 -or $TargetCount -eq 1) {
 
-        [int]$ProgressInterval = [math]::max(($FolderCount / 100), 1)
+        [int]$ProgressInterval = [math]::max(($TargetCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        ForEach ($ThisFolder in $TargetCache.Keys) {
+
+        ForEach ($ThisFolder in $Targets) {
+
             $IntervalCounter++
+
             if ($IntervalCounter -eq $ProgressInterval) {
-                [int]$PercentComplete = $i / $FolderCount * 100
-                Write-Progress @Progress -Status "$PercentComplete% (item $($i + 1) of $FolderCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $TargetCount * 100
+                Write-Progress @Progress -Status "$PercentComplete% (item $($i + 1) of $TargetCount))" -CurrentOperation "Get-Subfolder '$($ThisFolder)'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
-            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
+            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
             $Subfolders = $null
             $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $RecurseDepth -ErrorAction Continue @GetSubfolderParams
             Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
             $Subfolders
+
         }
 
     } else {
 
-        $GetSubfolder = @{
+        $SplitThreadParams = @{
             Command           = 'Get-Subfolder'
-            InputObject       = $TargetCache.Keys
+            InputObject       = $Targets
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
-            AddParam          = @{
-                LogMsgCache       = $LogMsgCache
-                ThisHostname      = $ThisHostname
-                DebugOutputStream = $DebugOutputStream
-                WhoAmI            = $WhoAmI
-            }
+            AddParam          = $GetSubfolderParams
         }
-        Split-Thread @GetSubfolder
+
+        $Subfolders = Split-Thread @SplitThreadParams
+        Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for all targets"
+        $Subfolders
 
     }
 

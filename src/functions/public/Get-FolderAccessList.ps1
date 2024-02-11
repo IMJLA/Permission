@@ -31,7 +31,10 @@ function Get-FolderAccessList {
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # Cache of access control lists keyed by path
+        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
 
     )
 
@@ -51,13 +54,15 @@ function Get-FolderAccessList {
         ParentId = $ProgressId
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Get parent access control lists' -PercentComplete 0
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent access control lists' -PercentComplete 0
 
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
         ThisHostname      = $TodaysHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
+        OwnerCache        = $OwnerCache
+        ACLsByPath        = $ACLsByPath
     }
 
     # We expect a small number of folders and a large number of subfolders
@@ -65,37 +70,46 @@ function Get-FolderAccessList {
     # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
     $i = 0
     $Count = $Folder.Count
+
     ForEach ($ThisFolder in $Folder) {
+
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count)" -CurrentOperation "Get-FolderAce -IncludeInherited '$ThisFolder'" -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache -IncludeInherited @GetFolderAceParams
+        Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited @GetFolderAceParams
+
     }
 
     Write-Progress @ChildProgress -Completed
     $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
-    Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation $ChildProgress['Activity'] -PercentComplete 25
+    Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation 'Get child access control lists' -PercentComplete 50
     $SubfolderCount = $Subfolder.Count
 
     if ($ThreadCount -eq 1) {
-        Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
+
+        Write-Progress @ChildProgress -Status "0% (child 0 of $SubfolderCount)" -CurrentOperation 'Initializing' -PercentComplete 0
         [int]$ProgressInterval = [math]::max(($SubfolderCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        ForEach ($ThisFolder in $Subfolder) {
-            $IntervalCounter++
-            if ($IntervalCounter -eq $ProgressInterval) {
-                [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount)" -CurrentOperation "Get-FolderAce '$ThisFolder'" -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-            }
-            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
 
-            Get-FolderAce -LiteralPath $ThisFolder -OwnerCache $OwnerCache @GetFolderAceParams
+        ForEach ($ThisFolder in $Subfolder) {
+
+            $IntervalCounter++
+
+            if ($IntervalCounter -eq $ProgressInterval) {
+
+                [int]$PercentComplete = $i / $SubfolderCount * 100
+                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount) Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                $IntervalCounter = 0
+
+            }
+
+            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
+            Get-FolderAce -LiteralPath $ThisFolder @GetFolderAceParams
+
         }
 
         Write-Progress @ChildProgress -Completed
-        Write-Progress @Progress -Status '50% (step 3 of 4)' -CurrentOperation 'Parent Owners' -PercentComplete 50
 
     } else {
 
@@ -108,19 +122,15 @@ function Get-FolderAccessList {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
-            AddParam          = @{
-                OwnerCache        = $OwnerCache
-                LogMsgCache       = $LogMsgCache
-                ThisHostname      = $TodaysHostname
-                DebugOutputStream = $DebugOutputStream
-                WhoAmI            = $WhoAmI
-            }
+            AddParam          = $GetFolderAceParams
 
         }
 
         Split-Thread @GetFolderAce
 
     }
+
+    <#
 
     # Return ACEs for the item owners (if they do not match the owner of the item's parent folder)
     # First return the owner of the parent item
@@ -129,33 +139,47 @@ function Get-FolderAccessList {
     # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
     $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
     $i = 0
+
     ForEach ($ThisFolder in $Folder) {
+
         [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count)" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete
         $i++
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
+
     }
+
     Write-Progress @ChildProgress -Completed
     Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
     $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
+
+    $GetOwnerAceParams = @{
+        OwnerCache  = $OwnerCache
+        ACLsByPath = $ACLsByPath
+    }
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
         $IntervalCounter = 0
         $i = 0
+
         ForEach ($Child in $Subfolder) {
+
             Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
             $IntervalCounter++
+
             if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
                 Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount))" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
+
             $i++
-            Get-OwnerAce -Item $Child -OwnerCache $OwnerCache
+            Get-OwnerAce -Item $Child @GetOwnerAceParams
 
         }
+
         Write-Progress @ChildProgress -Completed
 
     } else {
@@ -169,14 +193,13 @@ function Get-FolderAccessList {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
-            AddParam          = @{
-                OwnerCache = $OwnerCache
-            }
+            AddParam          = $GetOwnerAceParams
         }
 
         Split-Thread @GetOwnerAce
 
     }
+    #>
 
     Write-Progress @Progress -Completed
 
