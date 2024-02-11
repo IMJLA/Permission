@@ -1,10 +1,15 @@
-function Format-PermissionAccount {
+function Expand-PermissionPrincipal {
+
+    # Expand ADSI security principals into their group members
 
     param (
 
         # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
         [Parameter(ValueFromPipeline)]
-        [hashtable]$SecurityPrincipal,
+        [string[]]$ResolvedID,
+
+        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
+        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -41,7 +46,7 @@ function Format-PermissionAccount {
         $Progress['Id'] = 0
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 1)' -CurrentOperation 'Initializing' -PercentComplete 0
+    Write-Progress @Progress -Status "0% (principal 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -50,7 +55,11 @@ function Format-PermissionAccount {
         WhoAmI       = $WhoAmI
     }
 
-    $Count = $SecurityPrincipal.Count
+    $Count = $PrincipalsByResolvedID.Keys.Count
+
+    $FormatSecurityPrincipalParams = @{
+        PrincipalsByResolvedID = $PrincipalsByResolvedID
+    }
 
     if ($ThreadCount -eq 1) {
 
@@ -58,39 +67,41 @@ function Format-PermissionAccount {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ResolvedIdentityReferenceString in $SecurityPrincipal.Keys) {
+        ForEach ($ThisID in $ResolvedID) {
 
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete%" -CurrentOperation $ThisPrinc.Name -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (principal $($i + 1) of $Count) Format-SecurityPrincipal" -CurrentOperation $ThisID -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
+
             $i++
-            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -SecurityPrincipal $ResolvedIdentityReferenceString"
-            Format-SecurityPrincipal -SecurityPrincipal $ThisPrinc
+            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -ResolvedID '$ThisID'"
+            Format-SecurityPrincipal -ResolvedID $ThisID @FormatSecurityPrincipalParams
 
         }
 
     } else {
 
-        $FormatSecurityPrincipalParams = @{
+        $SplitThreadParams = @{
             Command              = 'Format-SecurityPrincipal'
-            InputObject          = $SecurityPrincipal.Keys
-            InputParameter       = 'SecurityPrincipal'
+            InputObject          = $ResolvedID
+            InputParameter       = 'ResolvedID'
             Timeout              = 1200
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
+            AddParam             = $FormatSecurityPrincipalParams
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Format-SecurityPrincipal' -InputParameter 'SecurityPrincipal' -InputObject `$SecurityPrincipal -ObjectStringProperty 'Name'"
-        Split-Thread @FormatSecurityPrincipalParams
+        Split-Thread @SplitThreadParams
 
     }
 

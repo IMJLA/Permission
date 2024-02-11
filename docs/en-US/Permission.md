@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.188
+Help Version: 0.0.189
 Locale: en-US
 ---
 
@@ -14,6 +14,11 @@ Module for working with Access Control Lists
 ### [Expand-AcctPermission](Expand-AcctPermission.md)
 
 Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+
+
+### [Expand-PermissionPrincipal](Expand-PermissionPrincipal.md)
+
+Expand-PermissionPrincipal [[-ResolvedID] <string[]>] [[-PrincipalsByResolvedID] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
 
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
@@ -42,9 +47,7 @@ Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore
 
 
 ### [Format-PermissionAccount](Format-PermissionAccount.md)
-
-Format-PermissionAccount [[-SecurityPrincipal] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
-
+{{ Fill in the Description }}
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
 

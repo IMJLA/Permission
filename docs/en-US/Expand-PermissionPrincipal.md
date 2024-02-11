@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Format-PermissionAccount
+# Expand-PermissionPrincipal
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,9 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Format-PermissionAccount [[-SecurityPrincipal] <Hashtable>] [[-DebugOutputStream] <String>]
- [[-ThreadCount] <Int32>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [[-ProgressParentId] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Expand-PermissionPrincipal [[-ResolvedID] <String[]>] [[-PrincipalsByResolvedID] <Hashtable>]
+ [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-ThisHostName] <String>] [[-WhoAmI] <String>]
+ [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +25,7 @@ Format-PermissionAccount [[-SecurityPrincipal] <Hashtable>] [[-DebugOutputStream
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -42,7 +43,7 @@ Aliases:
 Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -57,7 +58,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrincipalsByResolvedID
+{{ Fill PrincipalsByResolvedID Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -87,17 +103,17 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -SecurityPrincipal
-{{ Fill SecurityPrincipal Description }}
+### -ResolvedID
+{{ Fill ResolvedID Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
@@ -117,7 +133,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -132,7 +148,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -147,7 +163,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -158,7 +174,8 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.Collections.Hashtable
+### System.String[]
+
 ## OUTPUTS
 
 ### System.Object

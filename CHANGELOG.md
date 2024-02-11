@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.189] - 2024-02-11 - implement expand-permissionprincipal
+
 ## [0.0.188] - 2024-02-11 - update param name
 
 ## [0.0.187] - 2024-02-11 - implement PrincipalsByResolvedID cache from Export-Permission
