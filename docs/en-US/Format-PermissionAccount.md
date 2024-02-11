@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Format-PermissionAccount [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <String>]
+Format-PermissionAccount [[-SecurityPrincipal] <Hashtable>] [[-DebugOutputStream] <String>]
  [[-ThreadCount] <Int32>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-ProgressParentId] <Int32>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -97,7 +97,7 @@ Accept wildcard characters: False
 {{ Fill SecurityPrincipal Description }}
 
 ```yaml
-Type: System.Object[]
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -158,7 +158,7 @@ This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable
 
 ## INPUTS
 
-### System.Object[]
+### System.Collections.Hashtable
 
 ## OUTPUTS
 

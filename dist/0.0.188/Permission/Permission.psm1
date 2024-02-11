@@ -824,7 +824,7 @@ function Format-PermissionAccount {
 
         # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
         [Parameter(ValueFromPipeline)]
-        [object[]]$SecurityPrincipal,
+        [hashtable]$SecurityPrincipal,
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -878,7 +878,7 @@ function Format-PermissionAccount {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisPrinc in $SecurityPrincipal) {
+        ForEach ($ResolvedIdentityReferenceString in $SecurityPrincipal.Keys) {
 
             $IntervalCounter++
 
@@ -890,8 +890,7 @@ function Format-PermissionAccount {
 
             }
             $i++
-
-            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -SecurityPrincipal $($ThisPrinc.Name)"
+            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -SecurityPrincipal $ResolvedIdentityReferenceString"
             Format-SecurityPrincipal -SecurityPrincipal $ThisPrinc
 
         }
@@ -900,7 +899,7 @@ function Format-PermissionAccount {
 
         $FormatSecurityPrincipalParams = @{
             Command              = 'Format-SecurityPrincipal'
-            InputObject          = $SecurityPrincipal
+            InputObject          = $SecurityPrincipal.Keys
             InputParameter       = 'SecurityPrincipal'
             Timeout              = 1200
             ObjectStringProperty = 'Name'
@@ -1769,7 +1768,7 @@ function Get-PermissionPrincipal {
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
-        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
+        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -1844,7 +1843,7 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    $Count = $ACEbyResolvedIDCache.Keys.Count
+    $Count = $ACEsByResolvedID.Keys.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
 
     $LogParams = @{
@@ -1866,7 +1865,7 @@ function Get-PermissionPrincipal {
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
         PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
-        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache # start state
+        ACEsByResolvedID       = $ACEsByResolvedID # start state
         CurrentDomain          = $CurrentDomain
     }
 
@@ -1880,7 +1879,7 @@ function Get-PermissionPrincipal {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ResolvedIdentityReferenceString in $ACEbyResolvedIDCache.Keys) {
+        ForEach ($ResolvedIdentityReferenceString in $ACEsByResolvedID.Keys) {
 
             $IntervalCounter++
 
@@ -1906,7 +1905,7 @@ function Get-PermissionPrincipal {
 
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
-            InputObject          = $ACEbyResolvedIDCache.Keys
+            InputObject          = $ACEsByResolvedID.Keys
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
@@ -1916,7 +1915,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEbyResolvedIDCache.Keys"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEsByResolvedID.Keys"
         Split-Thread @SplitThreadParams
 
     }
@@ -2602,7 +2601,7 @@ function Resolve-PermissionIdentity {
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of access control entries keyed by their resolved identities
-        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
+        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -2686,7 +2685,7 @@ function Resolve-PermissionIdentity {
         WhoAmI                 = $WhoAmI
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
-        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
+        ACEsByResolvedID       = $ACEsByResolvedID
     }
 
     if ($ThreadCount -eq 1) {
@@ -2930,6 +2929,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-PermissionAccount','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

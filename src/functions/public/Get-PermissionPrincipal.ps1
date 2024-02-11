@@ -13,7 +13,7 @@ function Get-PermissionPrincipal {
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
-        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
+        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -88,7 +88,7 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    $Count = $ACEbyResolvedIDCache.Keys.Count
+    $Count = $ACEsByResolvedID.Keys.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
 
     $LogParams = @{
@@ -110,7 +110,7 @@ function Get-PermissionPrincipal {
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
         PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
-        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache # start state
+        ACEsByResolvedID       = $ACEsByResolvedID # start state
         CurrentDomain          = $CurrentDomain
     }
 
@@ -124,7 +124,7 @@ function Get-PermissionPrincipal {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ResolvedIdentityReferenceString in $ACEbyResolvedIDCache.Keys) {
+        ForEach ($ResolvedIdentityReferenceString in $ACEsByResolvedID.Keys) {
 
             $IntervalCounter++
 
@@ -150,7 +150,7 @@ function Get-PermissionPrincipal {
 
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
-            InputObject          = $ACEbyResolvedIDCache.Keys
+            InputObject          = $ACEsByResolvedID.Keys
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
@@ -160,7 +160,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEbyResolvedIDCache.Keys"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEsByResolvedID.Keys"
         Split-Thread @SplitThreadParams
 
     }

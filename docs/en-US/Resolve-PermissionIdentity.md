@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-ACEbyResolvedIDCache] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
+ [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-Win32AccountsByCaption] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
@@ -35,8 +35,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ACEbyResolvedIDCache
-{{ Fill ACEbyResolvedIDCache Description }}
+### -ACEsByResolvedID
+{{ Fill ACEsByResolvedID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

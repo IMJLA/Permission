@@ -1828,9 +1828,9 @@
           <maml:description>
             <maml:para>{{ Fill SecurityPrincipal Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object[]</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
-            <maml:name>System.Object[]</maml:name>
+            <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1988,9 +1988,9 @@
         <maml:description>
           <maml:para>{{ Fill SecurityPrincipal Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object[]</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
-          <maml:name>System.Object[]</maml:name>
+          <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -2035,7 +2035,7 @@
     <command:inputTypes>
       <command:inputType>
         <dev:type>
-          <maml:name>System.Object[]</maml:name>
+          <maml:name>System.Collections.Hashtable</maml:name>
         </dev:type>
         <maml:description>
           <maml:para></maml:para>
@@ -4559,9 +4559,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>ACEbyResolvedIDCache</maml:name>
+          <maml:name>ACEsByResolvedID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+            <maml:para>{{ Fill ACEsByResolvedID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -4657,9 +4657,9 @@
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>ACEbyResolvedIDCache</maml:name>
+        <maml:name>ACEsByResolvedID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+          <maml:para>{{ Fill ACEsByResolvedID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -6859,9 +6859,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>ACEbyResolvedIDCache</maml:name>
+          <maml:name>ACEsByResolvedID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+            <maml:para>{{ Fill ACEsByResolvedID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -6958,9 +6958,9 @@
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>ACEbyResolvedIDCache</maml:name>
+        <maml:name>ACEsByResolvedID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ACEbyResolvedIDCache Description }}</maml:para>
+          <maml:para>{{ Fill ACEsByResolvedID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>

@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-PrincipalsByResolvedID] <Hashtable>] [[-ACEbyResolvedIDCache] <Hashtable>] [[-CimCache] <Hashtable>]
+ [[-PrincipalsByResolvedID] <Hashtable>] [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>]
  [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
@@ -35,8 +35,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ACEbyResolvedIDCache
-{{ Fill ACEbyResolvedIDCache Description }}
+### -ACEsByResolvedID
+{{ Fill ACEsByResolvedID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

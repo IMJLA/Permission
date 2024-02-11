@@ -4,7 +4,7 @@ function Format-PermissionAccount {
 
         # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
         [Parameter(ValueFromPipeline)]
-        [object[]]$SecurityPrincipal,
+        [hashtable]$SecurityPrincipal,
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -58,7 +58,7 @@ function Format-PermissionAccount {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisPrinc in $SecurityPrincipal) {
+        ForEach ($ResolvedIdentityReferenceString in $SecurityPrincipal.Keys) {
 
             $IntervalCounter++
 
@@ -70,8 +70,7 @@ function Format-PermissionAccount {
 
             }
             $i++
-
-            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -SecurityPrincipal $($ThisPrinc.Name)"
+            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -SecurityPrincipal $ResolvedIdentityReferenceString"
             Format-SecurityPrincipal -SecurityPrincipal $ThisPrinc
 
         }
@@ -80,7 +79,7 @@ function Format-PermissionAccount {
 
         $FormatSecurityPrincipalParams = @{
             Command              = 'Format-SecurityPrincipal'
-            InputObject          = $SecurityPrincipal
+            InputObject          = $SecurityPrincipal.Keys
             InputParameter       = 'SecurityPrincipal'
             Timeout              = 1200
             ObjectStringProperty = 'Name'

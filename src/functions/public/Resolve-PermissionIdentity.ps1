@@ -16,7 +16,7 @@ function Resolve-PermissionIdentity {
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of access control entries keyed by their resolved identities
-        [hashtable]$ACEbyResolvedIDCache = ([hashtable]::Synchronized(@{})),
+        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -100,7 +100,7 @@ function Resolve-PermissionIdentity {
         WhoAmI                 = $WhoAmI
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
-        ACEbyResolvedIDCache   = $ACEbyResolvedIDCache
+        ACEsByResolvedID       = $ACEsByResolvedID
     }
 
     if ($ThreadCount -eq 1) {
