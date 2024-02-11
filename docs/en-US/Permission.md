@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.189
+Help Version: 0.0.191
 Locale: en-US
 ---
 
@@ -18,7 +18,7 @@ Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <s
 
 ### [Expand-PermissionPrincipal](Expand-PermissionPrincipal.md)
 
-Expand-PermissionPrincipal [[-ResolvedID] <string[]>] [[-PrincipalsByResolvedID] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+Expand-PermissionPrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
 
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
@@ -45,9 +45,6 @@ Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>
 
 Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <string[]>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
 
-
-### [Format-PermissionAccount](Format-PermissionAccount.md)
-{{ Fill in the Description }}
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
 

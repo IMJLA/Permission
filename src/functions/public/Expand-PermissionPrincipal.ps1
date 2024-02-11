@@ -4,10 +4,6 @@ function Expand-PermissionPrincipal {
 
     param (
 
-        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
-        [Parameter(ValueFromPipeline)]
-        [string[]]$ResolvedID,
-
         # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
@@ -37,7 +33,7 @@ function Expand-PermissionPrincipal {
     )
 
     $Progress = @{
-        Activity = 'Format-PermissionAccount'
+        Activity = 'Expand-PermissionPrincipal'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
@@ -55,7 +51,8 @@ function Expand-PermissionPrincipal {
         WhoAmI       = $WhoAmI
     }
 
-    $Count = $PrincipalsByResolvedID.Keys.Count
+    $ResolvedIDs = $PrincipalsByResolvedID.Keys
+    $Count = $ResolvedIDs.Count
 
     $FormatSecurityPrincipalParams = @{
         PrincipalsByResolvedID = $PrincipalsByResolvedID
@@ -67,7 +64,7 @@ function Expand-PermissionPrincipal {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisID in $ResolvedID) {
+        ForEach ($ThisID in $ResolvedIDs) {
 
             $IntervalCounter++
 
@@ -89,7 +86,7 @@ function Expand-PermissionPrincipal {
 
         $SplitThreadParams = @{
             Command              = 'Format-SecurityPrincipal'
-            InputObject          = $ResolvedID
+            InputObject          = $ResolvedIDs
             InputParameter       = 'ResolvedID'
             Timeout              = 1200
             ObjectStringProperty = 'Name'
