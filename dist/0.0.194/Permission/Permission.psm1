@@ -1269,23 +1269,23 @@ function Get-FolderAccessList {
     $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
     $i = 0
 
+    $GetOwnerAceParams = @{
+        OwnerCache = $OwnerCache
+        ACLsByPath = $ACLsByPath
+    }
+
     ForEach ($ThisFolder in $Folder) {
 
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $i of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Get-OwnerAce -Item $ThisFolder @GetOwnerAceParams
 
     }
 
     Write-Progress @ChildProgress -Completed
     Write-Progress @Progress -Status '75% (step 4 of 4) Get-OwnerAce (subfolders)' -CurrentOperation 'Get subfolder owners' -PercentComplete 75
     $ChildProgress['Activity'] = 'Get-FolderAccessList (subfolder owners)'
-
-    $GetOwnerAceParams = @{
-        OwnerCache = $OwnerCache
-        ACLsByPath = $ACLsByPath
-    }
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
@@ -2690,7 +2690,7 @@ function Resolve-PermissionIdentity {
 
     $Paths = $ACLsByPath.Keys
     $Count = $Paths.Count
-    Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -2731,7 +2731,7 @@ function Resolve-PermissionIdentity {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (ACL $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -2954,6 +2954,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

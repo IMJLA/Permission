@@ -136,23 +136,23 @@ function Get-FolderAccessList {
     $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
     $i = 0
 
+    $GetOwnerAceParams = @{
+        OwnerCache = $OwnerCache
+        ACLsByPath = $ACLsByPath
+    }
+
     ForEach ($ThisFolder in $Folder) {
 
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $i of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Get-OwnerAce -Item $ThisFolder @GetOwnerAceParams
 
     }
 
     Write-Progress @ChildProgress -Completed
     Write-Progress @Progress -Status '75% (step 4 of 4) Get-OwnerAce (subfolders)' -CurrentOperation 'Get subfolder owners' -PercentComplete 75
     $ChildProgress['Activity'] = 'Get-FolderAccessList (subfolder owners)'
-
-    $GetOwnerAceParams = @{
-        OwnerCache = $OwnerCache
-        ACLsByPath = $ACLsByPath
-    }
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {

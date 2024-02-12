@@ -79,7 +79,7 @@ function Resolve-PermissionIdentity {
 
     $Paths = $ACLsByPath.Keys
     $Count = $Paths.Count
-    Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -120,7 +120,7 @@ function Resolve-PermissionIdentity {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (ACL $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
