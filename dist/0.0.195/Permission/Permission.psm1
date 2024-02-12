@@ -1869,7 +1869,8 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    $Count = $ACEsByResolvedID.Keys.Count
+    $IDs = $ACEsByResolvedID.Keys
+    $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
 
     $LogParams = @{
@@ -1905,21 +1906,21 @@ function Get-PermissionPrincipal {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ResolvedIdentityReferenceString in $ACEsByResolvedID.Keys) {
+        ForEach ($ThisID in $IDs) {
 
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count)" -CurrentOperation "ConvertFrom-IdentityReferenceResolved for '$($ThisID.Name)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation $ThisID -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++
-            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference $ResolvedIdentityReferenceString"
-            ConvertFrom-IdentityReferenceResolved -IdentityReference $ResolvedIdentityReferenceString @ADSIConversionParams
+            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
+            ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
 
@@ -1931,7 +1932,7 @@ function Get-PermissionPrincipal {
 
         $SplitThreadParams = @{
             Command              = 'ConvertFrom-IdentityReferenceResolved'
-            InputObject          = $ACEsByResolvedID.Keys
+            InputObject          = $IDs
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
@@ -1941,7 +1942,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$ACEsByResolvedID.Keys"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
         Split-Thread @SplitThreadParams
 
     }
@@ -2954,6 +2955,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 
