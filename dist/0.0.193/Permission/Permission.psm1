@@ -1214,13 +1214,13 @@ function Get-FolderAccessList {
     }
 
     Write-Progress @ChildProgress -Completed
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (child DACLs)'
-    Write-Progress @Progress -Status '50% (step 2 of 2)' -CurrentOperation 'Get child access control lists' -PercentComplete 50
+    $ChildProgress['Activity'] = 'Get-FolderAccessList (subfolders)'
+    Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get subfolder access control lists' -PercentComplete 25
     $SubfolderCount = $Subfolder.Count
 
     if ($ThreadCount -eq 1) {
 
-        Write-Progress @ChildProgress -Status "0% (child 0 of $SubfolderCount)" -CurrentOperation 'Initializing' -PercentComplete 0
+        Write-Progress @ChildProgress -Status "0% (subfolder 0 of $SubfolderCount)" -CurrentOperation 'Initializing' -PercentComplete 0
         [int]$ProgressInterval = [math]::max(($SubfolderCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
@@ -1232,7 +1232,7 @@ function Get-FolderAccessList {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount) Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -1263,31 +1263,27 @@ function Get-FolderAccessList {
 
     }
 
-    <#
-
-    # Return ACEs for the item owners (if they do not match the owner of the item's parent folder)
+    # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
     # First return the owner of the parent item
-    # We expect a small number of folders and a large number of subfolders
-    # We will multithread the subfolders but not the folders
-    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
+    Write-Progress @Progress -Status '50% (step 3 of 4) Get-OwnerAce (parent folders)' -CurrentOperation 'Get parent folder owners' -PercentComplete 50
     $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
     $i = 0
 
     ForEach ($ThisFolder in $Folder) {
 
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count)" -CurrentOperation "Get-OwnerAce '$ThisFolder'" -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
         Get-OwnerAce -Item $ThisFolder -OwnerCache $OwnerCache
 
     }
 
     Write-Progress @ChildProgress -Completed
-    Write-Progress @Progress -Status '75% (step 4 of 4)' -CurrentOperation 'Child Owners' -PercentComplete 75
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (child owners)'
+    Write-Progress @Progress -Status '75% (step 4 of 4) Get-OwnerAce (subfolders)' -CurrentOperation 'Get subfolder owners' -PercentComplete 75
+    $ChildProgress['Activity'] = 'Get-FolderAccessList (subfolder owners)'
 
     $GetOwnerAceParams = @{
-        OwnerCache  = $OwnerCache
+        OwnerCache = $OwnerCache
         ACLsByPath = $ACLsByPath
     }
 
@@ -1297,19 +1293,19 @@ function Get-FolderAccessList {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($Child in $Subfolder) {
+        ForEach ($ThisFolder in $Subfolder) {
 
             Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (child $($i + 1) of $SubfolderCount))" -CurrentOperation "Get-FolderAce '$Child'" -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount)) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
             }
 
             $i++
-            Get-OwnerAce -Item $Child @GetOwnerAceParams
+            Get-OwnerAce -Item $ThisFolder @GetOwnerAceParams
 
         }
 
@@ -1332,7 +1328,6 @@ function Get-FolderAccessList {
         Split-Thread @GetOwnerAce
 
     }
-    #>
 
     Write-Progress @Progress -Completed
 
@@ -2620,9 +2615,8 @@ function Resolve-PermissionIdentity {
 
     param (
 
-        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
-        [Parameter(ValueFromPipeline)]
-        [object[]]$Permission,
+        # Cache of access control lists keyed by path
+        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -2694,7 +2688,8 @@ function Resolve-PermissionIdentity {
         $Progress['Id'] = 0
     }
 
-    $Count = $Permission.Count
+    $Paths = $ACLsByPath.Keys
+    $Count = $Paths.Count
     Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
@@ -2704,7 +2699,9 @@ function Resolve-PermissionIdentity {
         WhoAmI       = $WhoAmI
     }
 
-    $ResolveAceParams = @{
+    $ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
+
+    $ResolveAclParams = @{
         DirectoryEntryCache    = $DirectoryEntryCache
         Win32AccountsBySID     = $Win32AccountsBySID
         Win32AccountsByCaption = $Win32AccountsByCaption
@@ -2717,53 +2714,50 @@ function Resolve-PermissionIdentity {
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
         ACEsByResolvedID       = $ACEsByResolvedID
+        ACLsByPath             = $ACLsByPath
+        ACEPropertyName        = $ACEPropertyName
     }
 
     if ($ThreadCount -eq 1) {
-
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisPermission in $Permission) {
+        ForEach ($ThisPath in $Paths) {
 
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Ace -InputObject $($ThisPermission.IdentityReference)"
-            Resolve-Ace -InputObject $ThisPermission @ResolveAceParams
+            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByResolvedID `$ACEsByResolvedID"
+            Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
 
     } else {
 
-        $ResolveAceParams = @{
-
-            Command              = 'Resolve-Ace'
-            InputObject          = $Permission
-            InputParameter       = 'InputObject'
-            ObjectStringProperty = 'IdentityReference'
-            TodaysHostname       = $ThisHostname
+        $SplitThreadParams = @{
+            Command        = 'Resolve-Acl'
+            InputObject    = $Paths
+            InputParameter = 'ItemPath'
+            TodaysHostname = $ThisHostname
+            WhoAmI         = $WhoAmI
+            LogMsgCache    = $LogMsgCache
+            Threads        = $ThreadCount
+            AddParam       = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
-            WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogMsgCache
-            Threads              = $ThreadCount
-            AddParam             = $ResolveAceParams
-
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Ace' -InputParameter InputObject -InputObject `$Permission -ObjectStringProperty 'IdentityReference' -DebugOutputStream 'Debug'"
-
-        Split-Thread @ResolveAceParams
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByResolvedID=`$ACEsByResolvedID}"
+        Split-Thread @SplitThreadParams
 
     }
 
@@ -2960,6 +2954,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+
 
 
 

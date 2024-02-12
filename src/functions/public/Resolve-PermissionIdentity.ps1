@@ -4,9 +4,8 @@ function Resolve-PermissionIdentity {
 
     param (
 
-        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
-        [Parameter(ValueFromPipeline)]
-        [object[]]$Permission,
+        # Cache of access control lists keyed by path
+        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -78,7 +77,8 @@ function Resolve-PermissionIdentity {
         $Progress['Id'] = 0
     }
 
-    $Count = $Permission.Count
+    $Paths = $ACLsByPath.Keys
+    $Count = $Paths.Count
     Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $LogParams = @{
@@ -88,7 +88,9 @@ function Resolve-PermissionIdentity {
         WhoAmI       = $WhoAmI
     }
 
-    $ResolveAceParams = @{
+    $ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
+
+    $ResolveAclParams = @{
         DirectoryEntryCache    = $DirectoryEntryCache
         Win32AccountsBySID     = $Win32AccountsBySID
         Win32AccountsByCaption = $Win32AccountsByCaption
@@ -101,53 +103,50 @@ function Resolve-PermissionIdentity {
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
         ACEsByResolvedID       = $ACEsByResolvedID
+        ACLsByPath             = $ACLsByPath
+        ACEPropertyName        = $ACEPropertyName
     }
 
     if ($ThreadCount -eq 1) {
-
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisPermission in $Permission) {
+        ForEach ($ThisPath in $Paths) {
 
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count)" -CurrentOperation "Resolve-Ace '$($ThisPermission.IdentityReference)'" -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (permission $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Ace -InputObject $($ThisPermission.IdentityReference)"
-            Resolve-Ace -InputObject $ThisPermission @ResolveAceParams
+            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByResolvedID `$ACEsByResolvedID"
+            Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
 
     } else {
 
-        $ResolveAceParams = @{
-
-            Command              = 'Resolve-Ace'
-            InputObject          = $Permission
-            InputParameter       = 'InputObject'
-            ObjectStringProperty = 'IdentityReference'
-            TodaysHostname       = $ThisHostname
+        $SplitThreadParams = @{
+            Command        = 'Resolve-Acl'
+            InputObject    = $Paths
+            InputParameter = 'ItemPath'
+            TodaysHostname = $ThisHostname
+            WhoAmI         = $WhoAmI
+            LogMsgCache    = $LogMsgCache
+            Threads        = $ThreadCount
+            AddParam       = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
-            WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogMsgCache
-            Threads              = $ThreadCount
-            AddParam             = $ResolveAceParams
-
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Ace' -InputParameter InputObject -InputObject `$Permission -ObjectStringProperty 'IdentityReference' -DebugOutputStream 'Debug'"
-
-        Split-Thread @ResolveAceParams
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByResolvedID=`$ACEsByResolvedID}"
+        Split-Thread @SplitThreadParams
 
     }
 

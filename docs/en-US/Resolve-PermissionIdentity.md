@@ -13,12 +13,11 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Resolve-PermissionIdentity [[-Permission] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
+Resolve-PermissionIdentity [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-Win32AccountsByCaption] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -45,6 +44,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ACLsByPath
+{{ Fill ACLsByPath Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -156,36 +170,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Permission
-{{ Fill Permission Description }}
-
-```yaml
-Type: System.Object[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
-
-### -ProgressAction
-{{ Fill ProgressAction Description }}
-
-```yaml
-Type: System.Management.Automation.ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ProgressParentId
 {{ Fill ProgressParentId Description }}
 
@@ -291,12 +275,9 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
-
 ## INPUTS
 
-### System.Object[]
+### None
 
 ## OUTPUTS
 
