@@ -1790,7 +1790,7 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries. END STATE
+        # Cache of security principals keyed by resolved identity reference. END STATE
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
@@ -2626,8 +2626,14 @@ function Resolve-PermissionIdentity {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of access control entries keyed by their resolved identities
-        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
+        # Cache of access control entries keyed by GUID generated in this function
+        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entry GUIDs keyed by their resolved identities
+        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entry GUIDs keyed by their paths
+        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -2714,7 +2720,9 @@ function Resolve-PermissionIdentity {
         WhoAmI                 = $WhoAmI
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
-        ACEsByResolvedID       = $ACEsByResolvedID
+        ACEsByGuid             = $ACEsByGUID
+        AceGUIDsByPath         = $AceGUIDsByPath
+        AceGUIDsByResolvedID   = $AceGUIDsByResolvedID
         ACLsByPath             = $ACLsByPath
         ACEPropertyName        = $ACEPropertyName
     }
@@ -2738,7 +2746,7 @@ function Resolve-PermissionIdentity {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByResolvedID `$ACEsByResolvedID"
+            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -2757,7 +2765,7 @@ function Resolve-PermissionIdentity {
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByResolvedID=`$ACEsByResolvedID}"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
         Split-Thread @SplitThreadParams
 
     }
@@ -2877,13 +2885,12 @@ function Select-FolderTableProperty {
         }
     }
 }
-function Select-UniqueAccountPermission {
+function Select-UniquePrincipal {
 
     param (
 
-        # Objects output from Format-SecurityPrincipal ... | Group-Object -Property User
-        [Parameter(ValueFromPipeline)]
-        $AccountPermission,
+        # Cache of security principals keyed by resolved identity reference
+        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -2895,39 +2902,29 @@ function Select-UniqueAccountPermission {
         [string[]]$IgnoreDomain,
 
         # Hashtable will be used to deduplicate
-        $KnownUsers = [hashtable]::Synchronized(@{})
+        $UniquePrincipal = [hashtable]::Synchronized(@{}),
+
+        $UniquePrincipalsByResolvedID = [hashtable]::Synchronized(@{})
 
     )
 
-    process {
+    ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
+        $ShortName = $ThisID
 
-        ForEach ($ThisUser in $AccountPermission) {
-
-            $ShortName = $ThisUser.Name
-            ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
-            }
-
-            $ThisKnownUser = $null
-            $ThisKnownUser = $KnownUsers[$ShortName]
-            if ($null -eq $ThisKnownUser) {
-                $KnownUsers[$ShortName] = [pscustomobject]@{
-                    'Count' = $ThisUser.Group.Count
-                    'Name'  = $ShortName
-                    'Group' = $ThisUser.Group
-                }
-            } else {
-                $KnownUsers[$ShortName] = [pscustomobject]@{
-                    'Count' = $ThisKnownUser.Group.Count + $ThisUser.Group.Count
-                    'Name'  = $ShortName
-                    'Group' = $ThisKnownUser.Group + $ThisUser.Group
-                }
-            }
+        ForEach ($IgnoreThisDomain in $IgnoreDomain) {
+            $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
         }
 
-    }
-    end {
-        $KnownUsers.Values
+        $ThisKnownUser = $null
+        $ThisKnownUser = $UniquePrincipal[$ShortName]
+        if ($null -eq $ThisKnownUser) {
+            $UniquePrincipal[$ShortName] = [System.Collections.Generic.List[string]]::new()
+
+        }
+
+        $null = $UniquePrincipal[$ShortName].Add($ThisID)
+        $UniquePrincipalsByResolvedID[$ThisID] = $ShortName
+
     }
 
 }
@@ -2954,7 +2951,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniqueAccountPermission','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

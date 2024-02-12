@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Select-UniqueAccountPermission
+# Select-UniquePrincipal
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] <String[]>]
- [[-KnownUsers] <Object>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Select-UniquePrincipal [[-PrincipalsByResolvedID] <Hashtable>] [[-IgnoreDomain] <String[]>]
+ [[-UniquePrincipal] <Object>] [[-UniquePrincipalsByResolvedID] <Object>]
 ```
 
 ## DESCRIPTION
@@ -23,28 +23,13 @@ Select-UniqueAccountPermission [[-AccountPermission] <Object>] [[-IgnoreDomain] 
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -AccountPermission
-{{ Fill AccountPermission Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: True (ByValue)
-Accept wildcard characters: False
-```
 
 ### -IgnoreDomain
 {{ Fill IgnoreDomain Description }}
@@ -61,8 +46,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -KnownUsers
-{{ Fill KnownUsers Description }}
+### -PrincipalsByResolvedID
+{{ Fill PrincipalsByResolvedID Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -UniquePrincipal
+{{ Fill UniquePrincipal Description }}
 
 ```yaml
 Type: System.Object
@@ -76,27 +76,25 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressAction
-{{ Fill ProgressAction Description }}
+### -UniquePrincipalsByResolvedID
+{{ Fill UniquePrincipalsByResolvedID Description }}
 
 ```yaml
-Type: System.Management.Automation.ActionPreference
+Type: System.Object
 Parameter Sets: (All)
-Aliases: proga
+Aliases:
 
 Required: False
-Position: Named
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
-
 ## INPUTS
 
-### System.Object
+### None
+
 ## OUTPUTS
 
 ### System.Object

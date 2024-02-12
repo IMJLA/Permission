@@ -14,8 +14,14 @@ function Resolve-PermissionIdentity {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of access control entries keyed by their resolved identities
-        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
+        # Cache of access control entries keyed by GUID generated in this function
+        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entry GUIDs keyed by their resolved identities
+        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entry GUIDs keyed by their paths
+        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -102,7 +108,9 @@ function Resolve-PermissionIdentity {
         WhoAmI                 = $WhoAmI
         LogMsgCache            = $LogMsgCache
         CimCache               = $CimCache
-        ACEsByResolvedID       = $ACEsByResolvedID
+        ACEsByGuid             = $ACEsByGUID
+        AceGUIDsByPath         = $AceGUIDsByPath
+        AceGUIDsByResolvedID   = $AceGUIDsByResolvedID
         ACLsByPath             = $ACLsByPath
         ACEPropertyName        = $ACEPropertyName
     }
@@ -126,7 +134,7 @@ function Resolve-PermissionIdentity {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByResolvedID `$ACEsByResolvedID"
+            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -145,7 +153,7 @@ function Resolve-PermissionIdentity {
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByResolvedID=`$ACEsByResolvedID}"
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
         Split-Thread @SplitThreadParams
 
     }

@@ -9,7 +9,7 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries. END STATE
+        # Cache of security principals keyed by resolved identity reference. END STATE
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
