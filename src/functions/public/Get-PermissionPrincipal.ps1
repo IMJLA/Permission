@@ -88,7 +88,7 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    $IDs = $ACEsByResolvedID.Keys
+    [string[]]$IDs = $ACEsByResolvedID.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
 

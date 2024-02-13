@@ -1869,7 +1869,7 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    $IDs = $ACEsByResolvedID.Keys
+    [string[]]$IDs = $ACEsByResolvedID.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
 
@@ -2892,6 +2892,9 @@ function Select-UniquePrincipal {
         # Cache of security principals keyed by resolved identity reference
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
+        # Regular expressions matching names of Users or Groups to exclude from the Html report
+        [string[]]$ExcludeAccount,
+
         <#
         Domain(s) to ignore (they will be removed from the username)
 
@@ -2908,7 +2911,22 @@ function Select-UniquePrincipal {
 
     )
 
+    $FilterContents = @{}
+
     ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
+
+        if (
+            # Exclude the objects whose names match the regular expressions specified in the parameters
+            [bool]$(
+                ForEach ($RegEx in $ExcludeAccount) {
+                    if ($ThisID -match $RegEx) {
+                        $FilterContents[$ThisID] = $ThisID
+                        $true
+                    }
+                }
+            )
+        ) { continue }
+
         $ShortName = $ThisID
 
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
@@ -2952,6 +2970,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

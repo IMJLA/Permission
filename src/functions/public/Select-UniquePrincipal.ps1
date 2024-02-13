@@ -5,6 +5,9 @@ function Select-UniquePrincipal {
         # Cache of security principals keyed by resolved identity reference
         [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
 
+        # Regular expressions matching names of Users or Groups to exclude from the Html report
+        [string[]]$ExcludeAccount,
+
         <#
         Domain(s) to ignore (they will be removed from the username)
 
@@ -21,7 +24,22 @@ function Select-UniquePrincipal {
 
     )
 
+    $FilterContents = @{}
+
     ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
+
+        if (
+            # Exclude the objects whose names match the regular expressions specified in the parameters
+            [bool]$(
+                ForEach ($RegEx in $ExcludeAccount) {
+                    if ($ThisID -match $RegEx) {
+                        $FilterContents[$ThisID] = $ThisID
+                        $true
+                    }
+                }
+            )
+        ) { continue }
+
         $ShortName = $ThisID
 
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
