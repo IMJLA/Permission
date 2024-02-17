@@ -2070,7 +2070,6 @@ function Get-UniqueServerFqdn {
     }
     $Count = $FilePath.Count
     Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -2090,7 +2089,6 @@ function Get-UniqueServerFqdn {
         if ($IntervalCounter -eq $ProgressInterval) {
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
-            Start-Sleep -Seconds 5
             $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -2098,7 +2096,6 @@ function Get-UniqueServerFqdn {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
     return $UniqueValues.Keys
 
@@ -2967,6 +2964,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

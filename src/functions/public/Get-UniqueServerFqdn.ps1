@@ -34,7 +34,6 @@ function Get-UniqueServerFqdn {
     }
     $Count = $FilePath.Count
     Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-    Start-Sleep -Seconds 5
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -54,7 +53,6 @@ function Get-UniqueServerFqdn {
         if ($IntervalCounter -eq $ProgressInterval) {
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
-            Start-Sleep -Seconds 5
             $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -62,7 +60,6 @@ function Get-UniqueServerFqdn {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 5
 
     return $UniqueValues.Keys
 
