@@ -49,12 +49,12 @@ function Get-FolderAccessList {
     }
     $Progress['Id'] = $ProgressId
     $ChildProgress = @{
-        Activity = 'Flatten the raw access control entries for CSV export'
+        Activity = 'Get folder access control lists'
         Id       = $ProgressId + 1
         ParentId = $ProgressId
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent access control lists' -PercentComplete 0
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent folder access control lists' -PercentComplete 0
 
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
@@ -67,16 +67,16 @@ function Get-FolderAccessList {
 
     # We expect a small number of folders and a large number of subfolders
     # We will multithread the subfolders but not the folders
-    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
+    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAcl) on a small number of items
     $i = 0
     $Count = $Folder.Count
 
     ForEach ($ThisFolder in $Folder) {
 
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-FolderAcl -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited @GetFolderAceParams
+        Get-FolderAcl -LiteralPath $ThisFolder -IncludeInherited @GetFolderAceParams
 
     }
 
@@ -99,13 +99,13 @@ function Get-FolderAccessList {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-FolderAcl" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Get-FolderAce -LiteralPath $ThisFolder @GetFolderAceParams
+            Get-FolderAcl -LiteralPath $ThisFolder @GetFolderAceParams
 
         }
 
@@ -114,7 +114,7 @@ function Get-FolderAccessList {
     } else {
 
         $GetFolderAce = @{
-            Command           = 'Get-FolderAce'
+            Command           = 'Get-FolderAcl'
             InputObject       = $Subfolder
             InputParameter    = 'LiteralPath'
             DebugOutputStream = $DebugOutputStream

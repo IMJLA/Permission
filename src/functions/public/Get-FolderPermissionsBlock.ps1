@@ -27,19 +27,19 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = @($FolderPermissions.Name |
+    $ShortestFolderPath = @($FolderPermissions.Path |
         Sort-Object)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
-        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Name)" -Level 5
+        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Path)" -Level 5
 
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
 
         $FilterContents = @{}
 
-        $FilteredAccounts = $ThisFolder.Group |
-        Group-Object -Property Account |
+        $FilteredAccounts = $ThisFolder.Access |
+        Group-Object -Property IdentityReferenceResolved |
         Where-Object -FilterScript {
 
             # On built-in groups like 'Authenticated Users' or 'Administrators' the SchemaClassName is null but we have an ObjectType instead.
@@ -83,7 +83,6 @@ function Get-FolderPermissionsBlock {
                 'Group' = [pscustomobject]@{
                     'IdentityReference' = '.'
                     'Access'            = '.'
-
                     'Name'              = '.'
                     'Department'        = '.'
                     'Title'             = '.'
@@ -92,13 +91,13 @@ function Get-FolderPermissionsBlock {
         }
 
         $ObjectsForFolderPermissionTable = Select-FolderPermissionTableProperty -InputObject $FilteredAccounts -IgnoreDomain $IgnoreDomain |
-        Sort-Object -Property Name
+        Sort-Object -Property Account
 
         $ThisTable = $ObjectsForFolderPermissionTable |
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Name -replace '[^A-Za-z0-9\-_:.]', '-'
+        $TableId = $ThisFolder.Path -replace '[^A-Za-z0-9\-_:.]', '-'
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
@@ -125,7 +124,7 @@ function Get-FolderPermissionsBlock {
             JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
-            Path        = $ThisFolder.Name
+            Path        = $ThisFolder.Path
         }
     }
 }

@@ -1182,12 +1182,12 @@ function Get-FolderAccessList {
     }
     $Progress['Id'] = $ProgressId
     $ChildProgress = @{
-        Activity = 'Flatten the raw access control entries for CSV export'
+        Activity = 'Get folder access control lists'
         Id       = $ProgressId + 1
         ParentId = $ProgressId
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent access control lists' -PercentComplete 0
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent folder access control lists' -PercentComplete 0
 
     $GetFolderAceParams = @{
         LogMsgCache       = $LogMsgCache
@@ -1200,16 +1200,16 @@ function Get-FolderAccessList {
 
     # We expect a small number of folders and a large number of subfolders
     # We will multithread the subfolders but not the folders
-    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAce) on a small number of items
+    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAcl) on a small number of items
     $i = 0
     $Count = $Folder.Count
 
     ForEach ($ThisFolder in $Folder) {
 
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-FolderAce -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-FolderAcl -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAce -LiteralPath $ThisFolder -IncludeInherited @GetFolderAceParams
+        Get-FolderAcl -LiteralPath $ThisFolder -IncludeInherited @GetFolderAceParams
 
     }
 
@@ -1232,13 +1232,13 @@ function Get-FolderAccessList {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-FolderAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-FolderAcl" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Get-FolderAce -LiteralPath $ThisFolder @GetFolderAceParams
+            Get-FolderAcl -LiteralPath $ThisFolder @GetFolderAceParams
 
         }
 
@@ -1247,7 +1247,7 @@ function Get-FolderAccessList {
     } else {
 
         $GetFolderAce = @{
-            Command           = 'Get-FolderAce'
+            Command           = 'Get-FolderAcl'
             InputObject       = $Subfolder
             InputParameter    = 'LiteralPath'
             DebugOutputStream = $DebugOutputStream
@@ -1415,19 +1415,19 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = @($FolderPermissions.Name |
+    $ShortestFolderPath = @($FolderPermissions.Path |
         Sort-Object)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
-        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Name)" -Level 5
+        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Path)" -Level 5
 
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
 
         $FilterContents = @{}
 
-        $FilteredAccounts = $ThisFolder.Group |
-        Group-Object -Property Account |
+        $FilteredAccounts = $ThisFolder.Access |
+        Group-Object -Property IdentityReferenceResolved |
         Where-Object -FilterScript {
 
             # On built-in groups like 'Authenticated Users' or 'Administrators' the SchemaClassName is null but we have an ObjectType instead.
@@ -1471,7 +1471,6 @@ function Get-FolderPermissionsBlock {
                 'Group' = [pscustomobject]@{
                     'IdentityReference' = '.'
                     'Access'            = '.'
-
                     'Name'              = '.'
                     'Department'        = '.'
                     'Title'             = '.'
@@ -1480,13 +1479,13 @@ function Get-FolderPermissionsBlock {
         }
 
         $ObjectsForFolderPermissionTable = Select-FolderPermissionTableProperty -InputObject $FilteredAccounts -IgnoreDomain $IgnoreDomain |
-        Sort-Object -Property Name
+        Sort-Object -Property Account
 
         $ThisTable = $ObjectsForFolderPermissionTable |
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Name -replace '[^A-Za-z0-9\-_:.]', '-'
+        $TableId = $ThisFolder.Path -replace '[^A-Za-z0-9\-_:.]', '-'
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
@@ -1513,7 +1512,7 @@ function Get-FolderPermissionsBlock {
             JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
-            Path        = $ThisFolder.Name
+            Path        = $ThisFolder.Path
         }
     }
 }
@@ -2970,6 +2969,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 
