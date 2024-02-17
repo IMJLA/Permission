@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.203
+Help Version: 0.0.204
 Locale: en-US
 ---
 
@@ -177,18 +177,12 @@ Select-FolderPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] 
 
 
 ### [Select-FolderTableProperty](Select-FolderTableProperty.md)
-
-Select-FolderTableProperty [[-InputObject] <Object>]
-
+{{ Fill in the Synopsis }}
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
-
-Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-UniquePrincipal] <Object>] [[-UniquePrincipalsByResolvedID] <Object>]
-
+{{ Fill in the Synopsis }}
 
 ### [Update-CaptionCapitalization](Update-CaptionCapitalization.md)
-
-Update-CaptionCapitalization [[-ThisHostName] <string>] [[-Win32AccountsByCaption] <hashtable>]
-
+{{ Fill in the Synopsis }}
 
 

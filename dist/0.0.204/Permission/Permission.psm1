@@ -1338,10 +1338,11 @@ function Get-FolderBlock {
         $FolderPermissions
 
     )
+    $Culture = Get-Culture
 
     Write-LogMsg @LogParams -Text "Select-FolderTableProperty -InputObject `$FolderPermissions | ConvertTo-Html -Fragment | New-BootstrapTable"
-    $FolderObjectsForTable = Select-FolderTableProperty -InputObject $FolderPermissions |
-    Sort-Object -Property Folder
+    $FolderObjectsForTable = Select-FolderTableProperty -InputObject $FolderPermissions -Culture $Culture |
+    Sort-Object -Property Path
 
     $HtmlTable = $FolderObjectsForTable |
     ConvertTo-Html -Fragment |
@@ -2869,21 +2870,15 @@ function Select-FolderPermissionTableProperty {
     }
 
 }
-function Select-FolderTableProperty {
+function Select-ItemTableProperty {
     # For the HTML table
     param (
-        $InputObject
+        $InputObject,
+        $Culture = (Get-Culture)
     )
-    $Culture = Get-Culture
-    $InputObject | Select-Object -Property @{
-        Label      = 'Folder'
-        Expression = { $_.Name }
-    },
-    @{
-        Label      = 'Inheritance'
-        Expression = {
-            $Culture.TextInfo.ToTitleCase(@($_.Group.FolderInheritanceEnabled)[0])
-        }
+    [PSCustomObject]@{
+        Path        = $InputObject.Item.Path
+        Inheritance = $Culture.TextInfo.ToTitleCase(-not $InputObject.Item.AreAccessRulesProtected)
     }
 }
 function Select-UniquePrincipal {
@@ -2971,6 +2966,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

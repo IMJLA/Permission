@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.204] - 2024-02-17 - update to use new object model
+
 ## [0.0.203] - 2024-02-17 - replace formattedsecurityprincipals var with principalsbyresolvedid
 
 ## [0.0.202] - 2024-02-17 - implement new object model
