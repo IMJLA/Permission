@@ -1,28 +1,35 @@
 function Select-FolderPermissionTableProperty {
+
     # For the HTML table
     param (
         $InputObject,
         $IgnoreDomain
     )
+
     ForEach ($Object in $InputObject) {
-        $GroupString = ($Object.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
+
+        # Each ACE contains the original IdentityReference representing the group the Object is a member of
+        $GroupString = ($Object.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+
         # ToDo: param to allow setting [self] instead of the objects own name for this property
-        #if ($GroupString -eq $Object.Name) {
+        #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
         #    $GroupString = '[self]'
         #} else {
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
             $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
         }
         #}
+
         [pscustomobject]@{
-            'Account'              = $Object.Name
-            'Access'               = ($Object.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; '
+            'Account'              = $Object.Account.ResolvedAccountName
+            'Access'               = ($Object.Access.FileSystemRights | Sort-Object -Unique) -join ' ; '
             'Due to Membership In' = $GroupString
-            'Source of Access'     = ($Object.Group.AccessControlEntry.ACESource | Sort-Object -Unique) -join ' ; '
-            'Name'                 = @($Object.Group.Name)[0]
-            'Department'           = @($Object.Group.Department)[0]
-            'Title'                = @($Object.Group.Title)[0]
+            'Source of Access'     = ($Object.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+            'Name'                 = $Object.Account.Name
+            'Department'           = $Object.Account.Department
+            'Title'                = $Object.Account.Title
         }
+
     }
 
 }

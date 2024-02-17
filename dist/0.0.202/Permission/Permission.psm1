@@ -1426,8 +1426,7 @@ function Get-FolderPermissionsBlock {
 
         $FilterContents = @{}
 
-        $FilteredAccounts = $ThisFolder.Access |
-        Group-Object -Property IdentityReferenceResolved |
+        $FilteredPermissions = $ThisFolder.Access |
         Where-Object -FilterScript {
 
             # On built-in groups like 'Authenticated Users' or 'Administrators' the SchemaClassName is null but we have an ObjectType instead.
@@ -1435,24 +1434,24 @@ function Get-FolderPermissionsBlock {
             # A user who was found by being a member of a local group not have an ObjectType (because they are not directly part of the AccessControlEntry)
             # They should have their parent group's AccessControlEntry there...do they?  Doesn't it have a Group ObjectType there?
 
-            if ($_.Group.AccessControlEntry.ObjectType) {
-                $Schema = @($_.Group.AccessControlEntry.ObjectType)[0]
-            } else {
-                $Schema = @($_.Group.SchemaClassName)[0]
-                # ToDo: SchemaClassName is a real property but may not exist on all objects.  ObjectType is my own property.  Need to verify+test all usage of both for accuracy.
-                # ToDo: Why is $_.Group.SchemaClassName 'user' for the local Administrators group and Authenticated Users group, and it is 'Group' for the TestPC\Owner user?
-            }
+            ###if ($_.Group.AccessControlEntry.ObjectType) {
+            ###    $Schema = @($_.Group.AccessControlEntry.ObjectType)[0]
+            ###    $Schema = @($_.Group.SchemaClassName)[0]
+            # ToDo: SchemaClassName is a real property but may not exist on all objects.  ObjectType is my own property.  Need to verify+test all usage of both for accuracy.
+            # ToDo: Why is $_.Group.SchemaClassName 'user' for the local Administrators group and Authenticated Users group, and it is 'Group' for the TestPC\Owner user?
+            ###}
 
             # Exclude the object whose classes were specified in the parameters
             $SchemaExclusionResult = if ($ExcludeClass.Count -gt 0) {
-                $ClassExclusions[$Schema]
+                ###$ClassExclusions[$Schema]
+                $ClassExclusions[$_.Account.SchemaClassName]
             }
             -not $SchemaExclusionResult -and
 
             # Exclude the objects whose names match the regular expressions specified in the parameters
             ![bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
-                    if ($_.Name -match $RegEx) {
+                    if ($_.Account.ResolvedAccountName -match $RegEx) {
                         $FilterContents[$_.Name] = $_
                         $true
                     }
@@ -1465,20 +1464,21 @@ function Get-FolderPermissionsBlock {
         # Sending a dummy object down the line to avoid errors
         # TODO: More elegant solution needed. Downstream code should be able to handle null input.
         # TODO: Why does this suppress errors, but the object never appears in the tables? NOTE: Suspect this is now resolved by using -AsArray on ConvertTo-Json (lack of this was causing single objects to not be an array therefore not be displayed)
-        if ($null -eq $FilteredAccounts) {
-            $FilteredAccounts = [pscustomobject]@{
-                'Name'  = 'NoAccountsMatchingCriteria'
-                'Group' = [pscustomobject]@{
-                    'IdentityReference' = '.'
-                    'Access'            = '.'
-                    'Name'              = '.'
-                    'Department'        = '.'
-                    'Title'             = '.'
+        if ($null -eq $FilteredPermissions) {
+            $FilteredPermissions = [pscustomobject]@{
+                'Account' = 'NoAccountsMatchingCriteria'
+                'Access'  = [pscustomobject]@{
+                    'IdentityReferenceResolved' = '.'
+                    'FileSystemRights'          = '.'
+                    'SourceOfAccess'            = '.'
+                    'Name'                      = '.'
+                    'Department'                = '.'
+                    'Title'                     = '.'
                 }
             }
         }
 
-        $ObjectsForFolderPermissionTable = Select-FolderPermissionTableProperty -InputObject $FilteredAccounts -IgnoreDomain $IgnoreDomain |
+        $ObjectsForFolderPermissionTable = Select-FolderPermissionTableProperty -InputObject $FilteredPermissions -IgnoreDomain $IgnoreDomain |
         Sort-Object -Property Account
 
         $ThisTable = $ObjectsForFolderPermissionTable |
@@ -2835,30 +2835,37 @@ function Resolve-PermissionTarget {
 
 }
 function Select-FolderPermissionTableProperty {
+
     # For the HTML table
     param (
         $InputObject,
         $IgnoreDomain
     )
+
     ForEach ($Object in $InputObject) {
-        $GroupString = ($Object.Group.IdentityReference | Sort-Object -Unique) -join ' ; '
+
+        # Each ACE contains the original IdentityReference representing the group the Object is a member of
+        $GroupString = ($Object.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+
         # ToDo: param to allow setting [self] instead of the objects own name for this property
-        #if ($GroupString -eq $Object.Name) {
+        #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
         #    $GroupString = '[self]'
         #} else {
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
             $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
         }
         #}
+
         [pscustomobject]@{
-            'Account'              = $Object.Name
-            'Access'               = ($Object.Group | Sort-Object -Property IdentityReference -Unique).Access -join ' ; '
+            'Account'              = $Object.Account.ResolvedAccountName
+            'Access'               = ($Object.Access.FileSystemRights | Sort-Object -Unique) -join ' ; '
             'Due to Membership In' = $GroupString
-            'Source of Access'     = ($Object.Group.AccessControlEntry.ACESource | Sort-Object -Unique) -join ' ; '
-            'Name'                 = @($Object.Group.Name)[0]
-            'Department'           = @($Object.Group.Department)[0]
-            'Title'                = @($Object.Group.Title)[0]
+            'Source of Access'     = ($Object.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+            'Name'                 = $Object.Account.Name
+            'Department'           = $Object.Account.Department
+            'Title'                = $Object.Account.Title
         }
+
     }
 
 }
@@ -2964,6 +2971,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 
