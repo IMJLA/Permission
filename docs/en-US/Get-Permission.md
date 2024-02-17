@@ -19,7 +19,7 @@ Get-Permission [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UIn
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
- [[-ProgressParentId] <Int32>] [[-KnownFqdn] <String[]>]
+ [[-ProgressParentId] <Int32>] [[-KnownFqdn] <String[]>] [[-InheritanceFlagResolved] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -136,6 +136,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InheritanceFlagResolved
+{{ Fill InheritanceFlagResolved Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

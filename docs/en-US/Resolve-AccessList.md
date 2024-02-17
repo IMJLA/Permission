@@ -17,8 +17,8 @@ Resolve-AccessList [[-AccessList] <Object[]>] [[-DebugOutputStream] <String>] [[
  [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
  [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>]
  [[-Win32AccountsByCaption] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>] [[-InheritanceFlagResolved] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -136,6 +136,21 @@ Aliases:
 
 Required: False
 Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InheritanceFlagResolved
+{{ Fill InheritanceFlagResolved Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

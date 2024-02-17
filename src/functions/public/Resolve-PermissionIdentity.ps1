@@ -69,7 +69,15 @@ function Resolve-PermissionIdentity {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
+        [string[]]$InheritanceFlagResolved = @(
+            'this folder but not subfolders'
+            'this folder and subfolders'
+            'this folder and files, but not subfolders'
+            'this folder, subfolders, and files'
+        )
 
     )
 
@@ -97,22 +105,23 @@ function Resolve-PermissionIdentity {
     $ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
 
     $ResolveAclParams = @{
-        DirectoryEntryCache    = $DirectoryEntryCache
-        Win32AccountsBySID     = $Win32AccountsBySID
-        Win32AccountsByCaption = $Win32AccountsByCaption
-        DomainsBySID           = $DomainsBySID
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsByFqdn          = $DomainsByFqdn
-        ThisHostName           = $ThisHostName
-        ThisFqdn               = $ThisFqdn
-        WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogMsgCache
-        CimCache               = $CimCache
-        ACEsByGuid             = $ACEsByGUID
-        AceGUIDsByPath         = $AceGUIDsByPath
-        AceGUIDsByResolvedID   = $AceGUIDsByResolvedID
-        ACLsByPath             = $ACLsByPath
-        ACEPropertyName        = $ACEPropertyName
+        DirectoryEntryCache     = $DirectoryEntryCache
+        Win32AccountsBySID      = $Win32AccountsBySID
+        Win32AccountsByCaption  = $Win32AccountsByCaption
+        DomainsBySID            = $DomainsBySID
+        DomainsByNetbios        = $DomainsByNetbios
+        DomainsByFqdn           = $DomainsByFqdn
+        ThisHostName            = $ThisHostName
+        ThisFqdn                = $ThisFqdn
+        WhoAmI                  = $WhoAmI
+        LogMsgCache             = $LogMsgCache
+        CimCache                = $CimCache
+        ACEsByGuid              = $ACEsByGUID
+        AceGUIDsByPath          = $AceGUIDsByPath
+        AceGUIDsByResolvedID    = $AceGUIDsByResolvedID
+        ACLsByPath              = $ACLsByPath
+        ACEPropertyName         = $ACEPropertyName
+        InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
     if ($ThreadCount -eq 1) {

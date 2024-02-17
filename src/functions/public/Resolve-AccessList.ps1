@@ -73,7 +73,15 @@ function Resolve-AccessList {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
+        [string[]]$InheritanceFlagResolved = @(
+            'this folder but not subfolders'
+            'this folder and subfolders'
+            'this folder and files, but not subfolders'
+            'this folder, subfolders, and files'
+        )
 
     )
 
@@ -112,14 +120,15 @@ function Resolve-AccessList {
 
     # Create a splat of caching-related parameters to pass to various functions for code readability
     $CacheParams = @{
-        Win32AccountsBySID     = $Win32AccountsBySID
-        Win32AccountsByCaption = $Win32AccountsByCaption
-        DirectoryEntryCache    = $DirectoryEntryCache
-        DomainsByFqdn          = $DomainsByFqdn
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsBySid           = $DomainsBySid
-        ThisFqdn               = $ThisFqdn
-        ThreadCount            = $ThreadCount
+        Win32AccountsBySID      = $Win32AccountsBySID
+        Win32AccountsByCaption  = $Win32AccountsByCaption
+        DirectoryEntryCache     = $DirectoryEntryCache
+        DomainsByFqdn           = $DomainsByFqdn
+        DomainsByNetbios        = $DomainsByNetbios
+        DomainsBySid            = $DomainsBySid
+        ThisFqdn                = $ThisFqdn
+        ThreadCount             = $ThreadCount
+        InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
     # The resolved name will include the domain name (or local computer name for local accounts)

@@ -18,7 +18,7 @@ Resolve-PermissionIdentity [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <St
  [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
  [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
  [[-Win32AccountsBySID] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>] [[-InheritanceFlagResolved] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -181,6 +181,21 @@ Aliases:
 
 Required: False
 Position: 10
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -InheritanceFlagResolved
+{{ Fill InheritanceFlagResolved Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
