@@ -372,7 +372,7 @@ function Export-FolderPermissionHtml {
         $Subfolders,
         $ResolvedFolderTargets,
         $ExpandedAccountPermissions,
-        $FormattedSecurityPrincipals
+        $PrincipalsByResolvedID
     )
 
     # Convert the target path(s) to a Bootstrap alert
@@ -495,7 +495,7 @@ function Export-FolderPermissionHtml {
         ThisFqdn         = $ThisFqdn
         ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
         PermissionCount  = $ExpandedAccountPermissions.Count
-        PrincipalCount   = $FormattedSecurityPrincipals.Count
+        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
@@ -1508,7 +1508,7 @@ function Get-FolderPermissionsBlock {
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
-            #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+
+            #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
             JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
@@ -2971,6 +2971,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-FolderTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

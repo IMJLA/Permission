@@ -927,9 +927,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
-          <maml:name>FormattedSecurityPrincipals</maml:name>
+          <maml:name>PrincipalsByResolvedID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill FormattedSecurityPrincipals Description }}</maml:para>
+            <maml:para>{{ Fill PrincipalsByResolvedID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -1096,18 +1096,6 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
-        <maml:name>FormattedSecurityPrincipals</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill FormattedSecurityPrincipals Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>IgnoreDomain</maml:name>
         <maml:description>
@@ -1172,6 +1160,18 @@
         <maml:name>OutputDir</maml:name>
         <maml:description>
           <maml:para>{{ Fill OutputDir Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="21" aliases="none">
+        <maml:name>PrincipalsByResolvedID</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill PrincipalsByResolvedID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>

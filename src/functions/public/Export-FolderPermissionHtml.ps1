@@ -52,7 +52,7 @@ function Export-FolderPermissionHtml {
         $Subfolders,
         $ResolvedFolderTargets,
         $ExpandedAccountPermissions,
-        $FormattedSecurityPrincipals
+        $PrincipalsByResolvedID
     )
 
     # Convert the target path(s) to a Bootstrap alert
@@ -175,7 +175,7 @@ function Export-FolderPermissionHtml {
         ThisFqdn         = $ThisFqdn
         ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
         PermissionCount  = $ExpandedAccountPermissions.Count
-        PrincipalCount   = $FormattedSecurityPrincipals.Count
+        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 

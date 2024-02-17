@@ -20,7 +20,7 @@ Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <Strin
  [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>]
  [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
  [[-ResolvedFolderTargets] <Object>] [[-ExpandedAccountPermissions] <Object>]
- [[-FormattedSecurityPrincipals] <Object>]
+ [[-PrincipalsByResolvedID] <Object>]
 ```
 
 ## DESCRIPTION
@@ -112,21 +112,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -FormattedSecurityPrincipals
-{{ Fill FormattedSecurityPrincipals Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 21
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -IgnoreDomain
 {{ Fill IgnoreDomain Description }}
 
@@ -212,6 +197,21 @@ Aliases:
 
 Required: False
 Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrincipalsByResolvedID
+{{ Fill PrincipalsByResolvedID Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 21
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
