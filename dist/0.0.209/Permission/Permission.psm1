@@ -1724,12 +1724,8 @@ function Get-Permission {
     [string[]]$KnownFqdn,
 
     # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-    [string[]]$InheritanceFlagResolved = @(
-      'this folder but not subfolders',
-      'this folder and subfolders',
-      'this folder and files, but not subfolders',
-      'this folder, subfolders, and files'
-    )
+    # Parameter default value is on a single line as a workaround to a PlatyPS bug
+    [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
 
   )
 
@@ -2443,12 +2439,8 @@ function Resolve-AccessList {
         [int]$ProgressParentId,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        [string[]]$InheritanceFlagResolved = @(
-            'this folder but not subfolders',
-            'this folder and subfolders',
-            'this folder and files, but not subfolders',
-            'this folder, subfolders, and files'
-        )
+        # Parameter default value is on a single line as a workaround to a PlatyPS bug
+        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
 
     )
 
@@ -2702,12 +2694,8 @@ function Resolve-PermissionIdentity {
         [int]$ProgressParentId,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        [string[]]$InheritanceFlagResolved = @(
-            'this folder but not subfolders',
-            'this folder and subfolders',
-            'this folder and files, but not subfolders',
-            'this folder, subfolders, and files'
-        )
+        # Parameter default value is on a single line as a workaround to a PlatyPS bug
+        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
 
     )
 
@@ -2998,6 +2986,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

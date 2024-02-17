@@ -76,12 +76,8 @@ function Resolve-AccessList {
         [int]$ProgressParentId,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        [string[]]$InheritanceFlagResolved = @(
-            'this folder but not subfolders',
-            'this folder and subfolders',
-            'this folder and files, but not subfolders',
-            'this folder, subfolders, and files'
-        )
+        # Parameter default value is on a single line as a workaround to a PlatyPS bug
+        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
 
     )
 

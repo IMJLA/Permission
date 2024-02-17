@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.209] - 2024-02-17 - single line param as workaround for platyps
+
 ## [0.0.208] - 2024-02-17 - add inheritance flag resolution
 
 ## [0.0.207] - 2024-02-17 - add inheritance flag resolution
