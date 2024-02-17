@@ -24,7 +24,7 @@ function Get-UniqueServerFqdn {
     )
 
     $Progress = @{
-        Activity = 'Expand-Folder'
+        Activity = 'Get-UniqueServerFqdn'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
@@ -34,6 +34,7 @@ function Get-UniqueServerFqdn {
     }
     $Count = $FilePath.Count
     Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    Start-Sleep -Seconds 5
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -42,11 +43,6 @@ function Get-UniqueServerFqdn {
     ForEach ($Value in $Known) {
         $UniqueValues[$Value] = $null
     }
-
-    #why would this be needed?  why add the full path?  I am expecting only fqdns as output right?
-    #ForEach ($Value in $FilePath) {
-    #    $UniqueValues[$Value] = $null
-    #}
 
     # Add server names from the ACL paths
     [int]$ProgressInterval = [math]::max(($Count / 100), 1)
@@ -58,6 +54,7 @@ function Get-UniqueServerFqdn {
         if ($IntervalCounter -eq $ProgressInterval) {
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            Start-Sleep -Seconds 5
             $IntervalCounter = 0
         }
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -65,6 +62,7 @@ function Get-UniqueServerFqdn {
     }
 
     Write-Progress @Progress -Completed
+    Start-Sleep -Seconds 5
 
     return $UniqueValues.Keys
 
