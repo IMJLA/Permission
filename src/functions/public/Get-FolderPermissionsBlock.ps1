@@ -27,16 +27,16 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = @($FolderPermissions.Path |
+    $ShortestFolderPath = @($FolderPermissions.Item.Path |
         Sort-Object)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
-        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Path)" -Level 5
+        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 5
 
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
 
-        $FilterContents = @{}
+        #$FilterContents = @{}
 
         $FilteredPermissions = $ThisFolder.Access |
         Where-Object -FilterScript {
@@ -64,7 +64,7 @@ function Get-FolderPermissionsBlock {
             ![bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($_.Account.ResolvedAccountName -match $RegEx) {
-                        $FilterContents[$_.Name] = $_
+                        #$FilterContents[$_.Account.ResolvedAccountName] += $_ #TODO: IMPLEMENT IN FUTURE WITH HASHTABLE, NOT += which is demonstrative only for now
                         $true
                     }
                 }
@@ -97,7 +97,7 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Path -replace '[^A-Za-z0-9\-_:.]', '-'
+        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_:.]', '-'
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
@@ -124,7 +124,7 @@ function Get-FolderPermissionsBlock {
             JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
-            Path        = $ThisFolder.Path
+            Path        = $ThisFolder.Item.Path
         }
     }
 }

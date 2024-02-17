@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.206] - 2024-02-17 - bugfix
+
 ## [0.0.205] - 2024-02-17 - rename select-foldertableproperty because it does nothing specific to folders
 
 ## [0.0.204] - 2024-02-17 - update to use new object model

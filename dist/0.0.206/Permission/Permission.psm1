@@ -1,4 +1,40 @@
 
+function ConvertTo-ItemBlock {
+
+    param (
+
+        $ItemPermissions
+
+    )
+
+    $Culture = Get-Culture
+
+    Write-LogMsg @LogParams -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
+    $ObjectsForTable = Select-ItemTableProperty -InputObject $ItemPermissions -Culture $Culture |
+    Sort-Object -Property Path
+
+    Write-LogMsg @LogParams -Text "`$ObjectsForTable | ConvertTo-Html -Fragment | New-BootstrapTable"
+    $HtmlTable = $ObjectsForTable |
+    ConvertTo-Html -Fragment |
+    New-BootstrapTable
+
+    $JsonData = $ObjectsForTable |
+    ConvertTo-Json
+
+    Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
+    $JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForTable
+
+    Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+    $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
+
+    return [pscustomobject]@{
+        HtmlDiv     = $HtmlTable
+        JsonDiv     = $JsonTable
+        JsonData    = $JsonData
+        JsonColumns = $JsonColumns
+    }
+
+}
 function Expand-AcctPermission {
 
     param (
@@ -381,7 +417,7 @@ function Export-FolderPermissionHtml {
     $ReportDescription = "$(New-BootstrapAlert -Class Dark -Text $TargetPathString) $ReportDescription"
 
     # Convert the folder list to an HTML table
-    $FormattedFolders = Get-FolderBlock -FolderPermissions $FolderPermissions
+    $FormattedFolders = ConvertTo-ItemBlock -ItemPermissions $FolderPermissions
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
@@ -494,7 +530,7 @@ function Export-FolderPermissionHtml {
         WhoAmI           = $WhoAmI
         ThisFqdn         = $ThisFqdn
         ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
-        PermissionCount  = $ExpandedAccountPermissions.Count
+        PermissionCount  = $FolderPermissions.Access.Access.Count
         PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
@@ -1332,36 +1368,6 @@ function Get-FolderAccessList {
     Write-Progress @Progress -Completed
 
 }
-function Get-FolderBlock {
-    param (
-
-        $FolderPermissions
-
-    )
-    $Culture = Get-Culture
-
-    Write-LogMsg @LogParams -Text "Select-ItemTableProperty -InputObject `$FolderPermissions | ConvertTo-Html -Fragment | New-BootstrapTable"
-    $FolderObjectsForTable = Select-ItemTableProperty -InputObject $FolderPermissions -Culture $Culture |
-    Sort-Object -Property Path
-
-    $HtmlTable = $FolderObjectsForTable |
-    ConvertTo-Html -Fragment |
-    New-BootstrapTable
-
-    $JsonData = $FolderObjectsForTable |
-    ConvertTo-Json
-
-    $JsonColumns = Get-FolderColumnJson -InputObject $FolderObjectsForTable
-    $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $FolderObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
-
-    return [pscustomobject]@{
-        HtmlDiv     = $HtmlTable
-        JsonDiv     = $JsonTable
-        JsonData    = $JsonData
-        JsonColumns = $JsonColumns
-    }
-
-}
 function Get-FolderColumnJson {
     # For the JSON that will be used by JavaScript to generate the table
     param (
@@ -1416,16 +1422,16 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = @($FolderPermissions.Path |
+    $ShortestFolderPath = @($FolderPermissions.Item.Path |
         Sort-Object)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
-        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Path)" -Level 5
+        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 5
 
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
 
-        $FilterContents = @{}
+        #$FilterContents = @{}
 
         $FilteredPermissions = $ThisFolder.Access |
         Where-Object -FilterScript {
@@ -1453,7 +1459,7 @@ function Get-FolderPermissionsBlock {
             ![bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($_.Account.ResolvedAccountName -match $RegEx) {
-                        $FilterContents[$_.Name] = $_
+                        #$FilterContents[$_.Account.ResolvedAccountName] += $_ #TODO: IMPLEMENT IN FUTURE WITH HASHTABLE, NOT += which is demonstrative only for now
                         $true
                     }
                 }
@@ -1486,7 +1492,7 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Path -replace '[^A-Za-z0-9\-_:.]', '-'
+        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_:.]', '-'
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
@@ -1513,7 +1519,7 @@ function Get-FolderPermissionsBlock {
             JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
-            Path        = $ThisFolder.Path
+            Path        = $ThisFolder.Item.Path
         }
     }
 }
@@ -1523,21 +1529,21 @@ function Get-FolderPermissionTableHeader {
         $ThisFolder,
         [string]$ShortestFolderPath
     )
-    $Leaf = $ThisFolder.Name | Split-Path -Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
+    $Leaf = $ThisFolder.Item.Path | Split-Path -Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
     if ($Leaf) {
         $ParentLeaf = $Leaf
     } else {
-        $ParentLeaf = $ThisFolder.Name | Split-Path -Parent
+        $ParentLeaf = $ThisFolder.Item.Path | Split-Path -Parent
     }
     if ('' -ne $ParentLeaf) {
-        if (@($ThisFolder.Group.FolderInheritanceEnabled)[0] -eq $true) {
-            if ($ThisFolder.Name -eq $ShortestFolderPath) {
+        if ($InputObject.Item.AreAccessRulesProtected) {
+            return "Inheritance is disabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) cannot access this folder unless they are listed below:"
+        } else {
+            if ($ThisFolder.Item.Path -eq $ShortestFolderPath) {
                 return "Inherited permissions from the parent folder ($ParentLeaf) are included. This folder can only be accessed by the accounts listed below:"
             } else {
                 return "Inheritance is enabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) can access this folder. So can any accounts listed below:"
             }
-        } else {
-            return "Inheritance is disabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) cannot access this folder unless they are listed below:"
         }
     } else {
         return "This is the top-level folder. It can only be accessed by the accounts listed below:"
@@ -2965,7 +2971,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderBlock','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

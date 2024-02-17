@@ -61,7 +61,7 @@ function Export-FolderPermissionHtml {
     $ReportDescription = "$(New-BootstrapAlert -Class Dark -Text $TargetPathString) $ReportDescription"
 
     # Convert the folder list to an HTML table
-    $FormattedFolders = Get-FolderBlock -FolderPermissions $FolderPermissions
+    $FormattedFolders = ConvertTo-ItemBlock -ItemPermissions $FolderPermissions
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
@@ -174,7 +174,7 @@ function Export-FolderPermissionHtml {
         WhoAmI           = $WhoAmI
         ThisFqdn         = $ThisFqdn
         ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
-        PermissionCount  = $ExpandedAccountPermissions.Count
+        PermissionCount  = $FolderPermissions.Access.Access.Count
         PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams

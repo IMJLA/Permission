@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.205
+Help Version: 0.0.206
 Locale: en-US
 ---
 
@@ -11,6 +11,11 @@ Locale: en-US
 Module for working with Access Control Lists
 
 ## Permission Cmdlets
+### [ConvertTo-ItemBlock](ConvertTo-ItemBlock.md)
+
+ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
+
+
 ### [Expand-AcctPermission](Expand-AcctPermission.md)
 
 Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
@@ -67,9 +72,7 @@ Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount
 
 
 ### [Get-FolderBlock](Get-FolderBlock.md)
-
-Get-FolderBlock [[-FolderPermissions] <Object>]
-
+{{ Fill in the Description }}
 
 ### [Get-FolderColumnJson](Get-FolderColumnJson.md)
 
