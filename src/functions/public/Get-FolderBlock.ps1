@@ -6,8 +6,8 @@ function Get-FolderBlock {
     )
     $Culture = Get-Culture
 
-    Write-LogMsg @LogParams -Text "Select-FolderTableProperty -InputObject `$FolderPermissions | ConvertTo-Html -Fragment | New-BootstrapTable"
-    $FolderObjectsForTable = Select-FolderTableProperty -InputObject $FolderPermissions -Culture $Culture |
+    Write-LogMsg @LogParams -Text "Select-ItemTableProperty -InputObject `$FolderPermissions | ConvertTo-Html -Fragment | New-BootstrapTable"
+    $FolderObjectsForTable = Select-ItemTableProperty -InputObject $FolderPermissions -Culture $Culture |
     Sort-Object -Property Path
 
     $HtmlTable = $FolderObjectsForTable |

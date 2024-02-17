@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.204
+Help Version: 0.0.205
 Locale: en-US
 ---
 
@@ -176,13 +176,19 @@ Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtab
 Select-FolderPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
 
 
-### [Select-FolderTableProperty](Select-FolderTableProperty.md)
-{{ Fill in the Synopsis }}
+### [Select-ItemTableProperty](Select-ItemTableProperty.md)
+
+Select-ItemTableProperty [[-InputObject] <Object>] [[-Culture] <Object>]
+
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
-{{ Fill in the Synopsis }}
+
+Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-UniquePrincipal] <Object>] [[-UniquePrincipalsByResolvedID] <Object>]
+
 
 ### [Update-CaptionCapitalization](Update-CaptionCapitalization.md)
-{{ Fill in the Synopsis }}
+
+Update-CaptionCapitalization [[-ThisHostName] <string>] [[-Win32AccountsByCaption] <hashtable>]
+
 
 
