@@ -1,4 +1,33 @@
 
+function Add-CacheItem {
+
+    # Use a key to get a generic list from a hashtable
+    # If it does not exist, create an empty list
+    # Add the new item
+
+    param (
+
+        [hashtable]$Cache,
+
+        $Key,
+
+        $Value,
+
+        [type]$Type
+
+    )
+
+    $CacheResult = $Cache[$Key]
+
+    if (-not $CacheResult) {
+        $Command = "`$CacheResult = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
+        Invoke-Expression $Command
+    }
+
+    $CacheResult.Add($Value)
+    $Cache[$Key] = $CacheResult
+
+}
 function ConvertTo-ItemBlock {
 
     param (
@@ -2992,7 +3021,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 
