@@ -167,7 +167,7 @@ function Resolve-Ace {
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders','this folder and subfolders','this folder and files, but not subfolders','this folder, subfolders, and files')
+        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
 
     )
 
@@ -178,58 +178,36 @@ function Resolve-Ace {
         WhoAmI       = $WhoAmI
     }
 
-    $LoggingParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         LogMsgCache  = $LogMsgCache
         WhoAmI       = $WhoAmI
     }
 
-    $IdentityReference = $ACE.IdentityReference #.ToString()
-    
-    $ResolveDomainDNSParams = @{
-        IdentityReference = $IdentityReference
-        ItemPath          = $ItemPath
-        DomainsByNetBIOS  = $DomainsByNetbios
-        DomainsBySid      = $DomainsBySid
-        ThisFqdn          = $ThisFqdn
-        CimCache          = $CimCache
-    }
-    
-    $DomainDNS = Resolve-IdentityReferenceDomainDNS @ResolveDomainDNSParams @LoggingParams
-
-    $GetAdsiServerParams = @{
-        Fqdn                   = $DomainDNS
-        CimCache               = $CimCache
+    $Cache1 = @{
         DirectoryEntryCache    = $DirectoryEntryCache
         DomainsByFqdn          = $DomainsByFqdn
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsBySid           = $DomainsBySid
-        ThisFqdn               = $ThisFqdn
         Win32AccountsBySID     = $Win32AccountsBySID
         Win32AccountsByCaption = $Win32AccountsByCaption
     }
+
+    $Cache2 = @{
+        DomainsByNetBIOS = $DomainsByNetbios
+        DomainsBySid     = $DomainsBySid
+        CimCache         = $CimCache
+    }
+
+    Write-LogMsg @LogParams -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log"
+    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @Log
 
     Write-LogMsg @LogParams -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn'"
-    $AdsiServer = Get-AdsiServer @GetAdsiServerParams @LoggingParams
+    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS -ThisFqdn $ThisFqdn @GetAdsiServerParams @Cache1 @Cache2 @Log
 
-    $ResolveIdentityReferenceParams = @{
-        IdentityReference      = $IdentityReference
-        AdsiServer             = $AdsiServer
-        Win32AccountsBySID     = $Win32AccountsBySID
-        Win32AccountsByCaption = $Win32AccountsByCaption
-        DirectoryEntryCache    = $DirectoryEntryCache
-        DomainsBySID           = $DomainsBySID
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsByFqdn          = $DomainsByFqdn
-        ThisFqdn               = $ThisFqdn
-        CimCache               = $CimCache
-    }
-
-    Write-LogMsg @LogParams -Text "Resolve-IdentityReference -IdentityReference '$IdentityReference' -AdsiServer `$AdsiServer # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
-    $ResolvedIdentityReference = Resolve-IdentityReference @ResolveIdentityReferenceParams @LoggingParams
+    Write-LogMsg @LogParams -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
+    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @Log
 
     # TODO: add a param to offer DNS instead of or in addition to NetBIOS
-        
+
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
         AdsiProvider              = $AdsiServer.AdsiProvider
@@ -244,37 +222,12 @@ function Resolve-Ace {
     ForEach ($ThisProperty in $ACEPropertyName) {
         $ObjectProperties[$ThisProperty] = $ACE.$ThisProperty
     }
-    
+
     $OutputObject = [PSCustomObject]$ObjectProperties
-    $Guid = [guid]::NewGuid()    
+    $Guid = [guid]::NewGuid()
     Add-CacheItem -Cache $ACEsByGUID -Key $Guid -Value $OutputObject -Type ([object])
     $Type = [guid]
     Add-CacheItem -Cache $AceGUIDsByResolvedID -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
     Add-CacheItem -Cache $AceGUIDsByPath -Key $OutputObject.Path -Value $Guid -Type $Type
-    
-    <#
-    $ACEs = $ACEsByGUID[$Guid]
-    if (-not $ACEs) {
-        $ACEs = [System.Collections.Generic.List[object]]::new()
-    }
-    $ACEs.Add($OutputObject)
-    $ACEsByGUID[$Guid] = $ACEs
-
-    $Key = $OutputObject.IdentityReferenceResolved
-    $AceGuids = $AceGUIDsByResolvedID[$Key]
-    if (-not $AceGuids) {
-        $AceGuids = [System.Collections.Generic.List[guid]]::new()
-    }
-    $AceGuids.Add($Guid)
-    $AceGUIDsByResolvedID[$Key] = $AceGuids
-
-    $Key = $OutputObject.Path
-    $AceGuids = $AceGUIDsByPath[$Key]
-    if (-not $AceGuids) {
-        $AceGuids = [System.Collections.Generic.List[guid]]::new()
-    }
-    $AceGuids.Add($Guid)
-    $AceGUIDsByPath[$Key] = $AceGuids
-    #>
 
 }

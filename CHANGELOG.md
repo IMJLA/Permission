@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.221] - 2024-02-18 - cleaner splats
+
 ## [0.0.220] - 2024-02-18 - add resolve-acl and resolve-ace
 
 ## [0.0.219] - 2024-02-18 - removed broken unnecessary sorting...I think it is already sorted
