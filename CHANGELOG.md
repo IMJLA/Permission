@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.222] - 2024-02-18 - fix comment spacing
+
 ## [0.0.221] - 2024-02-18 - cleaner splats
 
 ## [0.0.220] - 2024-02-18 - add resolve-acl and resolve-ace
