@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-FolderAccessList
+# Get-FolderAcl
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UInt16>]
+Get-FolderAcl [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
  [[-ProgressParentId] <Int32>] [[-ACLsByPath] <Hashtable>]
@@ -25,7 +25,7 @@ Get-FolderAccessList [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -186,6 +186,7 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object

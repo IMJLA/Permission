@@ -1195,7 +1195,7 @@ function Get-CachedCimSession {
     }
 
 }
-function Get-FolderAccessList {
+function Get-FolderAcl {
 
     # Get folder access control lists
     # Returns an object representing each effective permission on a folder
@@ -1236,7 +1236,7 @@ function Get-FolderAccessList {
     )
 
     $Progress = @{
-        Activity = 'Get-FolderAccessList'
+        Activity = 'Get-FolderAcl'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
@@ -1253,7 +1253,7 @@ function Get-FolderAccessList {
 
     Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent folder access control lists' -PercentComplete 0
 
-    $GetFolderAceParams = @{
+    $GetDirectorySecurity = @{
         LogMsgCache       = $LogMsgCache
         ThisHostname      = $TodaysHostname
         DebugOutputStream = $DebugOutputStream
@@ -1271,14 +1271,14 @@ function Get-FolderAccessList {
     ForEach ($ThisFolder in $Folder) {
 
         [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-FolderAcl -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
         $i++
-        Get-FolderAcl -LiteralPath $ThisFolder -IncludeInherited @GetFolderAceParams
+        Get-DirectorySecurity -LiteralPath $ThisFolder -IncludeInherited @GetDirectorySecurity
 
     }
 
     Write-Progress @ChildProgress -Completed
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (subfolders)'
+    $ChildProgress['Activity'] = 'Get-FolderAcl (subfolders)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get subfolder access control lists' -PercentComplete 25
     $SubfolderCount = $Subfolder.Count
 
@@ -1296,13 +1296,13 @@ function Get-FolderAccessList {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-FolderAcl" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-DirectorySecurity" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Get-FolderAcl -LiteralPath $ThisFolder @GetFolderAceParams
+            Get-DirectorySecurity -LiteralPath $ThisFolder @GetDirectorySecurity
 
         }
 
@@ -1310,8 +1310,8 @@ function Get-FolderAccessList {
 
     } else {
 
-        $GetFolderAce = @{
-            Command           = 'Get-FolderAcl'
+        $SplitThread = @{
+            Command           = 'Get-DirectorySecurity'
             InputObject       = $Subfolder
             InputParameter    = 'LiteralPath'
             DebugOutputStream = $DebugOutputStream
@@ -1319,21 +1319,21 @@ function Get-FolderAccessList {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
-            AddParam          = $GetFolderAceParams
+            AddParam          = $GetDirectorySecurity
 
         }
 
-        Split-Thread @GetFolderAce
+        Split-Thread @SplitThread
 
     }
 
     # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
     # First return the owner of the parent item
     Write-Progress @Progress -Status '50% (step 3 of 4) Get-OwnerAce (parent folders)' -CurrentOperation 'Get parent folder owners' -PercentComplete 50
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (parent owners)'
+    $ChildProgress['Activity'] = 'Get-FolderAcl (parent owners)'
     $i = 0
 
-    $GetOwnerAceParams = @{
+    $GetOwnerAce = @{
         OwnerCache = $OwnerCache
         ACLsByPath = $ACLsByPath
     }
@@ -1343,13 +1343,13 @@ function Get-FolderAccessList {
         [int]$PercentComplete = $i / $Count * 100
         $i++
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $i of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-        Get-OwnerAce -Item $ThisFolder @GetOwnerAceParams
+        Get-OwnerAce -Item $ThisFolder @GetOwnerAce
 
     }
 
     Write-Progress @ChildProgress -Completed
     Write-Progress @Progress -Status '75% (step 4 of 4) Get-OwnerAce (subfolders)' -CurrentOperation 'Get subfolder owners' -PercentComplete 75
-    $ChildProgress['Activity'] = 'Get-FolderAccessList (subfolder owners)'
+    $ChildProgress['Activity'] = 'Get-FolderAcl (subfolder owners)'
 
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
@@ -1363,13 +1363,15 @@ function Get-FolderAccessList {
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
+
                 [int]$PercentComplete = $i / $SubfolderCount * 100
                 Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount)) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
+
             }
 
             $i++
-            Get-OwnerAce -Item $ThisFolder @GetOwnerAceParams
+            Get-OwnerAce -Item $ThisFolder @GetOwnerAce
 
         }
 
@@ -1377,7 +1379,7 @@ function Get-FolderAccessList {
 
     } else {
 
-        $GetOwnerAce = @{
+        $SplitThread = @{
             Command           = 'Get-OwnerAce'
             InputObject       = $Subfolder
             InputParameter    = 'Item'
@@ -1386,10 +1388,10 @@ function Get-FolderAccessList {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
-            AddParam          = $GetOwnerAceParams
+            AddParam          = $GetOwnerAce
         }
 
-        Split-Thread @GetOwnerAce
+        Split-Thread @SplitThread
 
     }
 
@@ -3382,7 +3384,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 
