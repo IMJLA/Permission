@@ -9,8 +9,7 @@ function ConvertTo-ItemBlock {
     $Culture = Get-Culture
 
     Write-LogMsg @LogParams -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
-    $ObjectsForTable = Select-ItemTableProperty -InputObject $ItemPermissions -Culture $Culture |
-    Sort-Object -Property Path
+    $ObjectsForTable = Select-ItemTableProperty -InputObject $ItemPermissions -Culture $Culture
 
     Write-LogMsg @LogParams -Text "`$ObjectsForTable | ConvertTo-Html -Fragment | New-BootstrapTable"
     $HtmlTable = $ObjectsForTable |
