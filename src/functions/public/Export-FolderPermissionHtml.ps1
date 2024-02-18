@@ -41,7 +41,7 @@ function Export-FolderPermissionHtml {
         # Generate a report with only HTML and CSS but no JavaScript
         [switch]$NoJavaScript,
 
-        $FolderPermissions,
+        $ItemPermissions,
         $LogParams,
         $ReportDescription,
         $FolderTableHeader,
@@ -51,7 +51,6 @@ function Export-FolderPermissionHtml {
         $ReportInstanceId,
         $Subfolders,
         $ResolvedFolderTargets,
-        $ExpandedAccountPermissions,
         $PrincipalsByResolvedID
     )
 
@@ -61,11 +60,11 @@ function Export-FolderPermissionHtml {
     $ReportDescription = "$(New-BootstrapAlert -Class Dark -Text $TargetPathString) $ReportDescription"
 
     # Convert the folder list to an HTML table
-    $FormattedFolders = ConvertTo-ItemBlock -ItemPermissions $FolderPermissions
+    $FormattedFolders = ConvertTo-ItemBlock -ItemPermissions $ItemPermissions
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
-        FolderPermissions = $FolderPermissions
+        FolderPermissions = $ItemPermissions
         ExcludeAccount    = $ExcludeAccount
         ExcludeClass      = $ExcludeClass
         IgnoreDomain      = $IgnoreDomain
@@ -174,7 +173,7 @@ function Export-FolderPermissionHtml {
         WhoAmI           = $WhoAmI
         ThisFqdn         = $ThisFqdn
         ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
-        PermissionCount  = $FolderPermissions.Access.Access.Count
+        PermissionCount  = $ItemPermissions.Access.Access.Count
         PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams

@@ -397,7 +397,7 @@ function Export-FolderPermissionHtml {
         # Generate a report with only HTML and CSS but no JavaScript
         [switch]$NoJavaScript,
 
-        $FolderPermissions,
+        $ItemPermissions,
         $LogParams,
         $ReportDescription,
         $FolderTableHeader,
@@ -407,7 +407,6 @@ function Export-FolderPermissionHtml {
         $ReportInstanceId,
         $Subfolders,
         $ResolvedFolderTargets,
-        $ExpandedAccountPermissions,
         $PrincipalsByResolvedID
     )
 
@@ -417,11 +416,11 @@ function Export-FolderPermissionHtml {
     $ReportDescription = "$(New-BootstrapAlert -Class Dark -Text $TargetPathString) $ReportDescription"
 
     # Convert the folder list to an HTML table
-    $FormattedFolders = ConvertTo-ItemBlock -ItemPermissions $FolderPermissions
+    $FormattedFolders = ConvertTo-ItemBlock -ItemPermissions $ItemPermissions
 
     # Convert the folder permissions to an HTML table
     $GetFolderPermissionsBlock = @{
-        FolderPermissions = $FolderPermissions
+        FolderPermissions = $ItemPermissions
         ExcludeAccount    = $ExcludeAccount
         ExcludeClass      = $ExcludeClass
         IgnoreDomain      = $IgnoreDomain
@@ -530,7 +529,7 @@ function Export-FolderPermissionHtml {
         WhoAmI           = $WhoAmI
         ThisFqdn         = $ThisFqdn
         ItemCount        = ($Subfolders.Count + $ResolvedFolderTargets.Count)
-        PermissionCount  = $FolderPermissions.Access.Access.Count
+        PermissionCount  = $ItemPermissions.Access.Access.Count
         PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
@@ -2891,15 +2890,23 @@ function Select-FolderPermissionTableProperty {
 
 }
 function Select-ItemTableProperty {
+
     # For the HTML table
+
     param (
         $InputObject,
         $Culture = (Get-Culture)
     )
-    [PSCustomObject]@{
-        Path        = $InputObject.Item.Path
-        Inheritance = $Culture.TextInfo.ToTitleCase(-not $InputObject.Item.AreAccessRulesProtected)
+
+    ForEach ($Object in $InputObject) {
+
+        [PSCustomObject]@{
+            Path        = $Object.Item.Path
+            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
+        }
+
     }
+
 }
 function Select-UniquePrincipal {
 
@@ -2986,6 +2993,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

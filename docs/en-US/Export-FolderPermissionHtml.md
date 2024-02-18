@@ -16,11 +16,10 @@ schema: 2.0.0
 Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <String[]>]
  [[-IgnoreDomain] <Object>] [[-TargetPath] <String[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>]
  [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript]
- [[-FolderPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>]
+ [[-ItemPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>]
  [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>]
  [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
- [[-ResolvedFolderTargets] <Object>] [[-ExpandedAccountPermissions] <Object>]
- [[-PrincipalsByResolvedID] <Object>]
+ [[-ResolvedFolderTargets] <Object>] [[-PrincipalsByResolvedID] <Object>]
 ```
 
 ## DESCRIPTION
@@ -67,36 +66,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ExpandedAccountPermissions
-{{ Fill ExpandedAccountPermissions Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 20
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -FolderPermissions
-{{ Fill FolderPermissions Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 10
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -FolderTableHeader
 {{ Fill FolderTableHeader Description }}
 
@@ -122,6 +91,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ItemPermissions
+{{ Fill ItemPermissions Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -211,7 +195,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 21
+Position: 20
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
