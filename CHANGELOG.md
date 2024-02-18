@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.217] - 2024-02-18 - replace foreach-object with foreach
+
 ## [0.0.216] - 2024-02-18 - bugfix incorrect property name
 
 ## [0.0.215] - 2024-02-18 - bugfix discrepancy in table name between two functs. improved efficiency at same time

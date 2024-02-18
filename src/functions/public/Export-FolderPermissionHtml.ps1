@@ -221,9 +221,8 @@ function Export-FolderPermissionHtml {
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
 
-    $FormattedFolderPermissions |
-    ForEach-Object {
-        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($_.JsonTable)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
+    ForEach ($Folder in $FormattedFolderPermissions) {
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($Folder.JsonTable)" -ColumnJson $Folder.JsonColumns -DataJson $Folder.JsonData))
     }
 
     $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData))
