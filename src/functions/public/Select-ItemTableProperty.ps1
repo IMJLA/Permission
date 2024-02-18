@@ -10,7 +10,7 @@ function Select-ItemTableProperty {
     ForEach ($Object in $InputObject) {
 
         [PSCustomObject]@{
-            Path        = $Object.Item.Path
+            Folder      = $Object.Item.Path
             Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
         }
 

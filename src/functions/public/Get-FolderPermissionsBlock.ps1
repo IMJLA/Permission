@@ -27,8 +27,8 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = @($FolderPermissions.Item.Path |
-        Sort-Object)[0]
+    # Relies on $FolderPermissions already being sorted by Item Path
+    $ShortestFolderPath = @($FolderPermissions.Item.Path)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 

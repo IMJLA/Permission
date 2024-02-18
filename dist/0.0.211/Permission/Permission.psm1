@@ -1421,8 +1421,8 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    $ShortestFolderPath = @($FolderPermissions.Item.Path |
-        Sort-Object)[0]
+    # Relies on $FolderPermissions already being sorted by Item Path
+    $ShortestFolderPath = @($FolderPermissions.Item.Path)[0]
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
@@ -2901,7 +2901,7 @@ function Select-ItemTableProperty {
     ForEach ($Object in $InputObject) {
 
         [PSCustomObject]@{
-            Path        = $Object.Item.Path
+            Folder      = $Object.Item.Path
             Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
         }
 
@@ -2993,6 +2993,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 
