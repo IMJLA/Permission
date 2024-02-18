@@ -436,7 +436,8 @@ function Export-FolderPermissionHtml {
         $ReportInstanceId,
         $Subfolders,
         $ResolvedFolderTargets,
-        $PrincipalsByResolvedID
+        $PrincipalsByResolvedID,
+        $ShortestPath
     )
 
     # Convert the target path(s) to a Bootstrap alert
@@ -453,6 +454,7 @@ function Export-FolderPermissionHtml {
         ExcludeAccount    = $ExcludeAccount
         ExcludeClass      = $ExcludeClass
         IgnoreDomain      = $IgnoreDomain
+        ShortestPath      = $ShortestPath
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock
@@ -1440,7 +1442,9 @@ function Get-FolderPermissionsBlock {
 
         Can also be used to remove all domains simply for brevity in the report.
         #>
-        [string[]]$IgnoreDomain
+        [string[]]$IgnoreDomain,
+
+        $ShortestPath
 
     )
 
@@ -1450,14 +1454,11 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    # Relies on $FolderPermissions already being sorted by Item Path
-    $ShortestFolderPath = @($FolderPermissions.Item.Path)[0]
-
     ForEach ($ThisFolder in $FolderPermissions) {
 
         $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 5
 
-        $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
+        $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestPath
 
         #$FilterContents = @{}
 
@@ -1520,7 +1521,7 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_:.]', '-'
+        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-'
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
@@ -2389,27 +2390,14 @@ function Remove-CachedCimSession {
     }
 
 }
-function Resolve-AccessList {
+function Resolve-AccessControlList {
 
-    <#
-    Resolve and expand the identities in access control lists to the accounts they represent
-
-    Resolve-PermissionIdentity
-      Resolve-Ace
-        Resolve-IdentityReference
-    Get-PermissionPrincipal
-      ConvertFrom-IdentityReferenceResolved
-    Format-PermissionAccount
-      Format-SecurityPrincipal
-    Select-UniqueAccountPermission
-    Format-FolderPermission
-    #>
+    # Resolve identities in access control lists to their SIDs and NTAccount names
 
     param (
 
-        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
-        [Parameter(ValueFromPipeline)]
-        [object[]]$AccessList,
+        # Cache of access control lists keyed by path
+        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -2417,6 +2405,15 @@ function Resolve-AccessList {
 
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
+
+        # Cache of access control entries keyed by GUID generated in this function
+        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entry GUIDs keyed by their resolved identities
+        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+
+        # Cache of access control entry GUIDs keyed by their paths
+        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -2437,11 +2434,11 @@ function Resolve-AccessList {
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
         # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
         [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
+
+        # Cache of known Win32_Account instances keyed by domain and SID
+        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
@@ -2472,25 +2469,20 @@ function Resolve-AccessList {
 
     )
 
-    # Create a splat of the progress parameters for code readability
     $Progress = @{
-        Activity = 'Resolve-AccessList'
+        Activity = 'Resolve-AccessControlList'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
+        $Progress['Id'] = $ProgressParentId + 1
     } else {
-        $ProgressId = 0
+        $Progress['Id'] = 0
     }
-    $Progress['Id'] = $ProgressId
 
-    # Start the progress bar for this function
-    Write-Progress -Status '0% (step 1 of 4)' -CurrentOperation 'Initialize' -PercentComplete 0 @Progress
+    $Paths = $ACLsByPath.Keys
+    $Count = $Paths.Count
+    Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
-    $Count = $AccessList.Count
-    Write-Progress @Progress -Status "0% (permission 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-
-    # Create a splat of constant Write-LogMsg parameters for code readability
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
@@ -2498,32 +2490,70 @@ function Resolve-AccessList {
         WhoAmI       = $WhoAmI
     }
 
-    # Create a splat of log-related parameters to pass to various functions for code readability
-    $LoggingParams = @{
-        ThisHostname = $ThisHostname
-        LogMsgCache  = $LogCache
-        WhoAmI       = $WhoAmI
-    }
+    $ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
 
-    # Create a splat of caching-related parameters to pass to various functions for code readability
-    $CacheParams = @{
+    $ResolveAclParams = @{
+        DirectoryEntryCache     = $DirectoryEntryCache
         Win32AccountsBySID      = $Win32AccountsBySID
         Win32AccountsByCaption  = $Win32AccountsByCaption
-        DirectoryEntryCache     = $DirectoryEntryCache
-        DomainsByFqdn           = $DomainsByFqdn
+        DomainsBySID            = $DomainsBySID
         DomainsByNetbios        = $DomainsByNetbios
-        DomainsBySid            = $DomainsBySid
+        DomainsByFqdn           = $DomainsByFqdn
+        ThisHostName            = $ThisHostName
         ThisFqdn                = $ThisFqdn
-        ThreadCount             = $ThreadCount
+        WhoAmI                  = $WhoAmI
+        LogMsgCache             = $LogMsgCache
+        CimCache                = $CimCache
+        ACEsByGuid              = $ACEsByGUID
+        AceGUIDsByPath          = $AceGUIDsByPath
+        AceGUIDsByResolvedID    = $AceGUIDsByResolvedID
+        ACLsByPath              = $ACLsByPath
+        ACEPropertyName         = $ACEPropertyName
         InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
-    # The resolved name will include the domain name (or local computer name for local accounts)
-    Write-Progress -Status '35% (step 8 of 20)' -CurrentOperation 'Resolve identities in access control lists to their SIDs and NTAccount names' -PercentComplete 35 @Progress
-    Write-LogMsg @LogParams -Text '$PermissionsWithResolvedIdentities = Resolve-PermissionIdentity -Permission $Permissions'
-    $PermissionsWithResolvedIdentities = Resolve-PermissionIdentity -CimCache $CimCache @LoggingParams @CacheParams -Permission $Permissions @ProgressParent
+    if ($ThreadCount -eq 1) {
 
+        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
+        $IntervalCounter = 0
+        $i = 0
 
+        ForEach ($ThisPath in $Paths) {
+
+            $IntervalCounter++
+
+            if ($IntervalCounter -eq $ProgressInterval) {
+
+                [int]$PercentComplete = $i / $Count * 100
+                Write-Progress @Progress -Status "$PercentComplete% (ACL $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
+                $IntervalCounter = 0
+
+            }
+
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
+            Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
+
+        }
+
+    } else {
+
+        $SplitThreadParams = @{
+            Command        = 'Resolve-Acl'
+            InputObject    = $Paths
+            InputParameter = 'ItemPath'
+            TodaysHostname = $ThisHostname
+            WhoAmI         = $WhoAmI
+            LogMsgCache    = $LogMsgCache
+            Threads        = $ThreadCount
+            AddParam       = $ResolveAclParams
+            #DebugOutputStream    = 'Debug'
+        }
+
+        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
+        Split-Thread @SplitThreadParams
+
+    }
 
     Write-Progress @Progress -Completed
 
@@ -2734,174 +2764,6 @@ function Resolve-IdentityReferenceDomainDNS {
     return $DomainDNS
 
 }
-function Resolve-PermissionIdentity {
-
-    # Resolve identities in access control lists to their SIDs and NTAccount names
-
-    param (
-
-        # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        # Cache of access control entries keyed by GUID generated in this function
-        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their resolved identities
-        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their paths
-        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to an empty thread-safe hashtable
-        #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
-
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
-
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId,
-
-        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
-
-    )
-
-    $Progress = @{
-        Activity = 'Resolve-PermissionIdentity'
-    }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
-    $Paths = $ACLsByPath.Keys
-    $Count = $Paths.Count
-    Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
-    $ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
-
-    $ResolveAclParams = @{
-        DirectoryEntryCache     = $DirectoryEntryCache
-        Win32AccountsBySID      = $Win32AccountsBySID
-        Win32AccountsByCaption  = $Win32AccountsByCaption
-        DomainsBySID            = $DomainsBySID
-        DomainsByNetbios        = $DomainsByNetbios
-        DomainsByFqdn           = $DomainsByFqdn
-        ThisHostName            = $ThisHostName
-        ThisFqdn                = $ThisFqdn
-        WhoAmI                  = $WhoAmI
-        LogMsgCache             = $LogMsgCache
-        CimCache                = $CimCache
-        ACEsByGuid              = $ACEsByGUID
-        AceGUIDsByPath          = $AceGUIDsByPath
-        AceGUIDsByResolvedID    = $AceGUIDsByResolvedID
-        ACLsByPath              = $ACLsByPath
-        ACEPropertyName         = $ACEPropertyName
-        InheritanceFlagResolved = $InheritanceFlagResolved
-    }
-
-    if ($ThreadCount -eq 1) {
-
-        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $IntervalCounter = 0
-        $i = 0
-
-        ForEach ($ThisPath in $Paths) {
-
-            $IntervalCounter++
-
-            if ($IntervalCounter -eq $ProgressInterval) {
-
-                [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (ACL $($i + 1) of $Count) Resolve-Acl" -CurrentOperation $ThisPath -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-
-            }
-
-            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
-            Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
-
-        }
-
-    } else {
-
-        $SplitThreadParams = @{
-            Command        = 'Resolve-Acl'
-            InputObject    = $Paths
-            InputParameter = 'ItemPath'
-            TodaysHostname = $ThisHostname
-            WhoAmI         = $WhoAmI
-            LogMsgCache    = $LogMsgCache
-            Threads        = $ThreadCount
-            AddParam       = $ResolveAclParams
-            #DebugOutputStream    = 'Debug'
-        }
-
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
-        Split-Thread @SplitThreadParams
-
-    }
-
-    Write-Progress @Progress -Completed
-
-}
 function Resolve-PermissionTarget {
 
     # Resolve each target path to all of its associated UNC paths (including all DFS folder targets)
@@ -3107,7 +2969,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessList','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionIdentity','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

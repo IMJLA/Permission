@@ -51,7 +51,8 @@ function Export-FolderPermissionHtml {
         $ReportInstanceId,
         $Subfolders,
         $ResolvedFolderTargets,
-        $PrincipalsByResolvedID
+        $PrincipalsByResolvedID,
+        $ShortestPath
     )
 
     # Convert the target path(s) to a Bootstrap alert
@@ -68,6 +69,7 @@ function Export-FolderPermissionHtml {
         ExcludeAccount    = $ExcludeAccount
         ExcludeClass      = $ExcludeClass
         IgnoreDomain      = $IgnoreDomain
+        ShortestPath      = $ShortestPath
     }
     Write-LogMsg @LogParams -Text "Get-FolderPermissionsBlock @GetFolderPermissionsBlock"
     $FormattedFolderPermissions = Get-FolderPermissionsBlock @GetFolderPermissionsBlock

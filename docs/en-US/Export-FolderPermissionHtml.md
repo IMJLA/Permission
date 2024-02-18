@@ -19,7 +19,7 @@ Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <Strin
  [[-ItemPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>]
  [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>]
  [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>]
- [[-ResolvedFolderTargets] <Object>] [[-PrincipalsByResolvedID] <Object>]
+ [[-ResolvedFolderTargets] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ShortestPath] <Object>]
 ```
 
 ## DESCRIPTION
@@ -271,6 +271,21 @@ Aliases:
 
 Required: False
 Position: 19
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ShortestPath
+{{ Fill ShortestPath Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 21
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

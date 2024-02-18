@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Resolve-AccessList
+# Resolve-AccessControlList
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,12 +13,12 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Resolve-AccessList [[-AccessList] <Object[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
+Resolve-AccessControlList [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
+ [[-ACEsByGUID] <Hashtable>] [[-AceGUIDsByResolvedID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>]
  [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
- [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>]
- [[-Win32AccountsByCaption] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
+ [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-Win32AccountsByCaption] <Hashtable>]
+ [[-Win32AccountsBySID] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
  [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>] [[-InheritanceFlagResolved] <String[]>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -27,7 +27,7 @@ Resolve-AccessList [[-AccessList] <Object[]>] [[-DebugOutputStream] <String>] [[
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -35,18 +35,63 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AccessList
-{{ Fill AccessList Description }}
+### -AceGUIDsByPath
+{{ Fill AceGUIDsByPath Description }}
 
 ```yaml
-Type: System.Object[]
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AceGUIDsByResolvedID
+{{ Fill AceGUIDsByResolvedID Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ACEsByGUID
+{{ Fill ACEsByGUID Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ACLsByPath
+{{ Fill ACLsByPath Description }}
+
+```yaml
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 0
 Default value: None
-Accept pipeline input: True (ByValue)
+Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
@@ -59,7 +104,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -90,7 +135,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -105,7 +150,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -120,7 +165,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -135,7 +180,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -150,7 +195,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -165,22 +210,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ProgressAction
-{{ Fill ProgressAction Description }}
-
-```yaml
-Type: System.Management.Automation.ActionPreference
-Parameter Sets: (All)
-Aliases: proga
-
-Required: False
-Position: Named
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -195,7 +225,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -210,7 +240,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -225,7 +255,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +285,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -270,7 +300,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -285,18 +315,16 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### CommonParameters
-This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
-
 ## INPUTS
 
-### System.Object[]
+### None
+
 ## OUTPUTS
 
 ### System.Object

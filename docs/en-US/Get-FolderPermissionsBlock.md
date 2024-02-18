@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <String[]>]
- [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <String[]>]
+ [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <String[]>] [[-ShortestPath] <Object>]
 ```
 
 ## DESCRIPTION
@@ -86,6 +86,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ShortestPath
+{{ Fill ShortestPath Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

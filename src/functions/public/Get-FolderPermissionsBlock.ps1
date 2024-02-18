@@ -17,7 +17,9 @@ function Get-FolderPermissionsBlock {
 
         Can also be used to remove all domains simply for brevity in the report.
         #>
-        [string[]]$IgnoreDomain
+        [string[]]$IgnoreDomain,
+
+        $ShortestPath
 
     )
 
@@ -27,14 +29,11 @@ function Get-FolderPermissionsBlock {
         $ClassExclusions[$ThisClass] = $true
     }
 
-    # Relies on $FolderPermissions already being sorted by Item Path
-    $ShortestFolderPath = @($FolderPermissions.Item.Path)[0]
-
     ForEach ($ThisFolder in $FolderPermissions) {
 
         $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 5
 
-        $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestFolderPath
+        $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestPath
 
         #$FilterContents = @{}
 
@@ -97,7 +96,7 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_:.]', '-'
+        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-'
 
         $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
