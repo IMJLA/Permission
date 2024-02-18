@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.212
+Help Version: 0.0.213
 Locale: en-US
 ---
 
@@ -164,6 +164,11 @@ Resolve-AccessList [[-AccessList] <Object[]>] [[-DebugOutputStream] <string>] [[
 ### [Resolve-Folder](Resolve-Folder.md)
 
 Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+
+
+### [Resolve-IdentityReferenceDomainDNS](Resolve-IdentityReferenceDomainDNS.md)
+
+Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] <Object>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-CimCache] <hashtable>]
 
 
 ### [Resolve-PermissionIdentity](Resolve-PermissionIdentity.md)

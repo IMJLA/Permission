@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.213] - 2024-02-18 - resolve-identityreferencedomaindns initial commit
+
 ## [0.0.212] - 2024-02-18 - add add-cacheitem
 
 ## [0.0.211] - 2024-02-18 - remove redundant sorting
