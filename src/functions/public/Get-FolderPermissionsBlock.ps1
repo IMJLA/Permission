@@ -96,33 +96,31 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-'
+        $TableId = "Perms_$($ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
         # Remove spaces from property titles
-        $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
-        Select-Object -Property Account,
-        Access,
-        @{
-            Label      = 'DuetoMembershipIn'
-            Expression = { $_.'Due to Membership In' }
-        },
-        @{
-            Label      = 'SourceofAccess'
-            Expression = { $_.'Source of Access' }
-        },
-        Name,
-        Department,
-        Title
+        $ObjectsForJsonData = ForEach ($Obj in $ObjectsForFolderPermissionTable) {
+            [PSCustomObject]@{
+                Account           = $Obj.Account
+                Access            = $Obj.Access
+                DuetoMembershipIn = $Obj.'Due to Membership In'
+                SourceofAccess    = $Obj.'Source of Access'
+                Name              = $Obj.Name
+                Department        = $Obj.Department
+                Title             = $Obj.Title
+            }
+        }
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
-            #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
-            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
+            #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
+            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+            JsonTable   = $TableId
             Path        = $ThisFolder.Item.Path
         }
     }

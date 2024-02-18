@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.214
+Help Version: 0.0.215
 Locale: en-US
 ---
 
@@ -161,9 +161,6 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 Resolve-AccessControlList [[-ACLsByPath] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEsByGUID] <hashtable>] [[-AceGUIDsByResolvedID] <hashtable>] [[-AceGUIDsByPath] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-Win32AccountsByCaption] <hashtable>] [[-Win32AccountsBySID] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>]
 
 
-### [Resolve-AccessList](Resolve-AccessList.md)
-{{ Fill in the Description }}
-
 ### [Resolve-Folder](Resolve-Folder.md)
 
 Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
@@ -173,9 +170,6 @@ Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutput
 
 Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] <Object>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-CimCache] <hashtable>]
 
-
-### [Resolve-PermissionIdentity](Resolve-PermissionIdentity.md)
-{{ Fill in the Description }}
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 

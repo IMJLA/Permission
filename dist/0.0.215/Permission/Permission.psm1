@@ -608,7 +608,7 @@ function Export-FolderPermissionHtml {
 
     $FormattedFolderPermissions |
     ForEach-Object {
-        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#Perms_$($_.Path -replace '[^A-Za-z0-9\-_:.]', '-')" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($_.TableID)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
     }
 
     $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData))
@@ -1521,33 +1521,31 @@ function Get-FolderPermissionsBlock {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $TableId = $ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-'
+        $TableId = "Perms_$($ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
 
-        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id "Perms_$TableId" -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+        $ThisJsonTable = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
         # Remove spaces from property titles
-        $ObjectsForJsonData = $ObjectsForFolderPermissionTable |
-        Select-Object -Property Account,
-        Access,
-        @{
-            Label      = 'DuetoMembershipIn'
-            Expression = { $_.'Due to Membership In' }
-        },
-        @{
-            Label      = 'SourceofAccess'
-            Expression = { $_.'Source of Access' }
-        },
-        Name,
-        Department,
-        Title
+        $ObjectsForJsonData = ForEach ($Obj in $ObjectsForFolderPermissionTable) {
+            [PSCustomObject]@{
+                Account           = $Obj.Account
+                Access            = $Obj.Access
+                DuetoMembershipIn = $Obj.'Due to Membership In'
+                SourceofAccess    = $Obj.'Source of Access'
+                Name              = $Obj.Name
+                Department        = $Obj.Department
+                Title             = $Obj.Title
+            }
+        }
 
         [pscustomobject]@{
             HtmlDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisTable)
             JsonDiv     = New-BootstrapDiv -Text ($ThisHeading + $ThisSubHeading + $ThisJsonTable)
-            #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
-            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
+            #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
+            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+            JsonTable   = $TableId
             Path        = $ThisFolder.Item.Path
         }
     }
@@ -2970,6 +2968,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAccessList','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

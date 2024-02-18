@@ -223,7 +223,7 @@ function Export-FolderPermissionHtml {
 
     $FormattedFolderPermissions |
     ForEach-Object {
-        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#Perms_$($_.Path -replace '[^A-Za-z0-9\-_:.]', '-')" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($_.TableID)" -ColumnJson $_.JsonColumns -DataJson $_.JsonData))
     }
 
     $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $FormattedFolders.JsonColumns -DataJson $FormattedFolders.JsonData))
