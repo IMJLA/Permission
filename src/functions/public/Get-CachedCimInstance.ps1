@@ -92,7 +92,7 @@ function Get-CachedCimInstance {
 
         if ($CimInstance) {
 
-            $InstanceCache = @{}
+            $InstanceCache = [hashtable]::Synchronized(@{})
 
             ForEach ($Instance in $CimInstance) {
                 $InstanceCache[$Instance.$KeyProperty] = $Instance
