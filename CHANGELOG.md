@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.238] - 2024-02-19 - debug resolve-ace
+
 ## [0.0.237] - 2024-02-19 - bugfix select-foldertablepermissionproperty and fix funct name fka find-resolvedidswithaccess
 
 ## [0.0.236] - 2024-02-19 - functs to group and expand perm refs
