@@ -669,7 +669,7 @@ function Find-ResolvedIDsWithAccess {
         }
     }
 
-    $IDsWithAccess.Values | Sort-Object
+    $IDsWithAccess
 
 }
 function Format-FolderPermission {
@@ -1941,7 +1941,7 @@ function Group-ItemPermissionReference {
         $Acl = $ACLsByPath[$ItemPath]
         $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-        $AccountPermissionsForThisItem = ForEach ($ID in $IDsWithAccess) {
+        $AccountPermissionsForThisItem = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
 
             [PSCustomObject]@{
                 Account  = $ID
@@ -3133,6 +3133,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AccountPermissionReference','Expand-ItemPermissionReference','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-AccountPermissionReference','Group-ItemPermissionReference','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

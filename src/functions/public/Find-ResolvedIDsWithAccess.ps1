@@ -21,6 +21,6 @@ function Find-ResolvedIDsWithAccess {
         }
     }
 
-    $IDsWithAccess.Values | Sort-Object
+    $IDsWithAccess
 
 }
