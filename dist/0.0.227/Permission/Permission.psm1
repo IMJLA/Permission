@@ -2223,9 +2223,6 @@ function Initialize-Cache {
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
-
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
@@ -2287,17 +2284,16 @@ function Initialize-Cache {
     }
 
     $GetAdsiServerParams = @{
-        Win32AccountsBySID     = $Win32AccountsBySID
-        Win32AccountsByCaption = $Win32AccountsByCaption
-        DirectoryEntryCache    = $DirectoryEntryCache
-        DomainsByFqdn          = $DomainsByFqdn
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsBySid           = $DomainsBySid
-        ThisHostName           = $ThisHostName
-        ThisFqdn               = $ThisFqdn
-        WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogMsgCache
-        CimCache               = $CimCache
+        Win32AccountsBySID  = $Win32AccountsBySID
+        DirectoryEntryCache = $DirectoryEntryCache
+        DomainsByFqdn       = $DomainsByFqdn
+        DomainsByNetbios    = $DomainsByNetbios
+        DomainsBySid        = $DomainsBySid
+        ThisHostName        = $ThisHostName
+        ThisFqdn            = $ThisFqdn
+        WhoAmI              = $WhoAmI
+        LogMsgCache         = $LogMsgCache
+        CimCache            = $CimCache
     }
 
     if ($ThreadCount -eq 1) {
@@ -2324,7 +2320,7 @@ function Initialize-Cache {
 
     } else {
 
-        $GetAdsiServerParams = @{
+        $SplitThread = @{
             Command        = 'Get-AdsiServer'
             InputObject    = $ServerFqdns
             InputParameter = 'Fqdn'
@@ -2337,7 +2333,7 @@ function Initialize-Cache {
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"
-        $null = Split-Thread @GetAdsiServerParams
+        $null = Split-Thread @SplitThread
 
     }
 
@@ -3395,6 +3391,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 
