@@ -51,11 +51,11 @@ function Get-CachedCimInstance {
     }
 
     if ($PSBoundParameters.ContainsKey('ClassName')) {
-        $CacheKey = $ClassName
+        $CacheKey = "$ClassName`By$KeyProperty"
     }
 
     if ($PSBoundParameters.ContainsKey('Query')) {
-        $CacheKey = $Query
+        $CacheKey = "$Query`By$KeyProperty"
     }
 
     $CimCacheResult = $CimCache[$ComputerName]
