@@ -90,15 +90,17 @@ function Get-CachedCimInstance {
             $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession -ErrorAction SilentlyContinue
         }
 
-        $InstanceCache = @{}
-
-        ForEach ($Instance in $CimInstance) {
-            $InstanceCache[$Instance.$KeyProperty] = $Instance
-        }
-
         if ($CimInstance) {
+
+            $InstanceCache = @{}
+
+            ForEach ($Instance in $CimInstance) {
+                $InstanceCache[$Instance.$KeyProperty] = $Instance
+            }
+
             $CimCache[$ComputerName][$CacheKey] = $InstanceCache
             return $CimInstance.Values
+
         }
 
     }
