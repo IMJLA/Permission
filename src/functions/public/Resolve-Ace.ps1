@@ -202,15 +202,6 @@ function Resolve-Ace {
 
     # TODO: add a param to offer DNS instead of or in addition to NetBIOS
 
-    Write-Host $ACE.InheritanceFlags.GetType().FullName
-    Write-Host $ACE.InheritanceFlags
-
-    ForEach ($Flag in $ACE.InheritanceFlags) {
-        Write-Host $Flag.GetType().FullName
-        Write-Host $Flag
-    }
-    pause
-
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
         AdsiProvider              = $AdsiServer.AdsiProvider
