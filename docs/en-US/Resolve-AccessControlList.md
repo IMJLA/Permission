@@ -16,9 +16,9 @@ schema: 2.0.0
 Resolve-AccessControlList [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-ACEsByGUID] <Hashtable>] [[-AceGUIDsByResolvedID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>]
  [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
- [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-Win32AccountsBySID] <Hashtable>]
- [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
- [[-ProgressParentId] <Int32>] [[-InheritanceFlagResolved] <String[]>]
+ [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-ThisHostName] <String>]
+ [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-InheritanceFlagResolved] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -195,7 +195,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 17
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -210,7 +210,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -225,7 +225,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -240,7 +240,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +255,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -285,22 +285,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Win32AccountsBySID
-{{ Fill Win32AccountsBySID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 11
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
