@@ -43,9 +43,6 @@ function Resolve-AccessControlList {
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain (e.g. CONTOSO) and Caption (NTAccount name e.g. CONTOSO\User1)
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
-
         # Cache of known Win32_Account instances keyed by domain and SID
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
@@ -104,7 +101,6 @@ function Resolve-AccessControlList {
     $ResolveAclParams = @{
         DirectoryEntryCache     = $DirectoryEntryCache
         Win32AccountsBySID      = $Win32AccountsBySID
-        Win32AccountsByCaption  = $Win32AccountsByCaption
         DomainsBySID            = $DomainsBySID
         DomainsByNetbios        = $DomainsByNetbios
         DomainsByFqdn           = $DomainsByFqdn

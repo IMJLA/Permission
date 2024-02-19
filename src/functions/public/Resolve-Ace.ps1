@@ -121,8 +121,6 @@ function Resolve-Ace {
 
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
-
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
 
@@ -185,10 +183,9 @@ function Resolve-Ace {
     }
 
     $Cache1 = @{
-        DirectoryEntryCache    = $DirectoryEntryCache
-        DomainsByFqdn          = $DomainsByFqdn
-        Win32AccountsBySID     = $Win32AccountsBySID
-        Win32AccountsByCaption = $Win32AccountsByCaption
+        DirectoryEntryCache = $DirectoryEntryCache
+        DomainsByFqdn       = $DomainsByFqdn
+        Win32AccountsBySID  = $Win32AccountsBySID
     }
 
     $Cache2 = @{

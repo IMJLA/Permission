@@ -116,8 +116,6 @@ function Resolve-Acl {
 
         [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
-        [hashtable]$Win32AccountsByCaption = ([hashtable]::Synchronized(@{})),
-
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
 

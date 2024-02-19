@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.228] - 2024-02-18 - remove win32accountsbycaption
+
 ## [0.0.227] - 2024-02-18 - remove win32accountsbycaption from initialize-cache
 
 ## [0.0.226] - 2024-02-18 - bugfix ciminstance is not dict there is no values prop
