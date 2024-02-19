@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.235] - 2024-02-18 - update debug output
+
 ## [0.0.234] - 2024-02-18 - update tests
 
 ## [0.0.233] - 2024-02-18 - fix tests
