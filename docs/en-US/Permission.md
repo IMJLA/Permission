@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.235
+Help Version: 0.0.237
 Locale: en-US
 ---
 
@@ -21,14 +21,14 @@ Add-CacheItem [[-Cache] <hashtable>] [[-Key] <Object>] [[-Value] <Object>] [[-Ty
 ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
 
 
-### [Expand-AcctPermission](Expand-AcctPermission.md)
+### [Expand-AccountPermissionReference](Expand-AccountPermissionReference.md)
 
-Expand-AcctPermission [[-SecurityPrincipal] <Object[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+Expand-AccountPermissionReference [[-Reference] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
 
 
-### [Expand-PermissionPrincipal](Expand-PermissionPrincipal.md)
+### [Expand-ItemPermissionReference](Expand-ItemPermissionReference.md)
 
-Expand-PermissionPrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
+Expand-ItemPermissionReference [[-Reference] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
 
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
@@ -49,6 +49,11 @@ Export-RawPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-
 ### [Export-ResolvedPermissionCsv](Export-ResolvedPermissionCsv.md)
 
 Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
+
+
+### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
+
+Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
 
 
 ### [Format-FolderPermission](Format-FolderPermission.md)
@@ -131,9 +136,14 @@ Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn] <string>] [[-ProgressParentId] <int>]
 
 
-### [Group-Permission](Group-Permission.md)
+### [Group-AccountPermissionReference](Group-AccountPermissionReference.md)
 
-Group-Permission [[-InputObject] <Object[]>] [[-Property] <string>]
+Group-AccountPermissionReference [[-PrincipalsByResolvedID] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
+
+
+### [Group-ItemPermissionReference](Group-ItemPermissionReference.md)
+
+Group-ItemPermissionReference [[-SortedPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>] [[-ACLsByPath] <Object>] [[-PrincipalsByResolvedID] <Object>]
 
 
 ### [Initialize-Cache](Initialize-Cache.md)

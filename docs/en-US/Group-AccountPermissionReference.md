@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Group-Permission
+# Group-AccountPermissionReference
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Group-Permission [[-InputObject] <Object[]>] [[-Property] <String>]
+Group-AccountPermissionReference [[-PrincipalsByResolvedID] <Object>] [[-AceGUIDsByResolvedID] <Object>]
+ [[-ACEsByGUID] <Object>]
 ```
 
 ## DESCRIPTION
@@ -30,31 +31,46 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -InputObject
-{{ Fill InputObject Description }}
+### -AceGUIDsByResolvedID
+{{ Fill AceGUIDsByResolvedID Description }}
 
 ```yaml
-Type: System.Object[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Property
-{{ Fill Property Description }}
-
-```yaml
-Type: System.String
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ACEsByGUID
+{{ Fill ACEsByGUID Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrincipalsByResolvedID
+{{ Fill PrincipalsByResolvedID Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

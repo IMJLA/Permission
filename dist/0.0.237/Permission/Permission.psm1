@@ -63,208 +63,62 @@ function ConvertTo-ItemBlock {
     }
 
 }
-function Expand-AcctPermission {
+function Expand-AccountPermissionReference {
 
     param (
 
-        # Permission objects from Get-FolderAccessList whose IdentityReference to resolve
-        [Parameter(ValueFromPipeline)]
-        [object[]]$SecurityPrincipal,
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        $Reference,
+        $PrincipalsByResolvedID,
+        $ACEsByGUID
 
     )
 
-    $Progress = @{
-        Activity = 'Expand-AcctPermission'
-    }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
+    ForEach ($Account in $Reference) {
 
-    $Count = $SecurityPrincipal.Count
-    Write-Progress @Progress -Status "0% (account 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+        $Access = ForEach ($PermissionRef in $Account.Access) {
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
-    if ($ThreadCount -eq 1) {
-
-        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $IntervalCounter = 0
-        $i = 0
-
-        ForEach ($ThisPrinc in $SecurityPrincipal) {
-
-            $IntervalCounter++
-
-            if ($IntervalCounter -eq $ProgressInterval) {
-
-                [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (account $($i+1) of $Count)" -CurrentOperation "Expand-AccountPermission '$($ThisPrinc.Name)'" -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-
+            [PSCustomObject]@{
+                Path   = $PermissionRef.Path
+                Access = $ACEsByGUID[$PermissionRef.AceGUIDs]
             }
 
-            $i++
-            Write-LogMsg @LogParams -Text "Expand-AccountPermission -AccountPermission $($ThisPrinc.Name)"
-            Expand-AccountPermission -AccountPermission $ThisPrinc
-
         }
 
-    } else {
-
-        $ExpandAccountPermissionParams = @{
-            Command              = 'Expand-AccountPermission'
-            InputObject          = $SecurityPrincipal
-            InputParameter       = 'AccountPermission'
-            TodaysHostname       = $ThisHostname
-            ObjectStringProperty = 'Name'
-            Timeout              = 1200
-            Threads              = $ThreadCount
+        [PSCustomObject]@{
+            Account = $PrincipalsByResolvedID[$Account.Account]
+            Access  = $Access
         }
-
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Expand-AccountPermission' -InputParameter 'AccountPermission' -InputObject `$SecurityPrincipal -ObjectStringProperty 'Name'"
-        Split-Thread @ExpandAccountPermissionParams
 
     }
-
-    Write-Progress @Progress -Completed
 
 }
-function Expand-PermissionPrincipal {
-
-    # Expand ADSI security principals into their group members
+function Expand-ItemPermissionReference {
 
     param (
 
-        # Thread-safe hashtable to use for caching directory entries and avoiding duplicate directory queries
-        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        $Reference,
+        $PrincipalsByResolvedID,
+        $ACEsByGUID
 
     )
 
-    $Progress = @{
-        Activity = 'Expand-PermissionPrincipal'
-    }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
+    ForEach ($Item in $Reference) {
 
-    Write-Progress @Progress -Status "0% (principal 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+        $Access = ForEach ($PermissionRef in $Item.Access) {
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
-    $ResolvedIDs = $PrincipalsByResolvedID.Keys
-    $Count = $ResolvedIDs.Count
-
-    $FormatSecurityPrincipalParams = @{
-        PrincipalsByResolvedID = $PrincipalsByResolvedID
-    }
-
-    if ($ThreadCount -eq 1) {
-
-        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $IntervalCounter = 0
-        $i = 0
-
-        ForEach ($ThisID in $ResolvedIDs) {
-
-            $IntervalCounter++
-
-            if ($IntervalCounter -eq $ProgressInterval) {
-
-                [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (principal $($i + 1) of $Count) Format-SecurityPrincipal" -CurrentOperation $ThisID -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-
+            [PSCustomObject]@{
+                Account = $PrincipalsByResolvedID[$PermissionRef.Account]
+                Access  = $ACEsByGUID[$PermissionRef.AceGUIDs]
             }
 
-            $i++
-            Write-LogMsg @LogParams -Text "Format-SecurityPrincipal -ResolvedID '$ThisID'"
-            Format-SecurityPrincipal -ResolvedID $ThisID @FormatSecurityPrincipalParams
-
         }
 
-    } else {
-
-        $SplitThreadParams = @{
-            Command              = 'Format-SecurityPrincipal'
-            InputObject          = $ResolvedIDs
-            InputParameter       = 'ResolvedID'
-            Timeout              = 1200
-            ObjectStringProperty = 'Name'
-            TodaysHostname       = $ThisHostname
-            WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogMsgCache
-            Threads              = $ThreadCount
-            AddParam             = $FormatSecurityPrincipalParams
+        [PSCustomObject]@{
+            Item   = $Item.Item
+            Access = $Access
         }
-
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Format-SecurityPrincipal' -InputParameter 'SecurityPrincipal' -InputObject `$SecurityPrincipal -ObjectStringProperty 'Name'"
-        Split-Thread @SplitThreadParams
 
     }
-
-    Write-Progress @Progress -Completed
 
 }
 function Expand-PermissionTarget {
@@ -790,6 +644,32 @@ function Export-ResolvedPermissionCsv {
 
     Write-Progress @Progress -Completed
         Write-Information $LiteralPath
+
+}
+function Find-ResolvedIDsWithAccess {
+
+    param (
+        $ItemPath,
+        $AceGUIDsByPath,
+        $ACEsByGUID,
+        $PrincipalsByResolvedID
+    )
+
+    $IDsWithAccess = @{}
+
+    ForEach ($Guid in $AceGUIDsByPath[$ItemPath]) {
+
+        $Ace = $ACEsByGUID[$Guid]
+        Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+
+        ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
+
+            Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+
+        }
+    }
+
+    $IDsWithAccess.Values | Sort-Object
 
 }
 function Format-FolderPermission {
@@ -2009,38 +1889,70 @@ function Get-UniqueServerFqdn {
     return $UniqueValues.Keys
 
 }
-function Group-Permission {
+function Group-AccountPermissionReference {
 
     param (
-
-        [object[]]$InputObject,
-
-        [string]$Property
-
+        $PrincipalsByResolvedID,
+        $AceGUIDsByResolvedID,
+        $ACEsByGUID
     )
 
-    $Cache = @{}
+    ForEach ($ID in $PrincipalsByResolvedID.Keys) {
 
-    ForEach ($Permission in $InputObject) {
+        $ACEGuidsForThisID = $AceGUIDsByResolvedID[$ID]
+        $ItemPaths = @{}
 
-        $Key = $Permission.$Property
-        $CacheResult = $Cache[$Key]
-        if (-not $CacheResult) {
-            $CacheResult = [System.Collections.Generic.List[object]]::new()
+        ForEach ($Guid in $ACEGuidsForThisID) {
+
+            $Ace = $ACEsByGUID[$Guid]
+            Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
+
         }
-        $CacheResult.Add($Permission)
-        $Cache[$Key] = $CacheResult
+
+        $ItemPermissionsForThisAccount = ForEach ($Item in $ItemPaths.Keys) {
+
+            [PSCustomObject]@{
+                Path     = $Item
+                AceGUIDs = $ItemPaths[$Item]
+            }
+
+        }
+
+        [PSCustomObject]@{
+            Account = $ID
+            Access  = $ItemPermissionsForThisAccount
+        }
 
     }
 
-    ForEach ($Key in $Cache.Keys) {
+}
+function Group-ItemPermissionReference {
 
-        $CacheResult = $Cache[$Key]
-        [pscustomobject]@{
-            PSTypeName = "Permission.$Property`Permission"
-            Group      = $CacheResult
-            Name       = $Key
-            Count      = $CacheResult.Count
+    param (
+        $SortedPath,
+        $AceGUIDsByPath,
+        $ACEsByGUID,
+        $ACLsByPath,
+        $PrincipalsByResolvedID
+    )
+
+    ForEach ($ItemPath in $SortedPath) {
+
+        $Acl = $ACLsByPath[$ItemPath]
+        $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+
+        $AccountPermissionsForThisItem = ForEach ($ID in $IDsWithAccess) {
+
+            [PSCustomObject]@{
+                Account  = $ID
+                AceGUIDs = $IDsWithAccess[$ID]
+            }
+
+        }
+
+        [PSCustomObject]@{
+            Item   = $Acl
+            Access = $AccountPermissionsForThisItem
         }
 
     }
@@ -3113,7 +3025,7 @@ function Select-FolderPermissionTableProperty {
 
         [pscustomobject]@{
             'Account'              = $Object.Account.ResolvedAccountName
-            'Access'               = ($Object.Access.FileSystemRights | Sort-Object -Unique) -join ' ; '
+            'Access'               = ($Object.Access.Access | Sort-Object -Unique) -join ' ; '
             'Due to Membership In' = $GroupString
             'Source of Access'     = ($Object.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
             'Name'                 = $Object.Account.Name
@@ -3211,7 +3123,9 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AccountPermissionReference','Expand-ItemPermissionReference','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-AccountPermissionReference','Group-ItemPermissionReference','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
+
 
 
 

@@ -22,7 +22,7 @@ function Select-FolderPermissionTableProperty {
 
         [pscustomobject]@{
             'Account'              = $Object.Account.ResolvedAccountName
-            'Access'               = ($Object.Access.FileSystemRights | Sort-Object -Unique) -join ' ; '
+            'Access'               = ($Object.Access.Access | Sort-Object -Unique) -join ' ; '
             'Due to Membership In' = $GroupString
             'Source of Access'     = ($Object.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
             'Name'                 = $Object.Account.Name
