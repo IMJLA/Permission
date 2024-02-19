@@ -1053,7 +1053,9 @@ function Get-CachedCimInstance {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         [Parameter(Mandatory)]
-        [string]$KeyProperty
+        [string]$KeyProperty,
+
+        [string[]]$CacheByProperty = $KeyProperty
 
     )
 
@@ -1065,11 +1067,9 @@ function Get-CachedCimInstance {
     }
 
     if ($PSBoundParameters.ContainsKey('ClassName')) {
-        $CacheKey = "$ClassName`By$KeyProperty"
-    }
-
-    if ($PSBoundParameters.ContainsKey('Query')) {
-        $CacheKey = "$Query`By$KeyProperty"
+        $InstanceCacheKey = "$ClassName`By$KeyProperty"
+    } else {
+        $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
     $CimCacheResult = $CimCache[$ComputerName]
@@ -1077,13 +1077,13 @@ function Get-CachedCimInstance {
     if ($CimCacheResult) {
 
         Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCacheResult[$CacheKey]
+        $CimCacheSubresult = $CimCacheResult[$InstanceCacheKey]
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$CacheKey' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $CimCacheSubresult.Values
         } else {
-            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$CacheKey' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
         }
 
     } else {
@@ -1108,11 +1108,24 @@ function Get-CachedCimInstance {
 
             $InstanceCache = [hashtable]::Synchronized(@{})
 
-            ForEach ($Instance in $CimInstance) {
-                $InstanceCache[$Instance.$KeyProperty] = $Instance
+            ForEach ($Prop in $CacheByProperty) {
+
+                if ($PSBoundParameters.ContainsKey('ClassName')) {
+                    $InstanceCacheKey = "$ClassName`By$Prop"
+                } else {
+                    $InstanceCacheKey = "$Query`By$Prop"
+                }
+
+                ForEach ($Instance in $CimInstance) {
+                    $InstancePropertyValue = $Instance.$Prop
+                    Write-LogMsg @LogParams -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache"
+                    $InstanceCache[$InstancePropertyValue] = $Instance
+                }
+
+                $CimCache[$ComputerName][$InstanceCacheKey] = $InstanceCache
+
             }
 
-            $CimCache[$ComputerName][$CacheKey] = $InstanceCache
             return $CimInstance
 
         }
@@ -1716,9 +1729,6 @@ function Get-PermissionPrincipal {
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
         [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
         <#
         Hostname of the computer running this function.
 
@@ -2069,9 +2079,6 @@ function Initialize-Cache {
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
@@ -2132,8 +2139,7 @@ function Initialize-Cache {
         WhoAmI       = $WhoAmI
     }
 
-    $GetAdsiServerParams = @{
-        Win32AccountsBySID  = $Win32AccountsBySID
+    $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
         DomainsByNetbios    = $DomainsByNetbios
@@ -2163,7 +2169,7 @@ function Initialize-Cache {
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
-            $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServerParams
+            $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }
 
@@ -2178,7 +2184,7 @@ function Initialize-Cache {
             LogMsgCache    = $LogMsgCache
             Timeout        = 600
             Threads        = $ThreadCount
-            AddParam       = $GetAdsiServerParams
+            AddParam       = $GetAdsiServer
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"
@@ -2531,8 +2537,6 @@ function Resolve-Ace {
         #>
         [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
 
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
 
@@ -2597,7 +2601,6 @@ function Resolve-Ace {
     $Cache1 = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
-        Win32AccountsBySID  = $Win32AccountsBySID
     }
 
     $Cache2 = @{
@@ -2755,8 +2758,6 @@ function Resolve-Acl {
         Defaults to an empty thread-safe hashtable
         #>
         [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
-
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
@@ -3215,6 +3216,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

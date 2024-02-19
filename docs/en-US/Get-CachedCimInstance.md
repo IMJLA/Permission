@@ -15,8 +15,8 @@ schema: 2.0.0
 ```
 Get-CachedCimInstance [[-ComputerName] <String>] [[-ClassName] <String>] [[-Query] <String>]
  [[-CimCache] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>]
- [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-KeyProperty] <String> [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-KeyProperty] <String> [[-CacheByProperty] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,6 +32,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -CacheByProperty
+{{ Fill CacheByProperty Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -CimCache
 {{ Fill CimCache Description }}

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.231] - 2024-02-18 - remove win32accountsbysid
+
 ## [0.0.230] - 2024-02-18 - threadsafe upgrade
 
 ## [0.0.229] - 2024-02-18 - enabled multiple key properties in get-cachedciminstance

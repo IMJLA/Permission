@@ -31,9 +31,6 @@ function Initialize-Cache {
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
 
-        # Cache of known Win32_Account instances keyed by domain and SID
-        [hashtable]$Win32AccountsBySID = ([hashtable]::Synchronized(@{})),
-
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
@@ -94,8 +91,7 @@ function Initialize-Cache {
         WhoAmI       = $WhoAmI
     }
 
-    $GetAdsiServerParams = @{
-        Win32AccountsBySID  = $Win32AccountsBySID
+    $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
         DomainsByNetbios    = $DomainsByNetbios
@@ -125,7 +121,7 @@ function Initialize-Cache {
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
-            $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServerParams
+            $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }
 
@@ -140,7 +136,7 @@ function Initialize-Cache {
             LogMsgCache    = $LogMsgCache
             Timeout        = 600
             Threads        = $ThreadCount
-            AddParam       = $GetAdsiServerParams
+            AddParam       = $GetAdsiServer
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"

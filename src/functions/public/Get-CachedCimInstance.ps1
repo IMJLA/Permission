@@ -39,7 +39,9 @@ function Get-CachedCimInstance {
         [hashtable]$LogMsgCache = $Global:LogMessages,
 
         [Parameter(Mandatory)]
-        [string]$KeyProperty
+        [string]$KeyProperty,
+
+        [string[]]$CacheByProperty = $KeyProperty
 
     )
 
@@ -51,11 +53,9 @@ function Get-CachedCimInstance {
     }
 
     if ($PSBoundParameters.ContainsKey('ClassName')) {
-        $CacheKey = "$ClassName`By$KeyProperty"
-    }
-
-    if ($PSBoundParameters.ContainsKey('Query')) {
-        $CacheKey = "$Query`By$KeyProperty"
+        $InstanceCacheKey = "$ClassName`By$KeyProperty"
+    } else {
+        $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
     $CimCacheResult = $CimCache[$ComputerName]
@@ -63,13 +63,13 @@ function Get-CachedCimInstance {
     if ($CimCacheResult) {
 
         Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCacheResult[$CacheKey]
+        $CimCacheSubresult = $CimCacheResult[$InstanceCacheKey]
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$CacheKey' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $CimCacheSubresult.Values
         } else {
-            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$CacheKey' on '$ComputerName'"
+            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
         }
 
     } else {
@@ -94,11 +94,24 @@ function Get-CachedCimInstance {
 
             $InstanceCache = [hashtable]::Synchronized(@{})
 
-            ForEach ($Instance in $CimInstance) {
-                $InstanceCache[$Instance.$KeyProperty] = $Instance
+            ForEach ($Prop in $CacheByProperty) {
+
+                if ($PSBoundParameters.ContainsKey('ClassName')) {
+                    $InstanceCacheKey = "$ClassName`By$Prop"
+                } else {
+                    $InstanceCacheKey = "$Query`By$Prop"
+                }
+
+                ForEach ($Instance in $CimInstance) {
+                    $InstancePropertyValue = $Instance.$Prop
+                    Write-LogMsg @LogParams -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache"
+                    $InstanceCache[$InstancePropertyValue] = $Instance
+                }
+
+                $CimCache[$ComputerName][$InstanceCacheKey] = $InstanceCache
+
             }
 
-            $CimCache[$ComputerName][$CacheKey] = $InstanceCache
             return $CimInstance
 
         }
