@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.226] - 2024-02-18 - bugfix ciminstance is not dict there is no values prop
+
 ## [0.0.225] - 2024-02-18 - bugfix for empty CimInstance
 
 ## [0.0.224] - 2024-02-18 - update get-cachedciminstance to always maintain cached instances in a dict instead of array

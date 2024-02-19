@@ -99,7 +99,7 @@ function Get-CachedCimInstance {
             }
 
             $CimCache[$ComputerName][$CacheKey] = $InstanceCache
-            return $CimInstance.Values
+            return $CimInstance
 
         }
 
