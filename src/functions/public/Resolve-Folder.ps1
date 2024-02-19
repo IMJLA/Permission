@@ -50,7 +50,7 @@ function Resolve-Folder {
     if ($TargetPath -match $RegEx) {
 
         Write-LogMsg @LogParams -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -CimCache $CimCache -ThisFqdn $ThisFqdn @LoggingParams
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LoggingParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -58,8 +58,7 @@ function Resolve-Folder {
         if ($MatchingNetworkDrive) {
             # Resolve mapped network drives to their UNC path
             $UNC = $MatchingNetworkDrive.ProviderName
-        }
-        else {
+        } else {
             # Resolve local drive letters to their UNC paths using administrative shares
             $UNC = $TargetPath -replace $RegEx, "\\$(hostname)\$($Matches.DriveLetter)$"
         }
@@ -71,8 +70,7 @@ function Resolve-Folder {
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
 
-    }
-    else {
+    } else {
 
         ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
         ## https://github.com/IMJLA/Export-Permission/issues/46
@@ -106,8 +104,7 @@ function Resolve-Folder {
                 $_.FullOriginalQueryPath -replace [regex]::Escape($_.DfsEntryPath), $_.DfsTarget
             }
 
-        }
-        else {
+        } else {
 
             $Server = $TargetPath.split('\')[2]
             $FQDN = ConvertTo-DnsFqdn -ComputerName $Server

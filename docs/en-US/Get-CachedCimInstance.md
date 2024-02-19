@@ -15,7 +15,8 @@ schema: 2.0.0
 ```
 Get-CachedCimInstance [[-ComputerName] <String>] [[-ClassName] <String>] [[-Query] <String>]
  [[-CimCache] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>]
- [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [-KeyProperty] <String> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -93,6 +94,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -KeyProperty
+{{ Fill KeyProperty Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -LogMsgCache
 {{ Fill LogMsgCache Description }}
 
@@ -103,6 +119,21 @@ Aliases:
 
 Required: False
 Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressAction
+{{ Fill ProgressAction Description }}
+
+```yaml
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -167,6 +198,9 @@ Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 

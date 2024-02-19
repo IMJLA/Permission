@@ -1050,7 +1050,11 @@ function Get-CachedCimInstance {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        [Parameter(Mandatory)]
+        [string]$KeyProperty
+
     )
 
     $LogParams = @{
@@ -1077,7 +1081,7 @@ function Get-CachedCimInstance {
 
         if ($CimCacheSubresult) {
             Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$CacheKey' on '$ComputerName'"
-            return $CimCacheSubresult
+            return $CimCacheSubresult.Values
         } else {
             Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$CacheKey' on '$ComputerName'"
         }
@@ -1100,9 +1104,15 @@ function Get-CachedCimInstance {
             $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession -ErrorAction SilentlyContinue
         }
 
+        $InstanceCache = @{}
+
+        ForEach ($Instance in $CimInstance) {
+            $InstanceCache[$Instance.$KeyProperty] = $Instance
+        }
+
         if ($CimInstance) {
-            $CimCache[$ComputerName][$CacheKey] = $CimInstance
-            return $CimInstance
+            $CimCache[$ComputerName][$CacheKey] = $InstanceCache
+            return $CimInstance.Values
         }
 
     }
@@ -2390,6 +2400,7 @@ function Remove-CachedCimSession {
 }
 function Resolve-AccessControlList {
 
+    # Wrapper to multithread Resolve-Acl
     # Resolve identities in access control lists to their SIDs and NTAccount names
 
     param (
@@ -3025,7 +3036,7 @@ function Resolve-Folder {
     if ($TargetPath -match $RegEx) {
 
         Write-LogMsg @LogParams -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -CimCache $CimCache -ThisFqdn $ThisFqdn @LoggingParams
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LoggingParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -3033,8 +3044,7 @@ function Resolve-Folder {
         if ($MatchingNetworkDrive) {
             # Resolve mapped network drives to their UNC path
             $UNC = $MatchingNetworkDrive.ProviderName
-        }
-        else {
+        } else {
             # Resolve local drive letters to their UNC paths using administrative shares
             $UNC = $TargetPath -replace $RegEx, "\\$(hostname)\$($Matches.DriveLetter)$"
         }
@@ -3046,8 +3056,7 @@ function Resolve-Folder {
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
 
-    }
-    else {
+    } else {
 
         ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
         ## https://github.com/IMJLA/Export-Permission/issues/46
@@ -3081,8 +3090,7 @@ function Resolve-Folder {
                 $_.FullOriginalQueryPath -replace [regex]::Escape($_.DfsEntryPath), $_.DfsTarget
             }
 
-        }
-        else {
+        } else {
 
             $Server = $TargetPath.split('\')[2]
             $FQDN = ConvertTo-DnsFqdn -ComputerName $Server
@@ -3385,6 +3393,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AcctPermission','Expand-PermissionPrincipal','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-Permission','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-Permission','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal','Update-CaptionCapitalization')
+
 
 
 

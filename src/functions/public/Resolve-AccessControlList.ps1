@@ -1,5 +1,6 @@
 function Resolve-AccessControlList {
 
+    # Wrapper to multithread Resolve-Acl
     # Resolve identities in access control lists to their SIDs and NTAccount names
 
     param (

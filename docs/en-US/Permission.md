@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.223
+Help Version: 0.0.224
 Locale: en-US
 ---
 
@@ -63,16 +63,13 @@ Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
 
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
 
-Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Query] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Query] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-KeyProperty] <string> [<CommonParameters>]
 
 
 ### [Get-CachedCimSession](Get-CachedCimSession.md)
 
 Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
-
-### [Get-FolderAccessList](Get-FolderAccessList.md)
-{{ Fill in the Description }}
 
 ### [Get-FolderAcl](Get-FolderAcl.md)
 

@@ -36,7 +36,11 @@ function Get-CachedCimInstance {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        [Parameter(Mandatory)]
+        [string]$KeyProperty
+
     )
 
     $LogParams = @{
@@ -63,7 +67,7 @@ function Get-CachedCimInstance {
 
         if ($CimCacheSubresult) {
             Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$CacheKey' on '$ComputerName'"
-            return $CimCacheSubresult
+            return $CimCacheSubresult.Values
         } else {
             Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$CacheKey' on '$ComputerName'"
         }
@@ -86,9 +90,15 @@ function Get-CachedCimInstance {
             $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession -ErrorAction SilentlyContinue
         }
 
+        $InstanceCache = @{}
+
+        ForEach ($Instance in $CimInstance) {
+            $InstanceCache[$Instance.$KeyProperty] = $Instance
+        }
+
         if ($CimInstance) {
-            $CimCache[$ComputerName][$CacheKey] = $CimInstance
-            return $CimInstance
+            $CimCache[$ComputerName][$CacheKey] = $InstanceCache
+            return $CimInstance.Values
         }
 
     }
