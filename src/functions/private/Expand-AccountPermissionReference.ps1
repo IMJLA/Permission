@@ -13,15 +13,17 @@ function Expand-AccountPermissionReference {
         $Access = ForEach ($PermissionRef in $Account.Access) {
 
             [PSCustomObject]@{
-                Path   = $PermissionRef.Path
-                Access = $ACEsByGUID[$PermissionRef.AceGUIDs]
+                Path       = $PermissionRef.Path
+                Access     = $ACEsByGUID[$PermissionRef.AceGUIDs]
+                PSTypeName = 'Permission.AccountPermissionItemAccess'
             }
 
         }
 
         [PSCustomObject]@{
-            Account = $PrincipalsByResolvedID[$Account.Account]
-            Access  = $Access
+            Account    = $PrincipalsByResolvedID[$Account.Account]
+            Access     = $Access
+            PSTypeName = 'Permission.AccountPermission'
         }
 
     }

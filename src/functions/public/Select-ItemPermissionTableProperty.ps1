@@ -1,4 +1,4 @@
-function Select-FolderPermissionTableProperty {
+function Select-ItemPermissionTableProperty {
 
     # For the HTML table
     param (

@@ -1,4 +1,459 @@
 
+function ConvertTo-PermissionGroup {
+
+    param (
+
+        # Permission object from Expand-Permission
+        [PSCustomObject]$Permission,
+
+        # Type of output returned to the output stream
+        [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string]$Format,
+
+        <#
+        Level of detail to export to file
+            0   Item paths                                                                                  $TargetPath
+            1   Resolved item paths (server names resolved, DFS targets resolved)                           $ACLsByPath.Keys after Resolve-PermissionTarget but before Expand-PermissionTarget
+            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys after Expand-PermissionTarget
+            3   Access control entries                                                                      $ACLsByPath.Values after Get-FolderAcl
+            4   Resolved access control entries                                                             $ACEsByGUID.Values
+                                                                                                            $PrincipalsByResolvedID.Values
+            5   Expanded resolved access control entries (expanded with info from ADSI security principals) $Permissions
+            6   XML custom sensor output for Paessler PRTG Network Monitor
+        #>
+        [int[]]$Detail = @(0..6)
+
+    )
+
+    $OutputObject = @{}
+
+    switch ($Format) {
+
+        'csv' {
+            $OutputObject['Data'] = $Permission | ConvertTo-Csv
+        }
+
+        'html' {
+
+            Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
+            $Html = $Permission | ConvertTo-Html -Fragment
+            $OutputObject['Data'] = $Html
+            $OutputObject['Table'] = $Html | New-BootstrapTable
+
+        }
+
+        'json' {
+
+            # Wrap input in a array because output must be a JSON array for jquery to work properly.
+            $OutputObject['Data'] = ConvertTo-Json -InputObject @($Permission)
+
+            Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
+            $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission
+
+            #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
+            Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
+
+        }
+
+        'xml' {
+            $OutputObject['Data'] = $Permission | ConvertTo-Xml
+        }
+
+        default {}
+
+    }
+
+    return [PSCustomObject]$OutputObject
+
+}
+function ConvertTo-PermissionList {
+
+    param (
+
+        # Permission object from Expand-Permission
+        [PSCustomObject]$Permission,
+
+        # Type of output returned to the output stream
+        [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string]$Format,
+
+        <#
+        Level of detail to export to file
+            0   Item paths                                                                                  $TargetPath
+            1   Resolved item paths (server names resolved, DFS targets resolved)                           $ACLsByPath.Keys after Resolve-PermissionTarget but before Expand-PermissionTarget
+            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys after Expand-PermissionTarget
+            3   Access control entries                                                                      $ACLsByPath.Values after Get-FolderAcl
+            4   Resolved access control entries                                                             $ACEsByGUID.Values
+                                                                                                            $PrincipalsByResolvedID.Values
+            5   Expanded resolved access control entries (expanded with info from ADSI security principals) $Permissions
+            6   XML custom sensor output for Paessler PRTG Network Monitor
+        #>
+        [int[]]$Detail = @(0..6)
+
+    )
+
+    $OutputObject = @{}
+
+    switch ($Format) {
+
+        'csv' {
+            $OutputObject['Data'] = ForEach ($Input in $Permission) {
+                $Input | ConvertTo-Csv
+            }
+        }
+
+        'html' {
+            $Html = ForEach ($Input in $Permission) {
+                $Input | ConvertTo-Html -Fragment
+            }
+            $OutputObject['Data'] = $Html
+            $OutputObject['Table'] = $Html | New-BootstrapTable
+        }
+
+        'json' {
+
+            $OutputObject['Data'] = ForEach ($Input in $Permission) {
+
+                # Remove spaces from property titles
+                $ObjectsForJsonData = ForEach ($Obj in $Input) {
+                    [PSCustomObject]@{
+                        Account           = $Obj.Account
+                        Access            = $Obj.Access
+                        DuetoMembershipIn = $Obj.'Due to Membership In'
+                        SourceofAccess    = $Obj.'Source of Access'
+                        Name              = $Obj.Name
+                        Department        = $Obj.Department
+                        Title             = $Obj.Title
+                    }
+                }
+
+                ConvertTo-Json -InputObject @($ObjectsForJsonData)
+
+            }
+
+            $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission -PropNames Account, Access,
+            'Due to Membership In', 'Source of Access', Name, Department, Title
+
+            $TableId = "Perms_$($ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
+
+        }
+
+        'prtgxml' {
+
+            # ToDo: Users with ownership
+            $NtfsIssueParams = @{
+                FolderPermissions = $Permission
+                UserPermissions   = $Accounts
+                GroupNameRule     = $GroupNameRule
+                TodaysHostname    = $ThisHostname
+                WhoAmI            = $WhoAmI
+                LogMsgCache       = $LogCache
+            }
+
+            Write-LogMsg @LogParams -Text 'New-NtfsAclIssueReport @NtfsIssueParams'
+            $NtfsIssues = New-NtfsAclIssueReport @NtfsIssueParams
+
+            # Format the issues as a custom XML sensor for Paessler PRTG Network Monitor
+            Write-LogMsg @LogParams -Text "Get-PrtgXmlSensorOutput -NtfsIssues `$NtfsIssues"
+            $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
+
+        }
+
+        'xml' {
+            $OutputObject['Data'] = ForEach ($Input in $Permission) {
+                $Input | ConvertTo-Xml
+            }
+        }
+
+        default {}
+
+    }
+
+    return
+
+}
+function Expand-AccountPermissionReference {
+
+    param (
+
+        $Reference,
+        $PrincipalsByResolvedID,
+        $ACEsByGUID
+
+    )
+
+    ForEach ($Account in $Reference) {
+
+        $Access = ForEach ($PermissionRef in $Account.Access) {
+
+            [PSCustomObject]@{
+                Path       = $PermissionRef.Path
+                Access     = $ACEsByGUID[$PermissionRef.AceGUIDs]
+                PSTypeName = 'Permission.AccountPermissionItemAccess'
+            }
+
+        }
+
+        [PSCustomObject]@{
+            Account    = $PrincipalsByResolvedID[$Account.Account]
+            Access     = $Access
+            PSTypeName = 'Permission.AccountPermission'
+        }
+
+    }
+
+}
+function Expand-FlatPermissionReference {
+
+    # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
+
+    param (
+
+        $SortedPaths,
+        $PrincipalsByResolvedID,
+        $ACEsByGUID,
+        $AceGUIDsByPath
+
+    )
+
+    ForEach ($Item in $SortedPaths) {
+
+        ForEach ($ACE in $ACEsByGUID[$AceGUIDsByPath[$Item]]) {
+
+            $Principal = $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved]
+
+            $OutputProperties = @{
+                PSTypeName = 'Permission.FlatPermission'
+            }
+
+            ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
+                $OutputProperties[$Prop] = $ACE.$Prop
+            }
+
+            ForEach ($Prop in ($Principal | Get-Member -View All -MemberType Property, NoteProperty).Name) {
+                $OutputProperties[$Prop] = $Principal.$Prop
+            }
+
+            [pscustomobject]$OutputProperties
+
+        }
+
+    }
+
+}
+function Expand-ItemPermissionReference {
+
+    param (
+
+        $Reference,
+        $PrincipalsByResolvedID,
+        $ACEsByGUID
+
+    )
+
+    ForEach ($Item in $Reference) {
+
+        $Access = ForEach ($PermissionRef in $Item.Access) {
+
+            [PSCustomObject]@{
+                Account    = $PrincipalsByResolvedID[$PermissionRef.Account]
+                Access     = $ACEsByGUID[$PermissionRef.AceGUIDs]
+                PSTypeName = 'Permission.ItemPermissionAccountAccess'
+            }
+
+        }
+
+        [PSCustomObject]@{
+            Item       = $Item.Item
+            Access     = $Access
+            PSTypeName = 'Permission.ItemPermission'
+        }
+
+    }
+
+}
+function Group-AccountPermissionReference {
+
+    param (
+        $PrincipalsByResolvedID,
+        $AceGUIDsByResolvedID,
+        $ACEsByGUID
+    )
+
+    ForEach ($ID in $PrincipalsByResolvedID.Keys) {
+
+        $ACEGuidsForThisID = $AceGUIDsByResolvedID[$ID]
+        $ItemPaths = @{}
+
+        ForEach ($Guid in $ACEGuidsForThisID) {
+
+            $Ace = $ACEsByGUID[$Guid]
+            Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
+
+        }
+
+        $ItemPermissionsForThisAccount = ForEach ($Item in $ItemPaths.Keys) {
+
+            [PSCustomObject]@{
+                Path     = $Item
+                AceGUIDs = $ItemPaths[$Item]
+            }
+
+        }
+
+        [PSCustomObject]@{
+            Account = $ID
+            Access  = $ItemPermissionsForThisAccount
+        }
+
+    }
+
+}
+function Group-ItemPermissionReference {
+
+    param (
+        $SortedPath,
+        $AceGUIDsByPath,
+        $ACEsByGUID,
+        $ACLsByPath,
+        $PrincipalsByResolvedID
+    )
+
+    ForEach ($ItemPath in $SortedPath) {
+
+        $Acl = $ACLsByPath[$ItemPath]
+        $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+
+        $AccountPermissionsForThisItem = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
+
+            [PSCustomObject]@{
+                Account  = $ID
+                AceGUIDs = $IDsWithAccess[$ID]
+            }
+
+        }
+
+        [PSCustomObject]@{
+            Item   = $Acl
+            Access = $AccountPermissionsForThisItem
+        }
+
+    }
+
+}
+function Memory {
+    <#
+function SizeOfObj {
+    param ([Type]$T, [Object]$thevalue, [System.Runtime.Serialization.ObjectIDGenerator]$gen)
+    $type = $T
+    [int]$returnval = 0
+    if ($type.IsValueType) {
+        $nulltype = [Nullable]::GetUnderlyingType($type)
+        $returnval = [System.Runtime.InteropServices.Marshal]::SizeOf($nulltype ?? $type)
+    } elseif ($null -eq $thevalue) {
+        return 0
+    } elseif ($thevalue.GetType().Name -eq 'String') {
+        $returnval = ([System.Text.Encoding]::Default).GetByteCount([string]$thevalue)
+    } elseif (
+        $type.IsArray -and
+        $type.GetElementType().IsValueType
+    ) {
+        $returnval = $thevalue.GetLength(0) * [System.Runtime.InteropServices.Marshal]::SizeOf($type.GetElementType())
+    } elseif ($thevalue.GetType.Name -eq 'Stream') {
+        [System.IO.Stream]$stream = [System.IO.Stream]$thevalue
+        $returnval = [int]($stream.Length)
+    } elseif ($type.IsSerializable) {
+        try {
+            [System.IO.MemoryStream]$s = [System.IO.MemoryStream]::new()
+            [System.Runtime.Serialization.Formatters.Binary.BinaryFormatter]$formatter = [System.Runtime.Serialization.Formatters.Binary.BinaryFormatter]::new()
+            $formatter.Serialize($s, $thevalue)
+            $returnval = [int]($s.Length)
+        } catch { }
+    } elseif ($type.IsClass) {
+        $returnval += SizeOfClass -thevalue $thevalue -gen ($gen ?? [System.Runtime.Serialization.ObjectIDGenerator]::new())
+    }
+    if ($returnval -eq 0) {
+        try {
+            $returnval = [System.Runtime.InteropServices.Marshal]::SizeOf($thevalue)
+        } catch { }
+    }
+    return $returnval
+}
+function SizeOf {
+    param ($T, $value)
+    SizeOfObj -T ($T.GetType()) -thevalue $value -gen $null
+}
+function SizeOfClass {
+    param (
+        [Object]$thevalue, [System.Runtime.Serialization.ObjectIDGenerator]$gen
+    )
+    [bool]$isfirstTime = $null
+    $gen.GetId($thevalue, [ref]$isfirstTime)
+    if (-not $isfirstTime) { return 0 }
+    $fields = $thevalue.GetType().GetFields([System.Reflection.BindingFlags]::NonPublic -bor [System.Reflection.BindingFlags]::Instance)
+
+    [int]$returnval = 0
+    for ($i = 0; $i -lt $fields.Length; $i++) {
+        [Type]$t = $fields[$i].FieldType
+        [Object]$v = $fields[$i].GetValue($thevalue)
+        $returnval += 4 + (SizeOfObj -T $t -thevalue $v -gen $gen)
+    }
+    return $returnval
+}
+
+$Test = @{}
+
+$n = 1000000
+$i = 0
+while ($i -lt $n) {
+    $Test[$i] = [pscustomobject]@{prop1 = 'blah'}
+    $i++
+}
+$Size = (SizeOf -t [hashtable] -value $Test)/1KB
+"$Size KiB"
+#>
+}
+function Resolve-SplitByParameter {
+
+    param (
+
+        <#
+    How to split up the exported files:
+        none    generate a single file with all permissions
+        item    generate a file per item
+        account generate a file per account
+        all     generate 1 file per item and 1 file per account and 1 file with all permissions.
+    #>
+        [ValidateSet('none', 'all', 'item', 'account')]
+        [string[]]$SplitBy = 'all'
+
+    )
+
+    $result = @{}
+
+    foreach ($Split in $SplitBy) {
+
+        if ($Split -eq 'none') {
+
+            return @{'none' = $true }
+
+        } elseif ($Split -eq 'all') {
+
+            return @{'item' = $true; 'account' = $true }
+
+        } else {
+
+            $result[$Split] = $true
+
+        }
+
+    }
+
+    return $result
+
+}
 function Add-CacheItem {
 
     # Use a key to get a generic list from a hashtable
@@ -63,61 +518,69 @@ function ConvertTo-ItemBlock {
     }
 
 }
-function Expand-AccountPermissionReference {
+function Expand-Permission {
+
+    # TODO: If SplitBy account or item, each file needs to include inherited permissions (with default $SplitBy = 'none', the parent folder's inherited permissions are already included)
 
     param (
-
-        $Reference,
+        $SortedPaths,
+        $SplitBy,
+        $GroupBy,
+        $AceGUIDsByPath,
+        $AceGUIDsByResolvedID,
+        $ACEsByGUID,
         $PrincipalsByResolvedID,
-        $ACEsByGUID
-
+        $ACLsByPath
     )
 
-    ForEach ($Account in $Reference) {
+    $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
 
-        $Access = ForEach ($PermissionRef in $Account.Access) {
+    $CommonParams = @{
+        ACEsByGUID             = $ACEsByGUID
+        PrincipalsByResolvedID = $PrincipalsByResolvedID
+    }
 
-            [PSCustomObject]@{
-                Path   = $PermissionRef.Path
-                Access = $ACEsByGUID[$PermissionRef.AceGUIDs]
-            }
+    if (
+        $HowToSplit['account'] -or
+        $GroupBy -eq 'account'
+    ) {
 
-        }
+        # Group reference GUIDs by the name of their associated account.
+        $AccountPermissionReferences = Group-AccountPermissionReference @CommonParams -AceGUIDsByResolvedID $AceGUIDsByResolvedID
 
-        [PSCustomObject]@{
-            Account = $PrincipalsByResolvedID[$Account.Account]
-            Access  = $Access
-        }
+        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+        $AccountPermissions = Expand-AccountPermissionReference @CommonParams -Reference $AccountPermissionReferences
 
     }
 
-}
-function Expand-ItemPermissionReference {
+    if (
+        $HowToSplit['item'] -or
+        $GroupBy -eq 'item'
+    ) {
 
-    param (
+        # Group reference GUIDs by the path to their associated item.
+        $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath
 
-        $Reference,
-        $PrincipalsByResolvedID,
-        $ACEsByGUID
+        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+        $ItemPermissions = Expand-ItemPermissionReference @CommonParams -Reference $ItemPermissionReferences
 
-    )
+    }
 
-    ForEach ($Item in $Reference) {
+    if (
+        $HowToSplit['none'] -and
+        $GroupBy -eq 'none'
+    ) {
 
-        $Access = ForEach ($PermissionRef in $Item.Access) {
+        # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
+        $FlatPermissions = Expand-FlatPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath
 
-            [PSCustomObject]@{
-                Account = $PrincipalsByResolvedID[$PermissionRef.Account]
-                Access  = $ACEsByGUID[$PermissionRef.AceGUIDs]
-            }
+    }
 
-        }
-
-        [PSCustomObject]@{
-            Item   = $Item.Item
-            Access = $Access
-        }
-
+    return [PSCustomObject]@{
+        AccountPermissions = $AccountPermissions
+        FlatPermissions    = $FlatPermissions
+        ItemPermissions    = $ItemPermissions
+        SplitBy            = $HowToSplit
     }
 
 }
@@ -672,201 +1135,57 @@ function Find-ResolvedIDsWithAccess {
     $IDsWithAccess
 
 }
-function Format-FolderPermission {
+function Format-Permission {
 
-    <#
-     Format the objects
+    param (
 
-     * SchemaClassName
-     * Name,Dept,Title (TODO: Param to work with any specified props)
-     * InheritanceFlags
-     * Access Rights
-    #>
+        # Permission object from Expand-Permission
+        [PSCustomObject]$Permission,
 
-    Param (
+        # How to group the permissions in the output stream and within each exported file
+        [ValidateSet('none', 'item', 'account')]
+        [string]$GroupBy = 'item',
 
-        # Expects ACEs grouped using Group-Object
-        $UserPermission,
+        # File formats to export
+        [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string[]]$FileFormat = @('csv', 'html', 'js', 'json', 'prtgxml', 'xml'),
 
-        # Ignore these FileSystemRights
-        [string[]]$FileSystemRightsToIgnore = @('Synchronize'),
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        # Type of output returned to the output stream
+        [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string]$OutputFormat = 'passthru'
 
     )
 
-    $Progress = @{
-        Activity = 'Format-FolderPermission'
-    }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
+    if ($GroupBy -eq 'none') {
+        $Selection = $Permission.FlatPermissions
     } else {
-        $Progress['Id'] = 0
+        $Selection = $Permission."$GroupBy`Permissions"
     }
 
-    $Count = ($UserPermission | Measure-Object).Count
-    Write-Progress @Progress -Status "0% (item 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-    $i = 0
-    $IntervalCounter = 0
-    [int]$ProgressInterval = [math]::max(($Count / 100), 1)
+    $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
-    ForEach ($ThisUser in $UserPermission) {
+    $OutputProperties = @{
+        passthru = $Selection
+    }
 
-        $IntervalCounter++
+    $Culture = Get-Culture
 
-        if ($IntervalCounter -eq $ProgressInterval) {
+    Write-LogMsg @LogParams -Text "`$PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject `$Selection -Culture '$Culture'"
+    $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture
 
-            [int]$PercentComplete = $i / $Count * 100
-            Write-Progress @Progress -Status "$PercentComplete% (item $($i+1) of $Count)" -CurrentOperation "Formatting user permission group $($ThisUser.Name)" -PercentComplete $PercentComplete
-            $IntervalCounter = 0
+    Write-LogMsg @LogParams -Text "`$PermissionsWithChosenProperties = Select-ItemPermissionTableProperty -InputObject `$Selection -IgnoreDomain '@('$($IgnoreDomain -join "','")')'"
+    $PermissionsWithChosenProperties = Select-ItemPermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain |
+    Sort-Object -Property Account
 
-        }
+    ForEach ($Format in $Formats) {
 
-        $i++
+        $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture
 
-        if ($ThisUser.Group.DirectoryEntry.Properties) {
-
-            if (
-
-                (
-                    $ThisUser.Group.DirectoryEntry |
-                    ForEach-Object {
-                        if ($null -ne $_) {
-                            $_.GetType().FullName 2>$null
-                        }
-                    }
-                ) -contains 'System.Management.Automation.PSCustomObject'
-
-            ) {
-
-                $Names = $ThisUser.Group.DirectoryEntry.Properties.Name
-                $Depts = $ThisUser.Group.DirectoryEntry.Properties.Department
-                $Titles = $ThisUser.Group.DirectoryEntry.Properties.Title
-
-            } else {
-
-                $Names = $ThisUser.Group.DirectoryEntry |
-                ForEach-Object {
-                    if ($_.Properties) {
-                        $_.Properties['name']
-                    }
-                }
-
-                $Depts = $ThisUser.Group.DirectoryEntry |
-                ForEach-Object {
-                    if ($_.Properties) {
-                        $_.Properties['department']
-                    }
-                }
-
-                $Titles = $ThisUser.Group.DirectoryEntry |
-                ForEach-Object {
-                    if ($_.Properties) {
-                        $_.Properties['title']
-                    }
-                }
-
-                if ($ThisUser.Group.DirectoryEntry.Properties['objectclass'] -contains 'group' -or
-                    "$($ThisUser.Group.DirectoryEntry.Properties['groupType'])" -ne ''
-                ) {
-                    $SchemaClassName = 'group'
-                } else {
-                    $SchemaClassName = 'user'
-                }
-
-            }
-
-            $Name = @($Names)[0]
-            $Dept = @($Depts)[0]
-            $Title = @($Titles)[0]
-
-        } else {
-
-            $Name = @($ThisUser.Group.name)[0]
-            $Dept = @($ThisUser.Group.department)[0]
-            $Title = @($ThisUser.Group.title)[0]
-
-            if ($ThisUser.Group.Properties) {
-
-                if (
-                    $ThisUser.Group.Properties['objectclass'] -contains 'group' -or
-                    "$($ThisUser.Group.Properties['groupType'])" -ne ''
-                ) {
-                    $SchemaClassName = 'group'
-                } else {
-                    $SchemaClassName = 'user'
-                }
-
-            } else {
-
-                if ($ThisUser.Group.DirectoryEntry.SchemaClassName) {
-                    $SchemaClassName = @($ThisUser.Group.DirectoryEntry.SchemaClassName)[0]
-                } else {
-                    $SchemaClassName = @($ThisUser.Group.SchemaClassName)[0]
-                }
-
-            }
-
-        }
-
-        if ("$Name" -eq '') {
-            $Name = $ThisUser.Name
-        }
-
-        ForEach ($ThisACE in $ThisUser.Group) {
-
-            switch ($ThisACE.ACEInheritanceFlags) {
-                'ContainerInherit, ObjectInherit' { $Scope = 'this folder, subfolders, and files' }
-                'ContainerInherit' { $Scope = 'this folder and subfolders' }
-                'ObjectInherit' { $Scope = 'this folder and files, but not subfolders' }
-                default { $Scope = 'this folder but not subfolders' }
-            }
-
-            if ($null -eq $ThisUser.Group.IdentityReference) {
-                $IdentityReference = $null
-            } else {
-                $IdentityReference = $ThisACE.ACEIdentityReferenceResolved
-            }
-
-            $FileSystemRights = $ThisACE.ACEFileSystemRights
-            ForEach ($Ignore in $FileSystemRightsToIgnore) {
-                $FileSystemRights = $FileSystemRights -replace ", $Ignore\Z", '' -replace "$Ignore,", ''
-            }
-
-            [pscustomobject]@{
-                Folder                   = $ThisACE.ACESourceAccessList.Path
-                FolderInheritanceEnabled = !($ThisACE.ACESourceAccessList.AreAccessRulesProtected)
-                Access                   = "$($ThisACE.ACEAccessControlType) $FileSystemRights $Scope"
-                Account                  = $ThisUser.Name
-                Name                     = $Name
-                Department               = $Dept
-                Title                    = $Title
-                IdentityReference        = $IdentityReference
-                AccessControlEntry       = $ThisACE
-                SchemaClassName          = $SchemaClassName
-                PSTypeName               = 'Permission.PassThruPermission'
-            }
-
-        }
+        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties
 
     }
 
-    Write-Progress @Progress -Completed
+    [PSCustomObject]$OutputProperties
 
 }
 function Format-TimeSpan {
@@ -1419,7 +1738,7 @@ function Get-FolderPermissionsBlock {
             }
         }
 
-        $ObjectsForFolderPermissionTable = Select-FolderPermissionTableProperty -InputObject $FilteredPermissions -IgnoreDomain $IgnoreDomain |
+        $ObjectsForFolderPermissionTable = Select-ItemPermissionTableProperty -InputObject $FilteredPermissions -IgnoreDomain $IgnoreDomain |
         Sort-Object -Property Account
 
         $ThisTable = $ObjectsForFolderPermissionTable |
@@ -1887,75 +2206,6 @@ function Get-UniqueServerFqdn {
     Write-Progress @Progress -Completed
 
     return $UniqueValues.Keys
-
-}
-function Group-AccountPermissionReference {
-
-    param (
-        $PrincipalsByResolvedID,
-        $AceGUIDsByResolvedID,
-        $ACEsByGUID
-    )
-
-    ForEach ($ID in $PrincipalsByResolvedID.Keys) {
-
-        $ACEGuidsForThisID = $AceGUIDsByResolvedID[$ID]
-        $ItemPaths = @{}
-
-        ForEach ($Guid in $ACEGuidsForThisID) {
-
-            $Ace = $ACEsByGUID[$Guid]
-            Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
-
-        }
-
-        $ItemPermissionsForThisAccount = ForEach ($Item in $ItemPaths.Keys) {
-
-            [PSCustomObject]@{
-                Path     = $Item
-                AceGUIDs = $ItemPaths[$Item]
-            }
-
-        }
-
-        [PSCustomObject]@{
-            Account = $ID
-            Access  = $ItemPermissionsForThisAccount
-        }
-
-    }
-
-}
-function Group-ItemPermissionReference {
-
-    param (
-        $SortedPath,
-        $AceGUIDsByPath,
-        $ACEsByGUID,
-        $ACLsByPath,
-        $PrincipalsByResolvedID
-    )
-
-    ForEach ($ItemPath in $SortedPath) {
-
-        $Acl = $ACLsByPath[$ItemPath]
-        $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-
-        $AccountPermissionsForThisItem = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
-
-            [PSCustomObject]@{
-                Account  = $ID
-                AceGUIDs = $IDsWithAccess[$ID]
-            }
-
-        }
-
-        [PSCustomObject]@{
-            Item   = $Acl
-            Access = $AccountPermissionsForThisItem
-        }
-
-    }
 
 }
 function Initialize-Cache {
@@ -2848,6 +3098,32 @@ function Resolve-Folder {
     }
 
 }
+function Resolve-FormatParameter {
+    param (
+
+        # File formats to export
+        [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string[]]$FileFormat = @('csv', 'html', 'js', 'json', 'prtgxml', 'xml'),
+
+        # Type of output returned to the output stream
+        [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string]$OutputFormat = 'passthru'
+
+    )
+
+    $AllFormats = @{}
+
+    ForEach ($Format in $FileFormat) {
+        $AllFormats[$Format] = $null
+    }
+
+    if ($OutputFormat -ne 'passthru' -and $OutputFormat -ne 'none') {
+        $AllFormats[$OutputFormat] = $null
+    }
+
+    return $AllFormats.Keys
+
+}
 function Resolve-IdentityReferenceDomainDNS {
 
     param (
@@ -3001,7 +3277,7 @@ function Resolve-PermissionTarget {
     }
 
 }
-function Select-FolderPermissionTableProperty {
+function Select-ItemPermissionTableProperty {
 
     # For the HTML table
     param (
@@ -3123,7 +3399,21 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-AccountPermissionReference','Expand-ItemPermissionReference','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-FolderPermission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Group-AccountPermissionReference','Group-ItemPermissionReference','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-FolderPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Select-FolderPermissionTableProperty
+# Resolve-FormatParameter
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Select-FolderPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
+Resolve-FormatParameter [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
 ```
 
 ## DESCRIPTION
@@ -30,31 +30,33 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -IgnoreDomain
-{{ Fill IgnoreDomain Description }}
+### -FileFormat
+{{ Fill FileFormat Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
+Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -InputObject
-{{ Fill InputObject Description }}
+### -OutputFormat
+{{ Fill OutputFormat Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

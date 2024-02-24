@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.254] - 2024-02-24 - troubleshoot build
+
+## [0.0.253] - 2024-02-24 - troubleshoot build
+
+## [0.0.252] - 2024-02-24 - troubleshoot build
+
+## [0.0.251] - 2024-02-24 - troubleshoot build
+
+## [0.0.250] - 2024-02-24 - troubleshoot build
+
+## [0.0.249] - 2024-02-24 - rebuild
+
+## [0.0.248] - 2024-02-24 - rebuild
+
+## [0.0.247] - 2024-02-24 - format-permission and all that it entails
+
+## [0.0.246] - 2024-02-24 - format-permission and all that it entails
+
+## [0.0.245] - 2024-02-24 - format-permission and all that it entails
+
+## [0.0.244] - 2024-02-24 - wtf
+
+## [0.0.243] - 2024-02-24 - format-permission and all that it entails
+
+## [0.0.242] - 2024-02-24 - format-permission and all that it entails
+
+## [0.0.241] - 2024-02-24 - format-permission and all that it entails
+
 ## [0.0.240] - 2024-02-19 - remove debug pause
 
 ## [0.0.239] - 2024-02-19 - bugfix group-itempermissionreference

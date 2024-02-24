@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Group-AccountPermissionReference
+# Select-ItemPermissionTableProperty
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Group-AccountPermissionReference [[-PrincipalsByResolvedID] <Object>] [[-AceGUIDsByResolvedID] <Object>]
- [[-ACEsByGUID] <Object>]
+Select-ItemPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
 ```
 
 ## DESCRIPTION
@@ -31,8 +30,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AceGUIDsByResolvedID
-{{ Fill AceGUIDsByResolvedID Description }}
+### -IgnoreDomain
+{{ Fill IgnoreDomain Description }}
 
 ```yaml
 Type: System.Object
@@ -46,23 +45,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ACEsByGUID
-{{ Fill ACEsByGUID Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PrincipalsByResolvedID
-{{ Fill PrincipalsByResolvedID Description }}
+### -InputObject
+{{ Fill InputObject Description }}
 
 ```yaml
 Type: System.Object

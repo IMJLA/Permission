@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.240
+Help Version: 0.0.254
 Locale: en-US
 ---
 
@@ -21,14 +21,9 @@ Add-CacheItem [[-Cache] <hashtable>] [[-Key] <Object>] [[-Value] <Object>] [[-Ty
 ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
 
 
-### [Expand-AccountPermissionReference](Expand-AccountPermissionReference.md)
+### [Expand-Permission](Expand-Permission.md)
 
-Expand-AccountPermissionReference [[-Reference] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
-
-
-### [Expand-ItemPermissionReference](Expand-ItemPermissionReference.md)
-
-Expand-ItemPermissionReference [[-Reference] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
+Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGUIDsByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>]
 
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
@@ -56,9 +51,9 @@ Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>
 Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
 
 
-### [Format-FolderPermission](Format-FolderPermission.md)
+### [Format-Permission](Format-Permission.md)
 
-Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <string[]>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
+Format-Permission [[-Permission] <psobject>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>]
 
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
@@ -136,16 +131,6 @@ Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn] <string>] [[-ProgressParentId] <int>]
 
 
-### [Group-AccountPermissionReference](Group-AccountPermissionReference.md)
-
-Group-AccountPermissionReference [[-PrincipalsByResolvedID] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
-
-
-### [Group-ItemPermissionReference](Group-ItemPermissionReference.md)
-
-Group-ItemPermissionReference [[-SortedPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>] [[-ACLsByPath] <Object>] [[-PrincipalsByResolvedID] <Object>]
-
-
 ### [Initialize-Cache](Initialize-Cache.md)
 
 Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
@@ -177,6 +162,11 @@ Use ADSI to lookup info about IdentityReferences from Authorization Rule Collect
 Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
+### [Resolve-FormatParameter](Resolve-FormatParameter.md)
+
+Resolve-FormatParameter [[-FileFormat] <string[]>] [[-OutputFormat] <string>]
+
+
 ### [Resolve-IdentityReferenceDomainDNS](Resolve-IdentityReferenceDomainDNS.md)
 
 Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] <Object>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-CimCache] <hashtable>]
@@ -187,9 +177,9 @@ Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] 
 Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ACLsByPath] <hashtable>] [<CommonParameters>]
 
 
-### [Select-FolderPermissionTableProperty](Select-FolderPermissionTableProperty.md)
+### [Select-ItemPermissionTableProperty](Select-ItemPermissionTableProperty.md)
 
-Select-FolderPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
+Select-ItemPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
 
 
 ### [Select-ItemTableProperty](Select-ItemTableProperty.md)

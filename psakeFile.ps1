@@ -301,6 +301,7 @@ task BuildMarkdownHelp -depends DeleteMarkdownHelp {
             }
         }
 
+        Write-Host "New-MarkdownHelp -AlphabeticParamsOrder -Locale '$HelpDefaultLocale' -HelpVersion $($moduleInfo.Version) -Module $env:BHProjectName -OutputFolder '$([IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale))' -UseFullTypeName `$true -WithModulePage `$true -ErrorAction Stop -VerbosePreference Continue -DebugPreference Continue"
         $newMDParams = @{
             AlphabeticParamsOrder = $true
             Locale                = $HelpDefaultLocale

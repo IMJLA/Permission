@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Expand-AccountPermissionReference
+# Format-Permission
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-AccountPermissionReference [[-Reference] <Object>] [[-PrincipalsByResolvedID] <Object>]
- [[-ACEsByGUID] <Object>]
+Format-Permission [[-Permission] <PSObject>] [[-GroupBy] <String>] [[-FileFormat] <String[]>]
+ [[-OutputFormat] <String>]
 ```
 
 ## DESCRIPTION
@@ -31,13 +31,14 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ACEsByGUID
-{{ Fill ACEsByGUID Description }}
+### -FileFormat
+{{ Fill FileFormat Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
+Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
 Position: 2
@@ -46,13 +47,14 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PrincipalsByResolvedID
-{{ Fill PrincipalsByResolvedID Description }}
+### -GroupBy
+{{ Fill GroupBy Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: none, item, account
 
 Required: False
 Position: 1
@@ -61,11 +63,27 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Reference
-{{ Fill Reference Description }}
+### -OutputFormat
+{{ Fill OutputFormat Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Permission
+{{ Fill Permission Description }}
+
+```yaml
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
 Aliases:
 

@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Format-FolderPermission
+# Expand-Permission
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Format-FolderPermission [[-UserPermission] <Object>] [[-FileSystemRightsToIgnore] <String[]>]
- [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
+Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <Object>]
+ [[-AceGUIDsByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
+ [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>]
 ```
 
 ## DESCRIPTION
@@ -31,26 +32,26 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -FileSystemRightsToIgnore
-{{ Fill FileSystemRightsToIgnore Description }}
+### -AceGUIDsByPath
+{{ Fill AceGUIDsByPath Description }}
 
 ```yaml
-Type: System.String[]
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-{{ Fill LogMsgCache Description }}
+### -AceGUIDsByResolvedID
+{{ Fill AceGUIDsByResolvedID Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
@@ -61,11 +62,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
+### -ACEsByGUID
+{{ Fill ACEsByGUID Description }}
 
 ```yaml
-Type: System.Int32
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
@@ -76,11 +77,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ThisHostName
-{{ Fill ThisHostName Description }}
+### -ACLsByPath
+{{ Fill ACLsByPath Description }}
 
 ```yaml
-Type: System.String
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GroupBy
+{{ Fill GroupBy Description }}
+
+```yaml
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
@@ -91,8 +107,23 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -UserPermission
-{{ Fill UserPermission Description }}
+### -PrincipalsByResolvedID
+{{ Fill PrincipalsByResolvedID Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SortedPaths
+{{ Fill SortedPaths Description }}
 
 ```yaml
 Type: System.Object
@@ -106,16 +137,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -WhoAmI
-{{ Fill WhoAmI Description }}
+### -SplitBy
+{{ Fill SplitBy Description }}
 
 ```yaml
-Type: System.String
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

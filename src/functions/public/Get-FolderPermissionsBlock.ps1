@@ -89,7 +89,7 @@ function Get-FolderPermissionsBlock {
             }
         }
 
-        $ObjectsForFolderPermissionTable = Select-FolderPermissionTableProperty -InputObject $FilteredPermissions -IgnoreDomain $IgnoreDomain |
+        $ObjectsForFolderPermissionTable = Select-ItemPermissionTableProperty -InputObject $FilteredPermissions -IgnoreDomain $IgnoreDomain |
         Sort-Object -Property Account
 
         $ThisTable = $ObjectsForFolderPermissionTable |
