@@ -26,7 +26,9 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string]$OutputFormat = 'passthru',
 
-        [string]$ShortestPath
+        [string]$ShortestPath,
+
+        $Culture = (Get-Culture)
 
     )
 
@@ -42,7 +44,6 @@ function Format-Permission {
         passthru = $Selection
     }
 
-    $Culture = Get-Culture
 
     Write-LogMsg @LogParams -Text "`$PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject `$Selection -Culture '$Culture'"
     $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture

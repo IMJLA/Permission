@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-ShortestPath] <String>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-ShortestPath] <String>] [[-Culture] <Object>]
 ```
 
 ## DESCRIPTION
@@ -30,6 +30,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -Culture
+{{ Fill Culture Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -FileFormat
 {{ Fill FileFormat Description }}

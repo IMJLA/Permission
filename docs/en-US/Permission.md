@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.274
+Help Version: 0.0.275
 Locale: en-US
 ---
 
@@ -32,19 +32,13 @@ Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-
 
 
 ### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
-
-Export-FolderPermissionHtml [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-ItemPermissions] <Object>] [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ShortestPath] <Object>] [-NoJavaScript]
-
+{{ Fill in the Description }}
 
 ### [Export-RawPermissionCsv](Export-RawPermissionCsv.md)
-
-Export-RawPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
-
+{{ Fill in the Description }}
 
 ### [Export-ResolvedPermissionCsv](Export-ResolvedPermissionCsv.md)
-
-Export-ResolvedPermissionCsv [[-Permission] <Object[]>] [[-LiteralPath] <string>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
-
+{{ Fill in the Description }}
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
 
@@ -53,7 +47,7 @@ Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Object>] [
 
 ### [Format-Permission](Format-Permission.md)
 
-Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-ShortestPath] <string>]
+Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-ShortestPath] <string>] [[-Culture] <Object>]
 
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
@@ -143,7 +137,7 @@ Invoke-PermissionCommand [[-Command] <string>]
 
 ### [Out-PermissionReport](Out-PermissionReport.md)
 
-Out-PermissionReport [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [[-PrincipalsByResolvedID] <Object>] [-NoJavaScript]
+Out-PermissionReport [[-ExcludeAccount] <Object>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFileList] <string[]>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-ACEsByGUID] <hashtable>] [[-ACLsByPath] <hashtable>] [[-PrincipalsByResolvedID] <Object>] [[-BestPracticeIssue] <Object>] [[-Parent] <string[]>] [[-Detail] <int[]>] [[-Culture] <Object>] [-NoMembers]
 
 
 ### [Remove-CachedCimSession](Remove-CachedCimSession.md)
