@@ -46,12 +46,12 @@ function ConvertTo-PermissionList {
 
             ForEach ($Group in $PermissionGrouping) {
 
+                $OutputObject = @{}
                 $GroupID = $Group.$GroupingProperty
                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
-                $Perm = $Permission[$GroupID]
                 $SubHeading = Get-FolderPermissionTableHeader -Group $GroupID -ShortestFolderPath $ShortestPath
+                $Perm = $Permission[$GroupID]
                 $Html = $Perm | ConvertTo-Html -Fragment
-                $OutputObject = @{}
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
@@ -65,7 +65,10 @@ function ConvertTo-PermissionList {
             ForEach ($Group in $PermissionGrouping) {
 
                 $OutputObject = @{}
-                $Perm = $Permission[$Group.$GroupingProperty]
+                $GroupID = $Group.$GroupingProperty
+                $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                $SubHeading = Get-FolderPermissionTableHeader -Group $GroupID -ShortestFolderPath $ShortestPath
+                $Perm = $Permission[$GroupID]
 
                 # Remove spaces from property titles
                 $ObjectsForJsonData = ForEach ($Obj in $Perm) {
