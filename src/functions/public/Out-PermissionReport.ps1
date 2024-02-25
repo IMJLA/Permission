@@ -44,7 +44,7 @@ function Out-PermissionReport {
         $FormattedPermission,
         $LogParams,
         $RecurseDepth,
-        [string[]]$ReportFileList,
+        [string[]]$ReportFileList = @(),
         $ReportFile,
         $LogFileList,
         $ReportInstanceId,
