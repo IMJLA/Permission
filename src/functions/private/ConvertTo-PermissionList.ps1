@@ -84,7 +84,8 @@ function ConvertTo-PermissionList {
                 $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = "Perms_$($Group.$GroupingProperty -replace '[^A-Za-z0-9\-_]', '-')"
                 $OutputObject['Table'] = $TableId
-                $OutputObject['Div'] = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
                 [PSCustomObject]$OutputObject
 
             }
