@@ -56,10 +56,10 @@ function Out-PermissionReport {
 
         <#
         Level of detail to export to file
-            0   Item paths                                                                                  $TargetPath | Sort
-            1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents | Sort # after Resolve-PermissionTarget but before Expand-PermissionTarget
-            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys | Sort # after Expand-PermissionTarget
-            3   Access rules                                                                                $ACLsByPath.Values | Sort Path after Get-FolderAcl
+            0   Item paths                                                                                  $TargetPath
+            1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents
+            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys
+            3   Access rules                                                                                $ACLsByPath.Values
             4   Resolved access rules (server names resolved, inheritance flags resolved)                   $ACEsByGUID.Values | %{$_} | Sort Path,IdentityReferenceResolved
             5   Accounts with access                                                                        $PrincipalsByResolvedID.Values | %{$_} | Sort ResolvedAccountName
             6   Expanded resolved access rules (expanded with account info)                                 $Permissions
@@ -68,7 +68,7 @@ function Out-PermissionReport {
             9   XML custom sensor output for Paessler PRTG Network Monitor                                  $PrtgXml
             10  Permission Report
         #>
-        [int[]]$Detail = @(0..9),
+        [int[]]$Detail = @(0..10),
 
         $Culture = (Get-Culture)
 
@@ -88,7 +88,6 @@ function Out-PermissionReport {
     $ReportParameters = @{
         Title       = $Title
         Description = $ReportDescription
-        Body        = $Body
     }
 
     $HeadingText = 'Accounts Excluded by Regular Expression'
@@ -200,50 +199,61 @@ function Out-PermissionReport {
             ReportFooter          = $ReportFooter
         }
 
+        $DetailScripts = @(
+            { $TargetPath },
+            { $Parent },
+            { $ACLsByPath.Keys },
+            { $ACLsByPath.Values },
+            { ForEach ($val in $ACEsByGUID.Values) { $val } },
+            { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
+            { $Permission },
+            { $FormattedPermission.FlatPermissions },
+            { $BestPracticeIssues },
+            { $PrtgXml },
+            {}
+        )
+
+        $ReportObjects = @{}
+
+        ForEach ($Level in $Detail) {
+
+            # Save the report
+            $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+
+        }
+
+        # String translations indexed by value in the $Detail parameter
+        # TODO: Move to i18n
+        $DetailStrings = @(
+            'Target paths',
+            'Resolved target paths (server names and DFS targets resolved)'
+            'Item paths (resolved target paths expanded into their children)',
+            'Access lists',
+            'Access rules (resolved identity references and inheritance flags)',
+            'Accounts with access',
+            'Expanded access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
+            'Formatted permissions',
+            'Best Practice issues',
+            'Custom sensor output for Paessler PRTG Network Monitor'
+            'Permission report'
+        )
+
         switch ($Format) {
 
             'csv' {
 
-                $DetailScripts = @(
-                    { $TargetPath },
-                    { $Parent },
-                    { $ACLsByPath.Keys },
-                    { $ACLsByPath.Values },
-                    { ForEach ($val in $ACEsByGUID.Values) { $val } },
-                    { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
-                    { $Permission },
-                    { $FormattedPermission.FlatPermissions },
-                    { $BestPracticeIssues },
-                    { $PrtgXml }
-                )
-
                 $DetailExports = @(
-                    { $ThisReportContent | Out-File -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Out-File -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Out-File -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile }
-                )
-
-                # String translations indexed by value in the $Detail parameter
-                # TODO: Move to i18n
-                $DetailStrings = @(
-                    'Item paths',
-                    'Resolved item paths (server names and DFS targets resolved)'
-                    'Expanded resolved item paths (parent paths expanded into children)',
-                    'Access rules',
-                    'Resolved access rules (identity references and inheritance flags resolved)',
-                    'Accounts with access',
-                    'Expanded resolved access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
-                    'Formatted permissions',
-                    'Best Practice issues',
-                    'Custom sensor output for Paessler PRTG Network Monitor'
-                    'Permission report'
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile }
                 )
 
                 ForEach ($Level in $Detail) {
@@ -254,7 +264,7 @@ function Out-PermissionReport {
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
 
                     # Save the report
-                    $ThisReportContent = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+                    $Report = $ReportObjects[$Level]
                     $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
 
                     # Output the name of the report file to the Information stream
@@ -266,47 +276,105 @@ function Out-PermissionReport {
 
             'html' {
 
-                # Combine the header and table inside a Bootstrap div
-                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
+                $DetailScripts[10] = {
+                    # Combine the header and table inside a Bootstrap div
+                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
 
-                # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                [string]$Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
+                    # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                    $Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
 
-                # Apply the report template to the generated HTML report body and description
-                Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
-                $Report = New-BootstrapReport @ReportParameters
+                    # Apply the report template to the generated HTML report body and description
+                    Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                    New-BootstrapReport -Body $Body @ReportParameters
+                }
 
-                # Save the report
-                $null = Set-Content -LiteralPath $ThisReportFile -Value $Report
+                $DetailExports = @(
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
+                )
 
-                # Output the name of the report file to the Information stream
-                Write-Information $ThisReportFile
+                ForEach ($Level in $Detail) {
+
+                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                    $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                    $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                    $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.htm"
+
+                    # Save the report
+                    $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+                    $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
+
+                    # Output the name of the report file to the Information stream
+                    Write-Information $ThisReportFile
+
+                }
 
             }
             'json' {
 
-                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                $JsonFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
+                $DetailScripts[10] = {
+                    # Combine the header and table inside a Bootstrap div
+                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
 
-                # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$JsonFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                [string]$Body = Get-HtmlBody -FolderList $JsonFolderList @BodyParams
+                    # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                    $Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
 
-                $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings
+                    # Build the JavaScript scripts
+                    Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
+                    $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings
 
-                # Apply the report template to the generated HTML report body and description
-                Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
-                $Report = New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
+                    # Apply the report template to the generated HTML report body and description
+                    Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
+                    New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
+                }
 
-                # Save the report
-                $null = Set-Content -LiteralPath $ThisReportFile -Value $Report
+                $DetailExports = @(
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
+                )
 
-                # Output the name of the report file to the Information stream
-                Write-Information $ThisReportFile
+                ForEach ($Level in $Detail) {
 
-                $ThisReportFile
+                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                    $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                    $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                    $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$Format.htm"
+
+                    # Save the report
+                    $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+                    $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
+
+                    # Output the name of the report file to the Information stream
+                    Write-Information $ThisReportFile
+
+                    # Return the report file path of the highest level for the Interactive switch of Export-Permission
+                    if ($Level -eq 10) {
+                        $ThisReportFile
+                    }
+
+                }
 
             }
 
