@@ -15,11 +15,10 @@ schema: 2.0.0
 ```
 Out-PermissionReport [[-ExcludeAccount] <Object>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
  [[-TargetPath] <String[]>] [[-NoGroupMembers] <Object>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>]
- [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript] [[-Permission] <Object>]
- [[-LogParams] <Object>] [[-ReportDescription] <Object>] [[-FolderTableHeader] <Object>]
+ [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [-NoJavaScript]
+ [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>]
  [[-ReportFileList] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
  [[-Subfolders] <Object>] [[-ResolvedFolderTargets] <Object>] [[-PrincipalsByResolvedID] <Object>]
- [[-ShortestPath] <Object>]
 ```
 
 ## DESCRIPTION
@@ -66,8 +65,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -FolderTableHeader
-{{ Fill FolderTableHeader Description }}
+### -FormattedPermission
+{{ Fill FormattedPermission Description }}
 
 ```yaml
 Type: System.Object
@@ -75,7 +74,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -105,7 +104,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -171,21 +170,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Permission
-{{ Fill Permission Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 10
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -PrincipalsByResolvedID
 {{ Fill PrincipalsByResolvedID Description }}
 
@@ -195,14 +179,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 20
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ReportDescription
-{{ Fill ReportDescription Description }}
+### -RecurseDepth
+{{ Fill RecurseDepth Description }}
 
 ```yaml
 Type: System.Object
@@ -225,7 +209,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -240,7 +224,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +239,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 17
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -270,22 +254,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ShortestPath
-{{ Fill ShortestPath Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 21
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -315,7 +284,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 18
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

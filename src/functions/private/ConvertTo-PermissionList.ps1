@@ -22,7 +22,9 @@ function ConvertTo-PermissionList {
             5   Expanded resolved access control entries (expanded with info from ADSI security principals) $Permissions
             6   XML custom sensor output for Paessler PRTG Network Monitor
         #>
-        [int[]]$Detail = @(0..6)
+        [int[]]$Detail = @(0..6),
+
+        [string]$ShortestPath
 
     )
 
@@ -44,10 +46,15 @@ function ConvertTo-PermissionList {
 
             ForEach ($Group in $PermissionGrouping) {
 
+                $GroupID = $Group.$GroupingProperty
+                $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                $Perm = $Permission[$GroupID]
+                $SubHeading = Get-FolderPermissionTableHeader -ThisFolder $Perm -ShortestFolderPath $ShortestPath
+                $Html = $Perm | ConvertTo-Html -Fragment
                 $OutputObject = @{}
-                $Html = $Permission[$Group.$GroupingProperty] | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
-                $OutputObject['Table'] = $Html | New-BootstrapTable
+                $Table = $Html | New-BootstrapTable
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
                 [PSCustomObject]$OutputObject
 
             }
@@ -76,7 +83,8 @@ function ConvertTo-PermissionList {
                 $OutputObject['Data'] = ConvertTo-Json -InputObject @($ObjectsForJsonData)
                 $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = "Perms_$($Group.$GroupingProperty -replace '[^A-Za-z0-9\-_]', '-')"
-                $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                $OutputObject['Table'] = $TableId
+                $OutputObject['Div'] = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
                 [PSCustomObject]$OutputObject
 
             }
