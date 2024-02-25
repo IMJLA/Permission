@@ -26,35 +26,42 @@ function ConvertTo-PermissionList {
 
     )
 
-    $OutputObject = @{}
     $GroupingProperty = ($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0]
 
     switch ($Format) {
 
         'csv' {
 
-            $OutputObject['Data'] = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
-                $Permission[$Input] | ConvertTo-Csv
+            ForEach ($Group in $PermissionGrouping) {
+                $OutputObject = @{}
+                $OutputObject['Data'] = $Permission[$Group.$GroupingProperty] | ConvertTo-Csv
+                [PSCustomObject]$OutputObject
             }
 
         }
 
         'html' {
 
-            $Html = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
-                $Permission[$Input] | ConvertTo-Html -Fragment
-            }
-            $OutputObject['Data'] = $Html
-            $OutputObject['Table'] = $Html | New-BootstrapTable
+            ForEach ($Group in $PermissionGrouping) {
 
+                $OutputObject = @{}
+                $Html = $Permission[$Group.$GroupingProperty] | ConvertTo-Html -Fragment
+                $OutputObject['Data'] = $Html
+                $OutputObject['Table'] = $Html | New-BootstrapTable
+                [PSCustomObject]$OutputObject
+
+            }
         }
 
         'json' {
 
-            $OutputObject['Data'] = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
+            ForEach ($Group in $PermissionGrouping) {
+
+                $OutputObject = @{}
+                $Perm = $Permission[$Group.$GroupingProperty]
 
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $Permission[$Input]) {
+                $ObjectsForJsonData = ForEach ($Obj in $Perm) {
                     [PSCustomObject]@{
                         Account           = $Obj.Account
                         Access            = $Obj.Access
@@ -66,15 +73,14 @@ function ConvertTo-PermissionList {
                     }
                 }
 
-                ConvertTo-Json -InputObject @($ObjectsForJsonData)
+                $OutputObject['Data'] = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
+                $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                [PSCustomObject]$OutputObject
 
             }
 
-            $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission -PropNames Account, Access,
-            'Due to Membership In', 'Source of Access', Name, Department, Title
-
-            $TableId = "Perms_$($ThisFolder.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
-            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $ObjectsForFolderPermissionTable -DataFilterControl -AllColumnsSearchable
 
         }
 
@@ -96,13 +102,15 @@ function ConvertTo-PermissionList {
             # Format the issues as a custom XML sensor for Paessler PRTG Network Monitor
             Write-LogMsg @LogParams -Text "Get-PrtgXmlSensorOutput -NtfsIssues `$NtfsIssues"
             $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
+            [PSCustomObject]$OutputObject
 
         }
 
         'xml' {
 
-            $OutputObject['Data'] = ForEach ($Input in $Permission) {
-                $Input | ConvertTo-Xml
+            ForEach ($Group in $Permission) {
+                $OutputObject['Data'] = $Group | ConvertTo-Xml
+                [PSCustomObject]$OutputObject
             }
 
         }

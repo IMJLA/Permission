@@ -6,7 +6,7 @@ function Get-FolderColumnJson {
     )
 
     if (-not $PSBoundParameters.ContainsKey('PropNames')) {
-        $PropNames = ($InputObject | Get-Member -MemberType noteproperty).Name
+        $PropNames = (@($InputObject)[0] | Get-Member -MemberType noteproperty).Name
     }
 
     $Columns = ForEach ($Prop in $PropNames) {
