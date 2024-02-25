@@ -162,42 +162,6 @@ function Out-PermissionReport {
         # Convert the list of permission groupings list to an HTML table
         $PermissionGroupings = $FormattedPermission."$Format`Group"
         $Permissions = $FormattedPermission.$Format
-        $ThisReportFile = $ReportFile -replace 'PermissionsReport', "PermissionsReport_$Format"
-        $ReportFileList += $ThisReportFile
-
-        # Convert the list of generated report files to a Bootstrap list group
-        $HtmlListOfReports = $ReportFileList |
-        Split-Path -Leaf |
-        ConvertTo-HtmlList |
-        ConvertTo-BootstrapListGroup
-
-        # Arrange the lists of generated files in two Bootstrap columns
-        Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-        $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
-
-        # Combine the alert and the columns of generated files inside a Bootstrap div
-        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
-        $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
-
-        # Generate a footer to include at the bottom of the report
-        Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-        $FooterParams = @{
-            StopWatch        = $StopWatch
-            ReportInstanceId = $ReportInstanceId
-            WhoAmI           = $WhoAmI
-            ThisFqdn         = $ThisFqdn
-            ItemCount        = $ACLsByPath.Keys.Count
-            PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
-            PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
-        }
-        $ReportFooter = Get-HtmlReportFooter @FooterParams
-
-        $BodyParams = @{
-            HtmlFolderPermissions = $Permissions.Div
-            HtmlExclusions        = $ExclusionsDiv
-            HtmlFileList          = $FileList
-            ReportFooter          = $ReportFooter
-        }
 
         $DetailScripts = @(
             { $TargetPath },
@@ -262,6 +226,7 @@ function Out-PermissionReport {
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
+                    $ReportFileList += $ThisReportFile
 
                     # Save the report
                     $Report = $ReportObjects[$Level]
@@ -275,6 +240,40 @@ function Out-PermissionReport {
             }
 
             'html' {
+
+                # Convert the list of generated report files to a Bootstrap list group
+                $HtmlListOfReports = $ReportFileList |
+                Split-Path -Leaf |
+                ConvertTo-HtmlList |
+                ConvertTo-BootstrapListGroup
+
+                # Arrange the lists of generated files in two Bootstrap columns
+                Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
+                $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+
+                # Combine the alert and the columns of generated files inside a Bootstrap div
+                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
+                $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
+
+                # Generate a footer to include at the bottom of the report
+                Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+                $FooterParams = @{
+                    StopWatch        = $StopWatch
+                    ReportInstanceId = $ReportInstanceId
+                    WhoAmI           = $WhoAmI
+                    ThisFqdn         = $ThisFqdn
+                    ItemCount        = $ACLsByPath.Keys.Count
+                    PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
+                    PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
+                }
+                $ReportFooter = Get-HtmlReportFooter @FooterParams
+
+                $BodyParams = @{
+                    HtmlFolderPermissions = $Permissions.Div
+                    HtmlExclusions        = $ExclusionsDiv
+                    HtmlFileList          = $FileList
+                    ReportFooter          = $ReportFooter
+                }
 
                 $DetailScripts[10] = {
                     # Combine the header and table inside a Bootstrap div
@@ -293,7 +292,7 @@ function Out-PermissionReport {
                 $DetailExports = @(
                     { $Report | Out-File -LiteralPath $ThisReportFile },
                     { $Report | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | Out-File -LiteralPath $ThisReportFile },
+                    { $Report -join "<br />`r`n" | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
@@ -310,6 +309,7 @@ function Out-PermissionReport {
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.htm"
+                    $ReportFileList += $ThisReportFile
 
                     # Save the report
                     $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
@@ -321,7 +321,42 @@ function Out-PermissionReport {
                 }
 
             }
+
             'json' {
+
+                # Convert the list of generated report files to a Bootstrap list group
+                $HtmlListOfReports = $ReportFileList |
+                Split-Path -Leaf |
+                ConvertTo-HtmlList |
+                ConvertTo-BootstrapListGroup
+
+                # Arrange the lists of generated files in two Bootstrap columns
+                Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
+                $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+
+                # Combine the alert and the columns of generated files inside a Bootstrap div
+                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
+                $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
+
+                # Generate a footer to include at the bottom of the report
+                Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+                $FooterParams = @{
+                    StopWatch        = $StopWatch
+                    ReportInstanceId = $ReportInstanceId
+                    WhoAmI           = $WhoAmI
+                    ThisFqdn         = $ThisFqdn
+                    ItemCount        = $ACLsByPath.Keys.Count
+                    PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
+                    PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
+                }
+                $ReportFooter = Get-HtmlReportFooter @FooterParams
+
+                $BodyParams = @{
+                    HtmlFolderPermissions = $Permissions.Div
+                    HtmlExclusions        = $ExclusionsDiv
+                    HtmlFileList          = $FileList
+                    ReportFooter          = $ReportFooter
+                }
 
                 $DetailScripts[10] = {
                     # Combine the header and table inside a Bootstrap div
@@ -361,6 +396,7 @@ function Out-PermissionReport {
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$Format.htm"
+                    $ReportFileList += $ThisReportFile
 
                     # Save the report
                     $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
