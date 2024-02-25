@@ -86,10 +86,12 @@ function ConvertTo-PermissionList {
 
         'prtgxml' {
 
+            <#
+
             # ToDo: Users with ownership
             $NtfsIssueParams = @{
-                FolderPermissions = $Permission
-                UserPermissions   = $Accounts
+                FolderPermissions = $Permission.ItemPermissions
+                UserPermissions   = $Permission.AccountPermissions
                 GroupNameRule     = $GroupNameRule
                 TodaysHostname    = $ThisHostname
                 WhoAmI            = $WhoAmI
@@ -103,6 +105,7 @@ function ConvertTo-PermissionList {
             Write-LogMsg @LogParams -Text "Get-PrtgXmlSensorOutput -NtfsIssues `$NtfsIssues"
             $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
             [PSCustomObject]$OutputObject
+            #>
 
         }
 
