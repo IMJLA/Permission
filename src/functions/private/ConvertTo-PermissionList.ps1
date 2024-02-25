@@ -49,7 +49,7 @@ function ConvertTo-PermissionList {
                 $OutputObject = @{}
                 $GroupID = $Group.$GroupingProperty
                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
-                $SubHeading = Get-FolderPermissionTableHeader -Group $GroupID -ShortestFolderPath $ShortestPath
+                $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                 $Perm = $Permission[$GroupID]
                 $Html = $Perm | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.273] - 2024-02-24 - bugfix get-folderpermissiontableheader missed a spot
+
 ## [0.0.272] - 2024-02-24 - bugfix get-folderpermissiontableheader
 
 ## [0.0.271] - 2024-02-24 - bugfix missing heading and subheading for json div in convertto-permissionlist
