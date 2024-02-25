@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.259] - 2024-02-24 - bugfix converto-permissionlist
+
 ## [0.0.258] - 2024-02-24 - troubleshoot converto-permissionlist
 
 ## [0.0.257] - 2024-02-24 - bugfix convertto-permissionlist

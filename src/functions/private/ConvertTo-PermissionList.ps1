@@ -26,9 +26,7 @@ function ConvertTo-PermissionList {
 
     )
 
-    $GroupingProperty = @($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0]
-    Write-Host "Property is $GroupingProperty"
-    pause
+    $GroupingProperty = @($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0].Name
 
     switch ($Format) {
 
