@@ -118,7 +118,7 @@ function ConvertTo-PermissionList {
                 $GroupID = $Group.$GroupingProperty
                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
                 $Perm = $Permission[$GroupID]
-                #$SubHeading = Get-FolderPermissionTableHeader -ThisFolder $Perm -ShortestFolderPath $ShortestPath
+                $SubHeading = Get-FolderPermissionTableHeader -Group $GroupID -ShortestFolderPath $ShortestPath
                 $Html = $Perm | ConvertTo-Html -Fragment
                 $OutputObject = @{}
                 $OutputObject['Data'] = $Html
@@ -1835,14 +1835,15 @@ function Get-FolderPermissionsBlock {
 function Get-FolderPermissionTableHeader {
     [OutputType([System.String])]
     param (
-        $ThisFolder,
+        [string]$Group,
         [string]$ShortestFolderPath
     )
-    $Leaf = $ThisFolder.Item.Path | Split-Path -Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
+    $Parent = $Group | Split-Path -Parent
+    $Leaf = $Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
     if ($Leaf) {
         $ParentLeaf = $Leaf
     } else {
-        $ParentLeaf = $ThisFolder.Item.Path | Split-Path -Parent
+        $ParentLeaf = $Parent
     }
     if ('' -ne $ParentLeaf) {
         if ($InputObject.Item.AreAccessRulesProtected) {
@@ -3694,6 +3695,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

@@ -1,14 +1,15 @@
 function Get-FolderPermissionTableHeader {
     [OutputType([System.String])]
     param (
-        $ThisFolder,
+        [string]$Group,
         [string]$ShortestFolderPath
     )
-    $Leaf = $ThisFolder.Item.Path | Split-Path -Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
+    $Parent = $Group | Split-Path -Parent
+    $Leaf = $Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
     if ($Leaf) {
         $ParentLeaf = $Leaf
     } else {
-        $ParentLeaf = $ThisFolder.Item.Path | Split-Path -Parent
+        $ParentLeaf = $Parent
     }
     if ('' -ne $ParentLeaf) {
         if ($InputObject.Item.AreAccessRulesProtected) {
