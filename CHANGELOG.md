@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.264] - 2024-02-24 - add out-permissionreport
+
 ## [0.0.263] - 2024-02-24 - bugfix need InnerXml
 
 ## [0.0.262] - 2024-02-24 - comment prtgxml does not belong here, will find new home later
