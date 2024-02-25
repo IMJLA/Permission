@@ -3,12 +3,13 @@ function Select-ItemPermissionTableProperty {
     # For the HTML table
     param (
         $InputObject,
-        $IgnoreDomain
+        $IgnoreDomain,
+        [hashtable]$OutputHash
     )
 
     ForEach ($Object in $InputObject) {
 
-        ForEach ($ACE in $InputObject.Access) {
+        $OutputHash[$Object.Item.Path] = ForEach ($ACE in $Object.Access) {
 
             # Each ACE contains the original IdentityReference representing the group the Object is a member of
             $GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '

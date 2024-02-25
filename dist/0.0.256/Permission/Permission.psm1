@@ -72,7 +72,9 @@ function ConvertTo-PermissionList {
     param (
 
         # Permission object from Expand-Permission
-        [PSCustomObject]$Permission,
+        [hashtable]$Permission,
+
+        [PSCustomObject[]]$PermissionGrouping,
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -94,29 +96,34 @@ function ConvertTo-PermissionList {
     )
 
     $OutputObject = @{}
+    $GroupingProperty = ($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0]
 
     switch ($Format) {
 
         'csv' {
-            $OutputObject['Data'] = ForEach ($Input in $Permission) {
-                $Input | ConvertTo-Csv
+
+            $OutputObject['Data'] = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
+                $Permission[$Input] | ConvertTo-Csv
             }
+
         }
 
         'html' {
-            $Html = ForEach ($Input in $Permission) {
-                $Input | ConvertTo-Html -Fragment
+
+            $Html = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
+                $Permission[$Input] | ConvertTo-Html -Fragment
             }
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
+
         }
 
         'json' {
 
-            $OutputObject['Data'] = ForEach ($Input in $Permission) {
+            $OutputObject['Data'] = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
 
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $Input) {
+                $ObjectsForJsonData = ForEach ($Obj in $Permission[$Input]) {
                     [PSCustomObject]@{
                         Account           = $Obj.Account
                         Access            = $Obj.Access
@@ -162,9 +169,11 @@ function ConvertTo-PermissionList {
         }
 
         'xml' {
+
             $OutputObject['Data'] = ForEach ($Input in $Permission) {
                 $Input | ConvertTo-Xml
             }
+
         }
 
         default {}
@@ -1142,6 +1151,15 @@ function Format-Permission {
         # Permission object from Expand-Permission
         [PSCustomObject]$Permission,
 
+        <#
+        Domain(s) to ignore (they will be removed from the username)
+
+        Can be used:
+          to ensure accounts only appear once on the report when they have matching SamAccountNames in multiple domains.
+          when the domain is often the same and doesn't need to be displayed
+        #>
+        [string[]]$IgnoreDomain,
+
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('none', 'item', 'account')]
         [string]$GroupBy = 'item',
@@ -1173,15 +1191,16 @@ function Format-Permission {
     Write-LogMsg @LogParams -Text "`$PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject `$Selection -Culture '$Culture'"
     $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture
 
-    Write-LogMsg @LogParams -Text "`$PermissionsWithChosenProperties = Select-ItemPermissionTableProperty -InputObject `$Selection -IgnoreDomain '@('$($IgnoreDomain -join "','")')'"
-    $PermissionsWithChosenProperties = Select-ItemPermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain |
-    Sort-Object -Property Account
+    $PermissionsWithChosenProperties = [hashtable]::Synchronized(@{})
+
+    Write-LogMsg @LogParams -Text "Select-ItemPermissionTableProperty -InputObject `$Selection -IgnoreDomain '@('$($IgnoreDomain -join "','")')'"
+    Select-ItemPermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -OutputHash $PermissionsWithChosenProperties
 
     ForEach ($Format in $Formats) {
 
         $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture
 
-        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties
+        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $PermissionGroupingsWithChosenProperties
 
     }
 
@@ -3282,12 +3301,13 @@ function Select-ItemPermissionTableProperty {
     # For the HTML table
     param (
         $InputObject,
-        $IgnoreDomain
+        $IgnoreDomain,
+        [hashtable]$OutputHash
     )
 
     ForEach ($Object in $InputObject) {
 
-        ForEach ($ACE in $InputObject.Access) {
+        $OutputHash[$Object.Item.Path] = ForEach ($ACE in $Object.Access) {
 
             # Each ACE contains the original IdentityReference representing the group the Object is a member of
             $GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
@@ -3404,6 +3424,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

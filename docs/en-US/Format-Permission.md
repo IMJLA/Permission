@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Format-Permission [[-Permission] <PSObject>] [[-GroupBy] <String>] [[-FileFormat] <String[]>]
- [[-OutputFormat] <String>]
+Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +41,7 @@ Aliases:
 Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 2
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -55,6 +55,21 @@ Type: System.String
 Parameter Sets: (All)
 Aliases:
 Accepted values: none, item, account
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IgnoreDomain
+{{ Fill IgnoreDomain Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: 1
@@ -73,7 +88,7 @@ Aliases:
 Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 3
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

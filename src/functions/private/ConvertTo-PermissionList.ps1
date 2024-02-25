@@ -3,7 +3,9 @@ function ConvertTo-PermissionList {
     param (
 
         # Permission object from Expand-Permission
-        [PSCustomObject]$Permission,
+        [hashtable]$Permission,
+
+        [PSCustomObject[]]$PermissionGrouping,
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -25,29 +27,34 @@ function ConvertTo-PermissionList {
     )
 
     $OutputObject = @{}
+    $GroupingProperty = ($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0]
 
     switch ($Format) {
 
         'csv' {
-            $OutputObject['Data'] = ForEach ($Input in $Permission) {
-                $Input | ConvertTo-Csv
+
+            $OutputObject['Data'] = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
+                $Permission[$Input] | ConvertTo-Csv
             }
+
         }
 
         'html' {
-            $Html = ForEach ($Input in $Permission) {
-                $Input | ConvertTo-Html -Fragment
+
+            $Html = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
+                $Permission[$Input] | ConvertTo-Html -Fragment
             }
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
+
         }
 
         'json' {
 
-            $OutputObject['Data'] = ForEach ($Input in $Permission) {
+            $OutputObject['Data'] = ForEach ($Input in $PermissionGrouping.$GroupingProperty) {
 
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $Input) {
+                $ObjectsForJsonData = ForEach ($Obj in $Permission[$Input]) {
                     [PSCustomObject]@{
                         Account           = $Obj.Account
                         Access            = $Obj.Access
@@ -93,9 +100,11 @@ function ConvertTo-PermissionList {
         }
 
         'xml' {
+
             $OutputObject['Data'] = ForEach ($Input in $Permission) {
                 $Input | ConvertTo-Xml
             }
+
         }
 
         default {}

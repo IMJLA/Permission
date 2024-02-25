@@ -14,6 +14,7 @@ schema: 2.0.0
 
 ```
 Select-ItemPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>]
+ [[-OutputHash] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -55,6 +56,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputHash
+{{ Fill OutputHash Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
