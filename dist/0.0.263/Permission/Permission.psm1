@@ -57,7 +57,7 @@ function ConvertTo-PermissionGroup {
         }
 
         'xml' {
-            $OutputObject['Data'] = $Permission | ConvertTo-Xml
+            $OutputObject['Data'] = ($Permission | ConvertTo-Xml).InnerXml
         }
 
         default {}
@@ -182,7 +182,7 @@ function ConvertTo-PermissionList {
 
             ForEach ($Group in $PermissionGrouping) {
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission[$Group.$GroupingProperty] | ConvertTo-Xml
+                $OutputObject['Data'] = ($Permission[$Group.$GroupingProperty] | ConvertTo-Xml).InnerXml
                 [PSCustomObject]$OutputObject
             }
 
@@ -3436,6 +3436,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Export-FolderPermissionHtml','Export-RawPermissionCsv','Export-ResolvedPermissionCsv','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

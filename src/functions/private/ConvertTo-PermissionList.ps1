@@ -113,7 +113,7 @@ function ConvertTo-PermissionList {
 
             ForEach ($Group in $PermissionGrouping) {
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission[$Group.$GroupingProperty] | ConvertTo-Xml
+                $OutputObject['Data'] = ($Permission[$Group.$GroupingProperty] | ConvertTo-Xml).InnerXml
                 [PSCustomObject]$OutputObject
             }
 

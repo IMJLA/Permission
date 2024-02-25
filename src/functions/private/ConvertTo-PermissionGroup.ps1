@@ -56,7 +56,7 @@ function ConvertTo-PermissionGroup {
         }
 
         'xml' {
-            $OutputObject['Data'] = $Permission | ConvertTo-Xml
+            $OutputObject['Data'] = ($Permission | ConvertTo-Xml).InnerXml
         }
 
         default {}
