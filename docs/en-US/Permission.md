@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.271
+Help Version: 0.0.272
 Locale: en-US
 ---
 
@@ -88,7 +88,7 @@ Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <s
 
 ### [Get-FolderPermissionTableHeader](Get-FolderPermissionTableHeader.md)
 
-Get-FolderPermissionTableHeader [[-Group] <string>] [[-ShortestFolderPath] <string>]
+Get-FolderPermissionTableHeader [[-Group] <Object>] [[-GroupID] <string>] [[-ShortestFolderPath] <string>]
 
 
 ### [Get-FolderTableHeader](Get-FolderTableHeader.md)

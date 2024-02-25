@@ -3463,6 +3463,18 @@
           <maml:description>
             <maml:para>{{ Fill Group Description }}</maml:para>
           </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Object</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>GroupID</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill GroupID Description }}</maml:para>
+          </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
             <maml:name>System.String</maml:name>
@@ -3470,7 +3482,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>ShortestFolderPath</maml:name>
           <maml:description>
             <maml:para>{{ Fill ShortestFolderPath Description }}</maml:para>
@@ -3490,6 +3502,18 @@
         <maml:description>
           <maml:para>{{ Fill Group Description }}</maml:para>
         </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>GroupID</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill GroupID Description }}</maml:para>
+        </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
           <maml:name>System.String</maml:name>
@@ -3497,7 +3521,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>ShortestFolderPath</maml:name>
         <maml:description>
           <maml:para>{{ Fill ShortestFolderPath Description }}</maml:para>
