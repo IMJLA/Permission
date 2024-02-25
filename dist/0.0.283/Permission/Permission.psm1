@@ -2295,41 +2295,42 @@ function Out-PermissionReport {
 
             'html' {
 
-                # Convert the list of generated report files to a Bootstrap list group
-                $HtmlListOfReports = $ReportFileList |
-                Split-Path -Leaf |
-                ConvertTo-HtmlList |
-                ConvertTo-BootstrapListGroup
-
-                # Arrange the lists of generated files in two Bootstrap columns
-                Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-                $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
-
-                # Combine the alert and the columns of generated files inside a Bootstrap div
-                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
-                $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
-
-                # Generate a footer to include at the bottom of the report
-                Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-                $FooterParams = @{
-                    StopWatch        = $StopWatch
-                    ReportInstanceId = $ReportInstanceId
-                    WhoAmI           = $WhoAmI
-                    ThisFqdn         = $ThisFqdn
-                    ItemCount        = $ACLsByPath.Keys.Count
-                    PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
-                    PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
-                }
-                $ReportFooter = Get-HtmlReportFooter @FooterParams
-
-                $BodyParams = @{
-                    HtmlFolderPermissions = $Permissions.Div
-                    HtmlExclusions        = $ExclusionsDiv
-                    HtmlFileList          = $FileList
-                    ReportFooter          = $ReportFooter
-                }
-
                 $DetailScripts[10] = {
+
+                    # Convert the list of generated report files to a Bootstrap list group
+                    $HtmlListOfReports = $ReportFileList |
+                    Split-Path -Leaf |
+                    ConvertTo-HtmlList |
+                    ConvertTo-BootstrapListGroup
+
+                    # Arrange the lists of generated files in two Bootstrap columns
+                    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
+                    $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+
+                    # Combine the alert and the columns of generated files inside a Bootstrap div
+                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
+                    $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
+
+                    # Generate a footer to include at the bottom of the report
+                    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+                    $FooterParams = @{
+                        StopWatch        = $StopWatch
+                        ReportInstanceId = $ReportInstanceId
+                        WhoAmI           = $WhoAmI
+                        ThisFqdn         = $ThisFqdn
+                        ItemCount        = $ACLsByPath.Keys.Count
+                        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
+                        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
+                    }
+                    $ReportFooter = Get-HtmlReportFooter @FooterParams
+
+                    $BodyParams = @{
+                        HtmlFolderPermissions = $Permissions.Div
+                        HtmlExclusions        = $ExclusionsDiv
+                        HtmlFileList          = $FileList
+                        ReportFooter          = $ReportFooter
+                    }
+
                     # Combine the header and table inside a Bootstrap div
                     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
                     $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
@@ -2378,41 +2379,42 @@ function Out-PermissionReport {
 
             'json' {
 
-                # Convert the list of generated report files to a Bootstrap list group
-                $HtmlListOfReports = $ReportFileList |
-                Split-Path -Leaf |
-                ConvertTo-HtmlList |
-                ConvertTo-BootstrapListGroup
-
-                # Arrange the lists of generated files in two Bootstrap columns
-                Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-                $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
-
-                # Combine the alert and the columns of generated files inside a Bootstrap div
-                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
-                $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
-
-                # Generate a footer to include at the bottom of the report
-                Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-                $FooterParams = @{
-                    StopWatch        = $StopWatch
-                    ReportInstanceId = $ReportInstanceId
-                    WhoAmI           = $WhoAmI
-                    ThisFqdn         = $ThisFqdn
-                    ItemCount        = $ACLsByPath.Keys.Count
-                    PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
-                    PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
-                }
-                $ReportFooter = Get-HtmlReportFooter @FooterParams
-
-                $BodyParams = @{
-                    HtmlFolderPermissions = $Permissions.Div
-                    HtmlExclusions        = $ExclusionsDiv
-                    HtmlFileList          = $FileList
-                    ReportFooter          = $ReportFooter
-                }
-
                 $DetailScripts[10] = {
+
+                    # Convert the list of generated report files to a Bootstrap list group
+                    $HtmlListOfReports = $ReportFileList |
+                    Split-Path -Leaf |
+                    ConvertTo-HtmlList |
+                    ConvertTo-BootstrapListGroup
+
+                    # Arrange the lists of generated files in two Bootstrap columns
+                    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
+                    $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+
+                    # Combine the alert and the columns of generated files inside a Bootstrap div
+                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
+                    $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
+
+                    # Generate a footer to include at the bottom of the report
+                    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+                    $FooterParams = @{
+                        StopWatch        = $StopWatch
+                        ReportInstanceId = $ReportInstanceId
+                        WhoAmI           = $WhoAmI
+                        ThisFqdn         = $ThisFqdn
+                        ItemCount        = $ACLsByPath.Keys.Count
+                        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
+                        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
+                    }
+                    $ReportFooter = Get-HtmlReportFooter @FooterParams
+
+                    $BodyParams = @{
+                        HtmlFolderPermissions = $Permissions.Div
+                        HtmlExclusions        = $ExclusionsDiv
+                        HtmlFileList          = $FileList
+                        ReportFooter          = $ReportFooter
+                    }
+
                     # Combine the header and table inside a Bootstrap div
                     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
                     $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
@@ -3501,6 +3503,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 
