@@ -43,6 +43,7 @@ function Out-PermissionReport {
         # Generate a report with only HTML and CSS but no JavaScript
         [switch]$NoJavaScript,
 
+        $Permission,
         $FormattedPermission,
         $LogParams,
         $RecurseDepth,
@@ -145,8 +146,8 @@ function Out-PermissionReport {
         # Convert the list of permission groupings list to an HTML table
         $PermissionGroupings = $FormattedPermission."$Format`Group"
         $Permissions = $FormattedPermission.$Format
-        $ReportFile = $ReportFile -replace 'PermissionsReport', "PermissionsReport_$Format"
-        $ReportFileList += $ReportFile
+        $ThisReportFile = $ReportFile -replace 'PermissionsReport', "PermissionsReport_$Format"
+        $ReportFileList += $ThisReportFile
 
         # Convert the list of generated report files to a Bootstrap list group
         $HtmlListOfReports = $ReportFileList |
@@ -221,10 +222,10 @@ function Out-PermissionReport {
         }
 
         # Save the report
-        $null = Set-Content -LiteralPath $ReportFile -Value $Report
+        $null = Set-Content -LiteralPath $ThisReportFile -Value $Report
 
         # Output the name of the report file to the Information stream
-        Write-Information $ReportFile
+        Write-Information $ThisReportFile
 
     }
 
