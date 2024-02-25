@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.266] - 2024-02-24 - troubleshoot convertto-permissiolist
+
 ## [0.0.265] - 2024-02-24 - out-permissionreport
 
 ## [0.0.264] - 2024-02-24 - add out-permissionreport
