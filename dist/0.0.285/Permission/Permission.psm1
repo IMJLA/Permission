@@ -45,7 +45,7 @@ function ConvertTo-PermissionGroup {
         'json' {
 
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
-            $OutputObject['Data'] = ConvertTo-Json -InputObject @($Permission)
+            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
 
             Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
             $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission
@@ -153,7 +153,7 @@ function ConvertTo-PermissionList {
                     }
                 }
 
-                $OutputObject['Data'] = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+                $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                 $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
                 $OutputObject['Table'] = $TableId
@@ -553,7 +553,7 @@ function ConvertTo-ItemBlock {
     New-BootstrapTable
 
     $JsonData = $ObjectsForTable |
-    ConvertTo-Json
+    ConvertTo-Json -Compress
 
     Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
     $JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForTable
@@ -1299,7 +1299,7 @@ function Get-FolderColumnJson {
     }
 
     $Columns |
-    ConvertTo-Json
+    ConvertTo-Json -Compress
 }
 function Get-FolderPermissionsBlock {
     param (
@@ -1422,7 +1422,7 @@ function Get-FolderPermissionsBlock {
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
             #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
-            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData) -Compress
             JsonTable   = $TableId
             Path        = $ThisFolder.Item.Path
         }
@@ -2433,16 +2433,16 @@ function Out-PermissionReport {
                 }
 
                 $DetailExports = @(
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
                 )
 
@@ -3503,6 +3503,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

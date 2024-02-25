@@ -84,7 +84,7 @@ function ConvertTo-PermissionList {
                     }
                 }
 
-                $OutputObject['Data'] = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+                $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                 $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
                 $OutputObject['Table'] = $TableId

@@ -119,7 +119,7 @@ function Get-FolderPermissionsBlock {
             JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForFolderPermissionTable -PropNames Account, Access,
             'Due to Membership In', 'Source of Access', Name, Department, Title
             #JsonData    = $ObjectsForJsonData | ConvertTo-Json -AsArray # requires PS6+ , unknown if any performance benefit compared to wrapping in @()
-            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData)
+            JsonData    = ConvertTo-Json -InputObject @($ObjectsForJsonData) -Compress
             JsonTable   = $TableId
             Path        = $ThisFolder.Item.Path
         }

@@ -379,16 +379,16 @@ function Out-PermissionReport {
                 }
 
                 $DetailExports = @(
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -Depth 10 | Out-File -LiteralPath $ThisReportFile },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
                 )
 

@@ -21,5 +21,5 @@ function Get-FolderColumnJson {
     }
 
     $Columns |
-    ConvertTo-Json
+    ConvertTo-Json -Compress
 }

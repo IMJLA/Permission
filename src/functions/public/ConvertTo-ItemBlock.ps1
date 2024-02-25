@@ -17,7 +17,7 @@ function ConvertTo-ItemBlock {
     New-BootstrapTable
 
     $JsonData = $ObjectsForTable |
-    ConvertTo-Json
+    ConvertTo-Json -Compress
 
     Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
     $JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForTable

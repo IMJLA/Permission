@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.285] - 2024-02-25 - add convertto-json compression. add depth param at final export to ensure full serialization
+
 ## [0.0.284] - 2024-02-25 - reportfilelist bug
 
 ## [0.0.283] - 2024-02-25 - bugfix footer for html and json reports (code pasted in wrong scope)

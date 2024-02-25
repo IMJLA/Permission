@@ -44,7 +44,7 @@ function ConvertTo-PermissionGroup {
         'json' {
 
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
-            $OutputObject['Data'] = ConvertTo-Json -InputObject @($Permission)
+            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
 
             Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
             $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission
