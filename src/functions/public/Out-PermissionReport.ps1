@@ -209,12 +209,25 @@ function Out-PermissionReport {
                     { $Parent },
                     { $ACLsByPath.Keys },
                     { $ACLsByPath.Values },
-                    { $ACEsByGUID.Values },
-                    { $PrincipalsByResolvedID.Values },
+                    { ForEach ($val in $ACEsByGUID.Values) { $val } },
+                    { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
                     { $Permission },
                     { $FormattedPermission.FlatPermissions },
                     { $BestPracticeIssues },
                     { $PrtgXml }
+                )
+
+                $DetailExports = @(
+                    { $ThisReportContent | Out-File -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Out-File -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Out-File -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $ThisReportContent | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile }
                 )
 
                 # String translations indexed by value in the $Detail parameter
@@ -224,7 +237,7 @@ function Out-PermissionReport {
                     'Resolved item paths (server names and DFS targets resolved)'
                     'Expanded resolved item paths (parent paths expanded into children)',
                     'Access rules',
-                    'Resolved rules (identity references and inheritance flags resolved)',
+                    'Resolved access rules (identity references and inheritance flags resolved)',
                     'Accounts with access',
                     'Expanded resolved access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
                     'Formatted permissions',
@@ -241,7 +254,8 @@ function Out-PermissionReport {
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
 
                     # Save the report
-                    Invoke-Command -ScriptBlock $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
+                    $ThisReportContent = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+                    $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
 
                     # Output the name of the report file to the Information stream
                     Write-Information $ThisReportFile
