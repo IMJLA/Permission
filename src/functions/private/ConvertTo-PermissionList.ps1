@@ -28,7 +28,8 @@ function ConvertTo-PermissionList {
 
     )
 
-    $GroupingProperty = @($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0].Name
+    # TODO: Replace .Item.Path with GroupingProperty variable somehow
+    #$GroupingProperty = @($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0].Name
 
     switch ($Format) {
 
@@ -36,7 +37,7 @@ function ConvertTo-PermissionList {
 
             ForEach ($Group in $PermissionGrouping) {
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission[$Group.$GroupingProperty] | ConvertTo-Csv
+                $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
                 [PSCustomObject]$OutputObject
             }
 
@@ -47,7 +48,7 @@ function ConvertTo-PermissionList {
             ForEach ($Group in $PermissionGrouping) {
 
                 $OutputObject = @{}
-                $GroupID = $Group.$GroupingProperty
+                $GroupID = $Group.Item.Path
                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
                 $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                 $Perm = $Permission[$GroupID]
@@ -65,7 +66,7 @@ function ConvertTo-PermissionList {
             ForEach ($Group in $PermissionGrouping) {
 
                 $OutputObject = @{}
-                $GroupID = $Group.$GroupingProperty
+                $GroupID = $Group.Item.Path
                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
                 $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                 $Perm = $Permission[$GroupID]
@@ -85,7 +86,7 @@ function ConvertTo-PermissionList {
 
                 $OutputObject['Data'] = ConvertTo-Json -InputObject @($ObjectsForJsonData)
                 $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                $TableId = "Perms_$($Group.$GroupingProperty -replace '[^A-Za-z0-9\-_]', '-')"
+                $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
                 $OutputObject['Table'] = $TableId
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
@@ -125,7 +126,7 @@ function ConvertTo-PermissionList {
 
             ForEach ($Group in $PermissionGrouping) {
                 $OutputObject = @{}
-                $OutputObject['Data'] = ($Permission[$Group.$GroupingProperty] | ConvertTo-Xml).InnerXml
+                $OutputObject['Data'] = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
                 [PSCustomObject]$OutputObject
             }
 
