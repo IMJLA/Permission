@@ -2288,7 +2288,7 @@ function Out-PermissionReport {
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
 
                     # Save the report
-                    Invoke-Command $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
+                    Invoke-Command -ScriptBlock $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
 
                     # Output the name of the report file to the Information stream
                     Write-Information $ThisReportFile
@@ -3376,6 +3376,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

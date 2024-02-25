@@ -241,7 +241,7 @@ function Out-PermissionReport {
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
 
                     # Save the report
-                    Invoke-Command $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
+                    Invoke-Command -ScriptBlock $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
 
                     # Output the name of the report file to the Information stream
                     Write-Information $ThisReportFile
