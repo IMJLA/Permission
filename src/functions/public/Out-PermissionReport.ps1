@@ -209,11 +209,11 @@ function Out-PermissionReport {
                 Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$JsonFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                 [string]$Body = Get-HtmlBody -FolderList $JsonFolderList @BodyParams
 
+                $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings
+
                 # Apply the report template to the generated HTML report body and description
                 Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
                 $Report = New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
-
-                $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings
 
             }
 
