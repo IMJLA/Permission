@@ -213,11 +213,11 @@ function Out-PermissionReport {
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile }
+                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
                 )
 
                 ForEach ($Level in $Detail) {
@@ -387,10 +387,10 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
+                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
                 )
 
