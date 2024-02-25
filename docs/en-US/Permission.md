@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.275
+Help Version: 0.0.276
 Locale: en-US
 ---
 
@@ -30,15 +30,6 @@ Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <O
 
 Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-ACLsByPath] <hashtable>]
 
-
-### [Export-FolderPermissionHtml](Export-FolderPermissionHtml.md)
-{{ Fill in the Description }}
-
-### [Export-RawPermissionCsv](Export-RawPermissionCsv.md)
-{{ Fill in the Description }}
-
-### [Export-ResolvedPermissionCsv](Export-ResolvedPermissionCsv.md)
-{{ Fill in the Description }}
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
 

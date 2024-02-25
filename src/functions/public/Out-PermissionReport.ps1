@@ -229,19 +229,19 @@ function Out-PermissionReport {
                     'Expanded resolved access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
                     'Formatted permissions',
                     'Best Practice issues',
-                    'XML custom sensor output for Paessler PRTG Network Monitor'
+                    'Custom sensor output for Paessler PRTG Network Monitor'
                     'Permission report'
                 )
 
                 ForEach ($Level in $Detail) {
 
-                    $ShortDetail = $DetailStrings[$Level] -replace '([^)]*)', ''
+                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
 
                     # Save the report
-                    $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
+                    Invoke-Command $DetailScripts[$Level] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile
 
                     # Output the name of the report file to the Information stream
                     Write-Information $ThisReportFile
