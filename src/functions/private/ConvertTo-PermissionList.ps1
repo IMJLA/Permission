@@ -108,8 +108,9 @@ function ConvertTo-PermissionList {
 
         'xml' {
 
-            ForEach ($Group in $Permission) {
-                $OutputObject['Data'] = $Group | ConvertTo-Xml
+            ForEach ($Group in $PermissionGrouping) {
+                $OutputObject = @{}
+                $OutputObject['Data'] = $Permission[$Group.$GroupingProperty] | ConvertTo-Xml
                 [PSCustomObject]$OutputObject
             }
 
