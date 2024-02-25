@@ -246,6 +246,7 @@ function Out-PermissionReport {
                     # Convert the list of generated report files to a Bootstrap list group
                     $HtmlListOfReports = $ReportFileList |
                     Split-Path -Leaf |
+                    Sort-Object |
                     ConvertTo-HtmlList |
                     ConvertTo-BootstrapListGroup
 
@@ -330,6 +331,7 @@ function Out-PermissionReport {
                     # Convert the list of generated report files to a Bootstrap list group
                     $HtmlListOfReports = $ReportFileList |
                     Split-Path -Leaf |
+                    Sort-Object |
                     ConvertTo-HtmlList |
                     ConvertTo-BootstrapListGroup
 

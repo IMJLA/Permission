@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.287] - 2024-02-25 - sort html file list
+
 ## [0.0.286] - 2024-02-25 - remove convertto-json depth param due to apparent stall
 
 ## [0.0.285] - 2024-02-25 - add convertto-json compression. add depth param at final export to ensure full serialization
