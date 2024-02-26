@@ -1854,7 +1854,7 @@ function Get-UniqueServerFqdn {
 
     $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
     $ProgressStopWatch.Start()
-    $LastRemainder = 4999
+    $LastRemainder = [int]::MaxValue
     $i = 0
 
     ForEach ($ThisPath in $FilePath) {
@@ -1988,7 +1988,7 @@ function Initialize-Cache {
 
         $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
         $ProgressStopWatch.Start()
-        $LastRemainder = 4999
+        $LastRemainder = [int]::MaxValue
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
@@ -3517,6 +3517,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

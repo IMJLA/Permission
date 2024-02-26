@@ -108,7 +108,7 @@ function Initialize-Cache {
 
         $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
         $ProgressStopWatch.Start()
-        $LastRemainder = 4999
+        $LastRemainder = [int]::MaxValue
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
