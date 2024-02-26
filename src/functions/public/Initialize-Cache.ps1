@@ -105,18 +105,22 @@ function Initialize-Cache {
 
     if ($ThreadCount -eq 1) {
 
-        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $IntervalCounter = 0
+
+        $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
+        $ProgressStopWatch.Start()
+        $LastRemainder = 4999
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
 
-            $IntervalCounter++
+            $NewRemainder = $StopWatch.ElapsedTicks % 5000
 
-            if ($IntervalCounter -eq $ProgressInterval) {
+            if ($NewRemainder -lt $LastRemainder) {
+
+                $LastRemainder = $NewRemainder
                 [int]$PercentComplete = $i / $Count * 100
                 Write-Progress @Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
-                $IntervalCounter = 0
+
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically

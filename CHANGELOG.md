@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.291] - 2024-02-25 - progress bar updates
+
 ## [0.0.290] - 2024-02-25 - depth experiments
 
 ## [0.0.289] - 2024-02-25 - depth experiments

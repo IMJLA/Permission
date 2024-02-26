@@ -1851,17 +1851,24 @@ function Get-UniqueServerFqdn {
     }
 
     # Add server names from the ACL paths
-    [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-    $IntervalCounter = 0
+
+    $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
+    $ProgressStopWatch.Start()
+    $LastRemainder = 4999
     $i = 0
 
     ForEach ($ThisPath in $FilePath) {
-        $IntervalCounter++
-        if ($IntervalCounter -eq $ProgressInterval) {
+
+        $NewRemainder = $StopWatch.ElapsedTicks % 5000
+
+        if ($NewRemainder -lt $LastRemainder) {
+
+            $LastRemainder = $NewRemainder
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
-            $IntervalCounter = 0
+
         }
+
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
         $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
     }
@@ -1978,18 +1985,22 @@ function Initialize-Cache {
 
     if ($ThreadCount -eq 1) {
 
-        [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-        $IntervalCounter = 0
+
+        $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
+        $ProgressStopWatch.Start()
+        $LastRemainder = 4999
         $i = 0
 
         ForEach ($ThisServerName in $ServerFqdns) {
 
-            $IntervalCounter++
+            $NewRemainder = $StopWatch.ElapsedTicks % 5000
 
-            if ($IntervalCounter -eq $ProgressInterval) {
+            if ($NewRemainder -lt $LastRemainder) {
+
+                $LastRemainder = $NewRemainder
                 [int]$PercentComplete = $i / $Count * 100
                 Write-Progress @Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
-                $IntervalCounter = 0
+
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -2432,6 +2443,7 @@ function Out-PermissionReport {
                     # Apply the report template to the generated HTML report body and description
                     Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
                     New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
+
                 }
 
                 $DetailExports = @(
@@ -2440,7 +2452,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress -Depth 4 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
@@ -3505,6 +3517,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

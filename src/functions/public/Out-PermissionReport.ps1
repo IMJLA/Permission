@@ -378,6 +378,7 @@ function Out-PermissionReport {
                     # Apply the report template to the generated HTML report body and description
                     Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
                     New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
+
                 }
 
                 $DetailExports = @(
@@ -386,7 +387,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress -Depth 4 | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },

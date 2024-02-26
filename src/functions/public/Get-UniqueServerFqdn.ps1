@@ -44,17 +44,24 @@ function Get-UniqueServerFqdn {
     }
 
     # Add server names from the ACL paths
-    [int]$ProgressInterval = [math]::max(($Count / 100), 1)
-    $IntervalCounter = 0
+
+    $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
+    $ProgressStopWatch.Start()
+    $LastRemainder = 4999
     $i = 0
 
     ForEach ($ThisPath in $FilePath) {
-        $IntervalCounter++
-        if ($IntervalCounter -eq $ProgressInterval) {
+
+        $NewRemainder = $StopWatch.ElapsedTicks % 5000
+
+        if ($NewRemainder -lt $LastRemainder) {
+
+            $LastRemainder = $NewRemainder
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
-            $IntervalCounter = 0
+
         }
+
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
         $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
     }
