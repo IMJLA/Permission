@@ -72,15 +72,17 @@ function Initialize-Cache {
 
     )
 
+
     $Progress = @{
         Activity = 'Initialize-Cache'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
+        $ProgressId = $ProgressParentId + 1
     } else {
-        $Progress['Id'] = 0
+        $ProgressId = 0
     }
+    $Progress['Id'] = $ProgressId
     $Count = $ServerFqdns.Count
     Write-Progress -Status "0% (FQDN 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0 @Progress
     Start-Sleep -Seconds 10
