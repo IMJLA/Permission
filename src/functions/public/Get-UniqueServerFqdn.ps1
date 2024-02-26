@@ -52,7 +52,7 @@ function Get-UniqueServerFqdn {
 
     ForEach ($ThisPath in $FilePath) {
 
-        $NewRemainder = $StopWatch.ElapsedTicks % 5000
+        $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 
         if ($NewRemainder -lt $LastRemainder) {
 
