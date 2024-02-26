@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.297] - 2024-02-25 - new prog barsfixed the prog bars somehow!
+
+## [0.0.296] - 2024-02-25 - new prog barsfixed the prog bars somehow!
+
 ## [0.0.295] - 2024-02-25 - new prog bars did not fix anything, troubleshooting
 
 ## [0.0.294] - 2024-02-25 - new prog bars did not fix anything, troubleshooting

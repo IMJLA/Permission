@@ -28,10 +28,12 @@ function Get-UniqueServerFqdn {
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
+        $ProgressId = $ProgressParentId + 1
     } else {
-        $Progress['Id'] = 0
+        $ProgressId = 0
     }
+
+    $Progress['Id'] = $ProgressId
     $Count = $FilePath.Count
     Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
