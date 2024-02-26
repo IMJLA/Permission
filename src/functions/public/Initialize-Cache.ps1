@@ -83,6 +83,7 @@ function Initialize-Cache {
     }
     $Count = $ServerFqdns.Count
     Write-Progress -Status "0% (FQDN 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0 @Progress
+    Start-Sleep -Seconds 10
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -119,7 +120,8 @@ function Initialize-Cache {
 
                 $LastRemainder = $NewRemainder
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete
+                Write-Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
+                Start-Sleep -Seconds 10
 
             }
 
