@@ -80,20 +80,9 @@ function ConvertTo-PermissionList {
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string]$Format,
 
-        <#
-        Level of detail to export to file
-            0   Item paths                                                                                  $TargetPath
-            1   Resolved item paths (server names resolved, DFS targets resolved)                           $ACLsByPath.Keys after Resolve-PermissionTarget but before Expand-PermissionTarget
-            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys after Expand-PermissionTarget
-            3   Access control entries                                                                      $ACLsByPath.Values after Get-FolderAcl
-            4   Resolved access control entries                                                             $ACEsByGUID.Values
-                                                                                                            $PrincipalsByResolvedID.Values
-            5   Expanded resolved access control entries (expanded with info from ADSI security principals) $Permissions
-            6   XML custom sensor output for Paessler PRTG Network Monitor
-        #>
-        [int[]]$Detail = @(0..6),
+        [string]$ShortestPath,
 
-        [string]$ShortestPath
+        [string]$GroupBy
 
     )
 
@@ -114,36 +103,49 @@ function ConvertTo-PermissionList {
 
         'html' {
 
-            ForEach ($Group in $PermissionGrouping) {
+            if ($GroupBy -eq 'none') {
 
                 $OutputObject = @{}
-                $GroupID = $Group.Item.Path
-                $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
-                $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                $Perm = $Permission[$GroupID]
-                $Html = $Perm | ConvertTo-Html -Fragment
+                $Heading = New-HtmlHeading 'Permissions' -Level 5
+                $Html = $PermissionGrouping | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
-                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 
+            } else {
+
+                ForEach ($Group in $PermissionGrouping) {
+
+                    $OutputObject = @{}
+                    $GroupID = $Group.Item.Path
+                    $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                    $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                    $Perm = $Permission[$GroupID]
+                    $Html = $Perm | ConvertTo-Html -Fragment
+                    $OutputObject['Data'] = $Html
+                    $Table = $Html | New-BootstrapTable
+                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                    [PSCustomObject]$OutputObject
+
+                }
+
             }
+
         }
 
         'json' {
 
-            ForEach ($Group in $PermissionGrouping) {
+            if ($GroupBy -eq 'none') {
 
                 $OutputObject = @{}
-                $GroupID = $Group.Item.Path
-                $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
-                $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                $Perm = $Permission[$GroupID]
+                $Heading = New-HtmlHeading 'Permissions' -Level 5
 
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $Perm) {
+                $ObjectsForJsonData = ForEach ($Obj in $PermissionGrouping) {
                     [PSCustomObject]@{
-                        Account           = $Obj.Account
+                        Path              = $Obj.ItemPath
+                        Account           = $Obj.ResolvedAccountName
                         Access            = $Obj.Access
                         DuetoMembershipIn = $Obj.'Due to Membership In'
                         SourceofAccess    = $Obj.'Source of Access'
@@ -151,18 +153,51 @@ function ConvertTo-PermissionList {
                         Department        = $Obj.Department
                         Title             = $Obj.Title
                     }
+
                 }
 
                 $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
+                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $PermissionGrouping -PropNames Path, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
-                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $PermissionGrouping -DataFilterControl -AllColumnsSearchable
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 
-            }
+            } else {
 
+                ForEach ($Group in $PermissionGrouping) {
+
+                    $OutputObject = @{}
+                    $GroupID = $Group.Item.Path
+                    $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                    $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                    $Perm = $Permission[$GroupID]
+
+                    # Remove spaces from property titles
+                    $ObjectsForJsonData = ForEach ($Obj in $Perm) {
+                        [PSCustomObject]@{
+                            Account           = $Obj.Account
+                            Access            = $Obj.Access
+                            DuetoMembershipIn = $Obj.'Due to Membership In'
+                            SourceofAccess    = $Obj.'Source of Access'
+                            Name              = $Obj.Name
+                            Department        = $Obj.Department
+                            Title             = $Obj.Title
+                        }
+                    }
+
+                    $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                    $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                    $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
+                    $OutputObject['Table'] = $TableId
+                    $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                    [PSCustomObject]$OutputObject
+
+                }
+
+            }
 
         }
 
@@ -277,6 +312,8 @@ function Expand-FlatPermissionReference {
 
             $OutputProperties = @{
                 PSTypeName = 'Permission.FlatPermission'
+                ItemPath   = $ACE.Path
+                AdsiPath   = $Principal.Path
             }
 
             ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
@@ -324,6 +361,104 @@ function Expand-ItemPermissionReference {
 
     }
 
+}
+function Get-FolderPermissionTableHeader {
+    [OutputType([System.String])]
+    param (
+        $Group,
+        [string]$GroupID,
+        [string]$ShortestFolderPath
+    )
+    $Parent = $GroupID | Split-Path -Parent
+    $Leaf = $Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
+    if ($Leaf) {
+        $ParentLeaf = $Leaf
+    } else {
+        $ParentLeaf = $Parent
+    }
+    if ('' -ne $ParentLeaf) {
+        if ($Group.Item.AreAccessRulesProtected) {
+            return "Inheritance is disabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) cannot access this folder unless they are listed below:"
+        } else {
+            if ($Group.Item.Path -eq $ShortestFolderPath) {
+                return "Inherited permissions from the parent folder ($ParentLeaf) are included. This folder can only be accessed by the accounts listed below:"
+            } else {
+                return "Inheritance is enabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) can access this folder. So can any accounts listed below:"
+            }
+        }
+    } else {
+        return "This is the top-level folder. It can only be accessed by the accounts listed below:"
+    }
+}
+function Get-HtmlBody {
+
+    param (
+        $TableOfContents,
+        $HtmlFolderPermissions,
+        $ReportFooter,
+        $HtmlFileList,
+        $HtmlExclusions
+    )
+
+    $StringBuilder = [System.Text.StringBuilder]::new()
+
+    if ($TableOfContents) {
+        $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
+        $null = $StringBuilder.Append($TableOfContents)
+        $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
+    }
+
+    ForEach ($Perm in $HtmlFolderPermissions) {
+        $null = $StringBuilder.Append($Perm)
+    }
+
+    if ($HtmlExclusions) {
+        $null = $StringBuilder.Append((New-HtmlHeading "Exclusions from This Report" -Level 3))
+        $null = $StringBuilder.Append($HtmlExclusions)
+    }
+
+    $null = $StringBuilder.Append((New-HtmlHeading "Files Generated" -Level 3))
+    $null = $StringBuilder.Append($HtmlFileList)
+    $null = $StringBuilder.Append($ReportFooter)
+
+    return $StringBuilder.ToString()
+
+}
+function Get-ReportDescription {
+
+    param (
+        [int]$RecurseDepth
+    )
+
+    switch ($RecurseDepth ) {
+
+        0 {
+            'Does not include permissions on subfolders (option was declined)'
+        }
+        -1 {
+            'Includes all subfolders with unique permissions (including ∞ levels of subfolders)'
+        }
+        default {
+            "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"
+        }
+
+    }
+
+}
+function Get-SummaryTableHeader {
+    param ($RecurseDepth)
+
+    switch ($RecurseDepth ) {
+        0 {
+            'Includes the target folder only (option to report on subfolders was declined)'
+        }
+        -1 {
+            'Includes the target folder and all subfolders with unique permissions'
+        }
+        default {
+            "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
+        }
+    }
 }
 function Group-AccountPermissionReference {
 
@@ -839,7 +974,7 @@ function Format-Permission {
 
         $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture
 
-        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath
+        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
 
     }
 
@@ -1432,82 +1567,6 @@ function Get-FolderPermissionsBlock {
         }
     }
 }
-function Get-FolderPermissionTableHeader {
-    [OutputType([System.String])]
-    param (
-        $Group,
-        [string]$GroupID,
-        [string]$ShortestFolderPath
-    )
-    $Parent = $GroupID | Split-Path -Parent
-    $Leaf = $Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
-    if ($Leaf) {
-        $ParentLeaf = $Leaf
-    } else {
-        $ParentLeaf = $Parent
-    }
-    if ('' -ne $ParentLeaf) {
-        if ($Group.Item.AreAccessRulesProtected) {
-            return "Inheritance is disabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) cannot access this folder unless they are listed below:"
-        } else {
-            if ($Group.Item.Path -eq $ShortestFolderPath) {
-                return "Inherited permissions from the parent folder ($ParentLeaf) are included. This folder can only be accessed by the accounts listed below:"
-            } else {
-                return "Inheritance is enabled on this folder. Accounts with access to the parent folder and subfolders ($ParentLeaf) can access this folder. So can any accounts listed below:"
-            }
-        }
-    } else {
-        return "This is the top-level folder. It can only be accessed by the accounts listed below:"
-    }
-}
-function Get-FolderTableHeader {
-    param ($RecurseDepth)
-
-    switch ($RecurseDepth ) {
-        0 {
-            'Includes the target folder only (option to report on subfolders was declined)'
-        }
-        -1 {
-            'Includes the target folder and all subfolders with unique permissions'
-        }
-        default {
-            "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
-        }
-    }
-}
-function Get-HtmlBody {
-
-    param (
-        $FolderList,
-        $HtmlFolderPermissions,
-        $ReportFooter,
-        $HtmlFileList,
-        $LogDir,
-        $HtmlExclusions
-    )
-
-    $StringBuilder = [System.Text.StringBuilder]::new()
-
-    $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
-    $null = $StringBuilder.Append($FolderList)
-    $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
-
-    ForEach ($Perm in $HtmlFolderPermissions) {
-        $null = $StringBuilder.Append($Perm)
-    }
-
-    if ($HtmlExclusions) {
-        $null = $StringBuilder.Append((New-HtmlHeading "Exclusions from This Report" -Level 3))
-        $null = $StringBuilder.Append($HtmlExclusions)
-    }
-
-    $null = $StringBuilder.Append((New-HtmlHeading "Files Generated" -Level 3))
-    $null = $StringBuilder.Append($HtmlFileList)
-    $null = $StringBuilder.Append($ReportFooter)
-
-    return $StringBuilder.ToString()
-
-}
 function Get-HtmlReportFooter {
     param (
         # Stopwatch that was started when report generation began
@@ -1782,21 +1841,6 @@ function Get-PrtgXmlSensorOutput {
 
     Format-PrtgXmlSensorOutput -PrtgXmlResult $Channels -IssueDetected:$($NtfsIssues.IssueDetected)
 
-}
-function Get-ReportDescription {
-    param ($RecurseDepth)
-
-    switch ($RecurseDepth ) {
-        0 {
-            'Does not include permissions on subfolders (option was declined)'
-        }
-        -1 {
-            'Includes all subfolders with unique permissions (including ∞ levels of subfolders)'
-        }
-        default {
-            "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"
-        }
-    }
 }
 function Get-TimeZoneName {
     param (
@@ -2151,8 +2195,8 @@ function Out-PermissionReport {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
-    Write-LogMsg @LogParams -Text "Get-FolderTableHeader -RecurseDepth $RecurseDepth"
-    $FolderTableHeader = Get-FolderTableHeader -RecurseDepth $RecurseDepth
+    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth"
+    $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth
 
     # Convert the target path(s) to a Bootstrap alert
     $TargetPathString = $TargetPath -join '<br />'
@@ -2229,7 +2273,11 @@ function Out-PermissionReport {
     # Convert the output directory path to a Boostrap alert
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary'
 
+    # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
+
+
+
 
     ForEach ($Format in $Formats) {
 
@@ -2245,7 +2293,7 @@ function Out-PermissionReport {
             { ForEach ($val in $ACEsByGUID.Values) { $val } },
             { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
             { $Permission },
-            { $FormattedPermission.FlatPermissions },
+            { $Permissions.Data },
             { $BestPracticeIssues },
             { $PrtgXml },
             {}
@@ -2288,7 +2336,7 @@ function Out-PermissionReport {
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
@@ -2296,14 +2344,25 @@ function Out-PermissionReport {
 
                 ForEach ($Level in $Detail) {
 
+                    # Get shorter versions of the detail strings to use in file names
                     $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+
+                    # Convert the shorter strings to Title Case
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+
+                    # Remove spaces from the shorter strings
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                    # Build the file path
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
+
+                    # Add the file path to the list of created files
                     $ReportFileList += $ThisReportFile
 
-                    # Save the report
+                    # Generate the report
                     $Report = $ReportObjects[$Level]
+
+                    # Save the report
                     $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
 
                     # Output the name of the report file to the Information stream
@@ -2352,17 +2411,32 @@ function Out-PermissionReport {
                         ReportFooter          = $ReportFooter
                     }
 
-                    # Combine the header and table inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
+                    if ($Permission.FlatPermissions) {
 
-                    # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                    $Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
+                        # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                        Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                        $Body = Get-HtmlBody @BodyParams
 
-                    # Apply the report template to the generated HTML report body and description
-                    Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
-                    New-BootstrapReport -Body $Body @ReportParameters
+                        # Apply the report template to the generated HTML report body and description
+                        Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                        New-BootstrapReport -Body $Body @ReportParameters
+
+                    } else {
+
+                        # Combine the header and table inside a Bootstrap div
+                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+
+                        # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                        Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                        $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
+
+                        # Apply the report template to the generated HTML report body and description
+                        Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                        New-BootstrapReport -Body $Body @ReportParameters
+
+                    }
+
                 }
 
                 $DetailExports = @(
@@ -2372,10 +2446,10 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
                 )
 
@@ -2438,12 +2512,12 @@ function Out-PermissionReport {
                     }
 
                     # Combine the header and table inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
+                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                    $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
 
                     # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                    $Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
+                    Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                    $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
                     # Build the JavaScript scripts
                     Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
@@ -2463,7 +2537,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
@@ -3242,7 +3316,7 @@ function Resolve-FormatParameter {
         $AllFormats[$OutputFormat] = $null
     }
 
-    return $AllFormats.Keys
+    return [string[]]$AllFormats.Keys
 
 }
 function Resolve-IdentityReferenceDomainDNS {
@@ -3525,7 +3599,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-FolderPermissionTableHeader','Get-FolderTableHeader','Get-HtmlBody','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-ReportDescription','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemPermissionTableProperty','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

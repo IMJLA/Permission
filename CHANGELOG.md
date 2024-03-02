@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.299] - 2024-03-02 - attempting to implement flat permission report
+
 ## [0.0.298] - 2024-03-02 - bugfix resolve-splitbyparameter when split -eq 'none'
 
 ## [0.0.297] - 2024-02-25 - new prog barsfixed the prog bars somehow!

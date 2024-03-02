@@ -19,6 +19,8 @@ function Expand-FlatPermissionReference {
 
             $OutputProperties = @{
                 PSTypeName = 'Permission.FlatPermission'
+                ItemPath   = $ACE.Path
+                AdsiPath   = $Principal.Path
             }
 
             ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {

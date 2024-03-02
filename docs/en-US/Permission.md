@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.298
+Help Version: 0.0.299
 Locale: en-US
 ---
 
@@ -72,19 +72,13 @@ Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <s
 
 
 ### [Get-FolderPermissionTableHeader](Get-FolderPermissionTableHeader.md)
-
-Get-FolderPermissionTableHeader [[-Group] <Object>] [[-GroupID] <string>] [[-ShortestFolderPath] <string>]
-
+{{ Fill in the Description }}
 
 ### [Get-FolderTableHeader](Get-FolderTableHeader.md)
-
-Get-FolderTableHeader [[-RecurseDepth] <Object>]
-
+{{ Fill in the Description }}
 
 ### [Get-HtmlBody](Get-HtmlBody.md)
-
-Get-HtmlBody [[-FolderList] <Object>] [[-HtmlFolderPermissions] <Object>] [[-ReportFooter] <Object>] [[-HtmlFileList] <Object>] [[-LogDir] <Object>] [[-HtmlExclusions] <Object>]
-
+{{ Fill in the Description }}
 
 ### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
 
@@ -102,9 +96,7 @@ Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
 
 ### [Get-ReportDescription](Get-ReportDescription.md)
-
-Get-ReportDescription [[-RecurseDepth] <Object>]
-
+{{ Fill in the Description }}
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 

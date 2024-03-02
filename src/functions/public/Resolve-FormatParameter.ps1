@@ -21,6 +21,6 @@ function Resolve-FormatParameter {
         $AllFormats[$OutputFormat] = $null
     }
 
-    return $AllFormats.Keys
+    return [string[]]$AllFormats.Keys
 
 }

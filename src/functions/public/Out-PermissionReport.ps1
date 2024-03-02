@@ -77,8 +77,8 @@ function Out-PermissionReport {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
-    Write-LogMsg @LogParams -Text "Get-FolderTableHeader -RecurseDepth $RecurseDepth"
-    $FolderTableHeader = Get-FolderTableHeader -RecurseDepth $RecurseDepth
+    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth"
+    $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth
 
     # Convert the target path(s) to a Bootstrap alert
     $TargetPathString = $TargetPath -join '<br />'
@@ -155,7 +155,11 @@ function Out-PermissionReport {
     # Convert the output directory path to a Boostrap alert
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary'
 
+    # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
+
+
+
 
     ForEach ($Format in $Formats) {
 
@@ -171,7 +175,7 @@ function Out-PermissionReport {
             { ForEach ($val in $ACEsByGUID.Values) { $val } },
             { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
             { $Permission },
-            { $FormattedPermission.FlatPermissions },
+            { $Permissions.Data },
             { $BestPracticeIssues },
             { $PrtgXml },
             {}
@@ -214,7 +218,7 @@ function Out-PermissionReport {
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
@@ -222,14 +226,25 @@ function Out-PermissionReport {
 
                 ForEach ($Level in $Detail) {
 
+                    # Get shorter versions of the detail strings to use in file names
                     $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+
+                    # Convert the shorter strings to Title Case
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+
+                    # Remove spaces from the shorter strings
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                    # Build the file path
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
+
+                    # Add the file path to the list of created files
                     $ReportFileList += $ThisReportFile
 
-                    # Save the report
+                    # Generate the report
                     $Report = $ReportObjects[$Level]
+
+                    # Save the report
                     $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
 
                     # Output the name of the report file to the Information stream
@@ -278,17 +293,32 @@ function Out-PermissionReport {
                         ReportFooter          = $ReportFooter
                     }
 
-                    # Combine the header and table inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
+                    if ($Permission.FlatPermissions) {
 
-                    # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                    $Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
+                        # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                        Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                        $Body = Get-HtmlBody @BodyParams
 
-                    # Apply the report template to the generated HTML report body and description
-                    Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
-                    New-BootstrapReport -Body $Body @ReportParameters
+                        # Apply the report template to the generated HTML report body and description
+                        Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                        New-BootstrapReport -Body $Body @ReportParameters
+
+                    } else {
+
+                        # Combine the header and table inside a Bootstrap div
+                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+
+                        # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                        Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                        $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
+
+                        # Apply the report template to the generated HTML report body and description
+                        Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                        New-BootstrapReport -Body $Body @ReportParameters
+
+                    }
+
                 }
 
                 $DetailExports = @(
@@ -298,10 +328,10 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
                 )
 
@@ -364,12 +394,12 @@ function Out-PermissionReport {
                     }
 
                     # Combine the header and table inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$FolderTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                    $HtmlFolderList = New-BootstrapDivWithHeading -HeadingText $FolderTableHeader -Content $PermissionGroupings.Table
+                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                    $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
 
                     # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                    Write-LogMsg @LogParams -Text "Get-HtmlBody -FolderList `$HtmlFolderList -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                    $Body = Get-HtmlBody -FolderList $HtmlFolderList @BodyParams
+                    Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                    $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
                     # Build the JavaScript scripts
                     Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
@@ -389,7 +419,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }

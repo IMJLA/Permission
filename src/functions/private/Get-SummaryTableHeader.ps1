@@ -1,4 +1,4 @@
-function Get-FolderTableHeader {
+function Get-SummaryTableHeader {
     param ($RecurseDepth)
 
     switch ($RecurseDepth ) {

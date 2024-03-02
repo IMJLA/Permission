@@ -22,7 +22,7 @@ Get-FolderPermissionTableHeader [[-Group] <Object>] [[-GroupID] <String>] [[-Sho
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> {{ Add example code here }}
 ```
 
@@ -78,11 +78,9 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.String
-
 ## NOTES
 
 ## RELATED LINKS

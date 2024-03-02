@@ -1,19 +1,20 @@
 function Get-HtmlBody {
 
     param (
-        $FolderList,
+        $TableOfContents,
         $HtmlFolderPermissions,
         $ReportFooter,
         $HtmlFileList,
-        $LogDir,
         $HtmlExclusions
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
 
-    $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
-    $null = $StringBuilder.Append($FolderList)
-    $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
+    if ($TableOfContents) {
+        $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
+        $null = $StringBuilder.Append($TableOfContents)
+        $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
+    }
 
     ForEach ($Perm in $HtmlFolderPermissions) {
         $null = $StringBuilder.Append($Perm)
