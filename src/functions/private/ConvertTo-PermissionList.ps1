@@ -32,6 +32,9 @@ function ConvertTo-PermissionList {
 
             } else {
 
+                Write-Host "GroupBy is $GroupBy" -ForegroundColor Cyan
+                pause
+
                 ForEach ($Group in $PermissionGrouping) {
                     $OutputObject = @{}
                     $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
