@@ -38,7 +38,7 @@ function ConvertTo-PermissionList {
 
                 $OutputObject = @{}
                 $Heading = New-HtmlHeading 'Permissions' -Level 5
-                $Html = $PermissionGrouping | ConvertTo-Html -Fragment
+                $Html = $Permission.Values | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
@@ -73,7 +73,7 @@ function ConvertTo-PermissionList {
                 $Heading = New-HtmlHeading 'Permissions' -Level 5
 
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $PermissionGrouping) {
+                $ObjectsForJsonData = ForEach ($Obj in $Permission.Values) {
                     [PSCustomObject]@{
                         Path              = $Obj.ItemPath
                         Account           = $Obj.ResolvedAccountName

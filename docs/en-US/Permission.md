@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.299
+Help Version: 0.0.300
 Locale: en-US
 ---
 
@@ -71,15 +71,6 @@ Get-FolderColumnJson [[-InputObject] <Object>] [[-PropNames] <string[]>]
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>] [[-ShortestPath] <Object>]
 
 
-### [Get-FolderPermissionTableHeader](Get-FolderPermissionTableHeader.md)
-{{ Fill in the Description }}
-
-### [Get-FolderTableHeader](Get-FolderTableHeader.md)
-{{ Fill in the Description }}
-
-### [Get-HtmlBody](Get-HtmlBody.md)
-{{ Fill in the Description }}
-
 ### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
 
 Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <string>] [[-ThisFqdn] <string>] [[-ItemCount] <ulong>] [[-TotalBytes] <ulong>] [[-ReportInstanceId] <string>] [[-PermissionCount] <ulong>] [[-PrincipalCount] <ulong>]
@@ -94,9 +85,6 @@ Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [
 
 Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
-
-### [Get-ReportDescription](Get-ReportDescription.md)
-{{ Fill in the Description }}
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
@@ -160,9 +148,7 @@ Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtab
 
 
 ### [Select-ItemPermissionTableProperty](Select-ItemPermissionTableProperty.md)
-
-Select-ItemPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <Object>] [[-OutputHash] <hashtable>]
-
+{{ Fill in the Description }}
 
 ### [Select-ItemTableProperty](Select-ItemTableProperty.md)
 

@@ -23,7 +23,7 @@ Select-ItemPermissionTableProperty [[-InputObject] <Object>] [[-IgnoreDomain] <O
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> {{ Add example code here }}
 ```
 
@@ -79,7 +79,6 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object
