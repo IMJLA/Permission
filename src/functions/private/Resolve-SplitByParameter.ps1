@@ -24,7 +24,11 @@ function Resolve-SplitByParameter {
 
         } elseif ($Split -eq 'all') {
 
-            return @{'item' = $true; 'account' = $true }
+            return @{
+                'none'    = $true
+                'item'    = $true
+                'account' = $true
+            }
 
         } else {
 
