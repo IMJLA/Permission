@@ -48,7 +48,7 @@ function ConvertTo-PermissionList {
 
                 $OutputObject = @{}
                 $Heading = New-HtmlHeading 'Permissions' -Level 5
-                $Html = $Permission.Values | ConvertTo-Html -Fragment
+                $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
@@ -82,8 +82,10 @@ function ConvertTo-PermissionList {
                 $OutputObject = @{}
                 $Heading = New-HtmlHeading 'Permissions' -Level 5
 
+                $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
+
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $Permission.Values) {
+                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                     [PSCustomObject]@{
                         Item              = $Obj.ItemPath
                         Account           = $Obj.ResolvedAccountName
@@ -98,10 +100,10 @@ function ConvertTo-PermissionList {
                 }
 
                 $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission.Values -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Permission.Values -DataFilterControl -AllColumnsSearchable
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 

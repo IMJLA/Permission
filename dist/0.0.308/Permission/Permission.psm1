@@ -117,7 +117,7 @@ function ConvertTo-PermissionList {
 
                 $OutputObject = @{}
                 $Heading = New-HtmlHeading 'Permissions' -Level 5
-                $Html = $Permission.Values | ConvertTo-Html -Fragment
+                $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
@@ -151,8 +151,10 @@ function ConvertTo-PermissionList {
                 $OutputObject = @{}
                 $Heading = New-HtmlHeading 'Permissions' -Level 5
 
+                $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
+
                 # Remove spaces from property titles
-                $ObjectsForJsonData = ForEach ($Obj in $Permission.Values) {
+                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                     [PSCustomObject]@{
                         Item              = $Obj.ItemPath
                         Account           = $Obj.ResolvedAccountName
@@ -167,10 +169,10 @@ function ConvertTo-PermissionList {
                 }
 
                 $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission.Values -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Permission.Values -DataFilterControl -AllColumnsSearchable
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 
@@ -426,6 +428,8 @@ function Get-HtmlBody {
         $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
         $null = $StringBuilder.Append($TableOfContents)
         $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
+    } else {
+        $null = $StringBuilder.Append((New-HtmlHeading "Permissions" -Level 3))
     }
 
     ForEach ($Perm in $HtmlFolderPermissions) {
@@ -3665,6 +3669,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemTableProperty','Select-UniquePrincipal')
+
+
 
 
 

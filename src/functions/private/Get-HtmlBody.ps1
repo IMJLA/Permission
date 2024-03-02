@@ -14,6 +14,8 @@ function Get-HtmlBody {
         $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
         $null = $StringBuilder.Append($TableOfContents)
         $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
+    } else {
+        $null = $StringBuilder.Append((New-HtmlHeading "Permissions" -Level 3))
     }
 
     ForEach ($Perm in $HtmlFolderPermissions) {
