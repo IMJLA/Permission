@@ -32,9 +32,6 @@ function ConvertTo-PermissionList {
 
             } else {
 
-                Write-Host "GroupBy is $GroupBy" -ForegroundColor Cyan
-                pause
-
                 ForEach ($Group in $PermissionGrouping) {
                     $OutputObject = @{}
                     $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
@@ -172,10 +169,20 @@ function ConvertTo-PermissionList {
 
         'xml' {
 
-            ForEach ($Group in $PermissionGrouping) {
+            if ($GroupBy -eq 'none') {
+
                 $OutputObject = @{}
-                $OutputObject['Data'] = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
                 [PSCustomObject]$OutputObject
+
+            } else {
+
+                ForEach ($Group in $PermissionGrouping) {
+                    $OutputObject = @{}
+                    $OutputObject['Data'] = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                    [PSCustomObject]$OutputObject
+                }
+
             }
 
         }
