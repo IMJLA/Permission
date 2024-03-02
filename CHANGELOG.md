@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.302] - 2024-03-02 - rename select-itempermissiontableproperty to select-permissiontableproperty
+
 ## [0.0.301] - 2024-03-02 - add groupby param to select-itempermissiotableproperty
 
 ## [0.0.300] - 2024-03-02 - attempting to implement flat permission report

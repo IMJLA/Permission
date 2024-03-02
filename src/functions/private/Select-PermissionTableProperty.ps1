@@ -1,4 +1,4 @@
-function Select-ItemPermissionTableProperty {
+function Select-PermissionTableProperty {
 
     # For the HTML table
     param (
