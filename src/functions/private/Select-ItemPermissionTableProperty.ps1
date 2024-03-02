@@ -4,7 +4,8 @@ function Select-ItemPermissionTableProperty {
     param (
         $InputObject,
         $IgnoreDomain,
-        [hashtable]$OutputHash
+        [hashtable]$OutputHash,
+        [string]$GroupBy
     )
 
     switch ($GroupBy) {

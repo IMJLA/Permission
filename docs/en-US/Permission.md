@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.300
+Help Version: 0.0.301
 Locale: en-US
 ---
 
@@ -146,9 +146,6 @@ Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] 
 
 Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ACLsByPath] <hashtable>] [<CommonParameters>]
 
-
-### [Select-ItemPermissionTableProperty](Select-ItemPermissionTableProperty.md)
-{{ Fill in the Description }}
 
 ### [Select-ItemTableProperty](Select-ItemTableProperty.md)
 
