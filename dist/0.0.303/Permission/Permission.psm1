@@ -93,10 +93,20 @@ function ConvertTo-PermissionList {
 
         'csv' {
 
-            ForEach ($Group in $PermissionGrouping) {
+            if ($GroupBy -eq 'none') {
+
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                $OutputObject['Data'] = $Permission.Values | ConvertTo-Csv
                 [PSCustomObject]$OutputObject
+
+            } else {
+
+                ForEach ($Group in $PermissionGrouping) {
+                    $OutputObject = @{}
+                    $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                    [PSCustomObject]$OutputObject
+                }
+
             }
 
         }
@@ -1061,7 +1071,6 @@ function Format-Permission {
     ForEach ($Format in $Formats) {
 
         $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture
-
         $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
 
     }
@@ -3648,6 +3657,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

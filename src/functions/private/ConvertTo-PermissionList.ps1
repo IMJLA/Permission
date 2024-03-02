@@ -24,10 +24,20 @@ function ConvertTo-PermissionList {
 
         'csv' {
 
-            ForEach ($Group in $PermissionGrouping) {
+            if ($GroupBy -eq 'none') {
+
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                $OutputObject['Data'] = $Permission.Values | ConvertTo-Csv
                 [PSCustomObject]$OutputObject
+
+            } else {
+
+                ForEach ($Group in $PermissionGrouping) {
+                    $OutputObject = @{}
+                    $OutputObject['Data'] = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                    [PSCustomObject]$OutputObject
+                }
+
             }
 
         }
