@@ -218,7 +218,7 @@ function Out-PermissionReport {
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
@@ -329,7 +329,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }

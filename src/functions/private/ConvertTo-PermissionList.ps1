@@ -27,7 +27,7 @@ function ConvertTo-PermissionList {
             if ($GroupBy -eq 'none') {
 
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission.Values | ConvertTo-Csv
+                $OutputObject['Data'] = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Csv
                 [PSCustomObject]$OutputObject
 
             } else {
@@ -85,7 +85,7 @@ function ConvertTo-PermissionList {
                 # Remove spaces from property titles
                 $ObjectsForJsonData = ForEach ($Obj in $Permission.Values) {
                     [PSCustomObject]@{
-                        Path              = $Obj.ItemPath
+                        Item              = $Obj.ItemPath
                         Account           = $Obj.ResolvedAccountName
                         Access            = $Obj.Access
                         DuetoMembershipIn = $Obj.'Due to Membership In'
@@ -98,10 +98,10 @@ function ConvertTo-PermissionList {
                 }
 
                 $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $PermissionGrouping -PropNames Path, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission.Values -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $PermissionGrouping -DataFilterControl -AllColumnsSearchable
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Permission.Values -DataFilterControl -AllColumnsSearchable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 

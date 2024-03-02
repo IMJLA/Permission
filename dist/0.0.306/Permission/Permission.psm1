@@ -96,7 +96,7 @@ function ConvertTo-PermissionList {
             if ($GroupBy -eq 'none') {
 
                 $OutputObject = @{}
-                $OutputObject['Data'] = $Permission.Values | ConvertTo-Csv
+                $OutputObject['Data'] = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Csv
                 [PSCustomObject]$OutputObject
 
             } else {
@@ -154,7 +154,7 @@ function ConvertTo-PermissionList {
                 # Remove spaces from property titles
                 $ObjectsForJsonData = ForEach ($Obj in $Permission.Values) {
                     [PSCustomObject]@{
-                        Path              = $Obj.ItemPath
+                        Item              = $Obj.ItemPath
                         Account           = $Obj.ResolvedAccountName
                         Access            = $Obj.Access
                         DuetoMembershipIn = $Obj.'Due to Membership In'
@@ -167,10 +167,10 @@ function ConvertTo-PermissionList {
                 }
 
                 $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $PermissionGrouping -PropNames Path, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission.Values -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $PermissionGrouping -DataFilterControl -AllColumnsSearchable
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Permission.Values -DataFilterControl -AllColumnsSearchable
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 
@@ -2055,7 +2055,6 @@ function Initialize-Cache {
     param (
 
         # FQDNs of the ADSI servers to use to populate the cache
-        [Parameter(ValueFromPipeline)]
         [string[]]$Fqdn,
 
         # Output stream to send the log messages to
@@ -2144,7 +2143,6 @@ function Initialize-Cache {
     }
 
     if ($ThreadCount -eq 1) {
-
 
         $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
         $ProgressStopWatch.Start()
@@ -2443,7 +2441,7 @@ function Out-PermissionReport {
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
@@ -2554,7 +2552,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
@@ -3667,6 +3665,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

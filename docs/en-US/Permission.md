@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.305
+Help Version: 0.0.306
 Locale: en-US
 ---
 
@@ -98,7 +98,7 @@ Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn]
 
 ### [Initialize-Cache](Initialize-Cache.md)
 
-Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>]
 
 
 ### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)

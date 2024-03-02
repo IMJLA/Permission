@@ -18,7 +18,6 @@ function Initialize-Cache {
     param (
 
         # FQDNs of the ADSI servers to use to populate the cache
-        [Parameter(ValueFromPipeline)]
         [string[]]$Fqdn,
 
         # Output stream to send the log messages to
@@ -107,7 +106,6 @@ function Initialize-Cache {
     }
 
     if ($ThreadCount -eq 1) {
-
 
         $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
         $ProgressStopWatch.Start()
