@@ -158,7 +158,7 @@ function ConvertTo-PermissionGroup {
 
         'html' {
 
-            Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
+            #Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
             $Html = $Permission | ConvertTo-Html -Fragment
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
@@ -169,12 +169,10 @@ function ConvertTo-PermissionGroup {
 
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
             $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
-
-            Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
             $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission
 
             #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
-            Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
             $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance' -PageSize 25
 
         }
@@ -512,6 +510,31 @@ function Expand-ItemPermissionReference {
 
     }
 
+}
+function Get-FolderColumnJson {
+    # For the JSON that will be used by JavaScript to generate the table
+    param (
+        $InputObject,
+        [string[]]$PropNames
+    )
+
+    if (-not $PSBoundParameters.ContainsKey('PropNames')) {
+        $PropNames = (@($InputObject)[0] | Get-Member -MemberType noteproperty).Name
+    }
+
+    $Columns = ForEach ($Prop in $PropNames) {
+        $Props = @{
+            'field' = $Prop -replace '\s', ''
+            'title' = $Prop
+        }
+        if ($Prop -eq 'Inheritance') {
+            $Props['width'] = '1'
+        }
+        [PSCustomObject]$Props
+    }
+
+    $Columns |
+    ConvertTo-Json -Compress
 }
 function Get-FolderPermissionTableHeader {
     [OutputType([System.String])]
@@ -1671,31 +1694,6 @@ function Get-FolderAcl {
 
     Write-Progress @Progress -Completed
 
-}
-function Get-FolderColumnJson {
-    # For the JSON that will be used by JavaScript to generate the table
-    param (
-        $InputObject,
-        [string[]]$PropNames
-    )
-
-    if (-not $PSBoundParameters.ContainsKey('PropNames')) {
-        $PropNames = (@($InputObject)[0] | Get-Member -MemberType noteproperty).Name
-    }
-
-    $Columns = ForEach ($Prop in $PropNames) {
-        $Props = @{
-            'field' = $Prop -replace '\s', ''
-            'title' = $Prop
-        }
-        if ($Prop -eq 'Inheritance') {
-            $Props['width'] = '1'
-        }
-        [PSCustomObject]$Props
-    }
-
-    $Columns |
-    ConvertTo-Json -Compress
 }
 function Get-FolderPermissionsBlock {
     param (
@@ -3761,7 +3759,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

@@ -34,7 +34,7 @@ function ConvertTo-PermissionGroup {
 
         'html' {
 
-            Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
+            #Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
             $Html = $Permission | ConvertTo-Html -Fragment
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
@@ -45,12 +45,10 @@ function ConvertTo-PermissionGroup {
 
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
             $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
-
-            Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
             $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission
 
             #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
-            Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
             $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance' -PageSize 25
 
         }
