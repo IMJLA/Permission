@@ -103,7 +103,7 @@ function ConvertTo-PermissionList {
                 $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 50
                 $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
                 [PSCustomObject]$OutputObject
 

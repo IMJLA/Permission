@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.315] - 2024-03-02 - set pagesize to 50 for json table
+
+## [0.0.314] - 2024-03-02 - set pagesize to 50 for json table
+
 ## [0.0.313] - 2024-03-02 - remove report file list sorting
 
 ## [0.0.312] - 2024-03-02 - bugfix convertto-permissionlist incorrect prop names
