@@ -19,7 +19,8 @@ Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFileList] <String[]>] [[-ReportFile] <Object>]
  [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-ACEsByGUID] <Hashtable>]
  [[-ACLsByPath] <Hashtable>] [[-PrincipalsByResolvedID] <Object>] [[-BestPracticeIssue] <Object>]
- [[-Parent] <String[]>] [[-Detail] <Int32[]>] [[-Culture] <Object>]
+ [[-Parent] <String[]>] [[-Detail] <Int32[]>] [[-Culture] <Object>] [[-FileFormat] <String[]>]
+ [[-OutputFormat] <String>]
 ```
 
 ## DESCRIPTION
@@ -141,6 +142,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -FileFormat
+{{ Fill FileFormat Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: csv, html, js, json, prtgxml, xml
+
+Required: False
+Position: 24
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -FormattedPermission
 {{ Fill FormattedPermission Description }}
 
@@ -226,6 +243,22 @@ Aliases:
 
 Required: False
 Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -OutputFormat
+{{ Fill OutputFormat Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
+
+Required: False
+Position: 25
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

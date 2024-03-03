@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.321] - 2024-03-02 - add fileformat and outputformat params
+
 ## [0.0.320] - 2024-03-02 - remove logging of calls that only format data in memory
 
 ## [0.0.319] - 2024-03-02 - remove logging of calls to private functs

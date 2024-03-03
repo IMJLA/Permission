@@ -70,7 +70,15 @@ function Out-PermissionReport {
         #>
         [int[]]$Detail = @(0..10),
 
-        $Culture = (Get-Culture)
+        $Culture = (Get-Culture),
+
+        # File format(s) to export
+        [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string[]]$FileFormat = @('csv', 'html', 'js', 'json', 'prtgxml', 'xml'),
+
+        # Type of output returned to the output stream
+        [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string]$OutputFormat = 'passthru'
 
     )
 
