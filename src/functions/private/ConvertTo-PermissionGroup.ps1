@@ -3,7 +3,7 @@ function ConvertTo-PermissionGroup {
     param (
 
         # Permission object from Expand-Permission
-        [PSCustomObject]$Permission,
+        [PSCustomObject[]]$Permission,
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
