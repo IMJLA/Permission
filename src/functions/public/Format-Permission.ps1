@@ -44,12 +44,10 @@ function Format-Permission {
         passthru = $Selection
     }
 
-    Write-LogMsg @LogParams -Text "`$PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject `$Selection -Culture '$Culture'"
     $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture
 
     $PermissionsWithChosenProperties = [hashtable]::Synchronized(@{})
 
-    Write-LogMsg @LogParams -Text "Select-PermissionTableProperty -InputObject `$Selection -IgnoreDomain '@('$($IgnoreDomain -join "','")')'"
     Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -OutputHash $PermissionsWithChosenProperties -GroupBy $GroupBy
 
     ForEach ($Format in $Formats) {
