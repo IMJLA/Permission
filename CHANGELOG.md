@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.312] - 2024-03-02 - bugfix convertto-permissionlist incorrect prop names
+
 ## [0.0.311] - 2024-03-02 - bugfix convertto-permissionlist
 
 ## [0.0.310] - 2024-03-02 - text improvement convertto-nameexclusiondiv
