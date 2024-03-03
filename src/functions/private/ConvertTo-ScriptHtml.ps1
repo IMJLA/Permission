@@ -2,7 +2,8 @@ function ConvertTo-ScriptHtml {
 
     param (
         $Permission,
-        $PermissionGrouping
+        $PermissionGrouping,
+        [string]$GroupBy
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
@@ -11,7 +12,12 @@ function ConvertTo-ScriptHtml {
         $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($Group.Table)" -ColumnJson $Group.Columns -DataJson $Group.Data))
     }
 
-    $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $PermissionGrouping.Columns -DataJson $PermissionGrouping.Data))
+    if ($GroupBy -ne 'none') {
+
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $PermissionGrouping.Columns -DataJson $PermissionGrouping.Data))
+
+    }
+
     return $ScriptHtmlBuilder.ToString()
 
 }

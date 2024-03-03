@@ -1,4 +1,127 @@
 
+function ConvertTo-ClassExclusionDiv {
+
+    param (
+
+        <#
+        Accounts whose objectClass property is in this list are excluded from the HTML report
+
+        Note on the 'group' class:
+        By default, a group with members is replaced in the report by its members unless the -NoGroupMembers switch is used.
+        Any remaining groups are empty and not useful to see in the middle of a list of users/job titles/departments/etc).
+        So the 'group' class is excluded here by default.
+        #>
+        [string[]]$ExcludeClass
+
+    )
+
+    if ($ExcludeClass) {
+
+        $ListGroup = $ExcludeClass |
+        ConvertTo-HtmlList |
+        ConvertTo-BootstrapListGroup
+
+        $Content = "Accounts whose objectClass property is in this list were excluded from the report.$ListGroup"
+
+    } else {
+
+        $Content = 'No accounts were excluded based on objectClass.'
+
+    }
+
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
+    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content
+
+}
+function ConvertTo-IgnoredDomainDiv {
+
+    param (
+
+        <#
+        Domain(s) to ignore (they will be removed from the username)
+
+        Can be used:
+        to ensure accounts only appear once on the report when they have matching SamAccountNames in multiple domains.
+        when the domain is often the same and doesn't need to be displayed
+        #>
+        [string[]]$IgnoreDomain
+
+    )
+
+    if ($IgnoreDomain) {
+
+        $ListGroup = $IgnoreDomain |
+        ConvertTo-HtmlList |
+        ConvertTo-BootstrapListGroup
+
+        $Content = "Accounts from these domains are listed in the report without their domain.$ListGroup"
+
+    } else {
+
+        $Content = 'No domains were ignored.  All accounts have their domain listed.'
+
+    }
+
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
+    return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content
+
+}
+function ConvertTo-MemberExclusionDiv {
+
+    param (
+
+        <#
+        Do not get group members (only report the groups themselves)
+
+        Note: By default, the -ExcludeClass parameter will exclude groups from the report.
+        If using -NoGroupMembers, you most likely want to modify the value of -ExcludeClass.
+        Remove the 'group' class from ExcludeClass in order to see groups on the report.
+        #>
+        [switch]$NoMembers
+
+    )
+
+    if ($NoMembers) {
+
+        $Content = 'Group members were excluded from the report.<br />Only accounts directly from the ACLs are included in the report.'
+
+    } else {
+
+        $Content = 'No accounts were excluded based on group membership.<br />Members of groups from the ACLs are included in the report.'
+
+    }
+
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
+    return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content
+
+}
+function ConvertTo-NameExclusionDiv {
+
+    param (
+
+        # Regular expressions matching names of security principals to exclude from the HTML report
+        [string[]]$ExcludeAccount
+
+    )
+
+    if ($ExcludeAccount) {
+
+        $ListGroup = $ExcludeAccount |
+        ConvertTo-HtmlList |
+        ConvertTo-BootstrapListGroup
+
+        $Content = "Accounts matching these regular expressions were excluded from the report.$ListGroup"
+
+    } else {
+
+        $Content = 'No accounts were excluded based on name.'
+
+    }
+
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
+    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content
+
+}
 function ConvertTo-PermissionGroup {
 
     param (
@@ -269,7 +392,8 @@ function ConvertTo-ScriptHtml {
 
     param (
         $Permission,
-        $PermissionGrouping
+        $PermissionGrouping,
+        [string]$GroupBy
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
@@ -278,7 +402,12 @@ function ConvertTo-ScriptHtml {
         $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($Group.Table)" -ColumnJson $Group.Columns -DataJson $Group.Data))
     }
 
-    $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $PermissionGrouping.Columns -DataJson $PermissionGrouping.Data))
+    if ($GroupBy -ne 'none') {
+
+        $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId '#Folders' -ColumnJson $PermissionGrouping.Columns -DataJson $PermissionGrouping.Data))
+
+    }
+
     return $ScriptHtmlBuilder.ToString()
 
 }
@@ -2232,7 +2361,7 @@ function Out-PermissionReport {
     param (
 
         # Regular expressions matching names of security principals to exclude from the HTML report
-        $ExcludeAccount,
+        [string[]]$ExcludeAccount,
 
         # Accounts whose objectClass property is in this list are excluded from the HTML report
         [string[]]$ExcludeClass = @('group', 'computer'),
@@ -2310,64 +2439,21 @@ function Out-PermissionReport {
     # Convert the target path(s) to a Bootstrap alert
     $TargetPathString = $TargetPath -join '<br />'
     Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
-    $ReportDescription = "$(New-BootstrapAlert -Class Dark -Text $TargetPathString) $ReportDescription"
+    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString
 
     $ReportParameters = @{
         Title       = $Title
-        Description = $ReportDescription
+        Description = "$TargetAlert $ReportDescription"
     }
 
-    $HeadingText = 'Accounts Excluded by Regular Expression'
-    if ($ExcludeAccount) {
-        $ListGroup = $ExcludeAccount |
-        ConvertTo-HtmlList |
-        ConvertTo-BootstrapListGroup
-
-        $Description = 'Accounts matching these regular expressions were excluded from the report.'
-        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HeadingText' -Content `"`$Description`$ListGroup`""
-        $HtmlRegExExclusions = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content "$Description$ListGroup"
-    } else {
-        $Description = 'No accounts were excluded based on regular expressions.'
-        $HtmlRegExExclusions = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content $Description
-    }
-
-    $HeadingText = 'Accounts Excluded by Class'
-    if ($ExcludeClass) {
-        $ListGroup = $ExcludeClass |
-        ConvertTo-HtmlList |
-        ConvertTo-BootstrapListGroup
-
-        $Description = 'Accounts whose objectClass property is in this list were excluded from the report.'
-        $HtmlClassExclusions = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content "$Description$ListGroup"
-    } else {
-        $Description = 'No accounts were excluded based on objectClass.'
-        $HtmlClassExclusions = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content $Description
-    }
-
-    $HeadingText = 'Domains Ignored'
-    if ($IgnoreDomain) {
-        $ListGroup = $IgnoreDomain |
-        ConvertTo-HtmlList |
-        ConvertTo-BootstrapListGroup
-
-        $Description = 'Accounts from these domains are listed in the report without their domain.'
-        $HtmlIgnoredDomains = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content "$Description$ListGroup"
-    } else {
-        $Description = 'No domains were ignored.  All accounts have their domain listed.'
-        $HtmlIgnoredDomains = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content $Description
-    }
-
-    $HeadingText = 'Group Members'
-    if ($NoMembers) {
-        $Description = 'Group members were excluded from the report.<br />Only accounts directly from the ACLs are included in the report.'
-    } else {
-        $Description = 'No accounts were excluded based on group membership.<br />Members of groups from the ACLs are included in the report.'
-    }
-    $HtmlExcludedGroupMembers = New-BootstrapDivWithHeading -HeadingText $HeadingText -Content $Description
+    $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount
+    $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass
+    $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain
+    $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers
 
     # Arrange the exclusions in two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlExcludedGroupMembers`$HtmlClassExclusions',`$HtmlIgnoredDomains`$HtmlRegExExclusions"
-    $ExclusionsDiv = New-BootstrapColumn -Html "$HtmlExcludedGroupMembers$HtmlClassExclusions", "$HtmlIgnoredDomains$HtmlRegExExclusions" -Width 6
+    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
+    $ExclusionsDiv = New-BootstrapColumn -Html "$ExcludedMembers$ExcludedClasses", "$IgnoredDomains$ExcludedNames" -Width 6
 
     # Convert the list of generated log files to a Bootstrap list group
     $HtmlListOfLogs = $LogFileList |
@@ -2384,9 +2470,6 @@ function Out-PermissionReport {
 
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
-
-
-
 
     ForEach ($Format in $Formats) {
 
@@ -2620,17 +2703,29 @@ function Out-PermissionReport {
                         ReportFooter          = $ReportFooter
                     }
 
-                    # Combine the header and table inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                    $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+                    if ($Permission.FlatPermissions) {
 
-                    # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                    Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                    $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
+                        # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                        Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                        $Body = Get-HtmlBody @BodyParams
+
+                        $GroupBy = 'none'
+
+                    } else {
+
+                        # Combine the header and table inside a Bootstrap div
+                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+
+                        # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                        Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                        $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
+
+                    }
 
                     # Build the JavaScript scripts
                     Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
-                    $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings
+                    $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy
 
                     # Apply the report template to the generated HTML report body and description
                     Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
@@ -3669,6 +3764,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

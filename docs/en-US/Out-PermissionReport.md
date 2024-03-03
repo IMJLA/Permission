@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Out-PermissionReport [[-ExcludeAccount] <Object>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
+Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
  [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFileList] <String[]>] [[-ReportFile] <Object>]
@@ -115,7 +115,7 @@ Accept wildcard characters: False
 {{ Fill ExcludeAccount Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
