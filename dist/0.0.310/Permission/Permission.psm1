@@ -110,7 +110,7 @@ function ConvertTo-NameExclusionDiv {
         ConvertTo-HtmlList |
         ConvertTo-BootstrapListGroup
 
-        $Content = "Accounts matching these regular expressions were excluded from the report.$ListGroup"
+        $Content = "Accounts whose names match these regular expressions were excluded from the report.$ListGroup"
 
     } else {
 
@@ -3764,6 +3764,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-ItemTableProperty','Select-UniquePrincipal')
+
 
 
 

@@ -13,7 +13,7 @@ function ConvertTo-NameExclusionDiv {
         ConvertTo-HtmlList |
         ConvertTo-BootstrapListGroup
 
-        $Content = "Accounts matching these regular expressions were excluded from the report.$ListGroup"
+        $Content = "Accounts whose names match these regular expressions were excluded from the report.$ListGroup"
 
     } else {
 
