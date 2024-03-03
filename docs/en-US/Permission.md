@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.321
+Help Version: 0.0.322
 Locale: en-US
 ---
 
@@ -103,7 +103,7 @@ Invoke-PermissionCommand [[-Command] <string>]
 
 ### [Out-PermissionReport](Out-PermissionReport.md)
 
-Out-PermissionReport [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFileList] <string[]>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-ACEsByGUID] <hashtable>] [[-ACLsByPath] <hashtable>] [[-PrincipalsByResolvedID] <Object>] [[-BestPracticeIssue] <Object>] [[-Parent] <string[]>] [[-Detail] <int[]>] [[-Culture] <Object>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [-NoMembers]
+Out-PermissionReport [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-ACEsByGUID] <hashtable>] [[-ACLsByPath] <hashtable>] [[-PrincipalsByResolvedID] <Object>] [[-BestPracticeIssue] <Object>] [[-Parent] <string[]>] [[-Detail] <int[]>] [[-Culture] <Object>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [-NoMembers]
 
 
 ### [Remove-CachedCimSession](Remove-CachedCimSession.md)

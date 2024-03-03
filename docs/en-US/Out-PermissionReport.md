@@ -16,11 +16,10 @@ schema: 2.0.0
 Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
  [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
- [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFileList] <String[]>] [[-ReportFile] <Object>]
- [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-ACEsByGUID] <Hashtable>]
- [[-ACLsByPath] <Hashtable>] [[-PrincipalsByResolvedID] <Object>] [[-BestPracticeIssue] <Object>]
- [[-Parent] <String[]>] [[-Detail] <Int32[]>] [[-Culture] <Object>] [[-FileFormat] <String[]>]
- [[-OutputFormat] <String>]
+ [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-ReportFile] <Object>] [[-LogFileList] <Object>]
+ [[-ReportInstanceId] <Object>] [[-ACEsByGUID] <Hashtable>] [[-ACLsByPath] <Hashtable>]
+ [[-PrincipalsByResolvedID] <Object>] [[-BestPracticeIssue] <Object>] [[-Parent] <String[]>]
+ [[-Detail] <Int32[]>] [[-Culture] <Object>] [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
 ```
 
 ## DESCRIPTION
@@ -46,7 +45,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 17
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -61,7 +60,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 18
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -76,7 +75,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 20
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -91,7 +90,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 23
+Position: 22
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -106,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 22
+Position: 21
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -152,7 +151,7 @@ Aliases:
 Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 24
+Position: 23
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -197,7 +196,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -258,7 +257,7 @@ Aliases:
 Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 25
+Position: 24
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -273,7 +272,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 21
+Position: 20
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -303,7 +302,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -333,21 +332,6 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ReportFileList
-{{ Fill ReportFileList Description }}
-
-```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: 13
 Default value: None
 Accept pipeline input: False
@@ -363,7 +347,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

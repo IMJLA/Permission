@@ -44,7 +44,6 @@ function Out-PermissionReport {
         $FormattedPermission,
         $LogParams,
         $RecurseDepth,
-        [string[]]$ReportFileList = @(),
         $ReportFile,
         $LogFileList,
         $ReportInstanceId,
@@ -123,6 +122,8 @@ function Out-PermissionReport {
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
+    $ListOfFiles = ConvertTo-FileList -Detail $Detail -Format $Formats
+
     ForEach ($Format in $Formats) {
 
         # Convert the list of permission groupings list to an HTML table
@@ -200,9 +201,6 @@ function Out-PermissionReport {
                     # Build the file path
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
 
-                    # Add the file path to the list of created files
-                    $ReportFileList += $ThisReportFile
-
                     # Generate the report
                     $Report = $ReportObjects[$Level]
 
@@ -221,7 +219,7 @@ function Out-PermissionReport {
                 $DetailScripts[10] = {
 
                     # Convert the list of generated report files to a Bootstrap list group
-                    $HtmlListOfReports = $ReportFileList |
+                    $HtmlListOfReports = $ListOfFiles |
                     Split-Path -Leaf |
                     #Sort-Object |
                     ConvertTo-HtmlList |
@@ -299,14 +297,22 @@ function Out-PermissionReport {
 
                 ForEach ($Level in $Detail) {
 
+                    # Get shorter versions of the detail strings to use in file names
                     $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+
+                    # Convert the shorter strings to Title Case
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+
+                    # Remove spaces from the shorter strings
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                    # Build the file path
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.htm"
-                    $ReportFileList += $ThisReportFile
+
+                    # Generate the report
+                    $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
 
                     # Save the report
-                    $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
                     $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
 
                     # Output the name of the report file to the Information stream
@@ -321,7 +327,7 @@ function Out-PermissionReport {
                 $DetailScripts[10] = {
 
                     # Convert the list of generated report files to a Bootstrap list group
-                    $HtmlListOfReports = $ReportFileList |
+                    $HtmlListOfReports = $ListOfFiles |
                     Split-Path -Leaf |
                     #Sort-Object |
                     ConvertTo-HtmlList |
@@ -401,14 +407,22 @@ function Out-PermissionReport {
 
                 ForEach ($Level in $Detail) {
 
+                    # Get shorter versions of the detail strings to use in file names
                     $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+
+                    # Convert the shorter strings to Title Case
                     $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+
+                    # Remove spaces from the shorter strings
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                    # Build the file path
                     $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$Format.htm"
-                    $ReportFileList += $ThisReportFile
+
+                    # Generate the report
+                    $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
 
                     # Save the report
-                    $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
                     $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
 
                     # Output the name of the report file to the Information stream
