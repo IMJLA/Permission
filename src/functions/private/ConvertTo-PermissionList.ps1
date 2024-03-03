@@ -51,7 +51,7 @@ function ConvertTo-PermissionList {
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
-                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                 [PSCustomObject]$OutputObject
 
             } else {
@@ -66,7 +66,7 @@ function ConvertTo-PermissionList {
                     $Html = $Perm | ConvertTo-Html -Fragment
                     $OutputObject['Data'] = $Html
                     $Table = $Html | New-BootstrapTable
-                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                     [PSCustomObject]$OutputObject
 
                 }
@@ -104,7 +104,7 @@ function ConvertTo-PermissionList {
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
-                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                 [PSCustomObject]$OutputObject
 
             } else {
@@ -135,7 +135,7 @@ function ConvertTo-PermissionList {
                     $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
                     $OutputObject['Table'] = $TableId
                     $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
-                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                     [PSCustomObject]$OutputObject
 
                 }

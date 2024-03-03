@@ -243,7 +243,7 @@ function ConvertTo-PermissionList {
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $OutputObject['Data'] = $Html
                 $Table = $Html | New-BootstrapTable
-                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                 [PSCustomObject]$OutputObject
 
             } else {
@@ -258,7 +258,7 @@ function ConvertTo-PermissionList {
                     $Html = $Perm | ConvertTo-Html -Fragment
                     $OutputObject['Data'] = $Html
                     $Table = $Html | New-BootstrapTable
-                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                     [PSCustomObject]$OutputObject
 
                 }
@@ -296,7 +296,7 @@ function ConvertTo-PermissionList {
                 $TableId = 'Perms'
                 $OutputObject['Table'] = $TableId
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
-                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table)
+                $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                 [PSCustomObject]$OutputObject
 
             } else {
@@ -327,7 +327,7 @@ function ConvertTo-PermissionList {
                     $TableId = "Perms_$($Group.Item.Path -replace '[^A-Za-z0-9\-_]', '-')"
                     $OutputObject['Table'] = $TableId
                     $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
-                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table)
+                    $OutputObject['Div'] = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                     [PSCustomObject]$OutputObject
 
                 }
@@ -2636,7 +2636,7 @@ function Out-PermissionReport {
 
                         # Combine the header and table inside a Bootstrap div
                         Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
@@ -2734,7 +2734,7 @@ function Out-PermissionReport {
 
                         # Combine the header and table inside a Bootstrap div
                         Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
@@ -3764,6 +3764,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderColumnJson','Get-FolderPermissionsBlock','Get-HtmlReportFooter','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

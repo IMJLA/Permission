@@ -261,7 +261,7 @@ function Out-PermissionReport {
 
                         # Combine the header and table inside a Bootstrap div
                         Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
@@ -359,7 +359,7 @@ function Out-PermissionReport {
 
                         # Combine the header and table inside a Bootstrap div
                         Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
