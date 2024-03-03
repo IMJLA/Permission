@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.315
+Help Version: 0.0.316
 Locale: en-US
 ---
 
@@ -145,11 +145,6 @@ Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
 Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ACLsByPath] <hashtable>] [<CommonParameters>]
-
-
-### [Select-ItemTableProperty](Select-ItemTableProperty.md)
-
-Select-ItemTableProperty [[-InputObject] <Object>] [[-Culture] <Object>]
 
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
