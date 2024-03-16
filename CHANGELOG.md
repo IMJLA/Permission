@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.330] - 2024-03-16 - bugfix children dictionaryvaluecollection vs string coll
+
 ## [0.0.329] - 2024-03-16 - bugfix children dictionaryvaluecollection vs string coll
 
 ## [0.0.328] - 2024-03-16 - change targetpath to only expect incoming collection rather than hashtable
