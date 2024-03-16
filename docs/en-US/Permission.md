@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.331
+Help Version: 0.0.332
 Locale: en-US
 ---
 
@@ -51,6 +51,11 @@ Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-Gro
 Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
 
 
+### [Get-AccessControlList](Get-AccessControlList.md)
+
+Get-AccessControlList [[-TargetPath] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-AclByPath] <hashtable>]
+
+
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
 
 Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Query] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [<CommonParameters>]
@@ -77,9 +82,7 @@ Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
 
 ### [Get-TargetPermission](Get-TargetPermission.md)
-
-Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-AclByPath] <hashtable>]
-
+{{ Fill in the Description }}
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
