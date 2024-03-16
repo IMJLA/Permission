@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <Object>] [[-ThreadCount] <UInt16>]
+Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <String[]>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
  [[-ProgressParentId] <Int32>] [[-AclByPath] <Hashtable>]
@@ -52,7 +52,7 @@ Accept wildcard characters: False
 {{ Fill Children Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 

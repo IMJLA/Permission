@@ -10,7 +10,7 @@ function Get-TargetPermission {
         $TargetPath,
 
         # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
-        $Children,
+        [string[]]$Children,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
