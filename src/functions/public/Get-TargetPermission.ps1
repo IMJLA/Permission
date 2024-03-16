@@ -10,7 +10,7 @@ function Get-TargetPermission {
         $TargetPath,
 
         # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
-        [string[]]$Children,
+        $Children,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -83,7 +83,9 @@ function Get-TargetPermission {
     Write-Progress @ChildProgress -Completed
     $ChildProgress['Activity'] = 'Get-FolderAcl (subfolders)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get subfolder access control lists' -PercentComplete 25
-    $ChildrenCount = $Children.Count
+
+    $ChildValues = $Children.Values | ForEach-Object { $_ }
+    $ChildrenCount = $ChildValues.Count
 
     if ($ThreadCount -eq 1) {
 
@@ -92,7 +94,7 @@ function Get-TargetPermission {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $Children) {
+        ForEach ($ThisFolder in $ChildValues) {
 
             $IntervalCounter++
 
@@ -115,7 +117,7 @@ function Get-TargetPermission {
 
         $SplitThread = @{
             Command           = 'Get-DirectorySecurity'
-            InputObject       = $Children
+            InputObject       = $ChildValues
             InputParameter    = 'LiteralPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $TodaysHostname
@@ -160,7 +162,7 @@ function Get-TargetPermission {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $Children) {
+        ForEach ($ThisFolder in $ChildValues) {
 
             Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
             $IntervalCounter++
@@ -184,7 +186,7 @@ function Get-TargetPermission {
 
         $SplitThread = @{
             Command           = 'Get-OwnerAce'
-            InputObject       = $Children
+            InputObject       = $ChildValues
             InputParameter    = 'Item'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $TodaysHostname

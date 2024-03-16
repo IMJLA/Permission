@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.330
+Help Version: 0.0.331
 Locale: en-US
 ---
 
@@ -78,7 +78,7 @@ Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
 ### [Get-TargetPermission](Get-TargetPermission.md)
 
-Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <string[]>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-AclByPath] <hashtable>]
+Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-AclByPath] <hashtable>]
 
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
