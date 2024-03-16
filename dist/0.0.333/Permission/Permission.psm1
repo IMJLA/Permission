@@ -3807,8 +3807,9 @@ function Resolve-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
 
+        [hashtable]$Output = [hashtable]::Synchronized(@{})
 
     )
 
@@ -3828,21 +3829,12 @@ function Resolve-PermissionTarget {
         ThisFqdn          = $ThisFqdn
     }
 
-    [hashtable]$Output = [hashtable]::Synchronized(@{})
-
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
         $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
 
-        #$Resolved = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
-        #ForEach ($ThisOne in $Resolved) {
-        #    $Output[$ThisOne] = $null
-        #}
-
     }
-
-    return $Output
 
 }
 function Select-UniquePrincipal {
@@ -3914,6 +3906,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

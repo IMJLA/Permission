@@ -30,8 +30,9 @@ function Resolve-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = $Global:LogMessages,
 
+        [hashtable]$Output = [hashtable]::Synchronized(@{})
 
     )
 
@@ -51,20 +52,11 @@ function Resolve-PermissionTarget {
         ThisFqdn          = $ThisFqdn
     }
 
-    [hashtable]$Output = [hashtable]::Synchronized(@{})
-
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
         $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
 
-        #$Resolved = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
-        #ForEach ($ThisOne in $Resolved) {
-        #    $Output[$ThisOne] = $null
-        #}
-
     }
-
-    return $Output
 
 }

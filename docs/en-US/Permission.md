@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.332
+Help Version: 0.0.333
 Locale: en-US
 ---
 
@@ -81,9 +81,6 @@ Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [
 Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
 
-### [Get-TargetPermission](Get-TargetPermission.md)
-{{ Fill in the Description }}
-
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
@@ -137,7 +134,7 @@ Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] 
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-Output] <hashtable>] [<CommonParameters>]
 
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
