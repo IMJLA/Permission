@@ -1,4 +1,4 @@
-function Get-FolderAcl {
+function Get-TargetPermission {
 
     # Get folder access control lists
     # Returns an object representing each effective permission on a folder
@@ -7,10 +7,10 @@ function Get-FolderAcl {
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
-        $Folder,
+        $TargetPath,
 
         # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
-        $Subfolder,
+        $Children,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -34,7 +34,7 @@ function Get-FolderAcl {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
+        [hashtable]$AclByPath = [hashtable]::Synchronized(@{})
 
     )
 
@@ -62,16 +62,16 @@ function Get-FolderAcl {
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
         OwnerCache        = $OwnerCache
-        ACLsByPath        = $ACLsByPath
+        ACLsByPath        = $AclByPath
     }
 
     # We expect a small number of folders and a large number of subfolders
     # We will multithread the subfolders but not the folders
     # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAcl) on a small number of items
     $i = 0
-    $Count = $Folder.Count
+    $Count = $TargetPath.Count
 
-    ForEach ($ThisFolder in $Folder) {
+    ForEach ($ThisFolder in $TargetPath) {
 
         [int]$PercentComplete = $i / $Count * 100
         Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
@@ -83,23 +83,23 @@ function Get-FolderAcl {
     Write-Progress @ChildProgress -Completed
     $ChildProgress['Activity'] = 'Get-FolderAcl (subfolders)'
     Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get subfolder access control lists' -PercentComplete 25
-    $SubfolderCount = $Subfolder.Count
+    $ChildrenCount = $Children.Count
 
     if ($ThreadCount -eq 1) {
 
-        Write-Progress @ChildProgress -Status "0% (subfolder 0 of $SubfolderCount)" -CurrentOperation 'Initializing' -PercentComplete 0
-        [int]$ProgressInterval = [math]::max(($SubfolderCount / 100), 1)
+        Write-Progress @ChildProgress -Status "0% (subfolder 0 of $ChildrenCount)" -CurrentOperation 'Initializing' -PercentComplete 0
+        [int]$ProgressInterval = [math]::max(($ChildrenCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $Subfolder) {
+        ForEach ($ThisFolder in $Children) {
 
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
-                [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-DirectorySecurity" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $ChildrenCount * 100
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $ChildrenCount) Get-DirectorySecurity" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -115,7 +115,7 @@ function Get-FolderAcl {
 
         $SplitThread = @{
             Command           = 'Get-DirectorySecurity'
-            InputObject       = $Subfolder
+            InputObject       = $Children
             InputParameter    = 'LiteralPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $TodaysHostname
@@ -138,10 +138,10 @@ function Get-FolderAcl {
 
     $GetOwnerAce = @{
         OwnerCache = $OwnerCache
-        ACLsByPath = $ACLsByPath
+        ACLsByPath = $AclByPath
     }
 
-    ForEach ($ThisFolder in $Folder) {
+    ForEach ($ThisFolder in $TargetPath) {
 
         [int]$PercentComplete = $i / $Count * 100
         $i++
@@ -160,15 +160,15 @@ function Get-FolderAcl {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $Subfolder) {
+        ForEach ($ThisFolder in $Children) {
 
             Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
             $IntervalCounter++
 
             if ($IntervalCounter -eq $ProgressInterval) {
 
-                [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount)) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                [int]$PercentComplete = $i / $ChildrenCount * 100
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $ChildrenCount)) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
@@ -184,7 +184,7 @@ function Get-FolderAcl {
 
         $SplitThread = @{
             Command           = 'Get-OwnerAce'
-            InputObject       = $Subfolder
+            InputObject       = $Children
             InputParameter    = 'Item'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $TodaysHostname

@@ -34,8 +34,7 @@ function Expand-PermissionTarget {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
-
+        [hashtable]$TargetPath = [hashtable]::Synchronized(@{})
     )
 
     $Progress = @{
@@ -48,7 +47,7 @@ function Expand-PermissionTarget {
         $Progress['Id'] = 0
     }
 
-    $Targets = $ACLsByPath.Keys
+    $Targets = $TargetPath.Values
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
@@ -59,12 +58,18 @@ function Expand-PermissionTarget {
         WhoAmI       = $WhoAmI
     }
 
+    [hashtable]$Output = [hashtable]::Synchronized(@{})
+
     $GetSubfolderParams = @{
         LogMsgCache       = $LogMsgCache
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
+        Output            = $Output
+        RecurseDepth      = $RecurseDepth
+        ErrorAction       = 'Continue'
     }
+
 
     if ($ThreadCount -eq 1 -or $TargetCount -eq 1) {
 
@@ -83,10 +88,8 @@ function Expand-PermissionTarget {
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            $Subfolders = $null
-            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $RecurseDepth -ErrorAction Continue @GetSubfolderParams
-            Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
-            $Subfolders
+            Write-LogMsg @LogParams -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
+            Get-Subfolder -TargetPath $ThisFolder @GetSubfolderParams
 
         }
 
@@ -104,12 +107,11 @@ function Expand-PermissionTarget {
             AddParam          = $GetSubfolderParams
         }
 
-        $Subfolders = Split-Thread @SplitThreadParams
-        Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for all targets"
-        $Subfolders
+        Split-Thread @SplitThreadParams
 
     }
 
     Write-Progress @Progress -Completed
+    return $Output
 
 }

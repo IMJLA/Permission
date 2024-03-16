@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
  [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
- [[-ACLsByPath] <Hashtable>]
+ [[-TargetPath] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -31,21 +31,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -ACLsByPath
-{{ Fill ACLsByPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -DebugOutputStream
 {{ Fill DebugOutputStream Description }}
@@ -102,6 +87,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetPath
+{{ Fill TargetPath Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

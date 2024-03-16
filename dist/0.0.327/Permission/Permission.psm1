@@ -1278,8 +1278,7 @@ function Expand-PermissionTarget {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
-
+        [hashtable]$TargetPath = [hashtable]::Synchronized(@{})
     )
 
     $Progress = @{
@@ -1292,7 +1291,7 @@ function Expand-PermissionTarget {
         $Progress['Id'] = 0
     }
 
-    $Targets = $ACLsByPath.Keys
+    $Targets = $TargetPath.Values
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
@@ -1303,12 +1302,18 @@ function Expand-PermissionTarget {
         WhoAmI       = $WhoAmI
     }
 
+    [hashtable]$Output = [hashtable]::Synchronized(@{})
+
     $GetSubfolderParams = @{
         LogMsgCache       = $LogMsgCache
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
+        Output            = $Output
+        RecurseDepth      = $RecurseDepth
+        ErrorAction       = 'Continue'
     }
+
 
     if ($ThreadCount -eq 1 -or $TargetCount -eq 1) {
 
@@ -1327,10 +1332,8 @@ function Expand-PermissionTarget {
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            $Subfolders = $null
-            $Subfolders = Get-Subfolder -TargetPath $ThisFolder -FolderRecursionDepth $RecurseDepth -ErrorAction Continue @GetSubfolderParams
-            Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for '$ThisFolder'"
-            $Subfolders
+            Write-LogMsg @LogParams -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
+            Get-Subfolder -TargetPath $ThisFolder @GetSubfolderParams
 
         }
 
@@ -1348,13 +1351,12 @@ function Expand-PermissionTarget {
             AddParam          = $GetSubfolderParams
         }
 
-        $Subfolders = Split-Thread @SplitThreadParams
-        Write-LogMsg @LogParams -Text "# Folders (including parent): $($Subfolders.Count + 1) for all targets"
-        $Subfolders
+        Split-Thread @SplitThreadParams
 
     }
 
     Write-Progress @Progress -Completed
+    return $Output
 
 }
 function Find-ResolvedIDsWithAccess {
@@ -1381,6 +1383,81 @@ function Find-ResolvedIDsWithAccess {
     }
 
     $IDsWithAccess
+
+}
+
+# Build a list of known ADSI server names to use to populate the caches
+# Include the FQDN of the current computer and the known trusted domains
+function Find-ServerFqdn {
+
+    param (
+
+        # Known server FQDNs to include in the output
+        [string[]]$Known,
+
+        # File paths whose server FQDNs to include in the output
+        [string[]]$FilePath,
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
+
+    )
+
+    $Progress = @{
+        Activity = 'Find-ServerFqdn'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $ProgressId = $ProgressParentId + 1
+    } else {
+        $ProgressId = 0
+    }
+
+    $Progress['Id'] = $ProgressId
+    $Count = $FilePath.Count
+    Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+
+    $UniqueValues = @{
+        $ThisFqdn = $null
+    }
+
+    ForEach ($Value in $Known) {
+        $UniqueValues[$Value] = $null
+    }
+
+    # Add server names from the ACL paths
+
+    $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
+    $ProgressStopWatch.Start()
+    $LastRemainder = [int]::MaxValue
+    $i = 0
+
+    ForEach ($ThisPath in $FilePath) {
+
+        $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
+
+        if ($NewRemainder -lt $LastRemainder) {
+
+            $LastRemainder = $NewRemainder
+            [int]$PercentComplete = $i / $Count * 100
+            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+
+        }
+
+        $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+        $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
+    }
+
+    Write-Progress @Progress -Completed
+
+    return $UniqueValues.Keys
 
 }
 function Format-Permission {
@@ -1674,209 +1751,6 @@ function Get-CachedCimSession {
         $CimCache[$ComputerName]['CimSession'] = $CimSession
         return $CimSession
     }
-
-}
-function Get-FolderAcl {
-
-    # Get folder access control lists
-    # Returns an object representing each effective permission on a folder
-    # This includes each Access Control Entry in the Discretionary Access List, as well as the folder's Owner
-
-    param (
-
-        # Path to the item whose permissions to export (inherited ACEs will be included)
-        $Folder,
-
-        # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
-        $Subfolder,
-
-        # Number of asynchronous threads to use
-        [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
-
-        # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [string]$DebugOutputStream = 'Debug',
-
-        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$TodaysHostname = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
-
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # Thread-safe cache of items and their owners
-        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
-
-        # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId,
-
-        # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
-
-    )
-
-    $Progress = @{
-        Activity = 'Get-FolderAcl'
-    }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-    } else {
-        $ProgressId = 0
-    }
-    $Progress['Id'] = $ProgressId
-    $ChildProgress = @{
-        Activity = 'Get folder access control lists'
-        Id       = $ProgressId + 1
-        ParentId = $ProgressId
-    }
-
-    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent folder access control lists' -PercentComplete 0
-
-    $GetDirectorySecurity = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $TodaysHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
-        OwnerCache        = $OwnerCache
-        ACLsByPath        = $ACLsByPath
-    }
-
-    # We expect a small number of folders and a large number of subfolders
-    # We will multithread the subfolders but not the folders
-    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAcl) on a small number of items
-    $i = 0
-    $Count = $Folder.Count
-
-    ForEach ($ThisFolder in $Folder) {
-
-        [int]$PercentComplete = $i / $Count * 100
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-        $i++
-        Get-DirectorySecurity -LiteralPath $ThisFolder -IncludeInherited @GetDirectorySecurity
-
-    }
-
-    Write-Progress @ChildProgress -Completed
-    $ChildProgress['Activity'] = 'Get-FolderAcl (subfolders)'
-    Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get subfolder access control lists' -PercentComplete 25
-    $SubfolderCount = $Subfolder.Count
-
-    if ($ThreadCount -eq 1) {
-
-        Write-Progress @ChildProgress -Status "0% (subfolder 0 of $SubfolderCount)" -CurrentOperation 'Initializing' -PercentComplete 0
-        [int]$ProgressInterval = [math]::max(($SubfolderCount / 100), 1)
-        $IntervalCounter = 0
-        $i = 0
-
-        ForEach ($ThisFolder in $Subfolder) {
-
-            $IntervalCounter++
-
-            if ($IntervalCounter -eq $ProgressInterval) {
-
-                [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount) Get-DirectorySecurity" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-
-            }
-
-            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Get-DirectorySecurity -LiteralPath $ThisFolder @GetDirectorySecurity
-
-        }
-
-        Write-Progress @ChildProgress -Completed
-
-    } else {
-
-        $SplitThread = @{
-            Command           = 'Get-DirectorySecurity'
-            InputObject       = $Subfolder
-            InputParameter    = 'LiteralPath'
-            DebugOutputStream = $DebugOutputStream
-            TodaysHostname    = $TodaysHostname
-            WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogMsgCache
-            Threads           = $ThreadCount
-            AddParam          = $GetDirectorySecurity
-
-        }
-
-        Split-Thread @SplitThread
-
-    }
-
-    # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
-    # First return the owner of the parent item
-    Write-Progress @Progress -Status '50% (step 3 of 4) Get-OwnerAce (parent folders)' -CurrentOperation 'Get parent folder owners' -PercentComplete 50
-    $ChildProgress['Activity'] = 'Get-FolderAcl (parent owners)'
-    $i = 0
-
-    $GetOwnerAce = @{
-        OwnerCache = $OwnerCache
-        ACLsByPath = $ACLsByPath
-    }
-
-    ForEach ($ThisFolder in $Folder) {
-
-        [int]$PercentComplete = $i / $Count * 100
-        $i++
-        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $i of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-        Get-OwnerAce -Item $ThisFolder @GetOwnerAce
-
-    }
-
-    Write-Progress @ChildProgress -Completed
-    Write-Progress @Progress -Status '75% (step 4 of 4) Get-OwnerAce (subfolders)' -CurrentOperation 'Get subfolder owners' -PercentComplete 75
-    $ChildProgress['Activity'] = 'Get-FolderAcl (subfolder owners)'
-
-    # Then return the owners of any items that differ from their parents' owners
-    if ($ThreadCount -eq 1) {
-
-        $IntervalCounter = 0
-        $i = 0
-
-        ForEach ($ThisFolder in $Subfolder) {
-
-            Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
-            $IntervalCounter++
-
-            if ($IntervalCounter -eq $ProgressInterval) {
-
-                [int]$PercentComplete = $i / $SubfolderCount * 100
-                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $SubfolderCount)) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
-                $IntervalCounter = 0
-
-            }
-
-            $i++
-            Get-OwnerAce -Item $ThisFolder @GetOwnerAce
-
-        }
-
-        Write-Progress @ChildProgress -Completed
-
-    } else {
-
-        $SplitThread = @{
-            Command           = 'Get-OwnerAce'
-            InputObject       = $Subfolder
-            InputParameter    = 'Item'
-            DebugOutputStream = $DebugOutputStream
-            TodaysHostname    = $TodaysHostname
-            WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogMsgCache
-            Threads           = $ThreadCount
-            AddParam          = $GetOwnerAce
-        }
-
-        Split-Thread @SplitThread
-
-    }
-
-    Write-Progress @Progress -Completed
 
 }
 function Get-FolderPermissionsBlock {
@@ -2230,6 +2104,209 @@ function Get-PrtgXmlSensorOutput {
     Format-PrtgXmlSensorOutput -PrtgXmlResult $Channels -IssueDetected:$($NtfsIssues.IssueDetected)
 
 }
+function Get-TargetPermission {
+
+    # Get folder access control lists
+    # Returns an object representing each effective permission on a folder
+    # This includes each Access Control Entry in the Discretionary Access List, as well as the folder's Owner
+
+    param (
+
+        # Path to the item whose permissions to export (inherited ACEs will be included)
+        $TargetPath,
+
+        # Path to the subfolders whose permissions to report (inherited ACEs will be skipped)
+        $Children,
+
+        # Number of asynchronous threads to use
+        [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
+
+        # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
+        [string]$DebugOutputStream = 'Debug',
+
+        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$TodaysHostname = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # Thread-safe cache of items and their owners
+        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId,
+
+        # Cache of access control lists keyed by path
+        [hashtable]$AclByPath = [hashtable]::Synchronized(@{})
+
+    )
+
+    $Progress = @{
+        Activity = 'Get-FolderAcl'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $ProgressId = $ProgressParentId + 1
+    } else {
+        $ProgressId = 0
+    }
+    $Progress['Id'] = $ProgressId
+    $ChildProgress = @{
+        Activity = 'Get folder access control lists'
+        Id       = $ProgressId + 1
+        ParentId = $ProgressId
+    }
+
+    Write-Progress @Progress -Status '0% (step 1 of 2)' -CurrentOperation 'Get parent folder access control lists' -PercentComplete 0
+
+    $GetDirectorySecurity = @{
+        LogMsgCache       = $LogMsgCache
+        ThisHostname      = $TodaysHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+        OwnerCache        = $OwnerCache
+        ACLsByPath        = $AclByPath
+    }
+
+    # We expect a small number of folders and a large number of subfolders
+    # We will multithread the subfolders but not the folders
+    # Multithreading overhead actually hurts performance for such a fast operation (Get-FolderAcl) on a small number of items
+    $i = 0
+    $Count = $TargetPath.Count
+
+    ForEach ($ThisFolder in $TargetPath) {
+
+        [int]$PercentComplete = $i / $Count * 100
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $($i + 1) of $Count) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        $i++
+        Get-DirectorySecurity -LiteralPath $ThisFolder -IncludeInherited @GetDirectorySecurity
+
+    }
+
+    Write-Progress @ChildProgress -Completed
+    $ChildProgress['Activity'] = 'Get-FolderAcl (subfolders)'
+    Write-Progress @Progress -Status '25% (step 2 of 4)' -CurrentOperation 'Get subfolder access control lists' -PercentComplete 25
+    $ChildrenCount = $Children.Count
+
+    if ($ThreadCount -eq 1) {
+
+        Write-Progress @ChildProgress -Status "0% (subfolder 0 of $ChildrenCount)" -CurrentOperation 'Initializing' -PercentComplete 0
+        [int]$ProgressInterval = [math]::max(($ChildrenCount / 100), 1)
+        $IntervalCounter = 0
+        $i = 0
+
+        ForEach ($ThisFolder in $Children) {
+
+            $IntervalCounter++
+
+            if ($IntervalCounter -eq $ProgressInterval) {
+
+                [int]$PercentComplete = $i / $ChildrenCount * 100
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $ChildrenCount) Get-DirectorySecurity" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                $IntervalCounter = 0
+
+            }
+
+            $i++ # increment $i after the progress to show progress conservatively rather than optimistically
+            Get-DirectorySecurity -LiteralPath $ThisFolder @GetDirectorySecurity
+
+        }
+
+        Write-Progress @ChildProgress -Completed
+
+    } else {
+
+        $SplitThread = @{
+            Command           = 'Get-DirectorySecurity'
+            InputObject       = $Children
+            InputParameter    = 'LiteralPath'
+            DebugOutputStream = $DebugOutputStream
+            TodaysHostname    = $TodaysHostname
+            WhoAmI            = $WhoAmI
+            LogMsgCache       = $LogMsgCache
+            Threads           = $ThreadCount
+            AddParam          = $GetDirectorySecurity
+
+        }
+
+        Split-Thread @SplitThread
+
+    }
+
+    # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
+    # First return the owner of the parent item
+    Write-Progress @Progress -Status '50% (step 3 of 4) Get-OwnerAce (parent folders)' -CurrentOperation 'Get parent folder owners' -PercentComplete 50
+    $ChildProgress['Activity'] = 'Get-FolderAcl (parent owners)'
+    $i = 0
+
+    $GetOwnerAce = @{
+        OwnerCache = $OwnerCache
+        ACLsByPath = $AclByPath
+    }
+
+    ForEach ($ThisFolder in $TargetPath) {
+
+        [int]$PercentComplete = $i / $Count * 100
+        $i++
+        Write-Progress @ChildProgress -Status "$PercentComplete% (parent $i of $Count) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+        Get-OwnerAce -Item $ThisFolder @GetOwnerAce
+
+    }
+
+    Write-Progress @ChildProgress -Completed
+    Write-Progress @Progress -Status '75% (step 4 of 4) Get-OwnerAce (subfolders)' -CurrentOperation 'Get subfolder owners' -PercentComplete 75
+    $ChildProgress['Activity'] = 'Get-FolderAcl (subfolder owners)'
+
+    # Then return the owners of any items that differ from their parents' owners
+    if ($ThreadCount -eq 1) {
+
+        $IntervalCounter = 0
+        $i = 0
+
+        ForEach ($ThisFolder in $Children) {
+
+            Write-Progress @ChildProgress -Status '0%' -CurrentOperation 'Initializing'
+            $IntervalCounter++
+
+            if ($IntervalCounter -eq $ProgressInterval) {
+
+                [int]$PercentComplete = $i / $ChildrenCount * 100
+                Write-Progress @ChildProgress -Status "$PercentComplete% (subfolder $($i + 1) of $ChildrenCount)) Get-OwnerAce" -CurrentOperation $ThisFolder -PercentComplete $PercentComplete
+                $IntervalCounter = 0
+
+            }
+
+            $i++
+            Get-OwnerAce -Item $ThisFolder @GetOwnerAce
+
+        }
+
+        Write-Progress @ChildProgress -Completed
+
+    } else {
+
+        $SplitThread = @{
+            Command           = 'Get-OwnerAce'
+            InputObject       = $Children
+            InputParameter    = 'Item'
+            DebugOutputStream = $DebugOutputStream
+            TodaysHostname    = $TodaysHostname
+            WhoAmI            = $WhoAmI
+            LogMsgCache       = $LogMsgCache
+            Threads           = $ThreadCount
+            AddParam          = $GetOwnerAce
+        }
+
+        Split-Thread @SplitThread
+
+    }
+
+    Write-Progress @Progress -Completed
+
+}
 function Get-TimeZoneName {
     param (
         [datetime]$Time,
@@ -2240,81 +2317,6 @@ function Get-TimeZoneName {
     } else {
         return $TimeZone.StandardName
     }
-}
-
-# Build a list of known ADSI server names to use to populate the caches
-# Include the FQDN of the current computer and the known trusted domains
-function Get-UniqueServerFqdn {
-
-    param (
-
-        # Known server FQDNs to include in the output
-        [string[]]$Known,
-
-        # File paths whose server FQDNs to include in the output
-        [string[]]$FilePath,
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
-
-    )
-
-    $Progress = @{
-        Activity = 'Get-UniqueServerFqdn'
-    }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
-    $Count = $FilePath.Count
-    Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-
-    $UniqueValues = @{
-        $ThisFqdn = $null
-    }
-
-    ForEach ($Value in $Known) {
-        $UniqueValues[$Value] = $null
-    }
-
-    # Add server names from the ACL paths
-
-    $ProgressStopWatch = [System.Diagnostics.Stopwatch]::new()
-    $ProgressStopWatch.Start()
-    $LastRemainder = [int]::MaxValue
-    $i = 0
-
-    ForEach ($ThisPath in $FilePath) {
-
-        $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
-
-        if ($NewRemainder -lt $LastRemainder) {
-
-            $LastRemainder = $NewRemainder
-            [int]$PercentComplete = $i / $Count * 100
-            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
-
-        }
-
-        $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-        $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
-    }
-
-    Write-Progress @Progress -Completed
-
-    return $UniqueValues.Keys
-
 }
 function Initialize-Cache {
 
@@ -2825,7 +2827,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                    { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                    { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
                     { $Report | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
@@ -2898,7 +2900,7 @@ function Out-PermissionReport {
                     { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                    { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                     { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
@@ -3807,10 +3809,8 @@ function Resolve-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = $Global:LogMessages
 
-        # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{})
 
     )
 
@@ -3830,16 +3830,21 @@ function Resolve-PermissionTarget {
         ThisFqdn          = $ThisFqdn
     }
 
+    [hashtable]$Output = [hashtable]::Synchronized(@{})
+
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Resolved = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
+        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
 
-        ForEach ($ThisOne in $Resolved) {
-            $ACLsByPath[$ThisOne] = $null
-        }
+        #$Resolved = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
+        #ForEach ($ThisOne in $Resolved) {
+        #    $Output[$ThisOne] = $null
+        #}
 
     }
+
+    return $Output
 
 }
 function Select-UniquePrincipal {
@@ -3910,7 +3915,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TargetPermission','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

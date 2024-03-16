@@ -1,7 +1,7 @@
 
 # Build a list of known ADSI server names to use to populate the caches
 # Include the FQDN of the current computer and the known trusted domains
-function Get-UniqueServerFqdn {
+function Find-ServerFqdn {
 
     param (
 
@@ -24,7 +24,7 @@ function Get-UniqueServerFqdn {
     )
 
     $Progress = @{
-        Activity = 'Get-UniqueServerFqdn'
+        Activity = 'Find-ServerFqdn'
     }
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
         $Progress['ParentId'] = $ProgressParentId

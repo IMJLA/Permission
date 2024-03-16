@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.326
+Help Version: 0.0.327
 Locale: en-US
 ---
 
@@ -28,12 +28,17 @@ Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <O
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
-Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-ACLsByPath] <hashtable>]
+Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-TargetPath] <hashtable>]
 
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
 
 Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
+
+
+### [Find-ServerFqdn](Find-ServerFqdn.md)
+
+Find-ServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn] <string>] [[-ProgressParentId] <int>]
 
 
 ### [Format-Permission](Format-Permission.md)
@@ -57,9 +62,7 @@ Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-Deb
 
 
 ### [Get-FolderAcl](Get-FolderAcl.md)
-
-Get-FolderAcl [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-ACLsByPath] <hashtable>]
-
+{{ Fill in the Description }}
 
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
 
@@ -76,15 +79,18 @@ Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [
 Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
 
 
+### [Get-TargetPermission](Get-TargetPermission.md)
+
+Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-AclByPath] <hashtable>]
+
+
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
 
 ### [Get-UniqueServerFqdn](Get-UniqueServerFqdn.md)
-
-Get-UniqueServerFqdn [[-Known] <string[]>] [[-FilePath] <string[]>] [[-ThisFqdn] <string>] [[-ProgressParentId] <int>]
-
+{{ Fill in the Description }}
 
 ### [Initialize-Cache](Initialize-Cache.md)
 
@@ -134,7 +140,7 @@ Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <string>] [[-ItemPath] 
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ACLsByPath] <hashtable>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [<CommonParameters>]
 
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)

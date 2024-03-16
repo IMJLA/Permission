@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-FolderAcl
+# Get-TargetPermission
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,10 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-FolderAcl [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UInt16>]
+Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <Object>] [[-ThreadCount] <UInt16>]
  [[-DebugOutputStream] <String>] [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
- [[-ProgressParentId] <Int32>] [[-ACLsByPath] <Hashtable>]
+ [[-ProgressParentId] <Int32>] [[-AclByPath] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -25,7 +25,7 @@ Get-FolderAcl [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <UInt
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -33,8 +33,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ACLsByPath
-{{ Fill ACLsByPath Description }}
+### -AclByPath
+{{ Fill AclByPath Description }}
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -43,6 +43,21 @@ Aliases:
 
 Required: False
 Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Children
+{{ Fill Children Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -58,21 +73,6 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Folder
-{{ Fill Folder Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -123,8 +123,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -Subfolder
-{{ Fill Subfolder Description }}
+### -TargetPath
+{{ Fill TargetPath Description }}
 
 ```yaml
 Type: System.Object
@@ -132,7 +132,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -186,6 +186,7 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object

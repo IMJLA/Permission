@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-UniqueServerFqdn
+# Find-ServerFqdn
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-UniqueServerFqdn [[-Known] <String[]>] [[-FilePath] <String[]>] [[-ThisFqdn] <String>]
+Find-ServerFqdn [[-Known] <String[]>] [[-FilePath] <String[]>] [[-ThisFqdn] <String>]
  [[-ProgressParentId] <Int32>]
 ```
 
@@ -23,7 +23,7 @@ Get-UniqueServerFqdn [[-Known] <String[]>] [[-FilePath] <String[]>] [[-ThisFqdn]
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -94,6 +94,7 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object
