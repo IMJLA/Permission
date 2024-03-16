@@ -24,7 +24,7 @@ Get-HtmlReportFooter [[-StopWatch] <Stopwatch>] [[-WhoAmI] <String>] [[-ThisFqdn
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> {{ Add example code here }}
 ```
 
@@ -155,7 +155,6 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

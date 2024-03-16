@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.323] - 2024-03-16 - suppressed erroneous converto-json depth warnings
+
 ## [0.0.322] - 2024-03-02 - bugfix list of generated files
 
 ## [0.0.321] - 2024-03-02 - add fileformat and outputformat params

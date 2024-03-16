@@ -44,7 +44,6 @@ function Out-PermissionReport {
         $FormattedPermission,
         $LogParams,
         $RecurseDepth,
-        $ReportFile,
         $LogFileList,
         $ReportInstanceId,
         [hashtable]$ACEsByGUID,
@@ -69,7 +68,12 @@ function Out-PermissionReport {
         #>
         [int[]]$Detail = @(0..10),
 
-        $Culture = (Get-Culture),
+        <#
+        Information about the current culture settings.
+        This includes information about the current language settings on the system, such as the keyboard layout, and the
+        display format of items such as numbers, currency, and dates.
+        #>
+        [cultureinfo]$Culture = (Get-Culture),
 
         # File format(s) to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -77,7 +81,26 @@ function Out-PermissionReport {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru'
+        [string]$OutputFormat = 'passthru',
+
+        <#
+        How to group the permissions in the output stream and within each exported file
+
+            SplitBy	GroupBy
+            none	none	$FlatPermissions all in 1 file per $TargetPath
+            none	account	$AccountPermissions all in 1 file per $TargetPath
+            none	item	$ItemPermissions all in 1 file per $TargetPath (default behavior)
+
+            item	none	1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
+            item	account	1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
+            item	item	(same as -SplitBy item -GroupBy none)
+
+            account	none	1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
+            account	account	(same as -SplitBy account -GroupBy none)
+            account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
+        #>
+        [ValidateSet('none', 'item', 'account')]
+        [string]$GroupBy = 'item'
 
     )
 
@@ -85,13 +108,14 @@ function Out-PermissionReport {
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
     Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth"
-    $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth
+    $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
-    # Convert the target path(s) to a Bootstrap alert
+    # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
     Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
     $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString
 
+    # Add the target path div to the parameter splat for New-BootstrapReport
     $ReportParameters = @{
         Title       = $Title
         Description = "$TargetAlert $ReportDescription"
@@ -108,7 +132,7 @@ function Out-PermissionReport {
 
     # Convert the list of generated log files to a Bootstrap list group
     $HtmlListOfLogs = $LogFileList |
-    Split-Path -Leaf |
+    Split-Path -Leaf | # the output directory will be shown in a Bootstrap alert so this row removes the path from the file names
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
 
@@ -122,7 +146,43 @@ function Out-PermissionReport {
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
-    $ListOfFiles = ConvertTo-FileList -Detail $Detail -Format $Formats
+    $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
+
+    # Convert the list of generated report files to a Bootstrap list group
+    $HtmlListOfReports = $ListOfReports |
+    Split-Path -Leaf |
+    #Sort-Object |
+    ConvertTo-HtmlList |
+    ConvertTo-BootstrapListGroup
+
+    # Arrange the lists of generated files in two Bootstrap columns
+    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
+    $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+
+    # Combine the alert and the columns of generated files inside a Bootstrap div
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
+    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns"
+
+    # Generate a footer to include at the bottom of the report
+    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+    $FooterParams = @{
+        ItemCount        = $ACLsByPath.Keys.Count
+        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
+        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
+        ReportInstanceId = $ReportInstanceId
+        StopWatch        = $StopWatch
+        ThisFqdn         = $ThisFqdn
+        UnitsToResolve   = @('day', 'hour', 'minute', 'second')
+        WhoAmI           = $WhoAmI
+    }
+    $ReportFooter = Get-HtmlReportFooter @FooterParams
+
+    $BodyParams = @{
+        HtmlFolderPermissions = $Permissions.Div
+        HtmlExclusions        = $ExclusionsDiv
+        HtmlFileList          = $HtmlDivOfFiles
+        ReportFooter          = $ReportFooter
+    }
 
     ForEach ($Format in $Formats) {
 
@@ -156,9 +216,9 @@ function Out-PermissionReport {
         # String translations indexed by value in the $Detail parameter
         # TODO: Move to i18n
         $DetailStrings = @(
-            'Target paths',
-            'Resolved target paths (server names and DFS targets resolved)'
-            'Item paths (resolved target paths expanded into their children)',
+            'Item paths',
+            'Resolved item paths (server names and DFS targets resolved)'
+            'Expanded resolved item paths (resolved target paths expanded into their children)',
             'Access lists',
             'Access rules (resolved identity references and inheritance flags)',
             'Accounts with access',
@@ -218,41 +278,6 @@ function Out-PermissionReport {
 
                 $DetailScripts[10] = {
 
-                    # Convert the list of generated report files to a Bootstrap list group
-                    $HtmlListOfReports = $ListOfFiles |
-                    Split-Path -Leaf |
-                    #Sort-Object |
-                    ConvertTo-HtmlList |
-                    ConvertTo-BootstrapListGroup
-
-                    # Arrange the lists of generated files in two Bootstrap columns
-                    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-                    $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
-
-                    # Combine the alert and the columns of generated files inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
-                    $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
-
-                    # Generate a footer to include at the bottom of the report
-                    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-                    $FooterParams = @{
-                        StopWatch        = $StopWatch
-                        ReportInstanceId = $ReportInstanceId
-                        WhoAmI           = $WhoAmI
-                        ThisFqdn         = $ThisFqdn
-                        ItemCount        = $ACLsByPath.Keys.Count
-                        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
-                        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
-                    }
-                    $ReportFooter = Get-HtmlReportFooter @FooterParams
-
-                    $BodyParams = @{
-                        HtmlFolderPermissions = $Permissions.Div
-                        HtmlExclusions        = $ExclusionsDiv
-                        HtmlFileList          = $FileList
-                        ReportFooter          = $ReportFooter
-                    }
-
                     if ($Permission.FlatPermissions) {
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
@@ -273,11 +298,11 @@ function Out-PermissionReport {
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                         $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
-                        # Apply the report template to the generated HTML report body and description
-                        Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
-                        New-BootstrapReport -Body $Body @ReportParameters
-
                     }
+
+                    # Apply the report template to the generated HTML report body and description
+                    Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                    New-BootstrapReport -Body $Body @ReportParameters
 
                 }
 
@@ -326,48 +351,11 @@ function Out-PermissionReport {
 
                 $DetailScripts[10] = {
 
-                    # Convert the list of generated report files to a Bootstrap list group
-                    $HtmlListOfReports = $ListOfFiles |
-                    Split-Path -Leaf |
-                    #Sort-Object |
-                    ConvertTo-HtmlList |
-                    ConvertTo-BootstrapListGroup
-
-                    # Arrange the lists of generated files in two Bootstrap columns
-                    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-                    $FileListColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
-
-                    # Combine the alert and the columns of generated files inside a Bootstrap div
-                    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$FileListColumns'"
-                    $FileList = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$FileListColumns"
-
-                    # Generate a footer to include at the bottom of the report
-                    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-                    $FooterParams = @{
-                        StopWatch        = $StopWatch
-                        ReportInstanceId = $ReportInstanceId
-                        WhoAmI           = $WhoAmI
-                        ThisFqdn         = $ThisFqdn
-                        ItemCount        = $ACLsByPath.Keys.Count
-                        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
-                        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
-                    }
-                    $ReportFooter = Get-HtmlReportFooter @FooterParams
-
-                    $BodyParams = @{
-                        HtmlFolderPermissions = $Permissions.Div
-                        HtmlExclusions        = $ExclusionsDiv
-                        HtmlFileList          = $FileList
-                        ReportFooter          = $ReportFooter
-                    }
-
                     if ($Permission.FlatPermissions) {
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                         $Body = Get-HtmlBody @BodyParams
-
-                        $GroupBy = 'none'
 
                     } else {
 
@@ -392,14 +380,14 @@ function Out-PermissionReport {
                 }
 
                 $DetailExports = @(
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                    { $Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile },
+                    { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
                     { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
