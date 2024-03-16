@@ -177,18 +177,18 @@ function Out-PermissionReport {
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
-    $BodyParams = @{
-        HtmlFolderPermissions = $Permissions.Div
-        HtmlExclusions        = $ExclusionsDiv
-        HtmlFileList          = $HtmlDivOfFiles
-        ReportFooter          = $ReportFooter
-    }
-
     ForEach ($Format in $Formats) {
 
         # Convert the list of permission groupings list to an HTML table
         $PermissionGroupings = $FormattedPermission."$Format`Group"
         $Permissions = $FormattedPermission.$Format
+
+        $BodyParams = @{
+            HtmlFolderPermissions = $Permissions.Div
+            HtmlExclusions        = $ExclusionsDiv
+            HtmlFileList          = $HtmlDivOfFiles
+            ReportFooter          = $ReportFooter
+        }
 
         $DetailScripts = @(
             { $TargetPath },

@@ -2681,18 +2681,18 @@ function Out-PermissionReport {
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
-    $BodyParams = @{
-        HtmlFolderPermissions = $Permissions.Div
-        HtmlExclusions        = $ExclusionsDiv
-        HtmlFileList          = $HtmlDivOfFiles
-        ReportFooter          = $ReportFooter
-    }
-
     ForEach ($Format in $Formats) {
 
         # Convert the list of permission groupings list to an HTML table
         $PermissionGroupings = $FormattedPermission."$Format`Group"
         $Permissions = $FormattedPermission.$Format
+
+        $BodyParams = @{
+            HtmlFolderPermissions = $Permissions.Div
+            HtmlExclusions        = $ExclusionsDiv
+            HtmlFileList          = $HtmlDivOfFiles
+            ReportFooter          = $ReportFooter
+        }
 
         $DetailScripts = @(
             { $TargetPath },
@@ -3903,6 +3903,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

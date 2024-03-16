@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.323
+Help Version: 0.0.324
 Locale: en-US
 ---
 
@@ -65,9 +65,6 @@ Get-FolderAcl [[-Folder] <Object>] [[-Subfolder] <Object>] [[-ThreadCount] <usho
 
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>] [[-ShortestPath] <Object>]
 
-
-### [Get-HtmlReportFooter](Get-HtmlReportFooter.md)
-{{ Fill in the Description }}
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
