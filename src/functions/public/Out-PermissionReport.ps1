@@ -197,7 +197,15 @@ function Out-PermissionReport {
             { $ACLsByPath.Values },
             { ForEach ($val in $ACEsByGUID.Values) { $val } },
             { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
-            { $Permission },
+            {
+
+                switch ($SplitBy) {
+                    'none' { $Permission.FlatPermissions }
+                    'item' { $Permission.ItemPermissions }
+                    default { $Permission.AccountPermissions } # 'account'
+                }
+
+            },
             { $Permissions.Data },
             { $BestPracticeIssues },
             { $PrtgXml },
@@ -240,7 +248,7 @@ function Out-PermissionReport {
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                    { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                    { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
                     { $Report | Out-File -LiteralPath $ThisReportFile },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
                     { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
