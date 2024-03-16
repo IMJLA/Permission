@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.327
+Help Version: 0.0.328
 Locale: en-US
 ---
 
@@ -28,7 +28,7 @@ Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <O
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
-Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-TargetPath] <hashtable>]
+Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-ProgressParentId] <int>] [[-TargetPath] <Object>]
 
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
@@ -61,9 +61,6 @@ Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Quer
 Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
-### [Get-FolderAcl](Get-FolderAcl.md)
-{{ Fill in the Description }}
-
 ### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
 
 Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>] [[-ShortestPath] <Object>]
@@ -88,9 +85,6 @@ Get-TargetPermission [[-TargetPath] <Object>] [[-Children] <Object>] [[-ThreadCo
 
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
-
-### [Get-UniqueServerFqdn](Get-UniqueServerFqdn.md)
-{{ Fill in the Description }}
 
 ### [Initialize-Cache](Initialize-Cache.md)
 

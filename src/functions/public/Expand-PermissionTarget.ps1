@@ -33,8 +33,8 @@ function Expand-PermissionTarget {
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        # Cache of access control lists keyed by path
-        [hashtable]$TargetPath = [hashtable]::Synchronized(@{})
+        $TargetPath
+
     )
 
     $Progress = @{
@@ -47,8 +47,7 @@ function Expand-PermissionTarget {
         $Progress['Id'] = 0
     }
 
-    $Targets = $TargetPath.Values
-    $TargetCount = $Targets.Count
+    $TargetCount = $TargetPath.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
@@ -70,14 +69,13 @@ function Expand-PermissionTarget {
         ErrorAction       = 'Continue'
     }
 
-
     if ($ThreadCount -eq 1 -or $TargetCount -eq 1) {
 
         [int]$ProgressInterval = [math]::max(($TargetCount / 100), 1)
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $Targets) {
+        ForEach ($ThisFolder in $TargetPath) {
 
             $IntervalCounter++
 
@@ -97,7 +95,7 @@ function Expand-PermissionTarget {
 
         $SplitThreadParams = @{
             Command           = 'Get-Subfolder'
-            InputObject       = $Targets
+            InputObject       = $TargetPath
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname

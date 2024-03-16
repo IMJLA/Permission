@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Expand-PermissionTarget [[-RecurseDepth] <Object>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
  [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-ProgressParentId] <Int32>]
- [[-TargetPath] <Hashtable>]
+ [[-TargetPath] <Object>]
 ```
 
 ## DESCRIPTION
@@ -96,7 +96,7 @@ Accept wildcard characters: False
 {{ Fill TargetPath Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Object
 Parameter Sets: (All)
 Aliases:
 
