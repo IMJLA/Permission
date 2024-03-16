@@ -199,7 +199,7 @@ function Out-PermissionReport {
             { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
             {
 
-                switch ($SplitBy) {
+                switch ($GroupBy) {
                     'none' { $Permission.FlatPermissions }
                     'item' { $Permission.ItemPermissions }
                     default { $Permission.AccountPermissions } # 'account'

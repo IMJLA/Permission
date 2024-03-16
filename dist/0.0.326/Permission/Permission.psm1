@@ -2703,7 +2703,7 @@ function Out-PermissionReport {
             { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
             {
 
-                switch ($SplitBy) {
+                switch ($GroupBy) {
                     'none' { $Permission.FlatPermissions }
                     'item' { $Permission.ItemPermissions }
                     default { $Permission.AccountPermissions } # 'account'
@@ -3911,6 +3911,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Format-Permission','Format-TimeSpan','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderAcl','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Get-UniqueServerFqdn','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
