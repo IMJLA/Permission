@@ -1257,7 +1257,7 @@ function Expand-PermissionTarget {
 
             Set to any whole number to enumerate that many levels
         #>
-        $RecurseDepth,
+        [int]$RecurseDepth,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -1277,7 +1277,7 @@ function Expand-PermissionTarget {
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        $TargetPath
+        [hashtable]$TargetPath
 
     )
 
@@ -1291,7 +1291,8 @@ function Expand-PermissionTarget {
         $Progress['Id'] = 0
     }
 
-    $TargetCount = $TargetPath.Count
+    $Targets = $TargetPath.Values | ForEach-Object { $_ }
+    $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
@@ -1319,7 +1320,7 @@ function Expand-PermissionTarget {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $TargetPath) {
+        ForEach ($ThisFolder in $Targets) {
 
             $IntervalCounter++
 
@@ -1339,7 +1340,7 @@ function Expand-PermissionTarget {
 
         $SplitThreadParams = @{
             Command           = 'Get-Subfolder'
-            InputObject       = $TargetPath
+            InputObject       = $Targets
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
@@ -1394,7 +1395,7 @@ function Find-ServerFqdn {
         [string[]]$Known,
 
         # File paths whose server FQDNs to include in the output
-        [string[]]$FilePath,
+        [hashtable]$TargetPath,
 
         <#
         FQDN of the computer running this function.
@@ -1419,7 +1420,7 @@ function Find-ServerFqdn {
     }
 
     $Progress['Id'] = $ProgressId
-    $Count = $FilePath.Count
+    $Count = $TargetPath.Keys.Count
     Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{
@@ -1437,7 +1438,7 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($ThisPath in $FilePath) {
+    ForEach ($ThisPath in $TargetPath.Keys) {
 
         $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 
@@ -1552,7 +1553,7 @@ function Get-AccessControlList {
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
-        $TargetPath,
+        [hashtable]$TargetPath,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -3906,6 +3907,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

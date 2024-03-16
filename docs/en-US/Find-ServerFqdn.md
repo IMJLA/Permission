@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Find-ServerFqdn [[-Known] <String[]>] [[-FilePath] <String[]>] [[-ThisFqdn] <String>]
+Find-ServerFqdn [[-Known] <String[]>] [[-TargetPath] <Hashtable>] [[-ThisFqdn] <String>]
  [[-ProgressParentId] <Int32>]
 ```
 
@@ -30,21 +30,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -FilePath
-{{ Fill FilePath Description }}
-
-```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -Known
 {{ Fill Known Description }}
@@ -71,6 +56,21 @@ Aliases:
 
 Required: False
 Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetPath
+{{ Fill TargetPath Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

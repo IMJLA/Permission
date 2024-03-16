@@ -13,7 +13,7 @@ function Expand-PermissionTarget {
 
             Set to any whole number to enumerate that many levels
         #>
-        $RecurseDepth,
+        [int]$RecurseDepth,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
@@ -33,7 +33,7 @@ function Expand-PermissionTarget {
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        $TargetPath
+        [hashtable]$TargetPath
 
     )
 
@@ -47,7 +47,8 @@ function Expand-PermissionTarget {
         $Progress['Id'] = 0
     }
 
-    $TargetCount = $TargetPath.Count
+    $Targets = $TargetPath.Values | ForEach-Object { $_ }
+    $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
     $LogParams = @{
@@ -75,7 +76,7 @@ function Expand-PermissionTarget {
         $IntervalCounter = 0
         $i = 0
 
-        ForEach ($ThisFolder in $TargetPath) {
+        ForEach ($ThisFolder in $Targets) {
 
             $IntervalCounter++
 
@@ -95,7 +96,7 @@ function Expand-PermissionTarget {
 
         $SplitThreadParams = @{
             Command           = 'Get-Subfolder'
-            InputObject       = $TargetPath
+            InputObject       = $Targets
             InputParameter    = 'TargetPath'
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname

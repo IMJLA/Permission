@@ -9,7 +9,7 @@ function Find-ServerFqdn {
         [string[]]$Known,
 
         # File paths whose server FQDNs to include in the output
-        [string[]]$FilePath,
+        [hashtable]$TargetPath,
 
         <#
         FQDN of the computer running this function.
@@ -34,7 +34,7 @@ function Find-ServerFqdn {
     }
 
     $Progress['Id'] = $ProgressId
-    $Count = $FilePath.Count
+    $Count = $TargetPath.Keys.Count
     Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{
@@ -52,7 +52,7 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($ThisPath in $FilePath) {
+    ForEach ($ThisPath in $TargetPath.Keys) {
 
         $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 

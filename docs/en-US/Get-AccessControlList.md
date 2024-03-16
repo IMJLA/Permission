@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-AccessControlList [[-TargetPath] <Object>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
+Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
  [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
  [[-ProgressParentId] <Int32>] [[-AclByPath] <Hashtable>]
@@ -112,7 +112,7 @@ Accept wildcard characters: False
 {{ Fill TargetPath Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 

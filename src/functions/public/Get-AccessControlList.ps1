@@ -7,7 +7,7 @@ function Get-AccessControlList {
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
-        $TargetPath,
+        [hashtable]$TargetPath,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
