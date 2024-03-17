@@ -16,7 +16,7 @@ function Expand-TargetPermissionReference {
 
         $TargetProperties = @{
             PSTypeName = 'Permission.TargetPermission'
-            Target     = $Target.Path
+            Path       = $Target.Path
         }
 
         switch ($GroupBy) {
@@ -29,16 +29,14 @@ function Expand-TargetPermissionReference {
                     [pscustomobject]@{
                         Access     = Expand-ItemPermissionAccountAccessReference -Reference $ParentItem.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
                         Item       = $AclsByPath[$ParentItem.Path]
-                        PSTypeName = 'Permission.ItemPermission'
+                        PSTypeName = 'Permission.ParentItemPermission'
                         Children   = ForEach ($TargetChild in $ParentItem.Children) {
 
-                            $ChildItemProperties = @{
+                            [pscustomobject]@{
+                                Access     = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
                                 Item       = $AclsByPath[$TargetChild]
                                 PSTypeName = 'Permission.ChildItemPermission'
                             }
-
-                            $ChildItemProperties['Access'] = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-                            [pscustomobject]$ChildItemProperties
 
                         }
 
