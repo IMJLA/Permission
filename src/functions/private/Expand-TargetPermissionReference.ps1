@@ -34,7 +34,7 @@ function Expand-TargetPermissionReference {
 
                             [pscustomobject]@{
                                 Access     = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-                                Item       = $AclsByPath[$TargetChild]
+                                Item       = $AclsByPath[$TargetChild.Path]
                                 PSTypeName = 'Permission.ChildItemPermission'
                             }
 

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.338] - 2024-03-17 - bugfix missing Path property
+
 ## [0.0.337] - 2024-03-17 - reduce lines of code
 
 ## [0.0.336] - 2024-03-17 - added splitby target feature
