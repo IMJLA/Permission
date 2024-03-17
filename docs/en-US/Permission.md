@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.335
+Help Version: 0.0.336
 Locale: en-US
 ---
 
@@ -23,7 +23,7 @@ ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
 
 ### [Expand-Permission](Expand-Permission.md)
 
-Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGUIDsByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>]
+Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGUIDsByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>] [[-TargetPath] <hashtable>] [[-Children] <hashtable>]
 
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)

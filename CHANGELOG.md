@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.336] - 2024-03-17 - added splitby target feature
+
 ## [0.0.335] - 2024-03-16 - implement target value for splitby param
 
 ## [0.0.334] - 2024-03-16 - strict param typing

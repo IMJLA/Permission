@@ -10,7 +10,9 @@ function Expand-Permission {
         $AceGUIDsByResolvedID,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
-        $ACLsByPath
+        $ACLsByPath,
+        [hashtable]$TargetPath,
+        [hashtable]$Children
     )
 
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
@@ -26,7 +28,7 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the name of their associated account.
-        $AccountPermissionReferences = Group-AccountPermissionReference @CommonParams -AceGUIDsByResolvedID $AceGUIDsByResolvedID
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGUIDsByResolvedID $AceGUIDsByResolvedID -ACEsByGUID $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         $AccountPermissions = Expand-AccountPermissionReference @CommonParams -Reference $AccountPermissionReferences
@@ -42,7 +44,17 @@ function Expand-Permission {
         $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        $ItemPermissions = Expand-ItemPermissionReference @CommonParams -Reference $ItemPermissionReferences
+        $ItemPermissions = Expand-ItemPermissionReference @CommonParams -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath
+
+    }
+
+    if ($HowToSplit['target']) {
+
+        # Group reference GUIDs by their associated TargetPath.
+        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy @CommonParams
+
+        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+        $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams
 
     }
 
@@ -60,6 +72,7 @@ function Expand-Permission {
         AccountPermissions = $AccountPermissions
         FlatPermissions    = $FlatPermissions
         ItemPermissions    = $ItemPermissions
+        TargetPermissions  = $TargetPermissions
         SplitBy            = $HowToSplit
     }
 

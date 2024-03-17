@@ -4,16 +4,16 @@ function Group-ItemPermissionReference {
         $SortedPath,
         $AceGUIDsByPath,
         $ACEsByGUID,
-        $ACLsByPath,
-        $PrincipalsByResolvedID
+        $PrincipalsByResolvedID,
+        [hashtable]$Property = @{}
     )
 
     ForEach ($ItemPath in $SortedPath) {
 
-        $Acl = $ACLsByPath[$ItemPath]
+        $Property['Path'] = $ItemPath
         $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-        $AccountPermissionsForThisItem = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
+        $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
 
             [PSCustomObject]@{
                 Account  = $ID
@@ -22,10 +22,7 @@ function Group-ItemPermissionReference {
 
         }
 
-        [PSCustomObject]@{
-            Item   = $Acl
-            Access = $AccountPermissionsForThisItem
-        }
+        [PSCustomObject]$Property
 
     }
 
