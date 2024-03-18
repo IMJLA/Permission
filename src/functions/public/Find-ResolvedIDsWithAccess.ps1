@@ -9,30 +9,34 @@ function Find-ResolvedIDsWithAccess {
 
     $IDsWithAccess = @{}
 
-    $Guids = $AceGUIDsByPath[$ItemPath]
-    Write-Host "Guids Type '$($Guids.GetType())'" -ForegroundColor Yellow
-    Write-Host "Guids Count '$($Guids.Count)'" -ForegroundColor Yellow
-    Write-Host "Guids Length '$($Guids.Length)'" -ForegroundColor Yellow
+    ForEach ($Item in $ItemPath) {
 
-    ForEach ($Guid in $Guids) {
+        $Guids = $AceGUIDsByPath[$Item]
+        Write-Host "Guids Type '$($Guids.GetType())'" -ForegroundColor Yellow
+        Write-Host "Guids Count '$($Guids.Count)'" -ForegroundColor Yellow
+        Write-Host "Guids Length '$($Guids.Length)'" -ForegroundColor Yellow
 
-        Write-Host "Guid Type '$($Guid.GetType())'" -ForegroundColor Green
-        Write-Host "Guid Count '$($Guid.Count)'" -ForegroundColor Green
-        Write-Host "Guid Length '$($Guid.Length)'" -ForegroundColor Green
+        ForEach ($Guid in $Guids) {
 
-        $Ace = $ACEsByGUID[$Guid]
+            Write-Host "Guid Type '$($Guid.GetType())'" -ForegroundColor Green
+            Write-Host "Guid Count '$($Guid.Count)'" -ForegroundColor Green
+            Write-Host "Guid Length '$($Guid.Length)'" -ForegroundColor Green
 
-        if ($Ace) {
-            Write-Host "ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Green
-        } else {
-            Write-Host "No ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Cyan
-        }
+            $Ace = $ACEsByGUID[$Guid]
 
-        Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+            if ($Ace) {
+                Write-Host "ACE found for '$Guid' for '$Item'" -ForegroundColor Green
+            } else {
+                Write-Host "No ACE found for '$Guid' for '$Item'" -ForegroundColor Cyan
+            }
 
-        ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
+            Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
 
-            Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+            ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
+
+                Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+
+            }
 
         }
 

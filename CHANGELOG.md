@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.351] - 2024-03-18 - bugfix force itempath enumeration
+
 ## [0.0.350] - 2024-03-18 - add temp debug writehost
 
 ## [0.0.349] - 2024-03-18 - add temp debug writehost
