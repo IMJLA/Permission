@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.340] - 2024-03-18 - guess at bugfix
+
 ## [0.0.339] - 2024-03-17 - further implement splitby and groupby
 
 ## [0.0.338] - 2024-03-17 - bugfix missing Path property

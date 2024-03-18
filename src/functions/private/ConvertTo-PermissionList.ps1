@@ -30,7 +30,7 @@ function ConvertTo-PermissionList {
 
                     ForEach ($Group in $PermissionGrouping) {
                         [PSCustomObject]@{
-                            Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                            Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
                         }
                     }
 
@@ -40,7 +40,7 @@ function ConvertTo-PermissionList {
 
                     ForEach ($Group in $PermissionGrouping) {
                         [PSCustomObject]@{
-                            Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
+                            Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
                         }
                     }
 
