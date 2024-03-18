@@ -1797,7 +1797,7 @@ function Find-ResolvedIDsWithAccess {
 
     $IDsWithAccess = @{}
 
-    ForEach ($Guid in $AceGUIDsByPath[$ItemPath]) {
+    ForEach ($Guid in [guid[]]$AceGUIDsByPath[$ItemPath]) {
 
         $Ace = $ACEsByGUID[$Guid]
         if ($Ace) {
@@ -4376,6 +4376,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
