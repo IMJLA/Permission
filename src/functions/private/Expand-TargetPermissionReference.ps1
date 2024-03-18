@@ -20,7 +20,9 @@ function Expand-TargetPermissionReference {
         }
 
         switch ($GroupBy) {
+
             'account' {}
+
             'item' {
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
@@ -46,7 +48,8 @@ function Expand-TargetPermissionReference {
 
             }
 
-            default {} # none
+            'none' {}
+
         }
 
         [pscustomobject]$TargetProperties

@@ -19,8 +19,8 @@ function ConvertTo-ItemBlock {
     $JsonData = $ObjectsForTable |
     ConvertTo-Json -Compress
 
-    Write-LogMsg @LogParams -Text "Get-FolderColumnJson -InputObject `$ObjectsForTable"
-    $JsonColumns = Get-FolderColumnJson -InputObject $ObjectsForTable
+    Write-LogMsg @LogParams -Text "Get-ColumnJson -InputObject `$ObjectsForTable"
+    $JsonColumns = Get-ColumnJson -InputObject $ObjectsForTable
 
     Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
     $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'

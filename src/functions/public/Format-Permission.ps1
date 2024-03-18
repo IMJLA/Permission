@@ -32,31 +32,66 @@ function Format-Permission {
 
     )
 
-    if ($GroupBy -eq 'none') {
-        $Selection = $Permission.FlatPermissions
-    } else {
-        $Selection = $Permission."$GroupBy`Permissions"
-    }
-
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
-    $OutputProperties = @{
-        passthru = $Selection
+    If ($Permission.SplitBy['none']) {
+
+        switch ($GroupBy) {
+
+            'account' {
+
+                $Selection = $Permission.AccountPermissions
+
+                $OutputProperties = @{
+                    passthru = $Selection
+                }
+
+                $PermissionGroupingsWithChosenProperties = Select-AccountTableProperty -InputObject $Selection -Culture $Culture
+                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+
+                ForEach ($Format in $Formats) {
+
+                    $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                    $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
+
+                }
+
+                [PSCustomObject]$OutputProperties
+
+            }
+
+            'item' {
+
+                $Selection = $Permission.ItemPermissions
+
+                $OutputProperties = @{
+                    passthru = $Selection
+                }
+
+                $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture
+                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+
+                ForEach ($Format in $Formats) {
+
+                    $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                    $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
+
+                }
+
+                [PSCustomObject]$OutputProperties
+
+            }
+
+            'none' {
+                $Selection = $Permission.FlatPermissions
+            }
+
+            'target' {
+                $Selection = $Permission.TargetPermissions
+            }
+
+        }
+
     }
-
-    $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture
-
-    $PermissionsWithChosenProperties = [hashtable]::Synchronized(@{})
-
-    Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -OutputHash $PermissionsWithChosenProperties -GroupBy $GroupBy
-
-    ForEach ($Format in $Formats) {
-
-        $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture
-        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
-
-    }
-
-    [PSCustomObject]$OutputProperties
 
 }

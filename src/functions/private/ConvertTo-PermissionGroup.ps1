@@ -20,7 +20,9 @@ function ConvertTo-PermissionGroup {
             5   Expanded resolved access control entries (expanded with info from ADSI security principals) $Permissions
             6   XML custom sensor output for Paessler PRTG Network Monitor
         #>
-        [int[]]$Detail = @(0..6)
+        [int[]]$Detail = @(0..6),
+
+        [string]$GroupBy
 
     )
 
@@ -45,11 +47,28 @@ function ConvertTo-PermissionGroup {
 
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
             $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
-            $OutputObject['Columns'] = Get-FolderColumnJson -InputObject $Permission
+            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission
+
+            $JavaScriptTable = @{
+                ID = 'Folders'
+            }
+
+            switch ($GroupBy) {
+
+                'account' {
+                    $JavaScriptTable['SearchableColumn'] = 'Account', 'Department', 'DisplayName', 'Name', 'Title'
+                }
+
+                'item' {
+                    $JavaScriptTable['SearchableColumn'] = 'Folder'
+                    $JavaScriptTable['DropdownColumn'] = 'Inheritance'
+                }
+
+            }
 
             #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
             #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
-            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance' -PageSize 25
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -DataFilterControl -PageSize 25 @JavaScriptTable
 
         }
 
