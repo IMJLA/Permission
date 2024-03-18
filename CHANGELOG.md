@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.349] - 2024-03-18 - add temp debug writehost
+
 ## [0.0.348] - 2024-03-18 - bugfix force cast as guid array
 
 ## [0.0.347] - 2024-03-18 - bugfix force cast as array

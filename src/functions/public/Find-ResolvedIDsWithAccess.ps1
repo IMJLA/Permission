@@ -9,7 +9,9 @@ function Find-ResolvedIDsWithAccess {
 
     $IDsWithAccess = @{}
 
-    [guid[]]$Guids = $AceGUIDsByPath[$ItemPath]
+    $Guids = $AceGUIDsByPath[$ItemPath]
+    Write-Host "Guids type '$($Guids.GetType())'" -ForegroundColor Yellow
+    Write-Host "Guids found '$($Guids.Count)'" -ForegroundColor Yellow
 
     ForEach ($Guid in $Guids) {
 
