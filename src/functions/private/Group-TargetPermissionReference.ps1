@@ -31,10 +31,10 @@ function Group-TargetPermissionReference {
             'account' {
 
                 $PathsForThisTarget = [System.Collections.Generic.List[string]]::new()
-                $PathsForThisTarget.AddRange($TargetPath[$Target])
+                $PathsForThisTarget.AddRange([string[]]$TargetPath[$Target])
 
                 ForEach ($TargetParent in $TargetPath[$Target]) {
-                    $PathsForThisTarget.AddRange($Children[$TargetParent])
+                    $PathsForThisTarget.AddRange([string[]]$Children[$TargetParent])
                 }
 
                 $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $PathsForThisTarget -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID

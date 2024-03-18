@@ -1176,10 +1176,10 @@ function Group-TargetPermissionReference {
             'account' {
 
                 $PathsForThisTarget = [System.Collections.Generic.List[string]]::new()
-                $PathsForThisTarget.AddRange($TargetPath[$Target])
+                $PathsForThisTarget.AddRange([string[]]$TargetPath[$Target])
 
                 ForEach ($TargetParent in $TargetPath[$Target]) {
-                    $PathsForThisTarget.AddRange($Children[$TargetParent])
+                    $PathsForThisTarget.AddRange([string[]]$Children[$TargetParent])
                 }
 
                 $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $PathsForThisTarget -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
@@ -4368,6 +4368,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
