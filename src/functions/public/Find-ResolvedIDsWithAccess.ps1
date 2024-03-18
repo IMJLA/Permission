@@ -9,7 +9,7 @@ function Find-ResolvedIDsWithAccess {
 
     $IDsWithAccess = @{}
 
-    ForEach ($Guid in [guid[]]$AceGUIDsByPath[$ItemPath]) {
+    ForEach ($Guid in @($AceGUIDsByPath[$ItemPath])) {
 
         $Ace = $ACEsByGUID[$Guid]
         if ($Ace) {
