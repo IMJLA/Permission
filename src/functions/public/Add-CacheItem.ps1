@@ -18,12 +18,14 @@ function Add-CacheItem {
 
     $CacheResult = $Cache[$Key]
 
-    if (-not $CacheResult) {
-        $Command = "`$CacheResult = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
+    if ($CacheResult) {
+        $List = $CacheResult
+    } else {
+        $Command = "`$List = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
         Invoke-Expression $Command
     }
 
-    $CacheResult.Add($Value)
-    $Cache[$Key] = $CacheResult
+    $List.Add($Value)
+    $Cache[$Key] = $List
 
 }
