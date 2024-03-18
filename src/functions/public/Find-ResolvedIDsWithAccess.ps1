@@ -9,11 +9,13 @@ function Find-ResolvedIDsWithAccess {
 
     $IDsWithAccess = @{}
 
-    ForEach ($Guid in @($AceGUIDsByPath[$ItemPath])) {
+    [guid[]]$Guids = $AceGUIDsByPath[$ItemPath]
+
+    ForEach ($Guid in $Guids) {
 
         $Ace = $ACEsByGUID[$Guid]
         if ($Ace) {
-            Write-Host "ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Cyan
+            Write-Host "ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Green
         } else {
             Write-Host "No ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Cyan
         }
@@ -25,6 +27,7 @@ function Find-ResolvedIDsWithAccess {
             Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
 
         }
+
     }
 
     return $IDsWithAccess
