@@ -29,16 +29,16 @@ function Find-ResolvedIDsWithAccess {
 
                 if ($Ace) {
                     Write-Host "ACE found" -ForegroundColor Green
+
+                    Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+
+                    ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
+
+                        Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+
+                    }
                 } else {
                     Write-Host "No ACE found" -ForegroundColor Cyan
-                }
-
-                Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
-
-                ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
-
-                    Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
-
                 }
 
             }

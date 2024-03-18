@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.353] - 2024-03-18 - update debug output and workflow
+
 ## [0.0.352] - 2024-03-18 - add null guid checking
 
 ## [0.0.351] - 2024-03-18 - bugfix force itempath enumeration
