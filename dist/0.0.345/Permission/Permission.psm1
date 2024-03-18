@@ -1800,6 +1800,12 @@ function Find-ResolvedIDsWithAccess {
     ForEach ($Guid in $AceGUIDsByPath[$ItemPath]) {
 
         $Ace = $ACEsByGUID[$Guid]
+        if ($Ace) {
+            Write-Host "ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Cyan
+        } else {
+            Write-Host "No ACE found for '$Guid' for '$ItemPath'" -ForegroundColor Cyan
+        }
+
         Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
 
         ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
@@ -1809,7 +1815,7 @@ function Find-ResolvedIDsWithAccess {
         }
     }
 
-    $IDsWithAccess
+    return $IDsWithAccess
 
 }
 
@@ -4370,6 +4376,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
