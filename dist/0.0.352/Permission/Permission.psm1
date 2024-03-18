@@ -1800,32 +1800,39 @@ function Find-ResolvedIDsWithAccess {
     ForEach ($Item in $ItemPath) {
 
         $Guids = $AceGUIDsByPath[$Item]
-        Write-Host "Guids Type '$($Guids.GetType())'" -ForegroundColor Yellow
-        Write-Host "Guids Count '$($Guids.Count)'" -ForegroundColor Yellow
-        Write-Host "Guids Length '$($Guids.Length)'" -ForegroundColor Yellow
 
-        ForEach ($Guid in $Guids) {
+        if ($Guids) {
 
-            Write-Host "Guid Type '$($Guid.GetType())'" -ForegroundColor Green
-            Write-Host "Guid Count '$($Guid.Count)'" -ForegroundColor Green
-            Write-Host "Guid Length '$($Guid.Length)'" -ForegroundColor Green
+            Write-Host "Guids Type '$($Guids.GetType())' for '$Item'" -ForegroundColor Yellow
+            Write-Host "Guids Count '$($Guids.Count)'" -ForegroundColor Yellow
+            Write-Host "Guids Length '$($Guids.Length)'" -ForegroundColor Yellow
 
-            $Ace = $ACEsByGUID[$Guid]
+            ForEach ($Guid in $Guids) {
 
-            if ($Ace) {
-                Write-Host "ACE found for '$Guid' for '$Item'" -ForegroundColor Green
-            } else {
-                Write-Host "No ACE found for '$Guid' for '$Item'" -ForegroundColor Cyan
+                Write-Host "Guid Type '$($Guid.GetType())' for '$Guid'" -ForegroundColor Green
+                Write-Host "Guid Count '$($Guid.Count)'" -ForegroundColor Green
+                Write-Host "Guid Length '$($Guid.Length)'" -ForegroundColor Green
+
+                $Ace = $ACEsByGUID[$Guid]
+
+                if ($Ace) {
+                    Write-Host "ACE found" -ForegroundColor Green
+                } else {
+                    Write-Host "No ACE found" -ForegroundColor Cyan
+                }
+
+                Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+
+                ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
+
+                    Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+
+                }
+
             }
 
-            Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
-
-            ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
-
-                Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
-
-            }
-
+        } else {
+            Write-Host "No Guids for '$Item'" -ForegroundColor Yellow
         }
 
     }
@@ -4391,6 +4398,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
