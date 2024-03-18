@@ -45,8 +45,12 @@ function Group-TargetPermissionReference {
                 # Enumerate the collection of ACE GUIDs for this target
                 ForEach ($Guid in $AceGUIDsByPath[$PathsForThisTarget]) {
 
-                    # Add each GUID to the dictionary for quick lookups
-                    $AceGuidsForThisTarget[$Guid] = $true
+                    # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
+                    if ($Guid) {
+                        # Add each GUID to the dictionary for quick lookups
+                        $AceGuidsForThisTarget[$Guid] = $true
+
+                    }
 
                 }
 
