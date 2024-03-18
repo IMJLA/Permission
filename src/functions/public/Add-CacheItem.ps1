@@ -19,8 +19,8 @@ function Add-CacheItem {
     $CacheResult = $Cache[$Key]
 
     if (-not $CacheResult) {
-        $Command = "[System.Collections.Generic.List[$($Type.ToString())]]::new()"
-        $CacheResult = Invoke-Expression $Command
+        $Command = "`$CacheResult = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
+        Invoke-Expression $Command
     }
 
     $CacheResult.Add($Value)
