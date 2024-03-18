@@ -1546,8 +1546,8 @@ function Add-CacheItem {
     $CacheResult = $Cache[$Key]
 
     if (-not $CacheResult) {
-        $Command = "`$CacheResult = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
-        Invoke-Expression $Command
+        $Command = "[System.Collections.Generic.List[$($Type.ToString())]]::new()"
+        $CacheResult = Invoke-Expression $Command
     }
 
     $CacheResult.Add($Value)
@@ -4368,6 +4368,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
