@@ -29,13 +29,11 @@ function Find-ResolvedIDsWithAccess {
 
                     }
                 } else {
-                    Write-Host "No ACE found for '$Guid' for '$Item'" -ForegroundColor Cyan
+                    Write-Warning "No ACE found for '$Guid' for '$Item'"
                 }
 
             }
 
-        } else {
-            Write-Host "No Guids for '$Item'" -ForegroundColor Cyan
         }
 
     }
