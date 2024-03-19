@@ -1809,17 +1809,20 @@ function Find-ResolvedIDsWithAccess {
 
         $Guids = $AceGUIDsByPath[$Item]
 
+        # Not all Paths have ACEs in the cache, so we need to test for null results
         if ($Guids) {
 
             ForEach ($Guid in $Guids) {
 
-                $Ace = $ACEsByGUID[$Guid]
+                ForEach ($Ace in $ACEsByGUID[$Guid]) {
 
-                Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+                    Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
 
-                ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
+                    ForEach ($Member in $PrincipalsByResolvedID[$Ace.IdentityReferenceResolved].Members) {
 
-                    Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+                        Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+
+                    }
 
                 }
 
@@ -4390,6 +4393,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
