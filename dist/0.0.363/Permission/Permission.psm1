@@ -486,10 +486,10 @@ function ConvertTo-PermissionList {
                         # Remove spaces from property titles
                         $ObjectsForJsonData = ForEach ($Obj in $Perm) {
                             [PSCustomObject]@{
-                                'Path'                 = $Obj.Path
-                                'Access'               = ($Obj.Access.Access | Sort-Object -Unique) -join ' ; '
-                                'Due to Membership In' = $GroupString
-                                'Source of Access'     = ($Obj.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                Path              = $Obj.Path
+                                Access            = $Obj.Access
+                                DuetoMembershipIn = $Obj.'Due to Membership In'
+                                SourceofAccess    = $Obj.'Source of Access'
                             }
                         }
 
@@ -4464,6 +4464,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

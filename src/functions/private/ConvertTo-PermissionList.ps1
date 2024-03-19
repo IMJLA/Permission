@@ -162,10 +162,10 @@ function ConvertTo-PermissionList {
                         # Remove spaces from property titles
                         $ObjectsForJsonData = ForEach ($Obj in $Perm) {
                             [PSCustomObject]@{
-                                'Path'                 = $Obj.Path
-                                'Access'               = ($Obj.Access.Access | Sort-Object -Unique) -join ' ; '
-                                'Due to Membership In' = $GroupString
-                                'Source of Access'     = ($Obj.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                Path              = $Obj.Path
+                                Access            = $Obj.Access
+                                DuetoMembershipIn = $Obj.'Due to Membership In'
+                                SourceofAccess    = $Obj.'Source of Access'
                             }
                         }
 
