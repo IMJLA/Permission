@@ -401,7 +401,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 5
                         $Perm = $Permission[$GroupID]
                         $Html = $Perm | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
@@ -1110,11 +1110,11 @@ function Get-SummaryTableHeader {
 
             if ($NoMembers) {
 
-                'Includes accounts directly listed in the ACLs only (option to include group members was declined)'
+                'Includes accounts directly listed in the permissions only (option to include group members was declined)'
 
             } else {
 
-                'Includes accounts in the ACLs, and their group members'
+                'Includes accounts in the permissions, and their group members'
 
             }
 
@@ -4464,6 +4464,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

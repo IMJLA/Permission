@@ -10,11 +10,11 @@ function Get-SummaryTableHeader {
 
             if ($NoMembers) {
 
-                'Includes accounts directly listed in the ACLs only (option to include group members was declined)'
+                'Includes accounts directly listed in the permissions only (option to include group members was declined)'
 
             } else {
 
-                'Includes accounts in the ACLs, and their group members'
+                'Includes accounts in the permissions, and their group members'
 
             }
 

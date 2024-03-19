@@ -77,7 +77,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 5
                         $Perm = $Permission[$GroupID]
                         $Html = $Perm | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
