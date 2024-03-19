@@ -15,20 +15,11 @@ function Find-ResolvedIDsWithAccess {
 
         if ($Guids) {
 
-            Write-Host "Guids Type '$($Guids.GetType())' for '$Item'" -ForegroundColor Yellow
-            Write-Host "Guids Count '$($Guids.Count)'" -ForegroundColor Yellow
-            Write-Host "Guids Length '$($Guids.Length)'" -ForegroundColor Yellow
-
             ForEach ($Guid in $Guids) {
-
-                Write-Host "Guid Type '$($Guid.GetType())' for '$Guid'" -ForegroundColor Green
-                Write-Host "Guid Count '$($Guid.Count)'" -ForegroundColor Green
-                Write-Host "Guid Length '$($Guid.Length)'" -ForegroundColor Green
 
                 $Ace = $ACEsByGUID[$Guid]
 
                 if ($Ace) {
-                    Write-Host "ACE found" -ForegroundColor Green
 
                     Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
 
@@ -38,13 +29,13 @@ function Find-ResolvedIDsWithAccess {
 
                     }
                 } else {
-                    Write-Host "No ACE found" -ForegroundColor Cyan
+                    Write-Host "No ACE found for '$Guid' for '$Item'" -ForegroundColor Cyan
                 }
 
             }
 
         } else {
-            Write-Host "No Guids for '$Item'" -ForegroundColor Yellow
+            Write-Host "No Guids for '$Item'" -ForegroundColor Cyan
         }
 
     }

@@ -60,9 +60,13 @@ function Group-TargetPermissionReference {
 
                     $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
 
-                    $AceGuidsByResolvedIDForThisTarget[$ID] = $AllGuidsForThisID |
-                    Where-Object -FilterScript {
-                        $AceGuidsForThisTarget[$_]
+                    if ($AllGuidsForThisID) {
+
+                        $AceGuidsByResolvedIDForThisTarget[$ID] = $AllGuidsForThisID |
+                        Where-Object -FilterScript {
+                            $AceGuidsForThisTarget[$_]
+                        }
+
                     }
 
                 }
