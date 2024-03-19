@@ -647,29 +647,51 @@ function ConvertTo-PermissionList {
 
         'xml' {
 
-            if ($GroupBy -eq 'none') {
+            switch ($GroupBy) {
 
-                $OutputObject = @{}
-                $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
-                [PSCustomObject]$OutputObject
+                'account' {
 
-            } else {
+                    ForEach ($Group in $PermissionGrouping) {
+                        [PSCustomObject]@{
+                            Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+                        }
+                    }
 
-                ForEach ($Group in $PermissionGrouping) {
+                }
+
+                'item' {
+
+                    ForEach ($Group in $PermissionGrouping) {
+                        [PSCustomObject]@{
+                            Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                        }
+                    }
+
+                }
+
+                'none' {
+
                     $OutputObject = @{}
-                    $OutputObject['Data'] = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                    $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
                     [PSCustomObject]$OutputObject
+
+                }
+
+                'target' {
+
+                    ForEach ($Group in $PermissionGrouping) {
+                        [PSCustomObject]@{
+                            Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                        }
+                    }
+
                 }
 
             }
 
         }
 
-        default {}
-
     }
-
-    return
 
 }
 function ConvertTo-ScriptHtml {
@@ -1798,9 +1820,9 @@ function Find-ResolvedIDsWithAccess {
 
     param (
         $ItemPath,
-        $AceGUIDsByPath,
-        $ACEsByGUID,
-        $PrincipalsByResolvedID
+        [hashtable]$AceGUIDsByPath,
+        [hashtable]$ACEsByGUID,
+        [hashtable]$PrincipalsByResolvedID
     )
 
     $IDsWithAccess = @{}
@@ -4393,6 +4415,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

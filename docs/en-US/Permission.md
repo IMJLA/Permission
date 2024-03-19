@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.358
+Help Version: 0.0.359
 Locale: en-US
 ---
 
@@ -33,7 +33,7 @@ Expand-PermissionTarget [[-RecurseDepth] <int>] [[-ThreadCount] <ushort>] [[-Deb
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
 
-Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
+Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <hashtable>] [[-ACEsByGUID] <hashtable>] [[-PrincipalsByResolvedID] <hashtable>]
 
 
 ### [Find-ServerFqdn](Find-ServerFqdn.md)

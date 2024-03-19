@@ -323,28 +323,50 @@ function ConvertTo-PermissionList {
 
         'xml' {
 
-            if ($GroupBy -eq 'none') {
+            switch ($GroupBy) {
 
-                $OutputObject = @{}
-                $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
-                [PSCustomObject]$OutputObject
+                'account' {
 
-            } else {
+                    ForEach ($Group in $PermissionGrouping) {
+                        [PSCustomObject]@{
+                            Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+                        }
+                    }
 
-                ForEach ($Group in $PermissionGrouping) {
+                }
+
+                'item' {
+
+                    ForEach ($Group in $PermissionGrouping) {
+                        [PSCustomObject]@{
+                            Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                        }
+                    }
+
+                }
+
+                'none' {
+
                     $OutputObject = @{}
-                    $OutputObject['Data'] = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                    $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
                     [PSCustomObject]$OutputObject
+
+                }
+
+                'target' {
+
+                    ForEach ($Group in $PermissionGrouping) {
+                        [PSCustomObject]@{
+                            Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                        }
+                    }
+
                 }
 
             }
 
         }
 
-        default {}
-
     }
-
-    return
 
 }

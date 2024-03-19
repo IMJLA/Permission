@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Object>] [[-ACEsByGUID] <Object>]
- [[-PrincipalsByResolvedID] <Object>]
+Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <Hashtable>] [[-ACEsByGUID] <Hashtable>]
+ [[-PrincipalsByResolvedID] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -35,7 +35,7 @@ PS C:\> {{ Add example code here }}
 {{ Fill AceGUIDsByPath Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -50,7 +50,7 @@ Accept wildcard characters: False
 {{ Fill ACEsByGUID Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -80,7 +80,7 @@ Accept wildcard characters: False
 {{ Fill PrincipalsByResolvedID Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 

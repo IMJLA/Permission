@@ -2,9 +2,9 @@ function Find-ResolvedIDsWithAccess {
 
     param (
         $ItemPath,
-        $AceGUIDsByPath,
-        $ACEsByGUID,
-        $PrincipalsByResolvedID
+        [hashtable]$AceGUIDsByPath,
+        [hashtable]$ACEsByGUID,
+        [hashtable]$PrincipalsByResolvedID
     )
 
     $IDsWithAccess = @{}
