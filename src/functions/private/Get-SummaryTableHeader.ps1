@@ -4,23 +4,59 @@ function Get-SummaryTableHeader {
         [string]$GroupBy
     )
 
-    if ($GroupBy -eq 'account') {
+    switch ($GroupBy) {
 
-        'Account Details'
+        'account' {
 
-    } else {
+            if ($NoMembers) {
 
-        switch ($RecurseDepth ) {
-            0 {
-                'Includes the target folder only (option to report on subfolders was declined)'
+                switch ($RecurseDepth ) {
+                    0 {
+                        'Includes accounts directly listed in the ACLs of the target folders only'
+                    }
+                    -1 {
+                        'Includes accounts directly listed in the ACLs of the target folders and all subfolders with unique permissions'
+                    }
+                    default {
+                        "Includes accounts directly listed in the ACLs of the target folders and $RecurseDepth levels of subfolders with unique permissions"
+                    }
+                }
+
+            } else {
+
+                switch ($RecurseDepth ) {
+                    0 {
+                        'Includes accounts (and their group members) in the ACLs of the target folders only'
+                    }
+                    -1 {
+                        'Includes accounts (and their group members) in the ACLs of the target folders and all subfolders with unique permissions'
+                    }
+                    default {
+                        "Includes accounts (and their group members) in the ACLs of the target folders and $RecurseDepth levels of subfolders with unique permissions"
+                    }
+                }
+
             }
-            -1 {
-                'Includes the target folder and all subfolders with unique permissions'
-            }
-            default {
-                "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
-            }
+
         }
+
+        'item' {
+
+            switch ($RecurseDepth ) {
+                0 {
+                    'Includes the target folder only (option to report on subfolders was declined)'
+                }
+                -1 {
+                    'Includes the target folder and all subfolders with unique permissions'
+                }
+                default {
+                    "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
+                }
+            }
+
+        }
+
+        'target' { }
 
     }
 
