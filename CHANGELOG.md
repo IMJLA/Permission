@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.367] - 2024-03-18 - fix order of properties/columns
+
 ## [0.0.366] - 2024-03-18 - add description to default set of account properties when groupby account
 
 ## [0.0.365] - 2024-03-18 - add more sorting

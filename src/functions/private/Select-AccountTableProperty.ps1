@@ -8,12 +8,13 @@ function Select-AccountTableProperty {
 
     ForEach ($Object in $InputObject) {
 
+        # This appears to be what determines the order of columns in the json report
         [PSCustomObject]@{
             Account     = $Object.Account.ResolvedAccountName
-            Department  = $Object.Account.Department
-            Description = $Object.Account.Description
-            DisplayName = $Object.Account.DisplayName
             Name        = $Object.Account.Name
+            DisplayName = $Object.Account.DisplayName
+            Description = $Object.Account.Description
+            Department  = $Object.Account.Department
             Title       = $Object.Account.Title
         }
 
