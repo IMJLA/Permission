@@ -6,7 +6,7 @@ function Group-AccountPermissionReference {
         $ACEsByGUID
     )
 
-    ForEach ($Identity in $ID) {
+    ForEach ($Identity in ($ID | Sort-Object)) {
 
         $ACEGuidsForThisID = $AceGUIDsByResolvedID[$Identity]
         $ItemPaths = @{}
@@ -18,7 +18,7 @@ function Group-AccountPermissionReference {
 
         }
 
-        $ItemPermissionsForThisAccount = ForEach ($Item in $ItemPaths.Keys) {
+        $ItemPermissionsForThisAccount = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
             [PSCustomObject]@{
                 Path     = $Item

@@ -20,7 +20,7 @@ function Group-TargetPermissionReference {
         PrincipalsByResolvedID = $PrincipalsByResolvedID
     }
 
-    ForEach ($Target in $TargetPath.Keys) {
+    ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
 
         $TargetProperties = @{
             Path = $Target

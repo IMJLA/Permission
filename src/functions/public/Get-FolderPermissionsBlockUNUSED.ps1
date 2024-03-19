@@ -1,4 +1,4 @@
-function Get-FolderPermissionsBlock {
+function Get-FolderPermissionsBlockUNUSED {
     param (
 
         # Output from Format-FolderPermission in the PsNtfsModule which has already been piped to Group-Object using the Folder property

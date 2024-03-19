@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-FolderPermissionsBlock
+# Get-FolderPermissionsBlockUNUSED
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <String[]>]
+Get-FolderPermissionsBlockUNUSED [[-FolderPermissions] <Object>] [[-ExcludeAccount] <String[]>]
  [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <String[]>] [[-ShortestPath] <Object>]
 ```
 

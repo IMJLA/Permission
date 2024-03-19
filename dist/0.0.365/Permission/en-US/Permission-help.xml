@@ -2288,9 +2288,9 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Get-FolderPermissionsBlock</command:name>
+      <command:name>Get-FolderPermissionsBlockUNUSED</command:name>
       <command:verb>Get</command:verb>
-      <command:noun>FolderPermissionsBlock</command:noun>
+      <command:noun>FolderPermissionsBlockUNUSED</command:noun>
       <maml:description>
         <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
@@ -2300,7 +2300,7 @@
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Get-FolderPermissionsBlock</maml:name>
+        <maml:name>Get-FolderPermissionsBlockUNUSED</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>FolderPermissions</maml:name>
           <maml:description>

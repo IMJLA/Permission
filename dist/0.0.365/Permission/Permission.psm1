@@ -1149,7 +1149,7 @@ function Group-AccountPermissionReference {
         $ACEsByGUID
     )
 
-    ForEach ($Identity in $ID) {
+    ForEach ($Identity in ($ID | Sort-Object)) {
 
         $ACEGuidsForThisID = $AceGUIDsByResolvedID[$Identity]
         $ItemPaths = @{}
@@ -1161,7 +1161,7 @@ function Group-AccountPermissionReference {
 
         }
 
-        $ItemPermissionsForThisAccount = ForEach ($Item in $ItemPaths.Keys) {
+        $ItemPermissionsForThisAccount = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
             [PSCustomObject]@{
                 Path     = $Item
@@ -1229,7 +1229,7 @@ function Group-TargetPermissionReference {
         PrincipalsByResolvedID = $PrincipalsByResolvedID
     }
 
-    ForEach ($Target in $TargetPath.Keys) {
+    ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
 
         $TargetProperties = @{
             Path = $Target
@@ -2505,7 +2505,7 @@ function Get-CachedCimSession {
     }
 
 }
-function Get-FolderPermissionsBlock {
+function Get-FolderPermissionsBlockUNUSED {
     param (
 
         # Output from Format-FolderPermission in the PsNtfsModule which has already been piped to Group-Object using the Folder property
@@ -4463,7 +4463,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

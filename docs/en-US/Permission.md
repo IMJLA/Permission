@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.364
+Help Version: 0.0.365
 Locale: en-US
 ---
 
@@ -66,9 +66,9 @@ Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Quer
 Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
-### [Get-FolderPermissionsBlock](Get-FolderPermissionsBlock.md)
+### [Get-FolderPermissionsBlockUNUSED](Get-FolderPermissionsBlockUNUSED.md)
 
-Get-FolderPermissionsBlock [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>] [[-ShortestPath] <Object>]
+Get-FolderPermissionsBlockUNUSED [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>] [[-ShortestPath] <Object>]
 
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
