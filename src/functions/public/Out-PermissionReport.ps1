@@ -107,8 +107,14 @@ function Out-PermissionReport {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
-    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth"
+    Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
+    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
+
+    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
+
+    Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
+    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
@@ -151,7 +157,6 @@ function Out-PermissionReport {
     # Convert the list of generated report files to a Bootstrap list group
     $HtmlListOfReports = $ListOfReports |
     Split-Path -Leaf |
-    #Sort-Object |
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
 
@@ -188,6 +193,8 @@ function Out-PermissionReport {
             HtmlExclusions        = $ExclusionsDiv
             HtmlFileList          = $HtmlDivOfFiles
             ReportFooter          = $ReportFooter
+            SummaryDivHeader      = $SummaryDivHeader
+            DetailDivHeader       = $DetailDivHeader
         }
 
         $DetailScripts = @(

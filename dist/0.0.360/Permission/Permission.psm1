@@ -930,6 +930,19 @@ function Get-ColumnJson {
     ConvertTo-Json -Compress
 
 }
+function Get-DetailDivHeader {
+    param (
+        [string]$GroupBy
+    )
+
+    switch ($GroupBy) {
+        'account' { 'Folders Included in Those Permissions' }
+        'item' { 'Accounts Included in Those Permissions' }
+        'target' { 'Target Folders Analyzed in This Report' }
+        'none' { 'Permissions' }
+    }
+
+}
 function Get-FolderPermissionTableHeader {
     [OutputType([System.String])]
     param (
@@ -965,18 +978,19 @@ function Get-HtmlBody {
         $HtmlFolderPermissions,
         $ReportFooter,
         $HtmlFileList,
-        $HtmlExclusions
+        $HtmlExclusions,
+        $SummaryDivHeader,
+        $DetailDivHeader
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
 
     if ($TableOfContents) {
-        $null = $StringBuilder.Append((New-HtmlHeading "Folders with Permissions in This Report" -Level 3))
+        $null = $StringBuilder.Append((New-HtmlHeading $SummaryDivHeader -Level 3))
         $null = $StringBuilder.Append($TableOfContents)
-        $null = $StringBuilder.Append((New-HtmlHeading "Accounts Included in Those Permissions" -Level 3))
-    } else {
-        $null = $StringBuilder.Append((New-HtmlHeading "Permissions" -Level 3))
     }
+
+    $null = $StringBuilder.Append((New-HtmlHeading $DetailDivHeader -Level 3))
 
     ForEach ($Perm in $HtmlFolderPermissions) {
         $null = $StringBuilder.Append($Perm)
@@ -1069,6 +1083,18 @@ function Get-ReportDescription {
             "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"
         }
 
+    }
+
+}
+function Get-SummaryDivHeader {
+    param (
+        [string]$GroupBy
+    )
+
+    switch ($GroupBy) {
+        'account' { 'Accounts with Permissions in This Report' }
+        'item' { 'Folders with Permissions in This Report' }
+        'target' { 'Target Folders Analyzed in This Report' }
     }
 
 }
@@ -3120,8 +3146,14 @@ function Out-PermissionReport {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
-    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth"
+    Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
+    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
+
+    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
+
+    Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
+    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
@@ -3164,7 +3196,6 @@ function Out-PermissionReport {
     # Convert the list of generated report files to a Bootstrap list group
     $HtmlListOfReports = $ListOfReports |
     Split-Path -Leaf |
-    #Sort-Object |
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
 
@@ -3201,6 +3232,8 @@ function Out-PermissionReport {
             HtmlExclusions        = $ExclusionsDiv
             HtmlFileList          = $HtmlDivOfFiles
             ReportFooter          = $ReportFooter
+            SummaryDivHeader      = $SummaryDivHeader
+            DetailDivHeader       = $DetailDivHeader
         }
 
         $DetailScripts = @(
@@ -4415,6 +4448,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
