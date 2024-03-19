@@ -10,9 +10,10 @@ function Select-AccountTableProperty {
 
         [PSCustomObject]@{
             Account     = $Object.Account.ResolvedAccountName
+            Department  = $Object.Account.Department
+            Description = $Object.Account.Description
             DisplayName = $Object.Account.DisplayName
             Name        = $Object.Account.Name
-            Department  = $Object.Account.Department
             Title       = $Object.Account.Title
         }
 

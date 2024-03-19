@@ -56,7 +56,7 @@ function ConvertTo-PermissionGroup {
             switch ($GroupBy) {
 
                 'account' {
-                    $JavaScriptTable['SearchableColumn'] = 'Account', 'Department', 'DisplayName', 'Name', 'Title'
+                    $JavaScriptTable['SearchableColumn'] = 'Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'
                 }
 
                 'item' {
