@@ -1110,31 +1110,11 @@ function Get-SummaryTableHeader {
 
             if ($NoMembers) {
 
-                switch ($RecurseDepth ) {
-                    0 {
-                        'Includes accounts directly listed in the ACLs of the target folders only'
-                    }
-                    -1 {
-                        'Includes accounts directly listed in the ACLs of the target folders and all subfolders with unique permissions'
-                    }
-                    default {
-                        "Includes accounts directly listed in the ACLs of the target folders and $RecurseDepth levels of subfolders with unique permissions"
-                    }
-                }
+                'Includes accounts directly listed in the ACLs only (option to include group members was declined)'
 
             } else {
 
-                switch ($RecurseDepth ) {
-                    0 {
-                        'Includes accounts (and their group members) in the ACLs of the target folders only'
-                    }
-                    -1 {
-                        'Includes accounts (and their group members) in the ACLs of the target folders and all subfolders with unique permissions'
-                    }
-                    default {
-                        "Includes accounts (and their group members) in the ACLs of the target folders and $RecurseDepth levels of subfolders with unique permissions"
-                    }
-                }
+                'Includes accounts in the ACLs, and their group members'
 
             }
 
@@ -4484,6 +4464,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlock','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

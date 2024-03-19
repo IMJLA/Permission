@@ -10,31 +10,11 @@ function Get-SummaryTableHeader {
 
             if ($NoMembers) {
 
-                switch ($RecurseDepth ) {
-                    0 {
-                        'Includes accounts directly listed in the ACLs of the target folders only'
-                    }
-                    -1 {
-                        'Includes accounts directly listed in the ACLs of the target folders and all subfolders with unique permissions'
-                    }
-                    default {
-                        "Includes accounts directly listed in the ACLs of the target folders and $RecurseDepth levels of subfolders with unique permissions"
-                    }
-                }
+                'Includes accounts directly listed in the ACLs only (option to include group members was declined)'
 
             } else {
 
-                switch ($RecurseDepth ) {
-                    0 {
-                        'Includes accounts (and their group members) in the ACLs of the target folders only'
-                    }
-                    -1 {
-                        'Includes accounts (and their group members) in the ACLs of the target folders and all subfolders with unique permissions'
-                    }
-                    default {
-                        "Includes accounts (and their group members) in the ACLs of the target folders and $RecurseDepth levels of subfolders with unique permissions"
-                    }
-                }
+                'Includes accounts in the ACLs, and their group members'
 
             }
 

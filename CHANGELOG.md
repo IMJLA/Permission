@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.362] - 2024-03-18 - update summarytableheader for groupby account
+
 ## [0.0.361] - 2024-03-18 - update summarytableheader for groupby account
 
 ## [0.0.360] - 2024-03-18 - bugfix headings in report when groupby account
