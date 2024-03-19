@@ -261,7 +261,11 @@ function ConvertTo-PermissionGroup {
         #>
         [int[]]$Detail = @(0..6),
 
-        [string]$GroupBy
+        [string]$GroupBy,
+
+        [string[]]$AccountProperty = @('Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'),
+
+        [string[]]$ItemProperty = @('Folder', 'Inheritance')
 
     )
 
@@ -284,10 +288,7 @@ function ConvertTo-PermissionGroup {
 
         'json' {
 
-            # Wrap input in a array because output must be a JSON array for jquery to work properly.
-            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
-            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission
-
+            #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
             $JavaScriptTable = @{
                 ID = 'Folders'
             }
@@ -295,19 +296,27 @@ function ConvertTo-PermissionGroup {
             switch ($GroupBy) {
 
                 'account' {
-                    $JavaScriptTable['SearchableColumn'] = 'Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'
+                    $OrderedProperties = $AccountProperty
+                    $JavaScriptTable['SearchableColumn'] = $OrderedProperties
                 }
 
                 'item' {
+                    $OrderedProperties = $ItemProperty
                     $JavaScriptTable['SearchableColumn'] = 'Folder'
                     $JavaScriptTable['DropdownColumn'] = 'Inheritance'
                 }
 
+                'none' {}
+                'target' {}
+
             }
 
-            #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
+            # Wrap input in a array because output must be a JSON array for jquery to work properly.
+            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
+            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission -PropNames $OrderedProperties
+
             #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
-            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -DataFilterControl -PageSize 25 @JavaScriptTable
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
 
         }
 
@@ -1446,7 +1455,7 @@ function Select-AccountTableProperty {
 
     ForEach ($Object in $InputObject) {
 
-        # This appears to be what determines the order of columns in the json report
+        # This appears to be what determines the order of columns in the html report
         [PSCustomObject]@{
             Account     = $Object.Account.ResolvedAccountName
             Name        = $Object.Account.Name
@@ -4466,6 +4475,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
