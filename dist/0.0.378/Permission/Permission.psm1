@@ -1187,13 +1187,14 @@ function Group-AccountPermissionReference {
     ForEach ($Identity in ($ID | Sort-Object)) {
 
         $ItemPaths = @{}
-
+        Write-Host "$($AceGUIDsByResolvedID[$Identity].Count) ACEs for '$Identity' of $($AceGUIDsByResolvedID.Keys.Count) total"
         ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
             $Ace = $ACEsByGUID[$Guid]
             Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
 
         }
+        Write-Host "$($ItemPaths.Keys.Count) Item Paths for '$Identity'"
 
         [PSCustomObject]@{
             Account = $Identity
@@ -1281,7 +1282,7 @@ function Group-TargetPermissionReference {
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
                     $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-                    Write-Host "$($IDsWithAccess.Count) IDsWithAccess for '$NetworkPath'"
+
                     # Prepare a dictionary for quick lookup of ACE GUIDs for this target
                     $AceGuidsForThisNetworkPath = @{}
 
@@ -1297,14 +1298,12 @@ function Group-TargetPermissionReference {
                         }
 
                     }
-                    Write-Host "$($AceGuidsForThisNetworkPath.Keys.Count) ACEs for '$NetworkPath'"
 
                     $AceGuidByResolvedIDForThisNetworkPath = @{}
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
 
                         $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
-                        Write-Host "$($AllGuidsForThisID.Count) ACEs for '$ID' out of $($AceGUIDsByResolvedID.Keys.Count) total ACEs"
 
 
                         if ($AllGuidsForThisID) {
@@ -1316,7 +1315,6 @@ function Group-TargetPermissionReference {
                         }
 
                     }
-                    Write-Host "$($AceGuidByResolvedIDForThisNetworkPath.Keys.Count) ACEs by Resolved ID for '$NetworkPath'"
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
@@ -4541,6 +4539,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
