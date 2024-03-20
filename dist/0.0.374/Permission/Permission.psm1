@@ -1281,7 +1281,7 @@ function Group-TargetPermissionReference {
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
                     $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-
+                    Write-Host "$($IDsWithAccess.Count) IDsWithAccess for '$NetworkPath'"
                     # Prepare a dictionary for quick lookup of ACE GUIDs for this target
                     $AceGuidsForThisNetworkPath = @{}
 
@@ -1297,6 +1297,7 @@ function Group-TargetPermissionReference {
                         }
 
                     }
+                    Write-Host "$($AceGuidsForThisNetworkPath.Keys.Count) ACEs for '$NetworkPath'"
 
                     $AceGuidByResolvedIDForThisNetworkPath = @{}
 
@@ -1313,6 +1314,7 @@ function Group-TargetPermissionReference {
                         }
 
                     }
+                    Write-Host "$($AceGuidByResolvedIDForThisNetworkPath.Keys.Count) ACEs by Resolved ID for '$NetworkPath'"
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
@@ -4537,6 +4539,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
