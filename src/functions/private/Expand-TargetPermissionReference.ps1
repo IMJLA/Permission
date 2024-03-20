@@ -29,11 +29,12 @@ function Expand-TargetPermissionReference {
                     [pscustomobject]@{
                         Item       = $AclsByPath[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Accounts   = ForEach ($Account in $NetworkPath.Accounts) {
-
-                            Expand-AccountPermissionReference -Reference $Account -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-
-                        }
+                        Accounts   = $NetworkPath.Accounts
+                        #Accounts   = ForEach ($Account in $NetworkPath.Accounts) {
+                        #
+                        #    Expand-AccountPermissionReference -Reference $Account -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        #
+                        #}
 
                     }
 

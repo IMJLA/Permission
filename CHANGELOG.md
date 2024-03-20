@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.370] - 2024-03-19 - troubleshooting
+
 ## [0.0.369] - 2024-03-19 - implement targetpath to networkpath to groupby
 
 ## [0.0.368] - 2024-03-18 - fix order of table properties (I think)
