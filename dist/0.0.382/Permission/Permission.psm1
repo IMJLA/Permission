@@ -1188,8 +1188,9 @@ function Group-AccountPermissionReference {
 
         $ItemPaths = @{}
         if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
-            Write-Host "0 ACEs for '$Identity'"
-            Write-Host "Available keys are: '$($AceGUIDsByResolvedID.Keys -join ',')'"
+            Write-Host "0 ACEs for '$Identity' which is a $($Identity.GetType().FullName)"
+            Write-Host "Available keys are: $($AceGUIDsByResolvedID.Keys -join ',')"
+            Write-Host "First key is a: $($AceGUIDsByResolvedID.Keys[0].GetType().FullName)"
         }
         ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
@@ -4541,6 +4542,9 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
+
 
 
 
