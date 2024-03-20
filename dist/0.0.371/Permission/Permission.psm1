@@ -869,12 +869,8 @@ function Expand-TargetPermissionReference {
                     [pscustomobject]@{
                         Item       = $AclsByPath[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Accounts   = $NetworkPath.Accounts
-                        #Accounts   = ForEach ($Account in $NetworkPath.Accounts) {
-                        #
-                        #    Expand-AccountPermissionReference -Reference $Account -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-                        #
-                        #}
+                        Accounts   = $NetworkPath.Accounts[0]
+                        #Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
                     }
 
@@ -1321,7 +1317,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess -AceGUIDsByResolvedID $AceGuidsByResolvedIDForThisTarget -ACEsByGUID $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGUIDsByResolvedID $AceGuidsByResolvedIDForThisTarget -ACEsByGUID $ACEsByGUID
                     }
 
                 }
@@ -4542,6 +4538,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
