@@ -59,7 +59,7 @@ function Group-TargetPermissionReference {
 
                     $AceGuidByResolvedIDForThisNetworkPath = @{}
 
-                    ForEach ($ID in $IDsWithAccess) {
+                    ForEach ($ID in $IDsWithAccess.Keys) {
 
                         $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
                         Write-Host "$($AllGuidsForThisID.Count) ACEs for '$ID' out of $($AceGUIDsByResolvedID.Keys.Count) total ACEs"
