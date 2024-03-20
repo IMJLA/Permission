@@ -62,6 +62,8 @@ function Group-TargetPermissionReference {
                     ForEach ($ID in $IDsWithAccess) {
 
                         $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
+                        Write-Host "$($AllGuidsForThisID.Count) ACEs for '$ID' out of $($AceGUIDsByResolvedID.Keys.Count) total ACEs"
+
 
                         if ($AllGuidsForThisID) {
 

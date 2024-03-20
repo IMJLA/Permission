@@ -1,4 +1,4 @@
-$ScriptName = 'Get-FolderAcl.ps1'
+$ScriptName = 'Get-AccessControlList.ps1'
 $ScriptPath = "$($PSScriptRoot -replace 'tests','src')\$ScriptName"
 
 Describe "'$ScriptName' Function Tests" {
