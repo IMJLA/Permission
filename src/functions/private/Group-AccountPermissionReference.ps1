@@ -9,14 +9,16 @@ function Group-AccountPermissionReference {
     ForEach ($Identity in ($ID | Sort-Object)) {
 
         $ItemPaths = @{}
-        Write-Host "$($AceGUIDsByResolvedID[$Identity].Count) ACEs for '$Identity' of $($AceGUIDsByResolvedID.Keys.Count) total"
+        if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
+            Write-Host "0 ACEs for '$Identity'"
+            Write-Host "Available keys are: '$($AceGUIDsByResolvedID.Keys -join ',')'"
+        }
         ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
             $Ace = $ACEsByGUID[$Guid]
             Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
 
         }
-        Write-Host "$($ItemPaths.Keys.Count) Item Paths for '$Identity'"
 
         [PSCustomObject]@{
             Account = $Identity
