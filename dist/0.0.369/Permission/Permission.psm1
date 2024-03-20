@@ -852,27 +852,56 @@ function Expand-TargetPermissionReference {
 
     )
 
-    ForEach ($Target in $Reference) {
+    switch ($GroupBy) {
 
-        $TargetProperties = @{
-            PSTypeName = 'Permission.TargetPermission'
-            Path       = $Target.Path
-        }
+        'account' {
 
-        switch ($GroupBy) {
+            ForEach ($Target in $Reference) {
 
-            'account' {}
-
-            'item' {
+                $TargetProperties = @{
+                    PSTypeName = 'Permission.TargetPermission'
+                    Path       = $Target.Path
+                }
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-                $TargetProperties['Items'] = ForEach ($ParentItem in $Target.Items) {
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                     [pscustomobject]@{
-                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $ParentItem.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-                        Item       = $AclsByPath[$ParentItem.Path]
+                        Item       = $AclsByPath[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Children   = ForEach ($TargetChild in $ParentItem.Children) {
+                        Accounts   = ForEach ($Account in $NetworkPath.Accounts) {
+
+                            Expand-AccountPermissionReference -Reference $Account -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+
+                        }
+
+                    }
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
+
+        'item' {
+
+            ForEach ($Target in $Reference) {
+
+                $TargetProperties = @{
+                    PSTypeName = 'Permission.TargetPermission'
+                    Path       = $Target.Path
+                }
+
+                # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
+
+                    [pscustomobject]@{
+                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        Item       = $AclsByPath[$NetworkPath.Path]
+                        PSTypeName = 'Permission.ParentItemPermission'
+                        Children   = ForEach ($TargetChild in $NetworkPath.Items) {
 
                             [pscustomobject]@{
                                 Access     = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
@@ -886,13 +915,13 @@ function Expand-TargetPermissionReference {
 
                 }
 
-            }
+                [pscustomobject]$TargetProperties
 
-            'none' {}
+            }
 
         }
 
-        [pscustomobject]$TargetProperties
+        'none' {}
 
     }
 
@@ -1238,92 +1267,126 @@ function Group-TargetPermissionReference {
         PrincipalsByResolvedID = $PrincipalsByResolvedID
     }
 
-    ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+    switch ($GroupBy) {
 
-        $TargetProperties = @{
-            Path = $Target
-        }
+        'account' {
 
-        switch ($GroupBy) {
+            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
 
-            'account' {
-
-                $PathsForThisTarget = [System.Collections.Generic.List[string]]::new()
-                $PathsForThisTarget.AddRange([string[]]$TargetPath[$Target])
-
-                ForEach ($TargetParent in $TargetPath[$Target]) {
-                    $PathsForThisTarget.AddRange([string[]]$Children[$TargetParent])
+                $TargetProperties = @{
+                    Path = $Target
                 }
 
-                $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $PathsForThisTarget -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                $NetworkPaths = $TargetPath[$Target] | Sort-Object
 
-                # Prepare a dictionary for quick lookup of ACE GUIDs for this target
-                $AceGuidsForThisTarget = @{}
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
-                # Enumerate the collection of ACE GUIDs for this target
-                ForEach ($Guid in $AceGUIDsByPath[$PathsForThisTarget]) {
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath.Add($NetworkPath)
+                    $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
+                    $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-                    # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
-                    if ($Guid) {
-                        # Add each GUID to the dictionary for quick lookups
-                        $AceGuidsForThisTarget[$Guid] = $true
+                    # Prepare a dictionary for quick lookup of ACE GUIDs for this target
+                    $AceGuidsForThisNetworkPath = @{}
 
-                    }
+                    # Enumerate the collection of ACE GUIDs for this target
+                    ForEach ($Guid in $AceGUIDsByPath[$ItemsForThisNetworkPath]) {
 
-                }
+                        # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
+                        if ($Guid) {
 
-                $AceGuidsByResolvedIDForThisTarget = @{}
+                            # Add each GUID to the dictionary for quick lookups
+                            $AceGuidsForThisNetworkPath[$Guid] = $true
 
-                ForEach ($ID in $IDsWithAccess) {
-
-                    $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
-
-                    if ($AllGuidsForThisID) {
-
-                        $AceGuidsByResolvedIDForThisTarget[$ID] = $AllGuidsForThisID |
-                        Where-Object -FilterScript {
-                            $AceGuidsForThisTarget[$_]
                         }
 
                     }
 
-                }
+                    $AceGuidsByResolvedIDForThisTarget = @{}
 
-                $TargetProperties['Accounts'] = Group-AccountPermissionReference -ID $IDsWithAccess -AceGUIDsByResolvedID $AceGuidsByResolvedIDForThisTarget -ACEsByGUID $ACEsByGUID
+                    ForEach ($ID in $IDsWithAccess) {
 
-            }
+                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
 
-            'item' {
+                        if ($AllGuidsForThisID) {
 
-                $TargetProperties['Items'] = ForEach ($TargetParent in ($TargetPath[$Target] | Sort-Object)) {
+                            $AceGuidsByResolvedIDForThisTarget[$ID] = $AllGuidsForThisID | Where-Object -FilterScript {
+                                $AceGuidsForThisNetworkPath[$_]
+                            }
 
-                    $TopLevelItemProperties = @{
-                        'Children' = Group-ItemPermissionReference -SortedPath ($Children[$TargetParent] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                        }
+
                     }
 
-                    Group-ItemPermissionReference -SortedPath $TargetParent -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+                    [PSCustomObject]@{
+                        Path     = $NetworkPath
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess -AceGUIDsByResolvedID $AceGuidsByResolvedIDForThisTarget -ACEsByGUID $ACEsByGUID
+                    }
 
                 }
 
-            }
-
-            # none
-            default {
-
-                $PathsForThisTarget = [System.Collections.Generic.List[string]]::new()
-                $PathsForThisTarget.AddRange($TargetPath[$Target])
-
-                ForEach ($TargetParent in $TargetPath[$Target]) {
-                    $PathsForThisTarget.AddRange($Children[$TargetParent])
-                }
-
-                $TargetProperties['Access'] = Expand-FlatPermissionReference -SortedPath $PathsForThisTarget @CommonParams
+                [pscustomobject]$TargetProperties
 
             }
 
         }
 
-        [pscustomobject]$TargetProperties
+        'item' {
+
+            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+
+                $TargetProperties = @{
+                    Path = $Target
+                }
+
+                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+
+                    $TopLevelItemProperties = @{
+                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                    }
+
+                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
+
+        'none' {
+
+            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+
+                $TargetProperties = @{
+                    Path = $Target
+                }
+
+                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath.Add($NetworkPath)
+                    $ItemsForThisNetworkPath.AddRange($Children[$TargetParent])
+
+                    [PSCustomObject]@{
+                        Path   = $NetworkPath
+                        Access = Expand-FlatPermissionReference -SortedPath $ItemsForThisNetworkPath @CommonParams
+                    }
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
+
+        'target' {}
 
     }
 
@@ -3182,6 +3245,9 @@ function Out-PermissionReport {
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
+    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 3"
+    $TargetHeading = New-HtmlHeading 'Target Path' -Level 3
+
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
     Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
@@ -3190,7 +3256,7 @@ function Out-PermissionReport {
     # Add the target path div to the parameter splat for New-BootstrapReport
     $ReportParameters = @{
         Title       = $Title
-        Description = "$TargetAlert $ReportDescription"
+        Description = "$TargetHeading $TargetAlert $ReportDescription"
     }
 
     $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount
@@ -4475,6 +4541,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

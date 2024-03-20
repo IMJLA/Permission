@@ -12,27 +12,56 @@ function Expand-TargetPermissionReference {
 
     )
 
-    ForEach ($Target in $Reference) {
+    switch ($GroupBy) {
 
-        $TargetProperties = @{
-            PSTypeName = 'Permission.TargetPermission'
-            Path       = $Target.Path
-        }
+        'account' {
 
-        switch ($GroupBy) {
+            ForEach ($Target in $Reference) {
 
-            'account' {}
-
-            'item' {
+                $TargetProperties = @{
+                    PSTypeName = 'Permission.TargetPermission'
+                    Path       = $Target.Path
+                }
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-                $TargetProperties['Items'] = ForEach ($ParentItem in $Target.Items) {
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                     [pscustomobject]@{
-                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $ParentItem.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-                        Item       = $AclsByPath[$ParentItem.Path]
+                        Item       = $AclsByPath[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Children   = ForEach ($TargetChild in $ParentItem.Children) {
+                        Accounts   = ForEach ($Account in $NetworkPath.Accounts) {
+
+                            Expand-AccountPermissionReference -Reference $Account -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+
+                        }
+
+                    }
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
+
+        'item' {
+
+            ForEach ($Target in $Reference) {
+
+                $TargetProperties = @{
+                    PSTypeName = 'Permission.TargetPermission'
+                    Path       = $Target.Path
+                }
+
+                # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
+
+                    [pscustomobject]@{
+                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        Item       = $AclsByPath[$NetworkPath.Path]
+                        PSTypeName = 'Permission.ParentItemPermission'
+                        Children   = ForEach ($TargetChild in $NetworkPath.Items) {
 
                             [pscustomobject]@{
                                 Access     = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
@@ -46,13 +75,13 @@ function Expand-TargetPermissionReference {
 
                 }
 
-            }
+                [pscustomobject]$TargetProperties
 
-            'none' {}
+            }
 
         }
 
-        [pscustomobject]$TargetProperties
+        'none' {}
 
     }
 

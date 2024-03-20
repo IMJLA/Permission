@@ -116,6 +116,9 @@ function Out-PermissionReport {
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
+    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 3"
+    $TargetHeading = New-HtmlHeading 'Target Path' -Level 3
+
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
     Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
@@ -124,7 +127,7 @@ function Out-PermissionReport {
     # Add the target path div to the parameter splat for New-BootstrapReport
     $ReportParameters = @{
         Title       = $Title
-        Description = "$TargetAlert $ReportDescription"
+        Description = "$TargetHeading $TargetAlert $ReportDescription"
     }
 
     $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount

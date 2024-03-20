@@ -20,92 +20,126 @@ function Group-TargetPermissionReference {
         PrincipalsByResolvedID = $PrincipalsByResolvedID
     }
 
-    ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+    switch ($GroupBy) {
 
-        $TargetProperties = @{
-            Path = $Target
-        }
+        'account' {
 
-        switch ($GroupBy) {
+            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
 
-            'account' {
-
-                $PathsForThisTarget = [System.Collections.Generic.List[string]]::new()
-                $PathsForThisTarget.AddRange([string[]]$TargetPath[$Target])
-
-                ForEach ($TargetParent in $TargetPath[$Target]) {
-                    $PathsForThisTarget.AddRange([string[]]$Children[$TargetParent])
+                $TargetProperties = @{
+                    Path = $Target
                 }
 
-                $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $PathsForThisTarget -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                $NetworkPaths = $TargetPath[$Target] | Sort-Object
 
-                # Prepare a dictionary for quick lookup of ACE GUIDs for this target
-                $AceGuidsForThisTarget = @{}
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
-                # Enumerate the collection of ACE GUIDs for this target
-                ForEach ($Guid in $AceGUIDsByPath[$PathsForThisTarget]) {
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath.Add($NetworkPath)
+                    $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
+                    $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-                    # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
-                    if ($Guid) {
-                        # Add each GUID to the dictionary for quick lookups
-                        $AceGuidsForThisTarget[$Guid] = $true
+                    # Prepare a dictionary for quick lookup of ACE GUIDs for this target
+                    $AceGuidsForThisNetworkPath = @{}
 
-                    }
+                    # Enumerate the collection of ACE GUIDs for this target
+                    ForEach ($Guid in $AceGUIDsByPath[$ItemsForThisNetworkPath]) {
 
-                }
+                        # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
+                        if ($Guid) {
 
-                $AceGuidsByResolvedIDForThisTarget = @{}
+                            # Add each GUID to the dictionary for quick lookups
+                            $AceGuidsForThisNetworkPath[$Guid] = $true
 
-                ForEach ($ID in $IDsWithAccess) {
-
-                    $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
-
-                    if ($AllGuidsForThisID) {
-
-                        $AceGuidsByResolvedIDForThisTarget[$ID] = $AllGuidsForThisID |
-                        Where-Object -FilterScript {
-                            $AceGuidsForThisTarget[$_]
                         }
 
                     }
 
-                }
+                    $AceGuidsByResolvedIDForThisTarget = @{}
 
-                $TargetProperties['Accounts'] = Group-AccountPermissionReference -ID $IDsWithAccess -AceGUIDsByResolvedID $AceGuidsByResolvedIDForThisTarget -ACEsByGUID $ACEsByGUID
+                    ForEach ($ID in $IDsWithAccess) {
 
-            }
+                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
 
-            'item' {
+                        if ($AllGuidsForThisID) {
 
-                $TargetProperties['Items'] = ForEach ($TargetParent in ($TargetPath[$Target] | Sort-Object)) {
+                            $AceGuidsByResolvedIDForThisTarget[$ID] = $AllGuidsForThisID | Where-Object -FilterScript {
+                                $AceGuidsForThisNetworkPath[$_]
+                            }
 
-                    $TopLevelItemProperties = @{
-                        'Children' = Group-ItemPermissionReference -SortedPath ($Children[$TargetParent] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                        }
+
                     }
 
-                    Group-ItemPermissionReference -SortedPath $TargetParent -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+                    [PSCustomObject]@{
+                        Path     = $NetworkPath
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess -AceGUIDsByResolvedID $AceGuidsByResolvedIDForThisTarget -ACEsByGUID $ACEsByGUID
+                    }
 
                 }
 
-            }
-
-            # none
-            default {
-
-                $PathsForThisTarget = [System.Collections.Generic.List[string]]::new()
-                $PathsForThisTarget.AddRange($TargetPath[$Target])
-
-                ForEach ($TargetParent in $TargetPath[$Target]) {
-                    $PathsForThisTarget.AddRange($Children[$TargetParent])
-                }
-
-                $TargetProperties['Access'] = Expand-FlatPermissionReference -SortedPath $PathsForThisTarget @CommonParams
+                [pscustomobject]$TargetProperties
 
             }
 
         }
 
-        [pscustomobject]$TargetProperties
+        'item' {
+
+            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+
+                $TargetProperties = @{
+                    Path = $Target
+                }
+
+                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+
+                    $TopLevelItemProperties = @{
+                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                    }
+
+                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
+
+        'none' {
+
+            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+
+                $TargetProperties = @{
+                    Path = $Target
+                }
+
+                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath.Add($NetworkPath)
+                    $ItemsForThisNetworkPath.AddRange($Children[$TargetParent])
+
+                    [PSCustomObject]@{
+                        Path   = $NetworkPath
+                        Access = Expand-FlatPermissionReference -SortedPath $ItemsForThisNetworkPath @CommonParams
+                    }
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
+
+        'target' {}
 
     }
 
