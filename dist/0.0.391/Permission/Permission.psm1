@@ -1332,11 +1332,14 @@ function Group-TargetPermissionReference {
                                 $AceGuidByIDForThisNetworkPath[$IdentityString] = $GuidsForThisIDAndNetworkPath
 
                             } else {
-                                Write-Host "0 GUIDs for this ID and Network Path '$IdentityString' on '$NetworkPath' which is a $($IdentityString.GetType().FullName)" -ForegroundColor Magenta
+                                Write-Host "0 GUIDs for this ID and Network Path '$IdentityString' on '$NetworkPath')" -ForegroundColor Magenta
                                 #$Joined = ($AceGuidsForThisNetworkPath.Keys | Sort-Object) -join "`r`n"
                                 Write-Host "The $($AceGuidsForThisNetworkPath.Keys.Count) available keys are: `$Joined" -ForegroundColor Magenta
                                 $FirstKey = @($AceGuidsForThisNetworkPath.Keys)[0]
-                                Write-Host "First key '$FirstKey' is a: $($AceGuidsForThisNetworkPath.GetType().FullName)" -ForegroundColor Magenta
+                                Write-Host "First key '$FirstKey' is a: $($FirstKey.GetType().FullName)" -ForegroundColor Magenta
+                                $FirstLookupKey = $GuidsForThisID[0]
+                                Write-Host "First lookup key '$FirstLookupKey' is a: $($FirstLookupKey.GetType().FullName)" -ForegroundColor Magenta
+
                             }
 
                         } else {
@@ -4572,6 +4575,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

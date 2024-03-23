@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.391] - 2024-03-23 - debug output
+
 ## [0.0.390] - 2024-03-23 - replaced where-object with foreach loop
 
 ## [0.0.389] - 2024-03-23 - debug output
