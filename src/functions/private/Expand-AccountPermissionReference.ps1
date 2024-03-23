@@ -14,8 +14,11 @@ function Expand-AccountPermissionReference {
 
             [PSCustomObject]@{
                 Path       = $PermissionRef.Path
-                Access     = $ACEsByGUID[$PermissionRef.AceGUIDs]
                 PSTypeName = 'Permission.AccountPermissionItemAccess'
+                # Enumerate the list because the returned dictionary value is a list
+                Access     = ForEach ($ACE in $ACEsByGUID[$PermissionRef.AceGUIDs]) {
+                    $ACE
+                }
             }
 
         }
