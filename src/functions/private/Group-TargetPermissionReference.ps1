@@ -65,16 +65,36 @@ function Group-TargetPermissionReference {
 
                         if ($GuidsForThisID) {
 
-                            $AceGuidByIDForThisNetworkPath[$IdentityString] = $GuidsForThisID | Where-Object -FilterScript {
-                                $AceGuidsForThisNetworkPath[$_]
+                            $GuidsForThisIDAndNetworkPath = [System.Collections.Generic.List[guid]]::new()
+
+                            ForEach ($Guid in $GuidsForThisID) {
+
+                                $AceContainsThisID = $AceGuidsForThisNetworkPath[$Guid]
+
+                                if ($AceContainsThisID) {
+                                    $GuidsForThisIDAndNetworkPath.Add($Guid)
+                                }
+
+                            }
+
+                            if ($GuidsForThisIDAndNetworkPath) {
+
+                                $AceGuidByIDForThisNetworkPath[$IdentityString] = $GuidsForThisIDAndNetworkPath
+
+                            } else {
+                                Write-Host "0 GUIDs for this ID and Network Path '$IdentityString' on '$NetworkPath' which is a $($IdentityString.GetType().FullName)" -ForegroundColor Magenta
+                                #$Joined = ($AceGuidsForThisNetworkPath.Keys | Sort-Object) -join "`r`n"
+                                Write-Host "The $($AceGuidsForThisNetworkPath.Keys.Count) available keys are: `$Joined" -ForegroundColor Magenta
+                                $FirstKey = @($AceGuidsForThisNetworkPath.Keys)[0]
+                                Write-Host "First key '$FirstKey' is a: $($AceGuidsForThisNetworkPath.GetType().FullName)" -ForegroundColor Magenta
                             }
 
                         } else {
-                            Write-Host "0 GUIDs for this ID '$IdentityString' which is a $($IdentityString.GetType().FullName)"
+                            Write-Host "0 GUIDs for this ID '$IdentityString' which is a $($IdentityString.GetType().FullName)" -ForegroundColor Red
                             $Joined = ($AceGUIDsByResolvedID.Keys | Sort-Object) -join "`r`n"
-                            Write-Host "The $($AceGUIDsByResolvedID.Keys.Count) available keys are: $Joined"
+                            Write-Host "The $($AceGUIDsByResolvedID.Keys.Count) available keys are: $Joined" -ForegroundColor Red
                             $FirstKey = @($AceGUIDsByResolvedID.Keys)[0]
-                            Write-Host "First key '$FirstKey' is a: $($FirstKey.GetType().FullName)"
+                            Write-Host "First key '$FirstKey' is a: $($FirstKey.GetType().FullName)" -ForegroundColor Red
                         }
 
                     }
