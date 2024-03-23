@@ -49,8 +49,13 @@ function Group-TargetPermissionReference {
                         # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
                         if ($Guid) {
 
-                            # Add each GUID to the dictionary for quick lookups
-                            $AceGuidsForThisNetworkPath[$Guid] = $true
+                            # The returned dictionary value is a lists of guids, so we need to enumerate the list
+                            ForEach ($ListItem in $Guid) {
+
+                                # Add each GUID to the dictionary for quick lookups
+                                $AceGuidsForThisNetworkPath[$ListItem] = $true
+
+                            }
 
                         }
 
