@@ -1186,14 +1186,13 @@ function Group-AccountPermissionReference {
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
-        $IdentityString = [string]$Identity
         $ItemPaths = @{}
-        if ($AceGUIDsByResolvedID[$IdentityString].Count -eq 0) {
-            Write-Host "0 ACEs for '$Identity' which is a $($IdentityString.GetType().FullName)"
+        if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
+            Write-Host "0 ACEs for '$Identity' which is a $($Identity.GetType().FullName)"
             Write-Host "Available keys are: $($AceGUIDsByResolvedID.Keys -join ',')"
             Write-Host "First key is a: $($AceGUIDsByResolvedID.Keys[0].GetType().FullName)"
         }
-        ForEach ($Guid in $AceGUIDsByResolvedID[$IdenIdentityStringtity]) {
+        ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
             $Ace = $ACEsByGUID[$Guid]
             Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
@@ -1201,7 +1200,7 @@ function Group-AccountPermissionReference {
         }
 
         [PSCustomObject]@{
-            Account = $IdentityString
+            Account = $Identity
             Access  = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
                 [PSCustomObject]@{
@@ -1307,12 +1306,12 @@ function Group-TargetPermissionReference {
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
 
-                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
-
+                        $IdentityString = [string]$ID
+                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$IdentityString]
 
                         if ($AllGuidsForThisID) {
 
-                            $AceGuidByResolvedIDForThisNetworkPath[$ID] = $AllGuidsForThisID | Where-Object -FilterScript {
+                            $AceGuidByResolvedIDForThisNetworkPath[$IdentityString] = $AllGuidsForThisID | Where-Object -FilterScript {
                                 $AceGuidsForThisNetworkPath[$_]
                             }
 
@@ -4543,6 +4542,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

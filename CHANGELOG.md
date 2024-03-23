@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.385] - 2024-03-23 - move string cast back to calling funct
+
 ## [0.0.384] - 2024-03-23 - move string cast to nested funct
 
 ## [0.0.383] - 2024-03-23 - force cast as string because comparision of string to hashtablekeycollection just won't work obv

@@ -8,14 +8,13 @@ function Group-AccountPermissionReference {
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
-        $IdentityString = [string]$Identity
         $ItemPaths = @{}
-        if ($AceGUIDsByResolvedID[$IdentityString].Count -eq 0) {
-            Write-Host "0 ACEs for '$Identity' which is a $($IdentityString.GetType().FullName)"
+        if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
+            Write-Host "0 ACEs for '$Identity' which is a $($Identity.GetType().FullName)"
             Write-Host "Available keys are: $($AceGUIDsByResolvedID.Keys -join ',')"
             Write-Host "First key is a: $($AceGUIDsByResolvedID.Keys[0].GetType().FullName)"
         }
-        ForEach ($Guid in $AceGUIDsByResolvedID[$IdenIdentityStringtity]) {
+        ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
             $Ace = $ACEsByGUID[$Guid]
             Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
@@ -23,7 +22,7 @@ function Group-AccountPermissionReference {
         }
 
         [PSCustomObject]@{
-            Account = $IdentityString
+            Account = $Identity
             Access  = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
                 [PSCustomObject]@{

@@ -60,12 +60,12 @@ function Group-TargetPermissionReference {
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
 
-                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$ID]
-
+                        $IdentityString = [string]$ID
+                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$IdentityString]
 
                         if ($AllGuidsForThisID) {
 
-                            $AceGuidByResolvedIDForThisNetworkPath[$ID] = $AllGuidsForThisID | Where-Object -FilterScript {
+                            $AceGuidByResolvedIDForThisNetworkPath[$IdentityString] = $AllGuidsForThisID | Where-Object -FilterScript {
                                 $AceGuidsForThisNetworkPath[$_]
                             }
 
