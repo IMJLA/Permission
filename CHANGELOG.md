@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.396] - 2024-03-23 - restore account permission reference expansion
+
 ## [0.0.395] - 2024-03-23 - remove unnecessary debug output
 
 ## [0.0.394] - 2024-03-23 - oops now I finished renaming the param names
