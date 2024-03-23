@@ -12,7 +12,8 @@ function Group-AccountPermissionReference {
         if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
             Write-Host "0 ACEs for '$Identity' which is a $($Identity.GetType().FullName)"
             Write-Host "Available keys are: $($AceGUIDsByResolvedID.Keys -join ',')"
-            Write-Host "First key is a: $($AceGUIDsByResolvedID.Keys[0].GetType().FullName)"
+            $FirstKey = @($AceGUIDsByResolvedID.Keys)[0]
+            Write-Host "First key '$FirstKey' is a: $($FirstKey.GetType().FullName)"
         }
         ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
