@@ -8,13 +8,16 @@ function Group-AccountPermissionReference {
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
-        $ItemPaths = @{}
         if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
             Write-Host "0 ACEs for '$Identity' which is a $($Identity.GetType().FullName)"
-            Write-Host "Available keys are: $($AceGUIDsByResolvedID.Keys -join ',')"
+            $Joined = ($AceGUIDsByResolvedID.Keys | Sort-Object) -join "`r`n"
+            Write-Host "The $($AceGUIDsByResolvedID.Keys.Count) available keys are: $Joined"
             $FirstKey = @($AceGUIDsByResolvedID.Keys)[0]
             Write-Host "First key '$FirstKey' is a: $($FirstKey.GetType().FullName)"
         }
+
+        $ItemPaths = @{}
+
         ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
 
             $Ace = $ACEsByGUID[$Guid]

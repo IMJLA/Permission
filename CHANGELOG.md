@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.387] - 2024-03-23 - improve debug output
+
 ## [0.0.386] - 2024-03-23 - debug output fix
 
 ## [0.0.385] - 2024-03-23 - move string cast back to calling funct
