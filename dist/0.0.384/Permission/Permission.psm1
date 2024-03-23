@@ -1186,13 +1186,14 @@ function Group-AccountPermissionReference {
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
+        $IdentityString = [string]$Identity
         $ItemPaths = @{}
-        if ($AceGUIDsByResolvedID[$Identity].Count -eq 0) {
-            Write-Host "0 ACEs for '$Identity' which is a $($Identity.GetType().FullName)"
+        if ($AceGUIDsByResolvedID[$IdentityString].Count -eq 0) {
+            Write-Host "0 ACEs for '$Identity' which is a $($IdentityString.GetType().FullName)"
             Write-Host "Available keys are: $($AceGUIDsByResolvedID.Keys -join ',')"
             Write-Host "First key is a: $($AceGUIDsByResolvedID.Keys[0].GetType().FullName)"
         }
-        ForEach ($Guid in $AceGUIDsByResolvedID[$Identity]) {
+        ForEach ($Guid in $AceGUIDsByResolvedID[$IdenIdentityStringtity]) {
 
             $Ace = $ACEsByGUID[$Guid]
             Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
@@ -1200,7 +1201,7 @@ function Group-AccountPermissionReference {
         }
 
         [PSCustomObject]@{
-            Account = $Identity
+            Account = $IdentityString
             Access  = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
                 [PSCustomObject]@{
@@ -1321,7 +1322,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID [string[]]$IDsWithAccess.Keys -AceGUIDsByResolvedID $AceGuidByResolvedIDForThisNetworkPath -ACEsByGUID $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGUIDsByResolvedID $AceGuidByResolvedIDForThisNetworkPath -ACEsByGUID $ACEsByGUID
                     }
 
                 }
@@ -4542,6 +4543,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
