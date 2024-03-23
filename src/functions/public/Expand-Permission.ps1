@@ -28,7 +28,7 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the name of their associated account.
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGUIDsByResolvedID $AceGUIDsByResolvedID -ACEsByGUID $ACEsByGUID
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         $AccountPermissions = Expand-AccountPermissionReference @CommonParams -Reference $AccountPermissionReferences
