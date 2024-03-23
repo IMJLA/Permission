@@ -69,6 +69,12 @@ function Group-TargetPermissionReference {
                                 $AceGuidsForThisNetworkPath[$_]
                             }
 
+                        } else {
+                            Write-Host "0 GUIDs for this ID '$IdentityString' which is a $($IdentityString.GetType().FullName)"
+                            $Joined = ($AceGUIDsByResolvedID.Keys | Sort-Object) -join "`r`n"
+                            Write-Host "The $($AceGUIDsByResolvedID.Keys.Count) available keys are: $Joined"
+                            $FirstKey = @($AceGUIDsByResolvedID.Keys)[0]
+                            Write-Host "First key '$FirstKey' is a: $($FirstKey.GetType().FullName)"
                         }
 
                     }
