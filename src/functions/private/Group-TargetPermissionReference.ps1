@@ -56,16 +56,16 @@ function Group-TargetPermissionReference {
 
                     }
 
-                    $AceGuidByResolvedIDForThisNetworkPath = @{}
+                    $AceGuidByIDForThisNetworkPath = @{}
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
 
                         $IdentityString = [string]$ID
-                        $AllGuidsForThisID = $AceGUIDsByResolvedID[$IdentityString]
+                        $GuidsForThisID = $AceGUIDsByResolvedID[$IdentityString]
 
-                        if ($AllGuidsForThisID) {
+                        if ($GuidsForThisID) {
 
-                            $AceGuidByResolvedIDForThisNetworkPath[$IdentityString] = $AllGuidsForThisID | Where-Object -FilterScript {
+                            $AceGuidByIDForThisNetworkPath[$IdentityString] = $GuidsForThisID | Where-Object -FilterScript {
                                 $AceGuidsForThisNetworkPath[$_]
                             }
 
@@ -75,7 +75,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGUIDsByResolvedID $AceGuidByResolvedIDForThisNetworkPath -ACEsByGUID $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
                     }
 
                 }
