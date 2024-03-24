@@ -2090,54 +2090,22 @@ function Format-Permission {
     )
 
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
+    $SelectionProp = "$GroupBy`s"
+    $GroupingScript = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1]")
 
-    If ($Permission.SplitBy['none']) {
+    ForEach ($Target in $Permission.TargetPermissions) {
 
-        switch ($GroupBy) {
+        [PSCustomObject]@{
+            Path   = $Target.Path
+            Access = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
-            'account' {
-
-                ForEach ($Target in $Permission.TargetPermissions) {
-
-                    [PSCustomObject]@{
-                        Path   = $Target.Path
-                        Access = ForEach ($NetworkPath in $Target.NetworkPaths) {
-
-                            $Selection = $NetworkPath.Accounts
-
-                            $OutputProperties = @{
-                                passthru = $Selection
-                            }
-
-                            $PermissionGroupingsWithChosenProperties = Select-AccountTableProperty -InputObject $Selection -Culture $Culture
-                            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
-
-                            ForEach ($Format in $Formats) {
-
-                                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
-                                $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
-
-                            }
-
-                            [PSCustomObject]$OutputProperties
-
-                        }
-
-                    }
-
-                }
-
-            }
-
-            'item' {
-
-                $Selection = $Permission.ItemPermissions
+                $Selection = $NetworkPath.$SelectionProp
 
                 $OutputProperties = @{
                     passthru = $Selection
                 }
 
-                $PermissionGroupingsWithChosenProperties = Select-ItemTableProperty -InputObject $Selection -Culture $Culture
+                $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
                 $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
                 ForEach ($Format in $Formats) {
@@ -2149,14 +2117,6 @@ function Format-Permission {
 
                 [PSCustomObject]$OutputProperties
 
-            }
-
-            'none' {
-                $Selection = $Permission.FlatPermissions
-            }
-
-            'target' {
-                $Selection = $Permission.TargetPermissions
             }
 
         }
@@ -4681,6 +4641,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-HtmlReportElements','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
 
 
 
