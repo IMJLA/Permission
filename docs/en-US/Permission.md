@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.401
+Help Version: 0.0.402
 Locale: en-US
 ---
 
@@ -70,9 +70,6 @@ Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-Deb
 
 Get-FolderPermissionsBlockUNUSED [[-FolderPermissions] <Object>] [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <string[]>] [[-ShortestPath] <Object>]
 
-
-### [Get-HtmlReportElements](Get-HtmlReportElements.md)
-{{ Fill in the Description }}
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 

@@ -3497,18 +3497,23 @@ function Out-PermissionReport {
 
     ForEach ($Split in $SplitBy) {
 
+        $Subproperty = ''
+
         if ($Split -eq 'none') {
             $ReportFiles = @{
                 NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                 Path         = $FormattedPermission['SplitByTarget'].Path.FullName
             }
         } else {
+            if ($Split -ne 'target') {
+                $Subproperty = 'NetworkPaths.'
+            }
             $ReportFiles = $FormattedPermission["SplitBy$Split"]
         }
 
         ForEach ($File in $ReportFiles) {
 
-            $Params = $PSBoundParameters
+            [hashtable]$Params = $PSBoundParameters
             $Params['TargetPath'] = $File.Path
             $Params['NetworkPath'] = $File.NetworkPaths
             $HtmlElements = Get-HtmlReportElements @Params
@@ -3517,13 +3522,8 @@ function Out-PermissionReport {
 
                 # Convert the list of permission groupings list to an HTML table
 
-                if ($Split -eq 'account' -or $Split -eq 'item') {
-                    $PermissionGroupings = $File."$Format`Group"
-                    $Permissions = $File.$Format
-                } else {
-                    $PermissionGroupings = $File.NetworkPaths."$Format`Group"
-                    $Permissions = $File.$Format
-                }
+                $PermissionGroupings = $File."$Subproperty$Format`Group"
+                $Permissions = $File."$Subproperty$Format"
 
                 $BodyParams = @{
                     HtmlFolderPermissions = $Permissions.Div
@@ -4753,6 +4753,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
