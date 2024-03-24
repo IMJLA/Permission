@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.398] - 2024-03-23 - move html code to its own function for readability
+
 ## [0.0.397] - 2024-03-23 - force list enumeration
 
 ## [0.0.396] - 2024-03-23 - restore account permission reference expansion

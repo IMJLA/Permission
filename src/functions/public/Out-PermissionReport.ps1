@@ -104,86 +104,10 @@ function Out-PermissionReport {
 
     )
 
-    Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
-    $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
-
-    Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
-    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
-
-    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
-    $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
-
-    Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
-    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
-
-    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 3"
-    $TargetHeading = New-HtmlHeading 'Target Path' -Level 3
-
-    # Convert the target path(s) to a Bootstrap alert div
-    $TargetPathString = $TargetPath -join '<br />'
-    Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
-    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString
-
-    # Add the target path div to the parameter splat for New-BootstrapReport
-    $ReportParameters = @{
-        Title       = $Title
-        Description = "$TargetHeading $TargetAlert $ReportDescription"
-    }
-
-    $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount
-    $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass
-    $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain
-    $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers
-
-    # Arrange the exclusions in two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
-    $ExclusionsDiv = New-BootstrapColumn -Html "$ExcludedMembers$ExcludedClasses", "$IgnoredDomains$ExcludedNames" -Width 6
-
-    # Convert the list of generated log files to a Bootstrap list group
-    $HtmlListOfLogs = $LogFileList |
-    Split-Path -Leaf | # the output directory will be shown in a Bootstrap alert so this row removes the path from the file names
-    ConvertTo-HtmlList |
-    ConvertTo-BootstrapListGroup
-
-    # Prepare headings for 2 columns listing report and log files generated, respectively
-    $HtmlReportsHeading = New-HtmlHeading -Text 'Reports' -Level 6
-    $HtmlLogsHeading = New-HtmlHeading -Text 'Logs' -Level 6
-
-    # Convert the output directory path to a Boostrap alert
-    $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary'
+    $HtmlElements = Get-HtmlReportElements @PSBoundParameters
 
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
-
-    $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
-
-    # Convert the list of generated report files to a Bootstrap list group
-    $HtmlListOfReports = $ListOfReports |
-    Split-Path -Leaf |
-    ConvertTo-HtmlList |
-    ConvertTo-BootstrapListGroup
-
-    # Arrange the lists of generated files in two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-    $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
-
-    # Combine the alert and the columns of generated files inside a Bootstrap div
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
-    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns"
-
-    # Generate a footer to include at the bottom of the report
-    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
-    $FooterParams = @{
-        ItemCount        = $ACLsByPath.Keys.Count
-        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
-        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
-        ReportInstanceId = $ReportInstanceId
-        StopWatch        = $StopWatch
-        ThisFqdn         = $ThisFqdn
-        UnitsToResolve   = @('day', 'hour', 'minute', 'second')
-        WhoAmI           = $WhoAmI
-    }
-    $ReportFooter = Get-HtmlReportFooter @FooterParams
 
     ForEach ($Format in $Formats) {
 
@@ -193,13 +117,14 @@ function Out-PermissionReport {
 
         $BodyParams = @{
             HtmlFolderPermissions = $Permissions.Div
-            HtmlExclusions        = $ExclusionsDiv
-            HtmlFileList          = $HtmlDivOfFiles
-            ReportFooter          = $ReportFooter
-            SummaryDivHeader      = $SummaryDivHeader
-            DetailDivHeader       = $DetailDivHeader
+            HtmlExclusions        = $HtmlElements.ExclusionsDiv
+            HtmlFileList          = $HtmlElements.HtmlDivOfFiles
+            ReportFooter          = $HtmlElements.ReportFooter
+            SummaryDivHeader      = $HtmlElements.SummaryDivHeader
+            DetailDivHeader       = $HtmlElements.DetailDivHeader
         }
 
+        # TODO: Can this move up out of the loop?
         $DetailScripts = @(
             { $TargetPath },
             { $Parent },
@@ -303,14 +228,15 @@ function Out-PermissionReport {
                         $Body = Get-HtmlBody @BodyParams
 
                         # Apply the report template to the generated HTML report body and description
+                        $ReportParameters = $HtmlElements.ReportParameters
                         Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
                         New-BootstrapReport -Body $Body @ReportParameters
 
                     } else {
 
                         # Combine the header and table inside a Bootstrap div
-                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
@@ -319,8 +245,8 @@ function Out-PermissionReport {
                     }
 
                     # Apply the report template to the generated HTML report body and description
-                    Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
-                    New-BootstrapReport -Body $Body @ReportParameters
+                    Write-LogMsg @LogParams -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
+                    New-BootstrapReport -Body $Body @$HtmlElements.ReportParameters
 
                 }
 
@@ -378,8 +304,8 @@ function Out-PermissionReport {
                     } else {
 
                         # Combine the header and table inside a Bootstrap div
-                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                        Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                        $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
                         # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                         Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
@@ -392,8 +318,8 @@ function Out-PermissionReport {
                     $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy
 
                     # Apply the report template to the generated HTML report body and description
-                    Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @ReportParameters"
-                    New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
+                    Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
+                    New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @$HtmlElements.ReportParameters
 
                 }
 

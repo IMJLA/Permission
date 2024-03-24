@@ -40,23 +40,35 @@ function Format-Permission {
 
             'account' {
 
-                $Selection = $Permission.AccountPermissions
+                ForEach ($Target in $Permission.TargetPermissions) {
 
-                $OutputProperties = @{
-                    passthru = $Selection
+                    [PSCustomObject]@{
+                        Path   = $Target.Path
+                        Access = ForEach ($NetworkPath in $Target.NetworkPaths) {
+
+                            $Selection = $NetworkPath.Accounts
+
+                            $OutputProperties = @{
+                                passthru = $Selection
+                            }
+
+                            $PermissionGroupingsWithChosenProperties = Select-AccountTableProperty -InputObject $Selection -Culture $Culture
+                            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+
+                            ForEach ($Format in $Formats) {
+
+                                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                                $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
+
+                            }
+
+                            [PSCustomObject]$OutputProperties
+
+                        }
+
+                    }
+
                 }
-
-                $PermissionGroupingsWithChosenProperties = Select-AccountTableProperty -InputObject $Selection -Culture $Culture
-                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
-
-                ForEach ($Format in $Formats) {
-
-                    $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
-                    $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
-
-                }
-
-                [PSCustomObject]$OutputProperties
 
             }
 
