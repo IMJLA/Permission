@@ -22,6 +22,9 @@ function Get-HtmlReportElements {
         # Path to the NTFS folder whose permissions are being exported
         [string[]]$TargetPath,
 
+        # Network Path to the NTFS folder whose permissions are being exported
+        [string[]]$NetworkPath,
+
         # Group members are not being exported (only the groups themselves)
         [switch]$NoMembers,
 
@@ -107,6 +110,14 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+    $NetworkPathTable = $NetworkPath.Item |
+    ConvertTo-Html -Fragment |
+    New-BootstrapTable
+
+    $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
+    $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+
     Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
     $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
 
@@ -116,8 +127,8 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
-    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 3"
-    $TargetHeading = New-HtmlHeading 'Target Path' -Level 3
+    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 5"
+    $TargetHeading = New-HtmlHeading 'Target Path' -Level 5
 
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
@@ -130,12 +141,13 @@ function Get-HtmlReportElements {
         Description = "$TargetHeading $TargetAlert $ReportDescription"
     }
 
+    # Build the divs showing the exclusions specified in the report parameters
     $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount
     $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass
     $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain
     $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers
 
-    # Arrange the exclusions in two Bootstrap columns
+    # Arrange the exclusion divs into two Bootstrap columns
     Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
     $ExclusionsDiv = New-BootstrapColumn -Html "$ExcludedMembers$ExcludedClasses", "$IgnoredDomains$ExcludedNames" -Width 6
 
@@ -190,6 +202,7 @@ function Get-HtmlReportElements {
         DetailDivHeader    = $DetailDivHeader
         SummaryTableHeader = $SummaryTableHeader
         SummaryDivHeader   = $SummaryDivHeader
+        NetworkPathDiv     = $NetworkPathDiv
     }
 
 }

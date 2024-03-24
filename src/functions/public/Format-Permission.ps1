@@ -35,35 +35,104 @@ function Format-Permission {
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
     $SelectionProp = "$GroupBy`s"
     $GroupingScript = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1]")
+    $FormattedResults = @{}
 
-    ForEach ($Target in $Permission.TargetPermissions) {
+    if ($Permission.SplitBy['account']) {
 
-        [PSCustomObject]@{
-            Path   = $Target.Path
-            Access = ForEach ($NetworkPath in $Target.NetworkPaths) {
+        $FormattedResults['SplitByAccount'] = ForEach ($Account in $Permission.AccountPermissions) {
 
-                $Selection = $NetworkPath.$SelectionProp
+            $Selection = $Account.Access
 
-                $OutputProperties = @{
-                    passthru = $Selection
+            $OutputProperties = @{
+                Account      = $Account.Account
+                Path         = $Permission.TargetPermissions.Path.FullName
+                NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
+                passthru     = $Selection
+            }
+
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+
+            ForEach ($Format in $Formats) {
+
+                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
+
+            }
+
+            [PSCustomObject]$OutputProperties
+
+        }
+
+    }
+
+    if ($Permission.SplitBy['item']) {
+
+        $FormattedResults['SplitByItem'] = ForEach ($Item in $Permission.ItemPermissions) {
+
+            $Selection = $Item.Access
+
+            $OutputProperties = @{
+                Item         = $Item.Item
+                TargetPaths  = $Permission.TargetPermissions.Path.FullName
+                NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
+                passthru     = $Selection
+            }
+
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+
+            ForEach ($Format in $Formats) {
+
+                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
+
+            }
+
+            [PSCustomObject]$OutputProperties
+
+        }
+
+    }
+
+    if (
+        $Permission.SplitBy['none'] -or
+        $Permission.SplitBy['target']
+    ) {
+
+        $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
+
+            [PSCustomObject]@{
+                Path         = $Target.Path
+                NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
+
+                    $Selection = $NetworkPath.$SelectionProp
+
+                    $OutputProperties = @{
+                        Item     = $NetworkPath.Item
+                        passthru = $Selection
+                    }
+
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+
+                    ForEach ($Format in $Formats) {
+
+                        $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
+
+                    }
+
+                    [PSCustomObject]$OutputProperties
+
                 }
-
-                $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
-                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
-
-                ForEach ($Format in $Formats) {
-
-                    $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
-                    $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
-
-                }
-
-                [PSCustomObject]$OutputProperties
 
             }
 
         }
 
     }
+
+    return $FormattedResults
 
 }
