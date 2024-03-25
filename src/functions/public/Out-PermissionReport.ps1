@@ -105,13 +105,6 @@ function Out-PermissionReport {
 
     )
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputstream
-        WhoAmI       = $WhoAmI
-    }
-
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
