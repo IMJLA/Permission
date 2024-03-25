@@ -167,9 +167,9 @@ function Out-PermissionReport {
                 $PermissionGroupings = $Subfile."$Format`Group"
                 if (-not $PermissionGroupings) {
                     Write-Host "$Subproperty$Format`Group for SplitBy $Split" -ForegroundColor Magenta
-                    Write-Host "$($File | gm | out-string)" -ForegroundColor Magenta
-                    Write-Host "$($File.NetworkPaths | gm | out-string)" -ForegroundColor Magenta
-                    if ($File.NetworkPaths.jsonGroup) {
+                    Write-Host "$($Subfile | gm | out-string)" -ForegroundColor Magenta
+                    Write-Host "$($Subfile.NetworkPaths | gm | out-string)" -ForegroundColor Magenta
+                    if ($Subfile.NetworkPaths.jsonGroup) {
                         Write-Host "The problem is the subproperty string mechanism doesn't work" -ForegroundColor Magenta
                     }
                     pause
