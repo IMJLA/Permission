@@ -125,7 +125,7 @@ function Out-PermissionReport {
             }
 
             'none' {
-                $Subproperty = 'NetworkPaths.'
+                $Subproperty = 'NetworkPaths'
                 $FileNameProperty = 'Path'
                 $ReportFiles = [PSCustomObject]@{
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
@@ -135,7 +135,7 @@ function Out-PermissionReport {
             }
 
             'target' {
-                $Subproperty = 'NetworkPaths.'
+                $Subproperty = 'NetworkPaths'
                 $FileNameProperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
