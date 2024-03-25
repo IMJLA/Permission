@@ -3572,7 +3572,20 @@ function Out-PermissionReport {
         { $ACLsByPath.Keys },
         { $ACLsByPath.Values },
         { ForEach ($val in $ACEsByGUID.Values) { $val } },
-        { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } }
+        { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
+        {
+
+            switch ($GroupBy) {
+                'none' { $Permission.FlatPermissions }
+                'item' { $Permission.ItemPermissions }
+                default { $Permission.AccountPermissions } # 'account'
+            }
+
+        },
+        { $Permissions.Data },
+        { $BestPracticeIssues },
+        { $PrtgXml },
+        {}
     )
 
     ForEach ($Split in $Permissions.SplitBy.Keys) {
@@ -3698,23 +3711,6 @@ function Out-PermissionReport {
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$Format`Group"
                 $Permissions = $Subfile.$Format
-
-                $DetailScripts = @(
-                    {  }, {  }, {  }, {  }, {  }, {  },
-                    {
-
-                        switch ($GroupBy) {
-                            'none' { $Permission.FlatPermissions }
-                            'item' { $Permission.ItemPermissions }
-                            default { $Permission.AccountPermissions } # 'account'
-                        }
-
-                    },
-                    { $Permissions.Data },
-                    { $BestPracticeIssues },
-                    { $PrtgXml },
-                    {}
-                )
 
                 $ReportObjects = @{}
 
@@ -4794,6 +4790,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

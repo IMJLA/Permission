@@ -133,7 +133,20 @@ function Out-PermissionReport {
         { $ACLsByPath.Keys },
         { $ACLsByPath.Values },
         { ForEach ($val in $ACEsByGUID.Values) { $val } },
-        { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } }
+        { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
+        {
+
+            switch ($GroupBy) {
+                'none' { $Permission.FlatPermissions }
+                'item' { $Permission.ItemPermissions }
+                default { $Permission.AccountPermissions } # 'account'
+            }
+
+        },
+        { $Permissions.Data },
+        { $BestPracticeIssues },
+        { $PrtgXml },
+        {}
     )
 
     ForEach ($Split in $Permissions.SplitBy.Keys) {
@@ -259,23 +272,6 @@ function Out-PermissionReport {
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$Format`Group"
                 $Permissions = $Subfile.$Format
-
-                $DetailScripts = @(
-                    {  }, {  }, {  }, {  }, {  }, {  },
-                    {
-
-                        switch ($GroupBy) {
-                            'none' { $Permission.FlatPermissions }
-                            'item' { $Permission.ItemPermissions }
-                            default { $Permission.AccountPermissions } # 'account'
-                        }
-
-                    },
-                    { $Permissions.Data },
-                    { $BestPracticeIssues },
-                    { $PrtgXml },
-                    {}
-                )
 
                 $ReportObjects = @{}
 
