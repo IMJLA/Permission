@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
- [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <Object>] [[-ThisFqdn] <Object>]
+ [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <String>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
  [[-ACEsByGUID] <Hashtable>] [[-ACLsByPath] <Hashtable>] [[-PrincipalsByResolvedID] <Object>]
@@ -418,7 +418,7 @@ Accept wildcard characters: False
 {{ Fill WhoAmI Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
 Parameter Sets: (All)
 Aliases:
 
