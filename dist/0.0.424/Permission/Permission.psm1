@@ -1719,7 +1719,7 @@ function Out-PermissionDetailReport {
         $Report = $ReportObject[$Level]
 
         # Save the report
-        $null = Invoke-Command -ScriptBlock $DetailExport[$Level]
+        $null = Invoke-Command -ScriptBlock $DetailExport[$Level] -ArgumentList $Report
 
         # Output the name of the report file to the Information stream
         Write-Information $ThisReportFile
@@ -3623,17 +3623,17 @@ function Out-PermissionReport {
                 'csv' {
 
                     $DetailExports = @(
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                        { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                        { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { <# $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                        { <# $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                        { <# $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
                     )
 
                 }
@@ -3641,17 +3641,17 @@ function Out-PermissionReport {
                 'html' {
 
                     $DetailExports = @(
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { $Report -join "<br />`r`n" | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | Out-File -LiteralPath $ThisReportFile },
-                        { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                        { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] -join "<br />`r`n" | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
+                        { <#$args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                        { <#$args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
                     )
 
                 }
@@ -3659,17 +3659,17 @@ function Out-PermissionReport {
                 'json' {
 
                     $DetailExports = @(
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                        { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { <#$args[0] | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                        { <#$args[0] | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
                     )
 
                 }
@@ -4794,6 +4794,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
