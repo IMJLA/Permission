@@ -110,23 +110,23 @@ function Out-PermissionReport {
 
     ForEach ($Split in $Permissions.SplitBy.Keys) {
 
-        $Subproperty = ''
-        $FileNameProperty = 'Path'
-
         switch ($Split) {
 
             'account' {
+                $Subproperty = ''
                 $FileNameProperty = "$Split.ResolvedAccountName"
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'item' {
+                $Subproperty = ''
                 $FileNameProperty = "$Split.Path"
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'none' {
                 $Subproperty = 'NetworkPaths.'
+                $FileNameProperty = 'Path'
                 $ReportFiles = [PSCustomObject]@{
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                     Path         = $FormattedPermission['SplitByTarget'].Path.FullName
@@ -136,6 +136,7 @@ function Out-PermissionReport {
 
             'target' {
                 $Subproperty = 'NetworkPaths.'
+                $FileNameProperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
@@ -156,8 +157,14 @@ function Out-PermissionReport {
 
             ForEach ($Format in $Formats) {
 
+                if ($Subproperty -eq '') {
+                    $Subfile = $File
+                } else {
+                    $Subfile = $File.$Subproperty
+                }
+
                 # Convert the list of permission groupings list to an HTML table
-                $PermissionGroupings = $File."$Subproperty$Format`Group"
+                $PermissionGroupings = $Subfile."$Format`Group"
                 if (-not $PermissionGroupings) {
                     Write-Host "$Subproperty$Format`Group for SplitBy $Split" -ForegroundColor Magenta
                     Write-Host "$($File | gm | out-string)" -ForegroundColor Magenta
@@ -167,7 +174,7 @@ function Out-PermissionReport {
                     }
                     pause
                 }
-                $Permissions = $File."$Subproperty$Format"
+                $Permissions = $File.$Format
 
                 $BodyParams = @{
                     HtmlFolderPermissions = $Permissions.Div
