@@ -144,6 +144,11 @@ function Out-PermissionReport {
         ForEach ($File in $ReportFiles) {
 
             $FileName = $File.$FileNameProperty -replace '\\', '_' -replace ':', ''
+            if (-not $FileName) {
+                Write-Host "FileNameProperty $FileNameProperty not found on `$File" -ForegroundColor Cyan
+                Write-Host ($File | gm | out-string) -ForegroundColor Cyan
+                pause
+            }
             [hashtable]$Params = $PSBoundParameters
             $Params['TargetPath'] = $File.Path
             $Params['NetworkPath'] = $File.NetworkPaths
