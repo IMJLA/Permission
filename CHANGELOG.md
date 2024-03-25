@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.417] - 2024-03-24 - bugfix filenameproperty $split vs $splitby
+
 ## [0.0.416] - 2024-03-24 - add tmp debug output
 
 ## [0.0.415] - 2024-03-24 - tmp debug output

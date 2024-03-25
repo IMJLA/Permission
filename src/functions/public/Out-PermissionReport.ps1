@@ -116,12 +116,12 @@ function Out-PermissionReport {
         switch ($Split) {
 
             'account' {
-                $FileNameProperty = "$SplitBy.ResolvedAccountName"
+                $FileNameProperty = "$Split.ResolvedAccountName"
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'item' {
-                $FileNameProperty = "$SplitBy.Path"
+                $FileNameProperty = "$Split.Path"
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
