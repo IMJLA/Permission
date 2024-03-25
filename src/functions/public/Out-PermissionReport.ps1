@@ -108,6 +108,34 @@ function Out-PermissionReport {
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
+    # String translations indexed by value in the $Detail parameter
+    # TODO: Move to i18n
+    $DetailStrings = @(
+        'Item paths',
+        'Resolved item paths (server names and DFS targets resolved)'
+        'Expanded resolved item paths (resolved target paths expanded into their children)',
+        'Access lists',
+        'Access rules (resolved identity references and inheritance flags)',
+        'Accounts with access',
+        'Expanded access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
+        'Formatted permissions',
+        'Best Practice issues',
+        'Custom sensor output for Paessler PRTG Network Monitor'
+        'Permission report'
+    )
+
+    $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 }
+    $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 }
+
+    $DetailScripts = @(
+        { $TargetPath },
+        { $Parent },
+        { $ACLsByPath.Keys },
+        { $ACLsByPath.Values },
+        { ForEach ($val in $ACEsByGUID.Values) { $val } },
+        { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } }
+    )
+
     ForEach ($Split in $Permissions.SplitBy.Keys) {
 
         switch ($Split) {
@@ -146,64 +174,94 @@ function Out-PermissionReport {
 
         }
 
-        ForEach ($File in $ReportFiles) {
+        ForEach ($Format in $Formats) {
 
-            if ($FileNameProperty -eq '') {
-                $Subfile = $File
-            } else {
-                $Subfile = $File.$FileNameProperty
+            $FormatDir = "$OutputDir\$Format"
+            $null = New-Item -Path $FormatDir -ItemType Directory -ErrorAction SilentlyContinue
+
+            switch ($Format) {
+
+                'csv' {
+
+                    $DetailExports = @(
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                        { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
+                        { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
+                    )
+
+                }
+
+                'html' {
+
+                    $DetailExports = @(
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { $Report -join "<br />`r`n" | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | Out-File -LiteralPath $ThisReportFile },
+                        { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                        { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
+                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
+                    )
+
+                }
+
+                'json' {
+
+                    $DetailExports = @(
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                        { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
+                    )
+
+                }
+
             }
 
-            $FileName = $Subfile.$FileNameSubproperty -replace '\\', '_' -replace ':', ''
-            if (-not $FileName) {
-                Write-Host "FileNameProperty $FileNameProperty not found on `$File" -ForegroundColor Cyan
-                Write-Host ($File | gm | out-string) -ForegroundColor Cyan
-                pause
-            }
-            [hashtable]$Params = $PSBoundParameters
-            $Params['TargetPath'] = $File.Path
-            $Params['NetworkPath'] = $File.NetworkPaths
-            $HtmlElements = Get-HtmlReportElements @Params
+            $ReportObjects = @{}
 
-            if ($Subproperty -eq '') {
-                $Subfile = $File
-            } else {
-                $Subfile = $File.$Subproperty
+            ForEach ($Level in $UnsplitDetail) {
+
+                # Save the report
+                $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+
+                Out-PermissionDetailReport -Detail $Level -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
+
             }
 
-            ForEach ($Format in $Formats) {
+            ForEach ($File in $ReportFiles) {
+
+                if ($Subproperty -eq '') {
+                    $Subfile = $File
+                } else {
+                    $Subfile = $File.$Subproperty
+                }
 
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$Format`Group"
-                if (-not $PermissionGroupings) {
-                    Write-Host "$Subproperty$Format`Group for SplitBy $Split" -ForegroundColor Magenta
-                    Write-Host "$($Subfile | gm | out-string)" -ForegroundColor Magenta
-                    Write-Host "$($Subfile.NetworkPaths | gm | out-string)" -ForegroundColor Magenta
-                    if ($Subfile.NetworkPaths.jsonGroup) {
-                        Write-Host "The problem is the subproperty string mechanism doesn't work" -ForegroundColor Magenta
-                    }
-                    pause
-                }
-                $Permissions = $File.$Format
+                $Permissions = $Subfile.$Format
 
-                $BodyParams = @{
-                    HtmlFolderPermissions = $Permissions.Div
-                    HtmlExclusions        = $HtmlElements.ExclusionsDiv
-                    HtmlFileList          = $HtmlElements.HtmlDivOfFiles
-                    ReportFooter          = $HtmlElements.ReportFooter
-                    SummaryDivHeader      = $HtmlElements.SummaryDivHeader
-                    DetailDivHeader       = $HtmlElements.DetailDivHeader
-                    NetworkPathDiv        = $HtmlElements.NetworkPathDiv
-                }
-
-                # TODO: Can this move up out of the loop?
                 $DetailScripts = @(
-                    { $TargetPath },
-                    { $Parent },
-                    { $ACLsByPath.Keys },
-                    { $ACLsByPath.Values },
-                    { ForEach ($val in $ACEsByGUID.Values) { $val } },
-                    { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
+                    {  }, {  }, {  }, {  }, {  }, {  },
                     {
 
                         switch ($GroupBy) {
@@ -221,71 +279,33 @@ function Out-PermissionReport {
 
                 $ReportObjects = @{}
 
-                ForEach ($Level in $Detail) {
+                ForEach ($Level in $SplitDetail) {
 
                     # Save the report
                     $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
 
                 }
 
-                # String translations indexed by value in the $Detail parameter
-                # TODO: Move to i18n
-                $DetailStrings = @(
-                    'Item paths',
-                    'Resolved item paths (server names and DFS targets resolved)'
-                    'Expanded resolved item paths (resolved target paths expanded into their children)',
-                    'Access lists',
-                    'Access rules (resolved identity references and inheritance flags)',
-                    'Accounts with access',
-                    'Expanded access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
-                    'Formatted permissions',
-                    'Best Practice issues',
-                    'Custom sensor output for Paessler PRTG Network Monitor'
-                    'Permission report'
-                )
+                [hashtable]$Params = $PSBoundParameters
+                $Params['TargetPath'] = $File.Path
+                $Params['NetworkPath'] = $File.NetworkPaths
+                $HtmlElements = Get-HtmlReportElements @Params
+
+                $BodyParams = @{
+                    HtmlFolderPermissions = $Permissions.Div
+                    HtmlExclusions        = $HtmlElements.ExclusionsDiv
+                    HtmlFileList          = $HtmlElements.HtmlDivOfFiles
+                    ReportFooter          = $HtmlElements.ReportFooter
+                    SummaryDivHeader      = $HtmlElements.SummaryDivHeader
+                    DetailDivHeader       = $HtmlElements.DetailDivHeader
+                    NetworkPathDiv        = $HtmlElements.NetworkPathDiv
+                }
 
                 switch ($Format) {
 
                     'csv' {
 
-                        $DetailExports = @(
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                            { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                            { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                            { $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                            { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                            { <# $Report | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
-                        )
-
-                        ForEach ($Level in $Detail) {
-
-                            # Get shorter versions of the detail strings to use in file names
-                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
-
-                            # Convert the shorter strings to Title Case
-                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
-
-                            # Remove spaces from the shorter strings
-                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
-
-                            # Build the file path
-                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$FileName.$Format"
-
-                            # Generate the report
-                            $Report = $ReportObjects[$Level]
-
-                            # Save the report
-                            $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
-
-                            # Output the name of the report file to the Information stream
-                            Write-Information $ThisReportFile
-
-                        }
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
 
                     }
 
@@ -322,44 +342,7 @@ function Out-PermissionReport {
 
                         }
 
-                        $DetailExports = @(
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { $Report -join "<br />`r`n" | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | Out-File -LiteralPath $ThisReportFile },
-                            { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                            { <#$Report | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                            { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
-                        )
-
-                        ForEach ($Level in $Detail) {
-
-                            # Get shorter versions of the detail strings to use in file names
-                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
-
-                            # Convert the shorter strings to Title Case
-                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
-
-                            # Remove spaces from the shorter strings
-                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
-
-                            # Build the file path
-                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$FileName.htm"
-
-                            # Generate the report
-                            $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
-
-                            # Save the report
-                            $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
-
-                            # Output the name of the report file to the Information stream
-                            Write-Information $ThisReportFile
-
-                        }
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
 
                     }
 
@@ -395,49 +378,7 @@ function Out-PermissionReport {
 
                         }
 
-                        $DetailExports = @(
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { $Report | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                            { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                            { <#$Report | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                            { $null = Set-Content -LiteralPath $ThisReportFile -Value $Report }
-                        )
-
-                        ForEach ($Level in $Detail) {
-
-                            # Get shorter versions of the detail strings to use in file names
-                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
-
-                            # Convert the shorter strings to Title Case
-                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
-
-                            # Remove spaces from the shorter strings
-                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
-
-                            # Build the file path
-                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$Format`_$FileName.htm"
-
-                            # Generate the report
-                            $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
-
-                            # Save the report
-                            $null = Invoke-Command -ScriptBlock $DetailExports[$Level]
-
-                            # Output the name of the report file to the Information stream
-                            Write-Information $ThisReportFile
-
-                            # Return the report file path of the highest level for the Interactive switch of Export-Permission
-                            if ($Level -eq 10) {
-                                $ThisReportFile
-                            }
-
-                        }
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
 
                     }
 
