@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.423] - 2024-03-24 - bugfix plural vs singular param names
+
 ## [0.0.422] - 2024-03-24 - reduce number of files written.  implement out-permissiondetailreport for redundant code
 
 ## [0.0.421] - 2024-03-24 - bugfix nested file name properties

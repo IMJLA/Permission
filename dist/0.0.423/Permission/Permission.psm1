@@ -3683,7 +3683,7 @@ function Out-PermissionReport {
                 # Save the report
                 $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
 
-                Out-PermissionDetailReport -Detail $Level -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
+                Out-PermissionDetailReport -Detail $Level -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
 
             }
 
@@ -3744,7 +3744,7 @@ function Out-PermissionReport {
 
                     'csv' {
 
-                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
 
                     }
 
@@ -3781,7 +3781,7 @@ function Out-PermissionReport {
 
                         }
 
-                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
 
                     }
 
@@ -3817,7 +3817,7 @@ function Out-PermissionReport {
 
                         }
 
-                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObjects $ReportObjects -DetailExports $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
 
                     }
 
@@ -4794,6 +4794,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
