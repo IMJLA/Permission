@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.411] - 2024-03-24 - remove unnecessary subproperty
+
 ## [0.0.410] - 2024-03-24 - temp debug output
 
 ## [0.0.409] - 2024-03-24 - temp debug output
