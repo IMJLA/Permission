@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.403] - 2024-03-24 - bugfix selection property was incorrect
+
 ## [0.0.402] - 2024-03-24 - i dunno it was minor
 
 ## [0.0.401] - 2024-03-24 - add network paths header and div with subheader and table

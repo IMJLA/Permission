@@ -41,7 +41,7 @@ function Format-Permission {
 
         $FormattedResults['SplitByAccount'] = ForEach ($Account in $Permission.AccountPermissions) {
 
-            $Selection = $Account.Access
+            $Selection = $Account
 
             $OutputProperties = @{
                 Account      = $Account.Account
