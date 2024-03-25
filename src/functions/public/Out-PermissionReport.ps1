@@ -152,8 +152,12 @@ function Out-PermissionReport {
             ForEach ($Format in $Formats) {
 
                 # Convert the list of permission groupings list to an HTML table
-                Write-Host "$Subproperty$Format`Group" -ForegroundColor Magenta
                 $PermissionGroupings = $File."$Subproperty$Format`Group"
+                if ($Format -eq 'json') {
+                    if (-not $PermissionGroupings.Columns) {
+                        Write-Host "$($PermissionGroupings | gm | out-string)" -ForegroundColor Magenta
+                    }
+                }
                 $Permissions = $File."$Subproperty$Format"
 
                 $BodyParams = @{
