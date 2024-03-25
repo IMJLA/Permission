@@ -3509,12 +3509,12 @@ function Out-PermissionReport {
             }
 
             'item' {
-                $Subproperty = 'NetworkPaths.'
                 $FileNameProperty = "$SplitBy.Path"
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'none' {
+                $Subproperty = 'NetworkPaths.'
                 $ReportFiles = @{
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                     Path         = $FormattedPermission['SplitByTarget'].Path.FullName
@@ -3523,6 +3523,7 @@ function Out-PermissionReport {
             }
 
             'target' {
+                $Subproperty = 'NetworkPaths.'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
@@ -3544,6 +3545,7 @@ function Out-PermissionReport {
                     if (-not $PermissionGroupings) {
                         Write-Host "$Subproperty$Format`Group for SplitBy $Split" -ForegroundColor Magenta
                         Write-Host "$($File | gm | out-string)" -ForegroundColor Magenta
+                        pause
                     }
                 }
                 $Permissions = $File."$Subproperty$Format"
@@ -4776,6 +4778,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

@@ -121,12 +121,12 @@ function Out-PermissionReport {
             }
 
             'item' {
-                $Subproperty = 'NetworkPaths.'
                 $FileNameProperty = "$SplitBy.Path"
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'none' {
+                $Subproperty = 'NetworkPaths.'
                 $ReportFiles = @{
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                     Path         = $FormattedPermission['SplitByTarget'].Path.FullName
@@ -135,6 +135,7 @@ function Out-PermissionReport {
             }
 
             'target' {
+                $Subproperty = 'NetworkPaths.'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
@@ -156,6 +157,7 @@ function Out-PermissionReport {
                     if (-not $PermissionGroupings) {
                         Write-Host "$Subproperty$Format`Group for SplitBy $Split" -ForegroundColor Magenta
                         Write-Host "$($File | gm | out-string)" -ForegroundColor Magenta
+                        pause
                     }
                 }
                 $Permissions = $File."$Subproperty$Format"
