@@ -20,6 +20,10 @@ function Out-PermissionDetailReport {
 
     ForEach ($Level in $Detail) {
 
+        if (-not $DetailExport[$Level]) {
+            pause
+        }
+
         # Get shorter versions of the detail strings to use in file names
         $ShortDetail = $DetailString[$Level] -replace '\([^\)]*\)', ''
 
