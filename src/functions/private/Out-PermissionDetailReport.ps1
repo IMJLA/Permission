@@ -18,11 +18,11 @@ function Out-PermissionDetailReport {
         'json' { $Suffix = "_$Format`_$FileName.htm" }
     }
 
-    ForEach ($Level in $Detail) {
+    if (-not $DetailExport) {
+        pause
+    }
 
-        if (-not $DetailExport[$Level]) {
-            pause
-        }
+    ForEach ($Level in $Detail) {
 
         # Get shorter versions of the detail strings to use in file names
         $ShortDetail = $DetailString[$Level] -replace '\([^\)]*\)', ''

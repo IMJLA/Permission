@@ -1701,11 +1701,11 @@ function Out-PermissionDetailReport {
         'json' { $Suffix = "_$Format`_$FileName.htm" }
     }
 
-    ForEach ($Level in $Detail) {
+    if (-not $DetailExport) {
+        pause
+    }
 
-        if (-not $DetailExport[$Level]) {
-            pause
-        }
+    ForEach ($Level in $Detail) {
 
         # Get shorter versions of the detail strings to use in file names
         $ShortDetail = $DetailString[$Level] -replace '\([^\)]*\)', ''
@@ -4794,6 +4794,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
