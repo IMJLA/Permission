@@ -114,19 +114,22 @@ function Out-PermissionReport {
 
             'account' {
                 $Subproperty = ''
-                $FileNameProperty = "$Split.ResolvedAccountName"
+                $FileNameProperty = $Split
+                $FileNameSubproperty = 'ResolvedAccountName'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'item' {
                 $Subproperty = ''
-                $FileNameProperty = "$Split.Path"
+                $FileNameProperty = $Split
+                $FileNameSubproperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
             'none' {
                 $Subproperty = 'NetworkPaths'
-                $FileNameProperty = 'Path'
+                $FileNameProperty = ''
+                $FileNameSubproperty = 'Path'
                 $ReportFiles = [PSCustomObject]@{
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                     Path         = $FormattedPermission['SplitByTarget'].Path.FullName
@@ -136,7 +139,8 @@ function Out-PermissionReport {
 
             'target' {
                 $Subproperty = 'NetworkPaths'
-                $FileNameProperty = 'Path'
+                $FileNameProperty = ''
+                $FileNameSubproperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
             }
 
@@ -144,7 +148,13 @@ function Out-PermissionReport {
 
         ForEach ($File in $ReportFiles) {
 
-            $FileName = $File.$FileNameProperty -replace '\\', '_' -replace ':', ''
+            if ($FileNameProperty -eq '') {
+                $Subfile = $File
+            } else {
+                $Subfile = $File.$FileNameProperty
+            }
+
+            $FileName = $Subfile.$FileNameSubproperty -replace '\\', '_' -replace ':', ''
             if (-not $FileName) {
                 Write-Host "FileNameProperty $FileNameProperty not found on `$File" -ForegroundColor Cyan
                 Write-Host ($File | gm | out-string) -ForegroundColor Cyan
@@ -155,13 +165,13 @@ function Out-PermissionReport {
             $Params['NetworkPath'] = $File.NetworkPaths
             $HtmlElements = Get-HtmlReportElements @Params
 
-            ForEach ($Format in $Formats) {
+            if ($Subproperty -eq '') {
+                $Subfile = $File
+            } else {
+                $Subfile = $File.$Subproperty
+            }
 
-                if ($Subproperty -eq '') {
-                    $Subfile = $File
-                } else {
-                    $Subfile = $File.$Subproperty
-                }
+            ForEach ($Format in $Formats) {
 
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$Format`Group"
