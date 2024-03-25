@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.414] - 2024-03-24 - tmp debug output
+
 ## [0.0.413] - 2024-03-24 - bugfix forgot to convert hashtable to obj
 
 ## [0.0.412] - 2024-03-24 - add necessary subproperty

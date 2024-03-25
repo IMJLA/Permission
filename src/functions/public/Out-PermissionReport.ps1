@@ -157,6 +157,7 @@ function Out-PermissionReport {
                     if (-not $PermissionGroupings) {
                         Write-Host "$Subproperty$Format`Group for SplitBy $Split" -ForegroundColor Magenta
                         Write-Host "$($File | gm | out-string)" -ForegroundColor Magenta
+                        Write-Host "$($File.NetworkPaths | gm | out-string)" -ForegroundColor Magenta
                         pause
                     }
                 }
