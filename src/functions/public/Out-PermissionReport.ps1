@@ -152,7 +152,7 @@ function Out-PermissionReport {
             ForEach ($Format in $Formats) {
 
                 # Convert the list of permission groupings list to an HTML table
-
+                Write-Host "$Subproperty$Format`Group" -ForegroundColor Magenta
                 $PermissionGroupings = $File."$Subproperty$Format`Group"
                 $Permissions = $File."$Subproperty$Format"
 

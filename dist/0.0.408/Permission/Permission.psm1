@@ -3540,7 +3540,7 @@ function Out-PermissionReport {
             ForEach ($Format in $Formats) {
 
                 # Convert the list of permission groupings list to an HTML table
-
+                Write-Host "$Subproperty$Format`Group" -ForegroundColor Magenta
                 $PermissionGroupings = $File."$Subproperty$Format`Group"
                 $Permissions = $File."$Subproperty$Format"
 
@@ -4772,6 +4772,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
