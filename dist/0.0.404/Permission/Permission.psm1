@@ -3498,21 +3498,37 @@ function Out-PermissionReport {
     ForEach ($Split in $SplitBy) {
 
         $Subproperty = ''
+        $FileNameProperty = 'Path'
 
-        if ($Split -eq 'none') {
-            $ReportFiles = @{
-                NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
-                Path         = $FormattedPermission['SplitByTarget'].Path.FullName
-            }
-        } else {
-            if ($Split -ne 'target') {
+        switch ($Split) {
+
+            'account' {
                 $Subproperty = 'NetworkPaths.'
+                $FileNameProperty = "$SplitBy.ResolvedAccountName"
             }
-            $ReportFiles = $FormattedPermission["SplitBy$Split"]
+
+            'item' {
+                $Subproperty = 'NetworkPaths.'
+                $FileNameProperty = "$SplitBy.Path"
+            }
+
+            'none' {
+                $ReportFiles = @{
+                    NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
+                    Path         = $FormattedPermission['SplitByTarget'].Path.FullName
+                }
+
+            }
+
+            'target' {
+                $ReportFiles = $FormattedPermission["SplitBy$Split"]
+            }
+
         }
 
         ForEach ($File in $ReportFiles) {
 
+            $FileName = $File.$FileNameProperty -replace '\\', '_' -replace ':', ''
             [hashtable]$Params = $PSBoundParameters
             $Params['TargetPath'] = $File.Path
             $Params['NetworkPath'] = $File.NetworkPaths
@@ -3613,7 +3629,7 @@ function Out-PermissionReport {
                             $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                             # Build the file path
-                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.$Format"
+                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$FileName.$Format"
 
                             # Generate the report
                             $Report = $ReportObjects[$Level]
@@ -3687,7 +3703,7 @@ function Out-PermissionReport {
                             $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                             # Build the file path
-                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail.htm"
+                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$FileName.htm"
 
                             # Generate the report
                             $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
@@ -3760,7 +3776,7 @@ function Out-PermissionReport {
                             $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                             # Build the file path
-                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$Format.htm"
+                            $ThisReportFile = "$OutputDir\$Level`_$SpacelessDetail`_$Format`_$FileName.htm"
 
                             # Generate the report
                             $Report = Invoke-Command -ScriptBlock $DetailScripts[$Level]
@@ -4753,6 +4769,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
