@@ -189,7 +189,6 @@ function Get-HtmlReportElements {
         ReportInstanceId = $ReportInstanceId
         StopWatch        = $StopWatch
         ThisFqdn         = $ThisFqdn
-        UnitsToResolve   = @('day', 'hour', 'minute', 'second')
         WhoAmI           = $WhoAmI
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams

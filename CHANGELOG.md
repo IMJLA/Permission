@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.454] - 2024-03-25 - bugfix footer unitstoresolve
+
 ## [0.0.453] - 2024-03-25 - publish new ver due to conflict/mistake publishing from wrong folder
 
 ## [0.0.452] - 2024-03-25 - implement additionalclasses param for new-bootstrapalert

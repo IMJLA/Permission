@@ -1237,7 +1237,6 @@ function Get-HtmlReportElements {
         ReportInstanceId = $ReportInstanceId
         StopWatch        = $StopWatch
         ThisFqdn         = $ThisFqdn
-        UnitsToResolve   = @('day', 'hour', 'minute', 'second')
         WhoAmI           = $WhoAmI
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
@@ -1278,7 +1277,9 @@ function Get-HtmlReportFooter {
 
         [UInt64]$PermissionCount,
 
-        [UInt64]$PrincipalCount
+        [UInt64]$PrincipalCount,
+
+        [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second')
 
     )
 
@@ -1286,7 +1287,7 @@ function Get-HtmlReportFooter {
     $FinishTime = Get-Date
     $StartTime = $FinishTime.AddTicks(-$StopWatch.ElapsedTicks)
     $TimeZoneName = Get-TimeZoneName -Time $FinishTime
-    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed -UnitsToResolve
+    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed -UnitsToResolve $UnitsToResolve
 
     if ($TotalBytes) {
         $Size = " ($($TotalBytes / 1TB) TiB"
@@ -1298,7 +1299,7 @@ Processed $PermissionCount permissions for $PrincipalCount accounts on $ItemCoun
 Report instance: $ReportInstanceId
 "@
 
-    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses Small
+    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' Small'
 
 }
 <#
@@ -4862,6 +4863,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
