@@ -3664,6 +3664,8 @@ function Out-PermissionReport {
                         { }
                     )
 
+                    $DetailScripts[10] = { }
+
                 }
 
                 'html' {
@@ -3781,11 +3783,15 @@ function Out-PermissionReport {
                         { }
                     )
 
+                    $DetailScripts[10] = { }
+
                 }
 
                 'prtgxml' {
 
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
+
+                    $DetailScripts[10] = { }
 
                 }
 
@@ -3802,6 +3808,8 @@ function Out-PermissionReport {
                         { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
                         { }, { }, { }
                     )
+
+                    $DetailScripts[10] = { }
 
                 }
 
@@ -4855,6 +4863,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

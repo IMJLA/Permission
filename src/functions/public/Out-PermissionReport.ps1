@@ -217,6 +217,8 @@ function Out-PermissionReport {
                         { }
                     )
 
+                    $DetailScripts[10] = { }
+
                 }
 
                 'html' {
@@ -334,11 +336,15 @@ function Out-PermissionReport {
                         { }
                     )
 
+                    $DetailScripts[10] = { }
+
                 }
 
                 'prtgxml' {
 
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
+
+                    $DetailScripts[10] = { }
 
                 }
 
@@ -355,6 +361,8 @@ function Out-PermissionReport {
                         { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
                         { }, { }, { }
                     )
+
+                    $DetailScripts[10] = { }
 
                 }
 
