@@ -204,17 +204,17 @@ function Out-PermissionReport {
                 'csv' {
 
                     $DetailExports = @(
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile },
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { <# $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                        { <# $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> },
-                        { <# $args[0] | Export-Csv -NoTypeInformation -LiteralPath $ThisReportFile#> }
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { },
+                        { },
+                        { }
                     )
 
                 }
@@ -222,17 +222,17 @@ function Out-PermissionReport {
                 'html' {
 
                     $DetailExports = @(
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] -join "<br />`r`n" | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | Out-File -LiteralPath $ThisReportFile },
-                        { <#$args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                        { <#$args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $ThisReportFile#> },
-                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] -join "<br />`r`n" | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { },
+                        { },
+                        { $null = Set-Content -LiteralPath $args[1] -Value $args[0] }
                     )
 
                     $DetailScripts[10] = {
@@ -271,17 +271,17 @@ function Out-PermissionReport {
                 'js' {
 
                     $DetailExports = @(
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
                         { },
                         { },
-                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                        { $null = Set-Content -LiteralPath $args[1] -Value $args[0] }
                     )
 
                     $DetailScripts[10] = {
@@ -321,14 +321,14 @@ function Out-PermissionReport {
                 'json' {
 
                     $DetailExports = @(
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $args[1] },
                         { },
                         { },
                         { }
@@ -345,14 +345,14 @@ function Out-PermissionReport {
                 'xml' {
 
                     $DetailExports = @(
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
-                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $args[1] },
                         { }, { }, { }
                     )
 

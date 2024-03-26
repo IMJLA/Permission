@@ -39,7 +39,7 @@ function Out-PermissionDetailReport {
         $Report = $ReportObject[$Level]
 
         # Save the report
-        $null = Invoke-Command -ScriptBlock $DetailExport[$Level] -ArgumentList $Report
+        $null = Invoke-Command -ScriptBlock $DetailExport[$Level] -ArgumentList $Report, $ThisReportFile
 
         # Output the name of the report file to the Information stream
         Write-Information $ThisReportFile
