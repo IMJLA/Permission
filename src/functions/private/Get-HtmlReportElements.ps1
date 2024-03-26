@@ -109,7 +109,7 @@ function Get-HtmlReportElements {
 
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
-
+    pause
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
     $NetworkPathTable = $NetworkPath.Item |
     ConvertTo-Html -Fragment |
