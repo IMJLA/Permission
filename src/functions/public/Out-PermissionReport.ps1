@@ -205,7 +205,7 @@ function Out-PermissionReport {
 
                     $DetailExports = @(
                         { $args[0] | Out-File -LiteralPath $args[1] },
-                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
                         { $args[0] | Out-File -LiteralPath $args[1] },
                         { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
                         { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
@@ -223,7 +223,7 @@ function Out-PermissionReport {
 
                     $DetailExports = @(
                         { $args[0] | Out-File -LiteralPath $args[1] },
-                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
                         { $args[0] -join "<br />`r`n" | Out-File -LiteralPath $args[1] },
                         { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
                         { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },

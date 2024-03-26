@@ -3652,7 +3652,7 @@ function Out-PermissionReport {
 
                     $DetailExports = @(
                         { $args[0] | Out-File -LiteralPath $args[1] },
-                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
                         { $args[0] | Out-File -LiteralPath $args[1] },
                         { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
                         { $args[0] | Export-Csv -NoTypeInformation -LiteralPath $args[1] },
@@ -3670,7 +3670,7 @@ function Out-PermissionReport {
 
                     $DetailExports = @(
                         { $args[0] | Out-File -LiteralPath $args[1] },
-                        { $args[0] | Out-File -LiteralPath $args[1] },
+                        { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
                         { $args[0] -join "<br />`r`n" | Out-File -LiteralPath $args[1] },
                         { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
                         { $args[0] | ConvertTo-Html -Fragment | Out-File -LiteralPath $args[1] },
@@ -4853,6 +4853,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
