@@ -263,9 +263,11 @@ function Out-PermissionReport {
 
                         }
 
+                        $ReportParameters = $HtmlElements.ReportParameters
+
                         # Apply the report template to the generated HTML report body and description
                         Write-LogMsg @LogParams -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
-                        New-BootstrapReport -Body $Body @$HtmlElements.ReportParameters
+                        New-BootstrapReport -Body $Body @ReportParameters
 
                     }
 
@@ -311,9 +313,11 @@ function Out-PermissionReport {
                         Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
                         $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy
 
+                        $ReportParameters = $HtmlElements.ReportParameters
+
                         # Apply the report template to the generated HTML report body and description
                         Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
-                        New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @$HtmlElements.ReportParameters
+                        New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
 
                     }
 

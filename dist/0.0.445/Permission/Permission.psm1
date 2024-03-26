@@ -3704,9 +3704,11 @@ function Out-PermissionReport {
 
                         }
 
+                        $ReportParameters = $HtmlElements.ReportParameters
+
                         # Apply the report template to the generated HTML report body and description
                         Write-LogMsg @LogParams -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
-                        New-BootstrapReport -Body $Body @$HtmlElements.ReportParameters
+                        New-BootstrapReport -Body $Body @ReportParameters
 
                     }
 
@@ -3752,9 +3754,11 @@ function Out-PermissionReport {
                         Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
                         $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy
 
+                        $ReportParameters = $HtmlElements.ReportParameters
+
                         # Apply the report template to the generated HTML report body and description
                         Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
-                        New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @$HtmlElements.ReportParameters
+                        New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
 
                     }
 
@@ -4858,6 +4862,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
