@@ -1691,16 +1691,16 @@ function Out-PermissionDetailReport {
         $Culture,
         $DetailString,
         $FileName,
-        $FormatToReturn = 'json'
+        $FormatToReturn = 'js'
     )
 
     switch ($Format) {
-        'csv' { $Suffix = '.csv' }
-        'html' { $Suffix = "_$FileName.htm" }
-        'js' { $Suffix = "_$Format`_$FileName.htm" }
-        'json' { $Suffix = "_$Format`_$FileName.json" }
-        'prtgxml' { $Suffix = '.xml' }
-        'xml' { $Suffix = '.xml' }
+        'csv' { $Suffix = '.csv' ; break }
+        'html' { $Suffix = "_$FileName.htm" ; break }
+        'js' { $Suffix = "_$Format`_$FileName.htm" ; break }
+        'json' { $Suffix = "_$Format`_$FileName.json" ; break }
+        'prtgxml' { $Suffix = '.xml' ; break }
+        'xml' { $Suffix = '.xml' ; break }
     }
 
     ForEach ($Level in $Detail) {
@@ -4862,6 +4862,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

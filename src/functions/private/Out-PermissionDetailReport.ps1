@@ -9,16 +9,16 @@ function Out-PermissionDetailReport {
         $Culture,
         $DetailString,
         $FileName,
-        $FormatToReturn = 'json'
+        $FormatToReturn = 'js'
     )
 
     switch ($Format) {
-        'csv' { $Suffix = '.csv' }
-        'html' { $Suffix = "_$FileName.htm" }
-        'js' { $Suffix = "_$Format`_$FileName.htm" }
-        'json' { $Suffix = "_$Format`_$FileName.json" }
-        'prtgxml' { $Suffix = '.xml' }
-        'xml' { $Suffix = '.xml' }
+        'csv' { $Suffix = '.csv' ; break }
+        'html' { $Suffix = "_$FileName.htm" ; break }
+        'js' { $Suffix = "_$Format`_$FileName.htm" ; break }
+        'json' { $Suffix = "_$Format`_$FileName.json" ; break }
+        'prtgxml' { $Suffix = '.xml' ; break }
+        'xml' { $Suffix = '.xml' ; break }
     }
 
     ForEach ($Level in $Detail) {
