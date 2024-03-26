@@ -44,7 +44,7 @@ Processed $PermissionCount permissions for $PrincipalCount accounts on $ItemCoun
 Report instance: $ReportInstanceId
 "@
 
-    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' Small'
+    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' small'
 
 }
 <#
