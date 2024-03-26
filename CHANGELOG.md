@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.429] - 2024-03-25 - more multi-format fixin
+
 ## [0.0.428] - 2024-03-25 - add detailexports for every format
 
 ## [0.0.427] - 2024-03-25 - moved debug to correct location

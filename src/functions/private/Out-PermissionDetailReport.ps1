@@ -15,11 +15,10 @@ function Out-PermissionDetailReport {
     switch ($Format) {
         'csv' { $Suffix = '.csv' }
         'html' { $Suffix = "_$FileName.htm" }
-        'json' { $Suffix = "_$Format`_$FileName.htm" }
-    }
-
-    if (-not $DetailExport) {
-        pause
+        'js' { $Suffix = "_$Format`_$FileName.htm" }
+        'json' { $Suffix = "_$Format`_$FileName.json" }
+        'prtgxml' { $Suffix = '.xml' }
+        'xml' { $Suffix = '.xml' }
     }
 
     ForEach ($Level in $Detail) {

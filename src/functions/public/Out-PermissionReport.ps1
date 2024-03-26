@@ -261,7 +261,7 @@ function Out-PermissionReport {
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                         { },
                         { },
-                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                        { }
                     )
 
                 }
@@ -382,7 +382,7 @@ function Out-PermissionReport {
 
                     }
 
-                    'json' {
+                    'js' {
 
                         $DetailScripts[10] = {
 
@@ -428,7 +428,7 @@ function Out-PermissionReport {
 
                     }
 
-                    default {}
+                    'xml' {}
 
                 }
 
