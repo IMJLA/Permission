@@ -109,13 +109,13 @@ function Get-HtmlReportElements {
 
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
-    pause
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-    $NetworkPathTable = $NetworkPath.Item |
+
+    $NetworkPathTable = $NetworkPath |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 
     $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
+    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
     Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
