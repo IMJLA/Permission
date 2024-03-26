@@ -3631,6 +3631,7 @@ function Out-PermissionReport {
 
         ForEach ($Format in $Formats) {
 
+            $FormatString = $Format
             $FormatDir = "$OutputDir\$Format"
             $null = New-Item -Path $FormatDir -ItemType Directory -ErrorAction SilentlyContinue
 
@@ -3687,6 +3688,8 @@ function Out-PermissionReport {
                         { },
                         { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
                     )
+
+                    $FormatString = 'json'
 
                 }
 
@@ -3752,8 +3755,8 @@ function Out-PermissionReport {
                 }
 
                 # Convert the list of permission groupings list to an HTML table
-                $PermissionGroupings = $Subfile."$Format`Group"
-                $Permissions = $Subfile.$Format
+                $PermissionGroupings = $Subfile."$FormatString`Group"
+                $Permissions = $Subfile.$FormatString
 
                 $ReportObjects = @{}
 
@@ -4833,6 +4836,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

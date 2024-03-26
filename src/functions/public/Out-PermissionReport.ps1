@@ -189,6 +189,7 @@ function Out-PermissionReport {
 
         ForEach ($Format in $Formats) {
 
+            $FormatString = $Format
             $FormatDir = "$OutputDir\$Format"
             $null = New-Item -Path $FormatDir -ItemType Directory -ErrorAction SilentlyContinue
 
@@ -245,6 +246,8 @@ function Out-PermissionReport {
                         { },
                         { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
                     )
+
+                    $FormatString = 'json'
 
                 }
 
@@ -310,8 +313,8 @@ function Out-PermissionReport {
                 }
 
                 # Convert the list of permission groupings list to an HTML table
-                $PermissionGroupings = $Subfile."$Format`Group"
-                $Permissions = $Subfile.$Format
+                $PermissionGroupings = $Subfile."$FormatString`Group"
+                $Permissions = $Subfile.$FormatString
 
                 $ReportObjects = @{}
 
