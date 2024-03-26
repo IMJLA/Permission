@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.433] - 2024-03-25 - add debugging pause
+
 ## [0.0.432] - 2024-03-25 - add debugging pause
 
 ## [0.0.431] - 2024-03-25 - add debugging pause
