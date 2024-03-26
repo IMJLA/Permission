@@ -129,7 +129,13 @@ function Out-PermissionReport {
 
     $DetailScripts = @(
         { $TargetPath },
-        { $Parent },
+        { ForEach ($Key in $Parent.Keys) {
+                [PSCustomObject]@{
+                    OriginalTargetPath  = $Key
+                    ResolvedNetworkPath = $Parent[$Key]
+                }
+            }
+        },
         { $ACLsByPath.Keys },
         { $ACLsByPath.Values },
         { ForEach ($val in $ACEsByGUID.Values) { $val } },
