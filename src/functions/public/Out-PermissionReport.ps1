@@ -385,6 +385,8 @@ function Out-PermissionReport {
                     $FileName = $File.$FileNameProperty.$FileNameSubproperty
                 }
 
+                $FileName = $FileName -replace '\\\\', '' -replace '\\', '_' -replace '\:', ''
+
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$FormatString`Group"
                 $Permissions = $Subfile.$FormatString
