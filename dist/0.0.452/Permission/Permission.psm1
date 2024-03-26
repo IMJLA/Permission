@@ -1181,7 +1181,7 @@ function Get-HtmlReportElements {
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
     Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
-    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString
+    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString -AdditionalClasses ' Small'
 
     # Add the target path div to the parameter splat for New-BootstrapReport
     $ReportParameters = @{
@@ -1210,7 +1210,7 @@ function Get-HtmlReportElements {
     $HtmlLogsHeading = New-HtmlHeading -Text 'Logs' -Level 6
 
     # Convert the output directory path to a Boostrap alert
-    $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary'
+    $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' Small'
 
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
 
@@ -1286,7 +1286,7 @@ function Get-HtmlReportFooter {
     $FinishTime = Get-Date
     $StartTime = $FinishTime.AddTicks(-$StopWatch.ElapsedTicks)
     $TimeZoneName = Get-TimeZoneName -Time $FinishTime
-    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed
+    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed -UnitsToResolve
 
     if ($TotalBytes) {
         $Size = " ($($TotalBytes / 1TB) TiB"
@@ -1298,7 +1298,7 @@ Processed $PermissionCount permissions for $PrincipalCount accounts on $ItemCoun
 Report instance: $ReportInstanceId
 "@
 
-    New-BootstrapAlert -Class Light -Text $Text
+    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses Small
 
 }
 <#
@@ -4862,6 +4862,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
 
 
 

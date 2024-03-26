@@ -133,7 +133,7 @@ function Get-HtmlReportElements {
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
     Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
-    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString
+    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString -AdditionalClasses ' Small'
 
     # Add the target path div to the parameter splat for New-BootstrapReport
     $ReportParameters = @{
@@ -162,7 +162,7 @@ function Get-HtmlReportElements {
     $HtmlLogsHeading = New-HtmlHeading -Text 'Logs' -Level 6
 
     # Convert the output directory path to a Boostrap alert
-    $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary'
+    $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' Small'
 
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
 

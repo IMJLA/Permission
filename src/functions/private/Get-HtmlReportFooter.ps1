@@ -30,7 +30,7 @@ function Get-HtmlReportFooter {
     $FinishTime = Get-Date
     $StartTime = $FinishTime.AddTicks(-$StopWatch.ElapsedTicks)
     $TimeZoneName = Get-TimeZoneName -Time $FinishTime
-    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed
+    $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed -UnitsToResolve
 
     if ($TotalBytes) {
         $Size = " ($($TotalBytes / 1TB) TiB"
@@ -42,7 +42,7 @@ Processed $PermissionCount permissions for $PrincipalCount accounts on $ItemCoun
 Report instance: $ReportInstanceId
 "@
 
-    New-BootstrapAlert -Class Light -Text $Text
+    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses Small
 
 }
 <#
