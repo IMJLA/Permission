@@ -23,7 +23,7 @@ function Get-HtmlReportElements {
         [string[]]$TargetPath,
 
         # Network Path to the NTFS folder whose permissions are being exported
-        [string[]]$NetworkPath,
+        $NetworkPath,
 
         # Group members are not being exported (only the groups themselves)
         [switch]$NoMembers,
@@ -109,8 +109,8 @@ function Get-HtmlReportElements {
 
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
-    pause
-    $NetworkPathTable = $NetworkPath |
+
+    $NetworkPathTable = $NetworkPath.Item |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 

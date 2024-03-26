@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.450] - 2024-03-25 - bugfix replace item prop and stop casting as string array when I want objects
+
 ## [0.0.449] - 2024-03-25 - more efficient switch stmt
 
 ## [0.0.448] - 2024-03-25 - update debug pause
