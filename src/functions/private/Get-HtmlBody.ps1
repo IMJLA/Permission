@@ -10,7 +10,7 @@ function Get-HtmlBody {
         $SummaryDivHeader,
         $DetailDivHeader
     )
-    pause
+
     $StringBuilder = [System.Text.StringBuilder]::new()
     $null = $StringBuilder.Append((New-HtmlHeading 'Network Paths' -Level 5))
     $null = $StringBuilder.Append($NetworkPathDiv)

@@ -1018,7 +1018,7 @@ function Get-HtmlBody {
         $SummaryDivHeader,
         $DetailDivHeader
     )
-    pause
+
     $StringBuilder = [System.Text.StringBuilder]::new()
     $null = $StringBuilder.Append((New-HtmlHeading 'Network Paths' -Level 5))
     $null = $StringBuilder.Append($NetworkPathDiv)
@@ -3688,6 +3688,7 @@ function Out-PermissionReport {
 
                             # Apply the report template to the generated HTML report body and description
                             $ReportParameters = $HtmlElements.ReportParameters
+                            pause
                             Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
                             New-BootstrapReport -Body $Body @ReportParameters
 
@@ -4857,6 +4858,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

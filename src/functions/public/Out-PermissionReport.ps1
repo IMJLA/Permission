@@ -247,6 +247,7 @@ function Out-PermissionReport {
 
                             # Apply the report template to the generated HTML report body and description
                             $ReportParameters = $HtmlElements.ReportParameters
+                            pause
                             Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
                             New-BootstrapReport -Body $Body @ReportParameters
 
