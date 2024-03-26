@@ -235,6 +235,37 @@ function Out-PermissionReport {
                         { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
                     )
 
+                    $DetailScripts[10] = {
+
+                        if ($Permission.FlatPermissions) {
+
+                            # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                            Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            $Body = Get-HtmlBody @BodyParams
+
+                            # Apply the report template to the generated HTML report body and description
+                            $ReportParameters = $HtmlElements.ReportParameters
+                            Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                            New-BootstrapReport -Body $Body @ReportParameters
+
+                        } else {
+
+                            # Combine the header and table inside a Bootstrap div
+                            Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                            $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+
+                            # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                            Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
+
+                        }
+
+                        # Apply the report template to the generated HTML report body and description
+                        Write-LogMsg @LogParams -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
+                        New-BootstrapReport -Body $Body @$HtmlElements.ReportParameters
+
+                    }
+
                 }
 
                 'js' {
@@ -252,6 +283,36 @@ function Out-PermissionReport {
                         { },
                         { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
                     )
+
+                    $DetailScripts[10] = {
+
+                        if ($Permission.FlatPermissions) {
+
+                            # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                            Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            $Body = Get-HtmlBody @BodyParams
+
+                        } else {
+
+                            # Combine the header and table inside a Bootstrap div
+                            Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                            $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+
+                            # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
+                            Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
+
+                        }
+
+                        # Build the JavaScript scripts
+                        Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
+                        $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy
+
+                        # Apply the report template to the generated HTML report body and description
+                        Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
+                        New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @$HtmlElements.ReportParameters
+
+                    }
 
                     $FormatString = 'json'
 
@@ -356,72 +417,11 @@ function Out-PermissionReport {
 
                     'html' {
 
-                        $DetailScripts[10] = {
-
-                            if ($Permission.FlatPermissions) {
-
-                                # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                                Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                                $Body = Get-HtmlBody @BodyParams
-
-                                # Apply the report template to the generated HTML report body and description
-                                $ReportParameters = $HtmlElements.ReportParameters
-                                Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
-                                New-BootstrapReport -Body $Body @ReportParameters
-
-                            } else {
-
-                                # Combine the header and table inside a Bootstrap div
-                                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                                $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-
-                                # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                                Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                                $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
-
-                            }
-
-                            # Apply the report template to the generated HTML report body and description
-                            Write-LogMsg @LogParams -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
-                            New-BootstrapReport -Body $Body @$HtmlElements.ReportParameters
-
-                        }
-
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
 
                     }
 
                     'js' {
-
-                        $DetailScripts[10] = {
-
-                            if ($Permission.FlatPermissions) {
-
-                                # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                                Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                                $Body = Get-HtmlBody @BodyParams
-
-                            } else {
-
-                                # Combine the header and table inside a Bootstrap div
-                                Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
-                                $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-
-                                # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                                Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
-                                $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
-
-                            }
-
-                            # Build the JavaScript scripts
-                            Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
-                            $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy
-
-                            # Apply the report template to the generated HTML report body and description
-                            Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
-                            New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @$HtmlElements.ReportParameters
-
-                        }
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
 
