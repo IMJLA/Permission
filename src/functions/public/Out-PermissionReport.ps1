@@ -51,7 +51,7 @@ function Out-PermissionReport {
         [hashtable]$ACLsByPath,
         $PrincipalsByResolvedID,
         $BestPracticeIssue,
-        [string[]]$Parent,
+        [hashtable]$Parent,
 
         <#
         Level of detail to export to file

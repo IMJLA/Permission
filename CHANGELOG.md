@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.436] - 2024-03-25 - bugfix on level 2
+
 ## [0.0.435] - 2024-03-25 - bugfix reportfile var not in scope for scriptblocks so arg is required
 
 ## [0.0.434] - 2024-03-25 - bugfix move scriptblocks before loop begins

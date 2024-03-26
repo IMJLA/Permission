@@ -18,7 +18,7 @@ Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
  [[-ACEsByGUID] <Hashtable>] [[-ACLsByPath] <Hashtable>] [[-PrincipalsByResolvedID] <Object>]
- [[-BestPracticeIssue] <Object>] [[-Parent] <String[]>] [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>]
+ [[-BestPracticeIssue] <Object>] [[-Parent] <Hashtable>] [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>]
  [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>]
 ```
 
@@ -283,7 +283,7 @@ Accept wildcard characters: False
 {{ Fill Parent Description }}
 
 ```yaml
-Type: System.String[]
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
