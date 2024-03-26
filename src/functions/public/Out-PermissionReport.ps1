@@ -402,13 +402,6 @@ function Out-PermissionReport {
 
                 $ReportObjects = @{}
 
-                ForEach ($Level in $SplitDetail) {
-
-                    # Save the report
-                    $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
-
-                }
-
                 [hashtable]$Params = $PSBoundParameters
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
@@ -422,6 +415,13 @@ function Out-PermissionReport {
                     SummaryDivHeader      = $HtmlElements.SummaryDivHeader
                     DetailDivHeader       = $HtmlElements.DetailDivHeader
                     NetworkPathDiv        = $HtmlElements.NetworkPathDiv
+                }
+
+                ForEach ($Level in $SplitDetail) {
+
+                    # Save the report
+                    $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+
                 }
 
                 switch ($Format) {

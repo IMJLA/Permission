@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.444] - 2024-03-25 - bugfix need to ensure the variable dependencies are set before invoke-command
+
 ## [0.0.443] - 2024-03-25 - update debug pause
 
 ## [0.0.442] - 2024-03-25 - update debug pause

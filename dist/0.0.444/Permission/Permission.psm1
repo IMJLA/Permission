@@ -3843,13 +3843,6 @@ function Out-PermissionReport {
 
                 $ReportObjects = @{}
 
-                ForEach ($Level in $SplitDetail) {
-
-                    # Save the report
-                    $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
-
-                }
-
                 [hashtable]$Params = $PSBoundParameters
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
@@ -3863,6 +3856,13 @@ function Out-PermissionReport {
                     SummaryDivHeader      = $HtmlElements.SummaryDivHeader
                     DetailDivHeader       = $HtmlElements.DetailDivHeader
                     NetworkPathDiv        = $HtmlElements.NetworkPathDiv
+                }
+
+                ForEach ($Level in $SplitDetail) {
+
+                    # Save the report
+                    $ReportObjects[$Level] = Invoke-Command -ScriptBlock $DetailScripts[$Level]
+
                 }
 
                 switch ($Format) {
@@ -4858,6 +4858,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
