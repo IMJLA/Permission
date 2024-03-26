@@ -379,6 +379,12 @@ function Out-PermissionReport {
                     $Subfile = $File.$Subproperty
                 }
 
+                if ($FileNameProperty -eq '') {
+                    $FileName = $File.$FileNameSubproperty
+                } else {
+                    $FileName = $File.$FileNameProperty.$FileNameSubproperty
+                }
+
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$FormatString`Group"
                 $Permissions = $Subfile.$FormatString

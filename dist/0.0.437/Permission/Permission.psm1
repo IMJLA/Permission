@@ -3826,6 +3826,12 @@ function Out-PermissionReport {
                     $Subfile = $File.$Subproperty
                 }
 
+                if ($FileNameProperty -eq '') {
+                    $FileName = $File.$FileNameSubproperty
+                } else {
+                    $FileName = $File.$FileNameProperty.$FileNameSubproperty
+                }
+
                 # Convert the list of permission groupings list to an HTML table
                 $PermissionGroupings = $Subfile."$FormatString`Group"
                 $Permissions = $Subfile.$FormatString
@@ -4847,6 +4853,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
