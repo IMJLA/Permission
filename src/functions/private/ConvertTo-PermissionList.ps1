@@ -77,7 +77,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 6
                         $Perm = $Permission[$GroupID]
                         $Html = $Perm | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
@@ -96,7 +96,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Item.Path
-                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                         $Perm = $Permission[$GroupID]
                         $Html = $Perm | ConvertTo-Html -Fragment
@@ -156,7 +156,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
                         $Perm = $Permission[$GroupID]
 
                         # Remove spaces from property titles
@@ -188,7 +188,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Item.Path
-                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                         $Perm = $Permission[$GroupID]
 

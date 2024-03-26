@@ -31,7 +31,7 @@ function Get-FolderPermissionsBlockUNUSED {
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
-        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 5
+        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 6
 
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestPath
 

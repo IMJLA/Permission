@@ -116,7 +116,7 @@ function Get-HtmlReportElements {
 
     $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
-    $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+    $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
     Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
     $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
@@ -127,8 +127,8 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
-    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 5"
-    $TargetHeading = New-HtmlHeading 'Target Path' -Level 5
+    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Paths' -Level 5"
+    $TargetHeading = New-HtmlHeading 'Target Paths' -Level 5
 
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'

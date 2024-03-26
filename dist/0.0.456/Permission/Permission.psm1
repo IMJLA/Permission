@@ -410,7 +410,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 6
                         $Perm = $Permission[$GroupID]
                         $Html = $Perm | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
@@ -429,7 +429,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Item.Path
-                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                         $Perm = $Permission[$GroupID]
                         $Html = $Perm | ConvertTo-Html -Fragment
@@ -489,7 +489,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
                         $Perm = $Permission[$GroupID]
 
                         # Remove spaces from property titles
@@ -521,7 +521,7 @@ function ConvertTo-PermissionList {
                     ForEach ($Group in $PermissionGrouping) {
 
                         $GroupID = $Group.Item.Path
-                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 5
+                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                         $Perm = $Permission[$GroupID]
 
@@ -1164,7 +1164,7 @@ function Get-HtmlReportElements {
 
     $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
-    $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+    $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
     Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
     $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
@@ -1175,8 +1175,8 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
 
-    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Path' -Level 5"
-    $TargetHeading = New-HtmlHeading 'Target Path' -Level 5
+    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Paths' -Level 5"
+    $TargetHeading = New-HtmlHeading 'Target Paths' -Level 5
 
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
@@ -2925,7 +2925,7 @@ function Get-FolderPermissionsBlockUNUSED {
 
     ForEach ($ThisFolder in $FolderPermissions) {
 
-        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 5
+        $ThisHeading = New-HtmlHeading "Accounts with access to $($ThisFolder.Item.Path)" -Level 6
 
         $ThisSubHeading = Get-FolderPermissionTableHeader -ThisFolder $ThisFolder -ShortestFolderPath $ShortestPath
 
@@ -4863,6 +4863,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
