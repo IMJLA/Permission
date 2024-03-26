@@ -3673,6 +3673,24 @@ function Out-PermissionReport {
 
                 }
 
+                'js' {
+
+                    $DetailExports = @(
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { },
+                        { },
+                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                    )
+
+                }
+
                 'json' {
 
                     $DetailExports = @(
@@ -3684,9 +3702,31 @@ function Out-PermissionReport {
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { <#$args[0] | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                        { <#$args[0] | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                        { },
+                        { },
                         { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                    )
+
+                }
+
+                'prtgxml' {
+
+                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
+
+                }
+
+                'xml' {
+
+                    $DetailExports = @(
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { }, { }, { }
                     )
 
                 }
@@ -4794,6 +4834,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

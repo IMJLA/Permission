@@ -230,6 +230,24 @@ function Out-PermissionReport {
 
                 }
 
+                'js' {
+
+                    $DetailExports = @(
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
+                        { },
+                        { },
+                        { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                    )
+
+                }
+
                 'json' {
 
                     $DetailExports = @(
@@ -241,9 +259,31 @@ function Out-PermissionReport {
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
                         { $args[0] | ConvertTo-Json -Compress -WarningAction SilentlyContinue | Out-File -LiteralPath $ThisReportFile },
-                        { <#$args[0] | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
-                        { <#$args[0] | ConvertTo-Json -Compress | Out-File -LiteralPath $ThisReportFile#> },
+                        { },
+                        { },
                         { $null = Set-Content -LiteralPath $ThisReportFile -Value $args[0] }
+                    )
+
+                }
+
+                'prtgxml' {
+
+                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
+
+                }
+
+                'xml' {
+
+                    $DetailExports = @(
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { ($args[0] | ConvertTo-Xml).InnerXml | Out-File -LiteralPath $ThisReportFile },
+                        { }, { }, { }
                     )
 
                 }
