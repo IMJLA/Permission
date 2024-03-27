@@ -16,7 +16,7 @@ function Get-HtmlBody {
     $null = $StringBuilder.Append($NetworkPathDiv)
 
     if ($TableOfContents) {
-        $null = $StringBuilder.Append((New-HtmlHeading $SummaryDivHeader -Level 6))
+        $null = $StringBuilder.Append((New-HtmlHeading $SummaryDivHeader -Level 5))
         $null = $StringBuilder.Append($TableOfContents)
     }
 
