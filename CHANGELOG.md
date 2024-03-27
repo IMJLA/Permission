@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.458] - 2024-03-26 - use smaller headings
+
 ## [0.0.457] - 2024-03-26 - make heading smaller
 
 ## [0.0.456] - 2024-03-25 - decrease heading levels
