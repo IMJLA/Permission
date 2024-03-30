@@ -110,7 +110,7 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
-    $NetworkPathTable = $NetworkPath.Item |
+    $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 

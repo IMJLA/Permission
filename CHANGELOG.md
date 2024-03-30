@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.462] - 2024-03-30 - implement select-itemtableproperty in the networkpath div
+
 ## [0.0.461] - 2024-03-30 - update detailstrings for file names
 
 ## [0.0.460] - 2024-03-29 - bugfix permission count in report footer
