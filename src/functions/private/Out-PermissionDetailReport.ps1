@@ -47,7 +47,7 @@ function Out-PermissionDetailReport {
         # Return the report file path of the highest level for the Interactive switch of Export-Permission
         if ($Level -eq 10 -and $Format -eq $FormatToReturn) {
             $ThisReportFile
-        }
+        } else { pause }
 
     }
 

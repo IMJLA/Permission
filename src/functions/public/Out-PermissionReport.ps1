@@ -143,9 +143,10 @@ function Out-PermissionReport {
         {
 
             switch ($GroupBy) {
+                'account' { $Permission.AccountPermissions }
                 'none' { $Permission.FlatPermissions }
                 'item' { $Permission.ItemPermissions }
-                default { $Permission.AccountPermissions } # 'account'
+                'target' { $Permission.TargetPermissions }
             }
 
         },
