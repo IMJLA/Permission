@@ -385,6 +385,8 @@ function Out-PermissionReport {
 
             }
 
+            pause
+
             ForEach ($File in $ReportFiles) {
 
                 if ($Subproperty -eq '') {
