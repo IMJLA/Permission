@@ -44,10 +44,10 @@ function Out-PermissionDetailReport {
         # Output the name of the report file to the Information stream
         Write-Information $ThisReportFile
 
+        Write-Host $ThisReportFile -ForegroundColor Cyan
         # Return the report file path of the highest level for the Interactive switch of Export-Permission
         if ($Level -eq 10 -and $Format -eq $FormatToReturn) {
             $ThisReportFile
-            Write-Host $ThisReportFile -ForegroundColor Cyan
         } else {
             pause
         }
