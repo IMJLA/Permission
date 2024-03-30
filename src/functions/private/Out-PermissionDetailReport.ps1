@@ -3,7 +3,7 @@ function Out-PermissionDetailReport {
     param (
         [int[]]$Detail,
         [hashtable]$ReportObject,
-        [hashtable]$DetailExport,
+        [scriptblock[]]$DetailExport,
         [string]$Format,
         [string]$OutputDir,
         [cultureinfo]$Culture,
