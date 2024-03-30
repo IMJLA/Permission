@@ -1688,15 +1688,16 @@ $Size = (SizeOf -t [hashtable] -value $Test)/1KB
 function Out-PermissionDetailReport {
 
     param (
-        $Detail,
-        $ReportObject,
-        $DetailExport,
-        $Format,
-        $OutputDir,
-        $Culture,
-        $DetailString,
-        $FileName,
-        $FormatToReturn = 'js'
+        [int[]]$Detail,
+        [hashtable]$ReportObject,
+        [hashtable]$DetailExport,
+        [string]$Format,
+        [string]$OutputDir,
+        [cultureinfo]$Culture,
+        [string]$DetailString,
+        [string]$FileName,
+        [string]$FormatToReturn = 'js',
+        [int]$LevelToReturn = 10
     )
 
     switch ($Format) {
@@ -1731,11 +1732,8 @@ function Out-PermissionDetailReport {
         # Output the name of the report file to the Information stream
         Write-Information $ThisReportFile
 
-        Write-Host $ThisReportFile -ForegroundColor Cyan
-        pause
-
         # Return the report file path of the highest level for the Interactive switch of Export-Permission
-        if ($Level -eq 10 -and $Format -eq $FormatToReturn) {
+        if ($Level -eq $LevelToReturn -and $Format -eq $FormatToReturn) {
             $ThisReportFile
         }
 
@@ -4871,6 +4869,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
