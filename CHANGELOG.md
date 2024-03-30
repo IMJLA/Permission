@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.479] - 2024-03-30 - only output a child item object if there are unique ACEs for the item
+
+## [0.0.478] - 2024-03-30 - only output a child item object if there are unique ACEs for the item
+
 ## [0.0.477] - 2024-03-30 - correct detailexport param type
 
 ## [0.0.476] - 2024-03-30 - add debug pause
