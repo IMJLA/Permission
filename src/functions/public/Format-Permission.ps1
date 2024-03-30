@@ -28,7 +28,7 @@ function Format-Permission {
 
         [string]$ShortestPath,
 
-        $Culture = (Get-Culture)
+        [cultureinfo]$Culture = (Get-Culture)
 
     )
 

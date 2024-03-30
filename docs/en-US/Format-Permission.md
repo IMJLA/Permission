@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-ShortestPath] <String>] [[-Culture] <Object>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-ShortestPath] <String>] [[-Culture] <CultureInfo>]
 ```
 
 ## DESCRIPTION
@@ -35,7 +35,7 @@ PS C:\> {{ Add example code here }}
 {{ Fill Culture Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Globalization.CultureInfo
 Parameter Sets: (All)
 Aliases:
 

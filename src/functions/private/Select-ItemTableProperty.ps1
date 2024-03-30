@@ -4,8 +4,10 @@ function Select-ItemTableProperty {
 
     param (
         $InputObject,
-        $Culture = (Get-Culture)
+        [cultureinfo]$Culture = (Get-Culture)
     )
+
+
 
     ForEach ($Object in $InputObject) {
 
