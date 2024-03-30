@@ -4,14 +4,14 @@ function Expand-FlatPermissionReference {
 
     param (
 
-        $SortedPaths,
+        $SortedPath,
         $PrincipalsByResolvedID,
         $ACEsByGUID,
         $AceGUIDsByPath
 
     )
 
-    ForEach ($Item in $SortedPaths) {
+    ForEach ($Item in $SortedPath) {
 
         ForEach ($ACE in $ACEsByGUID[$AceGUIDsByPath[$Item]]) {
 
