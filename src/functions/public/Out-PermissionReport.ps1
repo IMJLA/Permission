@@ -156,9 +156,7 @@ function Out-PermissionReport {
         {}
     )
 
-    pause
-
-    ForEach ($Split in $Permissions.SplitBy.Keys) {
+    ForEach ($Split in $Permission.SplitBy.Keys) {
 
         switch ($Split) {
 
@@ -195,8 +193,6 @@ function Out-PermissionReport {
             }
 
         }
-
-        pause
 
         ForEach ($Format in $Formats) {
 
@@ -388,8 +384,6 @@ function Out-PermissionReport {
                 Out-PermissionDetailReport -Detail $Level -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
 
             }
-
-            pause
 
             ForEach ($File in $ReportFiles) {
 

@@ -3605,9 +3605,7 @@ function Out-PermissionReport {
         {}
     )
 
-    pause
-
-    ForEach ($Split in $Permissions.SplitBy.Keys) {
+    ForEach ($Split in $Permission.SplitBy.Keys) {
 
         switch ($Split) {
 
@@ -3644,8 +3642,6 @@ function Out-PermissionReport {
             }
 
         }
-
-        pause
 
         ForEach ($Format in $Formats) {
 
@@ -3837,8 +3833,6 @@ function Out-PermissionReport {
                 Out-PermissionDetailReport -Detail $Level -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
 
             }
-
-            pause
 
             ForEach ($File in $ReportFiles) {
 
@@ -4877,6 +4871,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
