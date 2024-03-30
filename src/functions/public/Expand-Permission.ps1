@@ -48,7 +48,46 @@ function Expand-Permission {
 
     }
 
-    if ($HowToSplit['target']) {
+    if (
+        $HowToSplit['account'] -or
+        $GroupBy -eq 'account'
+    ) {
+
+        # Group reference GUIDs by the name of their associated account.
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
+
+        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+        $AccountPermissions = Expand-AccountPermissionReference @CommonParams -Reference $AccountPermissionReferences
+
+    }
+
+    if (
+        $HowToSplit['item'] -or
+        $GroupBy -eq 'item'
+    ) {
+
+        # Group reference GUIDs by the path to their associated item.
+        $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath
+
+        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+        $ItemPermissions = Expand-ItemPermissionReference @CommonParams -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath
+
+    }
+
+    if (
+        $HowToSplit['none'] -or
+        $GroupBy -eq 'none'
+    ) {
+
+        # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
+        $FlatPermissions = Expand-FlatPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath
+
+    }
+
+    if (
+        $HowToSplit['target'] -or
+        $GroupBy -eq 'target'
+    ) {
 
         # Group reference GUIDs by their associated TargetPath.
         $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
@@ -58,14 +97,12 @@ function Expand-Permission {
 
     }
 
-    if (
-        $HowToSplit['none'] -and
-        $GroupBy -eq 'none'
-    ) {
-
-        # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
-        $FlatPermissions = Expand-FlatPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath
-
+    return [PSCustomObject]@{
+        AccountPermissions = $AccountPermissions
+        FlatPermissions    = $FlatPermissions
+        ItemPermissions    = $ItemPermissions
+        TargetPermissions  = $TargetPermissions
+        SplitBy            = $HowToSplit
     }
 
     return [PSCustomObject]@{
