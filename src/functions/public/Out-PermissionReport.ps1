@@ -194,6 +194,8 @@ function Out-PermissionReport {
 
         }
 
+        pause
+
         ForEach ($Format in $Formats) {
 
             $FormatString = $Format
