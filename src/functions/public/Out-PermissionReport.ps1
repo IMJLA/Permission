@@ -156,6 +156,8 @@ function Out-PermissionReport {
         {}
     )
 
+    pause
+
     ForEach ($Split in $Permissions.SplitBy.Keys) {
 
         switch ($Split) {
