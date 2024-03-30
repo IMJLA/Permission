@@ -184,7 +184,7 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
         ItemCount        = $ACLsByPath.Keys.Count
-        PermissionCount  = $Permission.ItemPermissions.Access.Access.Count
+        PermissionCount  = [math]::Max($Permission.AccountPermissions.Access.Access.Count, $Permission.ItemPermissions.Access.Access.Count)
         PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
         ReportInstanceId = $ReportInstanceId
         StopWatch        = $StopWatch

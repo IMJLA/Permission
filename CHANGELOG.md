@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.460] - 2024-03-29 - bugfix permission count in report footer
+
 ## [0.0.459] - 2024-03-26 - embiggen the heading I made too small
 
 ## [0.0.458] - 2024-03-26 - use smaller headings
