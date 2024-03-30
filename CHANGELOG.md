@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.464] - 2024-03-30 - bugfix prop name
+
+## [0.0.463] - 2024-03-30 - bugfix prop name Children is more descriptive but Items is more consistent with Accounts for GroupBy account
+
 ## [0.0.462] - 2024-03-30 - implement select-itemtableproperty in the networkpath div
 
 ## [0.0.461] - 2024-03-30 - update detailstrings for file names
