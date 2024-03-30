@@ -7,8 +7,6 @@ function Select-ItemTableProperty {
         [cultureinfo]$Culture = (Get-Culture)
     )
 
-    pause
-
     ForEach ($Object in $InputObject) {
 
         [PSCustomObject]@{
