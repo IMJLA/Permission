@@ -13,7 +13,11 @@ function Expand-FlatPermissionReference {
 
     ForEach ($Item in $SortedPath) {
 
-        ForEach ($ACE in $ACEsByGUID[$AceGUIDsByPath[$Item]]) {
+        $AceGUIDs = $AceGUIDsByPath[$Item]
+
+        if (-not $AceGUIDs) { continue }
+
+        ForEach ($ACE in $ACEsByGUID[$AceGUIDs]) {
 
             $Principal = $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved]
 
