@@ -525,27 +525,31 @@ function ConvertTo-PermissionList {
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
                         $Perm = $Permission[$GroupID]
 
-                        # Remove spaces from property titles
-                        $ObjectsForJsonData = ForEach ($Obj in $Perm) {
-                            [PSCustomObject]@{
-                                Account           = $Obj.Account
-                                Access            = $Obj.Access
-                                DuetoMembershipIn = $Obj.'Due to Membership In'
-                                SourceofAccess    = $Obj.'Source of Access'
-                                Name              = $Obj.Name
-                                Department        = $Obj.Department
-                                Title             = $Obj.Title
+                        if ($Perm) {
+
+                            # Remove spaces from property titles
+                            $ObjectsForJsonData = ForEach ($Obj in $Perm) {
+                                [PSCustomObject]@{
+                                    Account           = $Obj.Account
+                                    Access            = $Obj.Access
+                                    DuetoMembershipIn = $Obj.'Due to Membership In'
+                                    SourceofAccess    = $Obj.'Source of Access'
+                                    Name              = $Obj.Name
+                                    Department        = $Obj.Department
+                                    Title             = $Obj.Title
+                                }
                             }
-                        }
 
-                        $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                        $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                            $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                            $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
 
-                        [PSCustomObject]@{
-                            Columns = Get-ColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                            Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                            Div     = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                            Table   = $TableId
+                            [PSCustomObject]@{
+                                Columns = Get-ColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div     = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Table   = $TableId
+                            }
+
                         }
 
                     }
@@ -4863,6 +4867,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

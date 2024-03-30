@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.465] - 2024-03-30 - filter out items with no no aces returned when non-inherited ACEs are excluded (default)
+
 ## [0.0.464] - 2024-03-30 - bugfix prop name
 
 ## [0.0.463] - 2024-03-30 - bugfix prop name Children is more descriptive but Items is more consistent with Accounts for GroupBy account
