@@ -50,8 +50,8 @@ function ConvertTo-FileList {
         # TODO: Move to i18n
         $DetailStrings = @(
             'Target paths',
-            'Resolved target paths (server names and DFS targets resolved)'
-            'Item paths (resolved target paths expanded into their children)',
+            'Network paths (target path servers and DFS targets resolved)',
+            'Item paths (network paths expanded into their children)',
             'Access lists',
             'Access rules (resolved identity references and inheritance flags)',
             'Accounts with access',
@@ -4863,6 +4863,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

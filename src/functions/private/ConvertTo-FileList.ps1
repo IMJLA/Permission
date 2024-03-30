@@ -15,8 +15,8 @@ function ConvertTo-FileList {
         # TODO: Move to i18n
         $DetailStrings = @(
             'Target paths',
-            'Resolved target paths (server names and DFS targets resolved)'
-            'Item paths (resolved target paths expanded into their children)',
+            'Network paths (target path servers and DFS targets resolved)',
+            'Item paths (network paths expanded into their children)',
             'Access lists',
             'Access rules (resolved identity references and inheritance flags)',
             'Accounts with access',
