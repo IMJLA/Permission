@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.507] - 2024-03-31 - add groupby target to param validation
+
 ## [0.0.506] - 2024-03-31 - add param validation support for groupby target
 
 ## [0.0.505] - 2024-03-31 - bugfix convertto-permissionlist needs to know how to split

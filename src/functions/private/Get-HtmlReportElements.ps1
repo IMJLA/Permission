@@ -102,7 +102,7 @@ function Get-HtmlReportElements {
             account	account	(same as -SplitBy account -GroupBy none)
             account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
-        [ValidateSet('none', 'item', 'account')]
+        [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item'
 
     )
