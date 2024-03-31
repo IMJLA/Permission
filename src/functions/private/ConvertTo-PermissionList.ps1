@@ -13,7 +13,9 @@ function ConvertTo-PermissionList {
 
         [string]$ShortestPath,
 
-        [string]$GroupBy,
+        # How to group the permissions in the output stream and within each exported file
+        [ValidateSet('account', 'item', 'none', 'target')]
+        [string]$GroupBy = 'item',
 
         [hashtable]$HowToSplit
 

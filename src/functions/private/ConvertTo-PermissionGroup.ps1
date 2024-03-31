@@ -9,28 +9,26 @@ function ConvertTo-PermissionGroup {
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string]$Format,
 
-        <#
-        Level of detail to export to file
-            0   Item paths                                                                                  $TargetPath
-            1   Resolved item paths (server names resolved, DFS targets resolved)                           $ACLsByPath.Keys after Resolve-PermissionTarget but before Expand-PermissionTarget
-            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys after Expand-PermissionTarget
-            3   Access control entries                                                                      $ACLsByPath.Values after Get-FolderAcl
-            4   Resolved access control entries                                                             $ACEsByGUID.Values
-                                                                                                            $PrincipalsByResolvedID.Values
-            5   Expanded resolved access control entries (expanded with info from ADSI security principals) $Permissions
-            6   XML custom sensor output for Paessler PRTG Network Monitor
-        #>
-        [int[]]$Detail = @(0..6),
-
-        [string]$GroupBy,
+        # How to group the permissions in the output stream and within each exported file
+        [ValidateSet('account', 'item', 'none', 'target')]
+        [string]$GroupBy = 'item',
 
         [string[]]$AccountProperty = @('Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'),
 
-        [string[]]$ItemProperty = @('Folder', 'Inheritance')
+        [string[]]$ItemProperty = @('Folder', 'Inheritance'),
+
+        [hashtable]$HowToSplit
 
     )
 
     $OutputObject = @{}
+
+    if (
+        $GroupBy -eq 'none' -or
+        $HowToSplit[$GroupBy]
+    ) {
+        return
+    }
 
     switch ($Format) {
 
@@ -59,26 +57,20 @@ function ConvertTo-PermissionGroup {
                 'account' {
                     $OrderedProperties = $AccountProperty
                     $JavaScriptTable['SearchableColumn'] = $OrderedProperties
-                    $Objects = $Permission
                 }
 
                 'item' {
                     $OrderedProperties = $ItemProperty
                     $JavaScriptTable['SearchableColumn'] = 'Folder'
                     $JavaScriptTable['DropdownColumn'] = 'Inheritance'
-                    $Objects = $Permission
                 }
 
-                default { $Objects = $Permission.Values }
-
             }
-            pause
-            # Wrap input in a array because output must be a JSON array for jquery to work properly.
-            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Objects)
-            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Objects -PropNames $OrderedProperties
 
-            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Objects -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
-            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Objects -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
+            # Wrap input in a array because output must be a JSON array for jquery to work properly.
+            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
+            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission -PropNames $OrderedProperties
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
 
         }
 

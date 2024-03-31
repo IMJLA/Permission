@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.511] - 2024-03-31 - update convertto-permissiongroup to better handle groupby none or groupby -eq splitby
+
 ## [0.0.510] - 2024-03-31 - var rename
 
 ## [0.0.509] - 2024-03-31 - bugfix force hashtable lookup eval before property lookup
