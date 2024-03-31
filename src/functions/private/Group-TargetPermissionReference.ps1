@@ -121,7 +121,8 @@ function Group-TargetPermissionReference {
 
         }
 
-        'none' {
+        # 'none' and 'target' behave the same
+        default {
 
             ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
 
@@ -149,8 +150,6 @@ function Group-TargetPermissionReference {
             }
 
         }
-
-        'target' {}
 
     }
 
