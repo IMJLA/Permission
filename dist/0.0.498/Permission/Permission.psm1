@@ -842,7 +842,10 @@ function Expand-TargetPermissionReference {
         $PrincipalsByResolvedID,
         $ACEsByGUID,
         $ACLsByPath,
-        [string]$GroupBy
+
+        # How to group the permissions in the output stream and within each exported file
+        [ValidateSet('account', 'item', 'none', 'target')]
+        [string]$GroupBy = 'item'
 
     )
 
@@ -1504,7 +1507,10 @@ function Group-TargetPermissionReference {
         $ACEsByGUID,
         $AceGUIDsByPath,
         $ACLsByPath,
-        [string]$GroupBy
+
+        # How to group the permissions in the output stream and within each exported file
+        [ValidateSet('account', 'item', 'none', 'target')]
+        [string]$GroupBy = 'item'
 
     )
 
@@ -2440,7 +2446,7 @@ function Format-Permission {
         [string[]]$IgnoreDomain,
 
         # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('none', 'item', 'account')]
+        [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item',
 
         # File formats to export
@@ -4982,6 +4988,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
 
 
 

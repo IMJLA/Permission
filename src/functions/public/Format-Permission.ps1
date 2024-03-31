@@ -15,7 +15,7 @@ function Format-Permission {
         [string[]]$IgnoreDomain,
 
         # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('none', 'item', 'account')]
+        [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item',
 
         # File formats to export
