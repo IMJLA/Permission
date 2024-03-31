@@ -78,8 +78,8 @@ function ConvertTo-PermissionList {
 
                         $GroupID = $Group.Account.ResolvedAccountName
                         $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 6
-                        $Perm = $Permission[$GroupID]
-                        $Html = $Perm | ConvertTo-Html -Fragment
+                        $StartingPermissions = $Permission[$GroupID]
+                        $Html = $StartingPermissions | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
 
                         [PSCustomObject]@{
@@ -98,8 +98,8 @@ function ConvertTo-PermissionList {
                         $GroupID = $Group.Item.Path
                         $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                        $Perm = $Permission[$GroupID]
-                        $Html = $Perm | ConvertTo-Html -Fragment
+                        $StartingPermissions = $Permission[$GroupID]
+                        $Html = $StartingPermissions | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
 
                         [PSCustomObject]@{
@@ -130,8 +130,8 @@ function ConvertTo-PermissionList {
 
                         $GroupID = $Group.Path
                         $Heading = New-HtmlHeading "Permissions in $GroupID" -Level 5
-                        $Perm = $Permission[$GroupID]
-                        $Html = $Perm | ConvertTo-Html -Fragment
+                        $StartingPermissions = $Permission[$GroupID]
+                        $Html = $StartingPermissions | ConvertTo-Html -Fragment
                         $Table = $Html | New-BootstrapTable
 
                         [PSCustomObject]@{
@@ -157,10 +157,10 @@ function ConvertTo-PermissionList {
 
                         $GroupID = $Group.Account.ResolvedAccountName
                         $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
-                        $Perm = $Permission[$GroupID]
+                        $StartingPermissions = $Permission[$GroupID]
 
                         # Remove spaces from property titles
-                        $ObjectsForJsonData = ForEach ($Obj in $Perm) {
+                        $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                             [PSCustomObject]@{
                                 Path              = $Obj.Path
                                 Access            = $Obj.Access
@@ -170,10 +170,10 @@ function ConvertTo-PermissionList {
                         }
 
                         $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                        $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                        $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
 
                         [PSCustomObject]@{
-                            Columns = Get-ColumnJson -InputObject $Perm -PropNames Path, Access, 'Due to Membership In', 'Source of Access'
+                            Columns = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
                             Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                             Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                             Table   = $TableId
@@ -190,12 +190,12 @@ function ConvertTo-PermissionList {
                         $GroupID = $Group.Item.Path
                         $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                         $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                        $Perm = $Permission[$GroupID]
+                        $StartingPermissions = $Permission[$GroupID]
 
-                        if ($Perm) {
+                        if ($StartingPermissions) {
 
                             # Remove spaces from property titles
-                            $ObjectsForJsonData = ForEach ($Obj in $Perm) {
+                            $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                                 [PSCustomObject]@{
                                     Account           = $Obj.Account
                                     Access            = $Obj.Access
@@ -208,10 +208,10 @@ function ConvertTo-PermissionList {
                             }
 
                             $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                            $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $Perm -DataFilterControl -AllColumnsSearchable
+                            $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
 
                             [PSCustomObject]@{
-                                Columns = Get-ColumnJson -InputObject $Perm -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                                 Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div     = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                 Table   = $TableId
@@ -262,10 +262,10 @@ function ConvertTo-PermissionList {
 
                         $GroupID = $Group.Path
                         $Heading = New-HtmlHeading "Permissions in $GroupID" -Level 5
-                        $Perm = $Permission[$GroupID]
+                        $StartingPermissions = $Permission[$GroupID]
 
                         # Remove spaces from property titles
-                        $ObjectsForJsonData = ForEach ($Obj in $Perm) {
+                        $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                             [PSCustomObject]@{
                                 #Path                 = $Obj.Item.Path
                                 #Access               = ($Obj.Access.Access.Access | Sort-Object -Unique) -join ' ; '

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.499] - 2024-03-30 - bugfix by renaming var
+
 ## [0.0.498] - 2024-03-30 - enable groupby target with consistent param validation across functs
 
 ## [0.0.497] - 2024-03-30 - enable groupby target with consistent param validation across functs
