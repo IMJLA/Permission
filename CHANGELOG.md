@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.514] - 2024-03-31 - bugfix remove extra squiggly braces
+
 ## [0.0.513] - 2024-03-31 - pause for debug
 
 ## [0.0.512] - 2024-03-31 - bugfix when groupby -eq splitby

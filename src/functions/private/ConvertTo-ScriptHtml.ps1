@@ -8,7 +8,7 @@ function ConvertTo-ScriptHtml {
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
-    pause
+
     ForEach ($Group in $Permission) {
         $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($Group.Table)" -ColumnJson $Group.Columns -DataJson $Group.Data))
     }

@@ -501,37 +501,33 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
-                {
+                $OutputObject = @{}
+                $Heading = New-HtmlHeading 'Permissions' -Level 5
+                $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
 
-                    $OutputObject = @{}
-                    $Heading = New-HtmlHeading 'Permissions' -Level 5
-                    $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
-
-                    # Remove spaces from property titles
-                    $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                        [PSCustomObject]@{
-                            Item              = $Obj.Item
-                            Account           = $Obj.Account
-                            Access            = $Obj.Access
-                            DuetoMembershipIn = $Obj.'Due to Membership In'
-                            SourceofAccess    = $Obj.'Source of Access'
-                            Name              = $Obj.Name
-                            Department        = $Obj.Department
-                            Title             = $Obj.Title
-                        }
-
-                    }
-
-                    $TableId = 'Perms'
-                    $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
-
+                # Remove spaces from property titles
+                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                     [PSCustomObject]@{
-                        Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                        Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                        Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                        Table   = $TableId
+                        Item              = $Obj.Item
+                        Account           = $Obj.Account
+                        Access            = $Obj.Access
+                        DuetoMembershipIn = $Obj.'Due to Membership In'
+                        SourceofAccess    = $Obj.'Source of Access'
+                        Name              = $Obj.Name
+                        Department        = $Obj.Department
+                        Title             = $Obj.Title
                     }
 
+                }
+
+                $TableId = 'Perms'
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
+
+                [PSCustomObject]@{
+                    Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                    Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                    Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                    Table   = $TableId
                 }
 
             } else {
@@ -745,7 +741,7 @@ function ConvertTo-ScriptHtml {
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
-    pause
+
     ForEach ($Group in $Permission) {
         $null = $ScriptHtmlBuilder.AppendLine((ConvertTo-BootstrapTableScript -TableId "#$($Group.Table)" -ColumnJson $Group.Columns -DataJson $Group.Data))
     }
@@ -2601,7 +2597,7 @@ function Format-Permission {
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
                     ForEach ($Format in $Formats) {
-
+                        if ($Format -eq 'json') { pause }
                         $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
                         $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
 
@@ -5025,6 +5021,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
