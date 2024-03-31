@@ -13,7 +13,9 @@ function ConvertTo-PermissionList {
 
         [string]$ShortestPath,
 
-        [string]$GroupBy
+        [string]$GroupBy,
+
+        [hashtable]$HowToSplit
 
     )
 
@@ -24,45 +26,50 @@ function ConvertTo-PermissionList {
 
         'csv' {
 
-            switch ($GroupBy) {
+            if (
+                $GroupBy -eq 'none' -or
+                $HowToSplit[$GroupBy]
+            ) {
 
-                'account' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-                        [PSCustomObject]@{
-                            Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
-                        }
-                    }
-
+                [PSCustomObject]@{
+                    Data = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Csv
                 }
 
-                'item' {
+            } else {
 
-                    ForEach ($Group in $PermissionGrouping) {
-                        [PSCustomObject]@{
-                            Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
-                        }
-                    }
+                switch ($GroupBy) {
 
-                }
+                    'account' {
 
-                'none' {
-
-                    [PSCustomObject]@{
-                        Data = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Csv
-                    }
-
-                }
-
-                'target' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-
-                        $Perm = $Permission[$Group.Path]
-
-                        if ($Perm) {
+                        ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data = $Perm | ConvertTo-Csv
+                                Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
+                            }
+                        }
+
+                    }
+
+                    'item' {
+
+                        ForEach ($Group in $PermissionGrouping) {
+                            [PSCustomObject]@{
+                                Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                            }
+                        }
+
+                    }
+
+                    'target' {
+
+                        ForEach ($Group in $PermissionGrouping) {
+
+                            $Perm = $Permission[$Group.Path]
+
+                            if ($Perm) {
+                                [PSCustomObject]@{
+                                    Data = $Perm | ConvertTo-Csv
+                                }
+
                             }
 
                         }
@@ -77,73 +84,78 @@ function ConvertTo-PermissionList {
 
         'html' {
 
-            switch ($GroupBy) {
+            if (
+                $GroupBy -eq 'none' -or
+                $HowToSplit[$GroupBy]
+            ) {
 
-                'account' {
+                $Heading = New-HtmlHeading 'Permissions' -Level 5
+                $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
+                $Table = $Html | New-BootstrapTable
 
-                    ForEach ($Group in $PermissionGrouping) {
+                [PSCustomObject]@{
+                    Data = $Html
+                    Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                }
 
-                        $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 6
-                        $StartingPermissions = $Permission[$GroupID]
-                        $Html = $StartingPermissions | ConvertTo-Html -Fragment
-                        $Table = $Html | New-BootstrapTable
+            } else {
 
-                        [PSCustomObject]@{
-                            Data = $Html
-                            Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                switch ($GroupBy) {
+
+                    'account' {
+
+                        ForEach ($Group in $PermissionGrouping) {
+
+                            $GroupID = $Group.Account.ResolvedAccountName
+                            $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 6
+                            $StartingPermissions = $Permission[$GroupID]
+                            $Html = $StartingPermissions | ConvertTo-Html -Fragment
+                            $Table = $Html | New-BootstrapTable
+
+                            [PSCustomObject]@{
+                                Data = $Html
+                                Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                            }
+
                         }
 
                     }
 
-                }
+                    'item' {
 
-                'item' {
+                        ForEach ($Group in $PermissionGrouping) {
 
-                    ForEach ($Group in $PermissionGrouping) {
+                            $GroupID = $Group.Item.Path
+                            $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
+                            $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                            $StartingPermissions = $Permission[$GroupID]
+                            $Html = $StartingPermissions | ConvertTo-Html -Fragment
+                            $Table = $Html | New-BootstrapTable
 
-                        $GroupID = $Group.Item.Path
-                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
-                        $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                        $StartingPermissions = $Permission[$GroupID]
-                        $Html = $StartingPermissions | ConvertTo-Html -Fragment
-                        $Table = $Html | New-BootstrapTable
+                            [PSCustomObject]@{
+                                Data = $Html
+                                Div  = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                            }
 
-                        [PSCustomObject]@{
-                            Data = $Html
-                            Div  = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                         }
 
                     }
 
-                }
+                    'target' {
 
-                'none' {
+                        ForEach ($Group in $PermissionGrouping) {
 
-                    $Heading = New-HtmlHeading 'Permissions' -Level 5
-                    $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
-                    $Table = $Html | New-BootstrapTable
+                            $GroupID = $Group.Path
+                            $Heading = New-HtmlHeading "Permissions in $GroupID" -Level 5
+                            $StartingPermissions = $Permission[$GroupID]
+                            $Html = $StartingPermissions | ConvertTo-Html -Fragment
+                            $Table = $Html | New-BootstrapTable
 
-                    [PSCustomObject]@{
-                        Data = $Html
-                        Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                    }
+                            [PSCustomObject]@{
+                                Data = $Html
+                                Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                            }
 
-                }
-
-                'target' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-
-                        $GroupID = $Group.Path
-                        $Heading = New-HtmlHeading "Permissions in $GroupID" -Level 5
-                        $StartingPermissions = $Permission[$GroupID]
-                        $Html = $StartingPermissions | ConvertTo-Html -Fragment
-                        $Table = $Html | New-BootstrapTable
-
-                        [PSCustomObject]@{
-                            Data = $Html
-                            Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                         }
 
                     }
@@ -156,81 +168,12 @@ function ConvertTo-PermissionList {
 
         'json' {
 
-            switch ($GroupBy) {
+            if (
+                $GroupBy -eq 'none' -or
+                $HowToSplit[$GroupBy]
+            ) {
 
-                'account' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-
-                        $GroupID = $Group.Account.ResolvedAccountName
-                        $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
-                        $StartingPermissions = $Permission[$GroupID]
-
-                        # Remove spaces from property titles
-                        $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                            [PSCustomObject]@{
-                                Path              = $Obj.Path
-                                Access            = $Obj.Access
-                                DuetoMembershipIn = $Obj.'Due to Membership In'
-                                SourceofAccess    = $Obj.'Source of Access'
-                            }
-                        }
-
-                        $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                        $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
-
-                        [PSCustomObject]@{
-                            Columns = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
-                            Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                            Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                            Table   = $TableId
-                        }
-
-                    }
-
-                }
-
-                'item' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-
-                        $GroupID = $Group.Item.Path
-                        $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
-                        $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                        $StartingPermissions = $Permission[$GroupID]
-
-                        if ($StartingPermissions) {
-
-                            # Remove spaces from property titles
-                            $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                                [PSCustomObject]@{
-                                    Account           = $Obj.Account
-                                    Access            = $Obj.Access
-                                    DuetoMembershipIn = $Obj.'Due to Membership In'
-                                    SourceofAccess    = $Obj.'Source of Access'
-                                    Name              = $Obj.Name
-                                    Department        = $Obj.Department
-                                    Title             = $Obj.Title
-                                }
-                            }
-
-                            $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                            $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
-
-                            [PSCustomObject]@{
-                                Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                                Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div     = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Table   = $TableId
-                            }
-
-                        }
-
-                    }
-
-                }
-
-                'none' {
+                {
 
                     $OutputObject = @{}
                     $Heading = New-HtmlHeading 'Permissions' -Level 5
@@ -263,40 +206,118 @@ function ConvertTo-PermissionList {
 
                 }
 
-                'target' {
+            } else {
 
-                    ForEach ($Group in $PermissionGrouping) {
+                switch ($GroupBy) {
 
-                        $GroupID = $Group.Path
-                        $Heading = New-HtmlHeading "Permissions in $GroupID" -Level 5
-                        $StartingPermissions = $Permission[$GroupID]
+                    'account' {
 
-                        # Remove spaces from property titles
-                        $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                            [PSCustomObject]@{
-                                #Path                 = $Obj.Item.Path
-                                #Access               = ($Obj.Access.Access.Access | Sort-Object -Unique) -join ' ; '
-                                #SourceofAccess = ($Obj.Access.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                        ForEach ($Group in $PermissionGrouping) {
 
-                                Item              = $Obj.Item
-                                Account           = $Obj.Account
-                                Access            = $Obj.Access
-                                DuetoMembershipIn = $Obj.'Due to Membership In'
-                                SourceofAccess    = $Obj.'Source of Access'
-                                Name              = $Obj.Name
-                                Department        = $Obj.Department
-                                Title             = $Obj.Title
+                            $GroupID = $Group.Account.ResolvedAccountName
+                            $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
+                            $StartingPermissions = $Permission[$GroupID]
+
+                            # Remove spaces from property titles
+                            $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
+                                [PSCustomObject]@{
+                                    Path              = $Obj.Path
+                                    Access            = $Obj.Access
+                                    DuetoMembershipIn = $Obj.'Due to Membership In'
+                                    SourceofAccess    = $Obj.'Source of Access'
+                                }
                             }
+
+                            $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                            $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+
+                            [PSCustomObject]@{
+                                Columns = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
+                                Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Table   = $TableId
+                            }
+
                         }
 
-                        $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                        $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
+                    }
 
-                        [PSCustomObject]@{
-                            Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                            Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                            Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                            Table   = $TableId
+                    'item' {
+
+                        ForEach ($Group in $PermissionGrouping) {
+
+                            $GroupID = $Group.Item.Path
+                            $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
+                            $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                            $StartingPermissions = $Permission[$GroupID]
+
+                            if ($StartingPermissions) {
+
+                                # Remove spaces from property titles
+                                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
+                                    [PSCustomObject]@{
+                                        Account           = $Obj.Account
+                                        Access            = $Obj.Access
+                                        DuetoMembershipIn = $Obj.'Due to Membership In'
+                                        SourceofAccess    = $Obj.'Source of Access'
+                                        Name              = $Obj.Name
+                                        Department        = $Obj.Department
+                                        Title             = $Obj.Title
+                                    }
+                                }
+
+                                $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+
+                                [PSCustomObject]@{
+                                    Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                    Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                    Div     = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                    Table   = $TableId
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                    'target' {
+
+                        ForEach ($Group in $PermissionGrouping) {
+
+                            $GroupID = $Group.Path
+                            $Heading = New-HtmlHeading "Permissions in $GroupID" -Level 5
+                            $StartingPermissions = $Permission[$GroupID]
+
+                            # Remove spaces from property titles
+                            $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
+                                [PSCustomObject]@{
+                                    #Path                 = $Obj.Item.Path
+                                    #Access               = ($Obj.Access.Access.Access | Sort-Object -Unique) -join ' ; '
+                                    #SourceofAccess = ($Obj.Access.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+
+                                    Item              = $Obj.Item
+                                    Account           = $Obj.Account
+                                    Access            = $Obj.Access
+                                    DuetoMembershipIn = $Obj.'Due to Membership In'
+                                    SourceofAccess    = $Obj.'Source of Access'
+                                    Name              = $Obj.Name
+                                    Department        = $Obj.Department
+                                    Title             = $Obj.Title
+                                }
+                            }
+
+                            $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                            $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
+
+                            [PSCustomObject]@{
+                                Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Table   = $TableId
+                            }
+
                         }
 
                     }
@@ -334,42 +355,47 @@ function ConvertTo-PermissionList {
 
         'xml' {
 
-            switch ($GroupBy) {
+            if (
+                $GroupBy -eq 'none' -or
+                $HowToSplit[$GroupBy]
+            ) {
 
-                'account' {
+                $OutputObject = @{}
+                $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
+                [PSCustomObject]$OutputObject
 
-                    ForEach ($Group in $PermissionGrouping) {
-                        [PSCustomObject]@{
-                            Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+            } else {
+
+                switch ($GroupBy) {
+
+                    'account' {
+
+                        ForEach ($Group in $PermissionGrouping) {
+                            [PSCustomObject]@{
+                                Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+                            }
                         }
+
                     }
 
-                }
+                    'item' {
 
-                'item' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-                        [PSCustomObject]@{
-                            Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                        ForEach ($Group in $PermissionGrouping) {
+                            [PSCustomObject]@{
+                                Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                            }
                         }
+
                     }
 
-                }
+                    'target' {
 
-                'none' {
-
-                    $OutputObject = @{}
-                    $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
-                    [PSCustomObject]$OutputObject
-
-                }
-
-                'target' {
-
-                    ForEach ($Group in $PermissionGrouping) {
-                        [PSCustomObject]@{
-                            Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                        ForEach ($Group in $PermissionGrouping) {
+                            [PSCustomObject]@{
+                                Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                            }
                         }
+
                     }
 
                 }
