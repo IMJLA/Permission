@@ -2585,8 +2585,19 @@ function Format-Permission {
             [PSCustomObject]@{
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
-
-                    $Selection = $NetworkPath.$($Grouping['Property'])
+                    $Prop = $Grouping['Property']
+                    if ($Prop -eq 'items') {
+                        $Selection = [System.Collections.Generic.List[PSCustomObject]]::new()
+                        # Add the network path itself
+                        $Selection.Add([PSCustomObject]@{
+                                Item   = $NetworkPath.Item
+                                Access = $NetworkPath.Access
+                            })
+                        # Add child items
+                        $Selection.AddRange([PSCustomObject[]]$NetworkPath.$Prop)
+                    } else {
+                        $Selection = $NetworkPath.$Prop
+                    }
 
                     $OutputProperties = @{
                         Item     = $NetworkPath.Item
@@ -5021,6 +5032,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

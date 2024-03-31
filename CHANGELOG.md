@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.516] - 2024-03-31 - bugfix splitby target groupby item
+
 ## [0.0.515] - 2024-03-31 - remove debug pause
 
 ## [0.0.514] - 2024-03-31 - bugfix remove extra squiggly braces

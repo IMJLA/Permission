@@ -101,8 +101,19 @@ function Format-Permission {
             [PSCustomObject]@{
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
-
-                    $Selection = $NetworkPath.$($Grouping['Property'])
+                    $Prop = $Grouping['Property']
+                    if ($Prop -eq 'items') {
+                        $Selection = [System.Collections.Generic.List[PSCustomObject]]::new()
+                        # Add the network path itself
+                        $Selection.Add([PSCustomObject]@{
+                                Item   = $NetworkPath.Item
+                                Access = $NetworkPath.Access
+                            })
+                        # Add child items
+                        $Selection.AddRange([PSCustomObject[]]$NetworkPath.$Prop)
+                    } else {
+                        $Selection = $NetworkPath.$Prop
+                    }
 
                     $OutputProperties = @{
                         Item     = $NetworkPath.Item
