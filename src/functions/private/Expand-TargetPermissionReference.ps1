@@ -84,6 +84,12 @@ function Expand-TargetPermissionReference {
 
         'none' {
 
+            $ExpansionParameters = @{
+                AceGUIDsByPath         = $AceGUIDsByPath
+                ACEsByGUID             = $ACEsByGUID
+                PrincipalsByResolvedID = $PrincipalsByResolvedID
+            }
+
             ForEach ($Target in $Reference) {
 
                 $TargetProperties = @{
@@ -95,24 +101,9 @@ function Expand-TargetPermissionReference {
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                     [pscustomobject]@{
-                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
                         Item       = $AclsByPath[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Items      = ForEach ($TargetChild in $NetworkPath.Items) {
-
-                            $Access = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
-
-                            if ($Access) {
-
-                                [pscustomobject]@{
-                                    Access     = $Access
-                                    Item       = $AclsByPath[$TargetChild.Path]
-                                    PSTypeName = 'Permission.ChildItemPermission'
-                                }
-
-                            }
-
-                        }
 
                     }
 
