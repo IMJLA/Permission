@@ -75,7 +75,8 @@ function Select-PermissionTableProperty {
 
         }
 
-        'none' {
+        # 'none' and 'target' behave the same
+        default {
 
             ForEach ($Object in $InputObject) {
 
@@ -107,10 +108,6 @@ function Select-PermissionTableProperty {
                 }
 
             }
-
-        }
-
-        'target' {
 
         }
 

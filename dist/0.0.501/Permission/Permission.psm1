@@ -1971,7 +1971,8 @@ function Select-PermissionTableProperty {
 
         }
 
-        'none' {
+        # 'none' and 'target' behave the same
+        default {
 
             ForEach ($Object in $InputObject) {
 
@@ -2003,10 +2004,6 @@ function Select-PermissionTableProperty {
                 }
 
             }
-
-        }
-
-        'target' {
 
         }
 
@@ -4988,6 +4985,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
 
 
 
