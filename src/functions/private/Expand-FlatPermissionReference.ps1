@@ -19,23 +19,7 @@ function Expand-FlatPermissionReference {
 
         ForEach ($ACE in $ACEsByGUID[$AceGUIDs]) {
 
-            $Principal = $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved]
-
-            $OutputProperties = @{
-                PSTypeName = 'Permission.FlatPermission'
-                ItemPath   = $ACE.Path
-                AdsiPath   = $Principal.Path
-            }
-
-            ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
-                $OutputProperties[$Prop] = $ACE.$Prop
-            }
-
-            ForEach ($Prop in ($Principal | Get-Member -View All -MemberType Property, NoteProperty).Name) {
-                $OutputProperties[$Prop] = $Principal.$Prop
-            }
-
-            [pscustomobject]$OutputProperties
+            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved] -PrincipalsByResolvedID $PrincipalsByResolvedID
 
         }
 

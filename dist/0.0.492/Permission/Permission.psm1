@@ -784,23 +784,7 @@ function Expand-FlatPermissionReference {
 
         ForEach ($ACE in $ACEsByGUID[$AceGUIDs]) {
 
-            $Principal = $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved]
-
-            $OutputProperties = @{
-                PSTypeName = 'Permission.FlatPermission'
-                ItemPath   = $ACE.Path
-                AdsiPath   = $Principal.Path
-            }
-
-            ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
-                $OutputProperties[$Prop] = $ACE.$Prop
-            }
-
-            ForEach ($Prop in ($Principal | Get-Member -View All -MemberType Property, NoteProperty).Name) {
-                $OutputProperties[$Prop] = $Principal.$Prop
-            }
-
-            [pscustomobject]$OutputProperties
+            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved] -PrincipalsByResolvedID $PrincipalsByResolvedID
 
         }
 
@@ -1734,6 +1718,33 @@ while ($i -lt $n) {
 $Size = (SizeOf -t [hashtable] -value $Test)/1KB
 "$Size KiB"
 #>
+}
+function Merge-AceAndPrincipal {
+
+    param ($Principal, $ACE, $PrincipalsByResolvedID)
+
+    ForEach ($Member in $Principal.Members) {
+
+        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$Member] -PrincipalsByResolvedID $PrincipalsByResolvedID
+
+    }
+
+    $OutputProperties = @{
+        PSTypeName = 'Permission.FlatPermission'
+        ItemPath   = $ACE.Path
+        AdsiPath   = $Principal.Path
+    }
+
+    ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
+        $OutputProperties[$Prop] = $ACE.$Prop
+    }
+
+    ForEach ($Prop in ($Principal | Get-Member -View All -MemberType Property, NoteProperty).Name) {
+        $OutputProperties[$Prop] = $Principal.$Prop
+    }
+
+    [pscustomobject]$OutputProperties
+
 }
 function Out-PermissionDetailReport {
 
@@ -4968,6 +4979,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
