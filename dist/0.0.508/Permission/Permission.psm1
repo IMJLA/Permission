@@ -1841,6 +1841,37 @@ function Out-PermissionDetailReport {
     }
 
 }
+function Resolve-GroupByParameter {
+    param (
+
+        # How to group the permissions in the output stream and within each exported file
+        [ValidateSet('account', 'item', 'none', 'target')]
+        [string]$GroupBy = 'item',
+
+        [hashtable]$HowToSplit
+
+    )
+
+    if (
+        $GroupBy -eq 'none' -or
+        $HowToSplit[$GroupBy]
+    ) {
+
+        return @{
+            Property = 'Access'
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -Culture `$args[1]")
+        }
+
+    } else {
+
+        return @{
+            Property = "$GroupBy`s"
+            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1]")
+        }
+
+    }
+
+}
 function Resolve-SplitByParameter {
 
     param (
@@ -2494,24 +2525,9 @@ function Format-Permission {
 
     )
 
-    $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
-
-    if (
-        $GroupBy -eq 'none' -or
-        $Permission.SplitBy[$GroupBy]
-    ) {
-
-        $SelectionProp = 'Access'
-        $GroupingScript = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -Culture `$args[1]")
-
-    } else {
-
-        $SelectionProp = "$GroupBy`s"
-        $GroupingScript = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1]")
-
-    }
-
     $FormattedResults = @{}
+    $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
+    $Group = Resolve-GroupByParameter -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
 
     if ($Permission.SplitBy['account']) {
 
@@ -2526,7 +2542,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Group['Script'] -ArgumentList $Selection, $Culture
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
             ForEach ($Format in $Formats) {
@@ -2555,7 +2571,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Group['Script'] -ArgumentList $Selection, $Culture
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
             ForEach ($Format in $Formats) {
@@ -2571,10 +2587,6 @@ function Format-Permission {
 
     }
 
-    if ($Permission.SplitBy['none']) {
-
-    }
-
     if ($Permission.SplitBy['target']) {
 
         $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
@@ -2583,14 +2595,14 @@ function Format-Permission {
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
-                    $Selection = $NetworkPath.$SelectionProp
+                    $Selection = $NetworkPath.$Group['Property']
 
                     $OutputProperties = @{
                         Item     = $NetworkPath.Item
                         passthru = $Selection
                     }
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Group['Script'] -ArgumentList $Selection, $Culture
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
                     ForEach ($Format in $Formats) {
@@ -5021,6 +5033,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
