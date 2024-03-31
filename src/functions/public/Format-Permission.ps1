@@ -96,7 +96,12 @@ function Format-Permission {
     }
 
     if (
-        $Permission.SplitBy['none'] -or
+        $Permission.SplitBy['none']
+    ) {
+
+    }
+
+    if (
         $Permission.SplitBy['target']
     ) {
 

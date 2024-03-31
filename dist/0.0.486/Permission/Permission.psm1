@@ -932,7 +932,47 @@ function Expand-TargetPermissionReference {
 
         }
 
-        'none' {}
+        'none' {
+            pause
+            ForEach ($Target in $Reference) {
+
+                $TargetProperties = @{
+                    PSTypeName = 'Permission.TargetPermission'
+                    Path       = $Target.Path
+                }
+
+                # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
+
+                    [pscustomobject]@{
+                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        Item       = $AclsByPath[$NetworkPath.Path]
+                        PSTypeName = 'Permission.ParentItemPermission'
+                        Items      = ForEach ($TargetChild in $NetworkPath.Items) {
+
+                            $Access = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+
+                            if ($Access) {
+
+                                [pscustomobject]@{
+                                    Access     = $Access
+                                    Item       = $AclsByPath[$TargetChild.Path]
+                                    PSTypeName = 'Permission.ChildItemPermission'
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                [pscustomobject]$TargetProperties
+
+            }
+
+        }
 
     }
 
@@ -2470,7 +2510,12 @@ function Format-Permission {
     }
 
     if (
-        $Permission.SplitBy['none'] -or
+        $Permission.SplitBy['none']
+    ) {
+
+    }
+
+    if (
         $Permission.SplitBy['target']
     ) {
 
@@ -4916,6 +4961,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
