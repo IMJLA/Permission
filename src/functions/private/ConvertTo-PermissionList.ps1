@@ -57,9 +57,16 @@ function ConvertTo-PermissionList {
                 'target' {
 
                     ForEach ($Group in $PermissionGrouping) {
-                        [PSCustomObject]@{
-                            Data = $Permission[$Group.Path] | ConvertTo-Csv
+
+                        $Perm = $Permission[$Group.Path]
+
+                        if ($Perm) {
+                            [PSCustomObject]@{
+                                Data = $Perm | ConvertTo-Csv
+                            }
+
                         }
+
                     }
 
                 }

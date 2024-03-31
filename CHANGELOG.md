@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.502] - 2024-03-30 - bugfix for folders with no unique perms
+
 ## [0.0.501] - 2024-03-30 - implement groupby target
 
 ## [0.0.500] - 2024-03-30 - implement groupby target
