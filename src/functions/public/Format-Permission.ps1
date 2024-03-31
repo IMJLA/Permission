@@ -117,7 +117,7 @@ function Format-Permission {
                         Item     = $NetworkPath.Item
                         passthru = $Selection
                     }
-
+                    pause
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 

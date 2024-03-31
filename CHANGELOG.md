@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.487] - 2024-03-30 - move debug pause
+
 ## [0.0.486] - 2024-03-30 - add groupby none
 
 ## [0.0.485] - 2024-03-30 - bugfix splitting or grouping by none

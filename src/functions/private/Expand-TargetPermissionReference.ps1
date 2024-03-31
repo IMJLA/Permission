@@ -83,7 +83,7 @@ function Expand-TargetPermissionReference {
         }
 
         'none' {
-            pause
+
             ForEach ($Target in $Reference) {
 
                 $TargetProperties = @{
