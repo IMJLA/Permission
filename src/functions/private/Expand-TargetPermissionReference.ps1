@@ -82,7 +82,8 @@ function Expand-TargetPermissionReference {
 
         }
 
-        'none' {
+        # 'none' and 'target' behave the same
+        default {
 
             $ExpansionParameters = @{
                 AceGUIDsByPath         = $AceGUIDsByPath
