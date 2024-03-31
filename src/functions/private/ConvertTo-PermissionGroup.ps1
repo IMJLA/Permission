@@ -1,5 +1,5 @@
 function ConvertTo-PermissionGroup {
-
+    [CmdletBinding()]
     param (
 
         # Permission object from Expand-Permission
@@ -59,25 +59,26 @@ function ConvertTo-PermissionGroup {
                 'account' {
                     $OrderedProperties = $AccountProperty
                     $JavaScriptTable['SearchableColumn'] = $OrderedProperties
+                    $Objects = $Permission
                 }
 
                 'item' {
                     $OrderedProperties = $ItemProperty
                     $JavaScriptTable['SearchableColumn'] = 'Folder'
                     $JavaScriptTable['DropdownColumn'] = 'Inheritance'
+                    $Objects = $Permission
                 }
 
-                'none' {}
-                'target' {}
+                default { $Objects = $Permission.Values }
 
             }
-
+            pause
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
-            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
-            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission -PropNames $OrderedProperties
+            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Objects)
+            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Objects -PropNames $OrderedProperties
 
-            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
-            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
+            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Objects -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Objects -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
 
         }
 

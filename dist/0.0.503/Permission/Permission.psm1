@@ -238,7 +238,7 @@ function ConvertTo-NameExclusionDiv {
 
 }
 function ConvertTo-PermissionGroup {
-
+    [CmdletBinding()]
     param (
 
         # Permission object from Expand-Permission
@@ -298,25 +298,26 @@ function ConvertTo-PermissionGroup {
                 'account' {
                     $OrderedProperties = $AccountProperty
                     $JavaScriptTable['SearchableColumn'] = $OrderedProperties
+                    $Objects = $Permission
                 }
 
                 'item' {
                     $OrderedProperties = $ItemProperty
                     $JavaScriptTable['SearchableColumn'] = 'Folder'
                     $JavaScriptTable['DropdownColumn'] = 'Inheritance'
+                    $Objects = $Permission
                 }
 
-                'none' {}
-                'target' {}
+                default { $Objects = $Permission.Values }
 
             }
-
+            pause
             # Wrap input in a array because output must be a JSON array for jquery to work properly.
-            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
-            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission -PropNames $OrderedProperties
+            $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Objects)
+            $OutputObject['Columns'] = Get-ColumnJson -InputObject $Objects -PropNames $OrderedProperties
 
-            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Permission -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
-            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
+            #Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$Objects -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+            $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Objects -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
 
         }
 
@@ -2504,7 +2505,7 @@ function Format-Permission {
 
             ForEach ($Format in $Formats) {
 
-                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy
                 $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
 
             }
@@ -2533,7 +2534,7 @@ function Format-Permission {
 
             ForEach ($Format in $Formats) {
 
-                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy
                 $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
 
             }
@@ -2568,7 +2569,9 @@ function Format-Permission {
 
                     ForEach ($Format in $Formats) {
 
-                        $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -Culture $Culture -GroupBy $GroupBy
+                        # Use -ErrorAction SilentlyContinue on ConvertTo-PermissionGroup to suppress errors for GroupBy none or target, where grouping is not needed
+                        $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy -ErrorAction SilentlyContinue
+
                         $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy
 
                     }
@@ -4992,6 +4995,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
