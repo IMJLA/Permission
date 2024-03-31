@@ -1273,11 +1273,20 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns"
 
+
+
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
         ItemCount        = $ACLsByPath.Keys.Count
-        PermissionCount  = [math]::Max($Permission.AccountPermissions.Access.Access.Count, $Permission.ItemPermissions.Access.Access.Count)
+        PermissionCount  = (
+            @(
+                $Permission.AccountPermissions.Access.Access.Count,
+                $Permission.ItemPermissions.Access.Access.Count,
+                $Permission.TargetPermissions.NetworkPaths.Access.Count
+            ) |
+            Measure-Object -Maximum
+        ).Maximum
         PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
         ReportInstanceId = $ReportInstanceId
         StopWatch        = $StopWatch
@@ -2529,7 +2538,7 @@ function Format-Permission {
                         Item     = $NetworkPath.Item
                         passthru = $Selection
                     }
-                    pause
+
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $GroupingScript -ArgumentList $Selection, $Culture
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
@@ -4959,6 +4968,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
