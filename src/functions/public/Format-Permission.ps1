@@ -36,7 +36,7 @@ function Format-Permission {
 
     if (
         $GroupBy -eq 'none' -or
-        ($GroupBy -eq 'target' -and $Permission.SplitBy['target'] -eq $true)
+        $Permission.SplitBy[$GroupBy]
     ) {
 
         $SelectionProp = 'Access'
