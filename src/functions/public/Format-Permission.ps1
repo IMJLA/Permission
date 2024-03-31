@@ -102,7 +102,7 @@ function Format-Permission {
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
-                    $Selection = $NetworkPath.$Group['Property']
+                    $Selection = $NetworkPath.$($Group['Property'])
 
                     $OutputProperties = @{
                         Item     = $NetworkPath.Item
