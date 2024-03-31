@@ -34,7 +34,10 @@ function Format-Permission {
 
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
 
-    if ($GroupBy -eq 'none') {
+    if (
+        $GroupBy -eq 'none' -or
+        ($GroupBy -eq 'target' -and $Permission.SplitBy['target'] -eq $true)
+    ) {
 
         $SelectionProp = 'Access'
         $GroupingScript = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -Culture `$args[1]")
