@@ -91,7 +91,7 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
-                $Heading = New-HtmlHeading 'Permissions' -Level 5
+                $Heading = New-HtmlHeading 'Permissions' -Level 6
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $Table = $Html | New-BootstrapTable
 
@@ -176,7 +176,7 @@ function ConvertTo-PermissionList {
             ) {
 
                 $OutputObject = @{}
-                $Heading = New-HtmlHeading 'Permissions' -Level 5
+                $Heading = New-HtmlHeading 'Permissions' -Level 6
                 $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
 
                 # Remove spaces from property titles

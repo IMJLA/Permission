@@ -20,7 +20,7 @@ function Get-HtmlBody {
         $null = $StringBuilder.Append($TableOfContents)
     }
 
-    $null = $StringBuilder.Append((New-HtmlHeading $DetailDivHeader -Level 6))
+    $null = $StringBuilder.Append((New-HtmlHeading $DetailDivHeader -Level 5))
 
     ForEach ($Perm in $HtmlFolderPermissions) {
         $null = $StringBuilder.Append($Perm)
