@@ -417,6 +417,7 @@ function Out-PermissionReport {
                 [hashtable]$Params = $PSBoundParameters
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
+                $Params['Split'] = $Split
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{

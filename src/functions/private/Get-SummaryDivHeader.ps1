@@ -1,12 +1,23 @@
 function Get-SummaryDivHeader {
+
     param (
-        [string]$GroupBy
+        [string]$GroupBy,
+        [string]$Split
     )
 
-    switch ($GroupBy) {
-        'account' { 'Accounts with Permissions in This Report' }
-        'item' { 'Folders with Permissions in This Report' }
-        'target' { 'Target Folders Analyzed in This Report' }
+    if ( $GroupBy -eq $Split ) {
+
+        'Permissions'
+
+    } else {
+
+        switch ($GroupBy) {
+            'account' { 'Folders Included in Those Permissions' }
+            'item' { 'Accounts Included in Those Permissions' }
+            'target' { 'Target Paths' }
+            'none' { 'Permissions' }
+        }
+
     }
 
 }

@@ -1,13 +1,23 @@
 function Get-DetailDivHeader {
+
     param (
-        [string]$GroupBy
+        [string]$GroupBy,
+        [string]$Split
     )
 
-    switch ($GroupBy) {
-        'account' { 'Folders Included in Those Permissions' }
-        'item' { 'Accounts Included in Those Permissions' }
-        'target' { 'Target Folders Analyzed in This Report' }
-        'none' { 'Permissions' }
+    if ( $GroupBy -eq $Split ) {
+
+        'Permissions'
+
+    } else {
+
+        switch ($GroupBy) {
+            'account' { 'Folders Included in Those Permissions' }
+            'item' { 'Accounts Included in Those Permissions' }
+            'target' { 'Target Paths' }
+            'none' { 'Permissions' }
+        }
+
     }
 
 }

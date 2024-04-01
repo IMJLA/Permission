@@ -1024,15 +1024,25 @@ function Get-ColumnJson {
 
 }
 function Get-DetailDivHeader {
+
     param (
-        [string]$GroupBy
+        [string]$GroupBy,
+        [string]$Split
     )
 
-    switch ($GroupBy) {
-        'account' { 'Folders Included in Those Permissions' }
-        'item' { 'Accounts Included in Those Permissions' }
-        'target' { 'Target Folders Analyzed in This Report' }
-        'none' { 'Permissions' }
+    if ( $GroupBy -eq $Split ) {
+
+        'Permissions'
+
+    } else {
+
+        switch ($GroupBy) {
+            'account' { 'Folders Included in Those Permissions' }
+            'item' { 'Accounts Included in Those Permissions' }
+            'target' { 'Target Paths' }
+            'none' { 'Permissions' }
+        }
+
     }
 
 }
@@ -1209,7 +1219,9 @@ function Get-HtmlReportElements {
             account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [string]$GroupBy = 'item',
+
+        [string]$Split
 
     )
 
@@ -1225,13 +1237,13 @@ function Get-HtmlReportElements {
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
     Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
-    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
+    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy -Split $Split
 
     Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
-    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
+    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
     Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Paths' -Level 5"
     $TargetHeading = New-HtmlHeading 'Target Paths' -Level 5
@@ -1401,14 +1413,25 @@ function Get-ReportDescription {
 
 }
 function Get-SummaryDivHeader {
+
     param (
-        [string]$GroupBy
+        [string]$GroupBy,
+        [string]$Split
     )
 
-    switch ($GroupBy) {
-        'account' { 'Accounts with Permissions in This Report' }
-        'item' { 'Folders with Permissions in This Report' }
-        'target' { 'Target Folders Analyzed in This Report' }
+    if ( $GroupBy -eq $Split ) {
+
+        'Permissions'
+
+    } else {
+
+        switch ($GroupBy) {
+            'account' { 'Folders Included in Those Permissions' }
+            'item' { 'Accounts Included in Those Permissions' }
+            'target' { 'Target Paths' }
+            'none' { 'Permissions' }
+        }
+
     }
 
 }
@@ -4028,6 +4051,7 @@ function Out-PermissionReport {
                 [hashtable]$Params = $PSBoundParameters
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
+                $Params['Split'] = $Split
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
@@ -5040,6 +5064,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
 
 
 

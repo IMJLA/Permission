@@ -103,7 +103,9 @@ function Get-HtmlReportElements {
             account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [string]$GroupBy = 'item',
+
+        [string]$Split
 
     )
 
@@ -119,13 +121,13 @@ function Get-HtmlReportElements {
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
     Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
-    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy
+    $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy -Split $Split
 
     Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
     Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
-    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy
+    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
     Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Paths' -Level 5"
     $TargetHeading = New-HtmlHeading 'Target Paths' -Level 5
