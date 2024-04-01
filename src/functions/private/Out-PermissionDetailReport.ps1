@@ -7,7 +7,7 @@ function Out-PermissionDetailReport {
         [string]$Format,
         [string]$OutputDir,
         [cultureinfo]$Culture,
-        [string]$DetailString,
+        [string[]]$DetailString,
         [string]$FileName,
         [string]$FormatToReturn = 'js',
         [int]$LevelToReturn = 10
