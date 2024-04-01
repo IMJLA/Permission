@@ -29,6 +29,6 @@ function ConvertTo-ClassExclusionDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
-    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content -HeadingLevel 6
 
 }

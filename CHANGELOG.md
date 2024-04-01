@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.522] - 2024-03-31 - shrink heading sizes
+
 ## [0.0.521] - 2024-03-31 - bugfix detail div header size
 
 ## [0.0.520] - 2024-03-31 - bugfix detail div header size

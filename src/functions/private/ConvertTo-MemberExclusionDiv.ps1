@@ -24,6 +24,6 @@ function ConvertTo-MemberExclusionDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
-    return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content -HeadingLevel 6
 
 }

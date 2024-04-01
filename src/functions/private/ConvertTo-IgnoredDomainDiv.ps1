@@ -28,6 +28,6 @@ function ConvertTo-IgnoredDomainDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
-    return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content -HeadingLevel 6
 
 }

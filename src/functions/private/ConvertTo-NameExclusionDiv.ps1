@@ -22,6 +22,6 @@ function ConvertTo-NameExclusionDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
-    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content -HeadingLevel 6
 
 }

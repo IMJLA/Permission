@@ -30,7 +30,7 @@ function ConvertTo-ClassExclusionDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
-    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content -HeadingLevel 6
 
 }
 function ConvertTo-FileList {
@@ -178,7 +178,7 @@ function ConvertTo-IgnoredDomainDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
-    return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content -HeadingLevel 6
 
 }
 function ConvertTo-MemberExclusionDiv {
@@ -207,7 +207,7 @@ function ConvertTo-MemberExclusionDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
-    return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content -HeadingLevel 6
 
 }
 function ConvertTo-NameExclusionDiv {
@@ -234,7 +234,7 @@ function ConvertTo-NameExclusionDiv {
     }
 
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
-    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content
+    return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content -HeadingLevel 6
 
 }
 function ConvertTo-PermissionGroup {
@@ -1296,7 +1296,7 @@ function Get-HtmlReportElements {
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
-    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns"
+    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
 
 
@@ -5064,6 +5064,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
