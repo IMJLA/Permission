@@ -240,7 +240,11 @@ function Out-PermissionReport {
 
                     $DetailScripts[10] = {
 
-                        if ($Permission.FlatPermissions) {
+                        #if ($Permission.FlatPermissions) {
+                        if (
+                            $GroupBy -eq 'none' -or
+                            $GroupBy -eq $Split
+                        ) {
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                             Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
@@ -292,7 +296,11 @@ function Out-PermissionReport {
 
                     $DetailScripts[10] = {
 
-                        if ($Permission.FlatPermissions) {
+                        #if ($Permission.FlatPermissions) {
+                        if (
+                            $GroupBy -eq 'none' -or
+                            $GroupBy -eq $Split
+                        ) {
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
                             Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
