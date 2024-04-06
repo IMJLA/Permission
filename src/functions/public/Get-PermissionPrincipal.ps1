@@ -84,8 +84,7 @@ function Get-PermissionPrincipal {
 
     [string[]]$IDs = $ACEsByResolvedID.Keys
     $Count = $IDs.Count
-    Write-Progress @Progress -Status "0% (identity 0 of $Count)" -CurrentOperation 'Initialize' -PercentComplete 0
-    Start-Sleep -Seconds 10
+    Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
 
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
@@ -128,7 +127,6 @@ function Get-PermissionPrincipal {
 
                 [int]$PercentComplete = $i / $Count * 100
                 Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation $ThisID -PercentComplete $PercentComplete
-                Start-Sleep -Seconds 10
                 $IntervalCounter = 0
 
             }
@@ -163,6 +161,5 @@ function Get-PermissionPrincipal {
     }
 
     Write-Progress @Progress -Completed
-    Start-Sleep -Seconds 10
 
 }
