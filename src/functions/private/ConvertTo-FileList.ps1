@@ -110,7 +110,7 @@ function ConvertTo-FileList {
 
             'js' {
 
-                $Suffix = "_$Format`_$FileName.htm"
+                $Suffix = "_js_$FileName.htm"
 
                 ForEach ($Level in $Detail) {
 
@@ -165,7 +165,7 @@ function ConvertTo-FileList {
 
             'json' {
 
-                $Suffix = "_$Format`_$FileName.json"
+                $Suffix = "_$FileName.json"
 
                 #TODO
 

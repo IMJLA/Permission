@@ -145,7 +145,7 @@ function ConvertTo-FileList {
 
             'js' {
 
-                $Suffix = "_$Format`_$FileName.htm"
+                $Suffix = "_js_$FileName.htm"
 
                 ForEach ($Level in $Detail) {
 
@@ -200,7 +200,7 @@ function ConvertTo-FileList {
 
             'json' {
 
-                $Suffix = "_$Format`_$FileName.json"
+                $Suffix = "_$FileName.json"
 
                 #TODO
 
@@ -1389,10 +1389,10 @@ function Get-HtmlReportElements {
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' small'
 
     # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
-    $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName
+    $ReportFileList = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName
 
     # Convert the hashtable of generated report files to a Bootstrap list group
-    $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ListOfReports) -join "`r`n"
+    $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ReportFileList) -join "`r`n"
 
     # Arrange the lists of generated files in two Bootstrap columns
     Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
@@ -1923,7 +1923,7 @@ function Out-PermissionDetailReport {
         'csv' { $Suffix = '.csv' ; break }
         'html' { $Suffix = "_$FileName.htm" ; break }
         'js' { $Suffix = "_$Format`_$FileName.htm" ; break }
-        'json' { $Suffix = "_$Format`_$FileName.json" ; break }
+        'json' { $Suffix = "_$FileName.json" ; break }
         'prtgxml' { $Suffix = '.xml' ; break }
         'xml' { $Suffix = '.xml' ; break }
     }
@@ -5174,6 +5174,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

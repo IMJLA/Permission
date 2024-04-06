@@ -17,7 +17,7 @@ function Out-PermissionDetailReport {
         'csv' { $Suffix = '.csv' ; break }
         'html' { $Suffix = "_$FileName.htm" ; break }
         'js' { $Suffix = "_$Format`_$FileName.htm" ; break }
-        'json' { $Suffix = "_$Format`_$FileName.json" ; break }
+        'json' { $Suffix = "_$FileName.json" ; break }
         'prtgxml' { $Suffix = '.xml' ; break }
         'xml' { $Suffix = '.xml' ; break }
     }
