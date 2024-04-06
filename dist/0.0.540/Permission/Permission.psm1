@@ -192,34 +192,23 @@ function ConvertTo-FileListDiv {
         [hashtable]$FileList
     )
 
-    #$StringBuilder = [System.Text.StringBuilder]::new()
-
     ForEach ($Format in $FileList.Keys) {
 
         $Files = $FileList[$Format]
 
         if ($Files) {
 
-            #$Alert = New-BootstrapAlert -Text $Format -Class Dark -Padding ' pb-0 pt-2'
-            #$StringBuilder.Append($Alert)
-            New-BootstrapAlert -Text $Format -Class Dark -Padding ' pb-0 pt-2'
+            New-BootstrapAlert -Text $Format -Class Dark -Padding ' p-2 mb-0 mt-2'
 
-            #$HtmlList = $Files |
             $Files |
             Sort-Object |
             Split-Path -Leaf |
             ConvertTo-HtmlList |
             ConvertTo-BootstrapListGroup
 
-            #$StringBuilder.Append($HtmlList)
-
         }
 
     }
-
-    #$Div = $StringBuilder.ToString()
-    #Write-Host "Type is $($Div.GetType().FullName) and Count is $($Div.Count)" -ForegroundColor Cyan
-    #return $Div
 
 }
 function ConvertTo-IgnoredDomainDiv {
@@ -1360,8 +1349,6 @@ function Get-HtmlReportElements {
 
     # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
-
-    pause
 
     # Convert the hashtable of generated report files to a Bootstrap list group
     $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ListOfReports) -join "`r`n"
@@ -5146,6 +5133,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
