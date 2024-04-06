@@ -98,7 +98,7 @@ function ConvertTo-FileList {
                         $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                         # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail.htm"
+                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
 
                     }
 
@@ -127,7 +127,7 @@ function ConvertTo-FileList {
                         $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                         # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail`_$ThisFormat.htm"
+                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
 
                     }
 
@@ -155,7 +155,7 @@ function ConvertTo-FileList {
                     $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                     # Build the file path
-                    "$OutputDir\$Level`_$SpacelessDetail`_$ThisFormat.xml"
+                    "$OutputDir\$Level`_$SpacelessDetail$Suffix"
 
                 }
 
