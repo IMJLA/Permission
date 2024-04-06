@@ -26,6 +26,8 @@ function ConvertTo-FileList {
 
     )
 
+    $FileList = @{}
+
     ForEach ($ThisFormat in $Format) {
 
         # String translations indexed by value in the $Detail parameter
@@ -44,7 +46,7 @@ function ConvertTo-FileList {
             'Permission report'
         )
 
-        switch ($ThisFormat) {
+        $FileList[$ThisFormat] = switch ($ThisFormat) {
 
             'csv' {
 
@@ -129,4 +131,7 @@ function ConvertTo-FileList {
         }
 
     }
+
+    return $FileList
+
 }

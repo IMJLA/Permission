@@ -166,17 +166,15 @@ function Get-HtmlReportElements {
     # Convert the output directory path to a Boostrap alert
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' small'
 
+    # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
 
-    # Convert the list of generated report files to a Bootstrap list group
-    $HtmlListOfReports = $ListOfReports |
-    Split-Path -Leaf |
-    ConvertTo-HtmlList |
-    ConvertTo-BootstrapListGroup
+    # Convert the hashtable of generated report files to a Bootstrap list group
+    $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
 
     # Arrange the lists of generated files in two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-    $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
+    $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlReportsDiv", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"

@@ -61,6 +61,8 @@ function ConvertTo-FileList {
 
     )
 
+    $FileList = @{}
+
     ForEach ($ThisFormat in $Format) {
 
         # String translations indexed by value in the $Detail parameter
@@ -79,7 +81,7 @@ function ConvertTo-FileList {
             'Permission report'
         )
 
-        switch ($ThisFormat) {
+        $FileList[$ThisFormat] = switch ($ThisFormat) {
 
             'csv' {
 
@@ -164,6 +166,32 @@ function ConvertTo-FileList {
         }
 
     }
+
+    return $FileList
+
+}
+function ConvertTo-FileListDiv {
+
+    param ([hashtable]$FileList)
+
+    $StringBuilder = [System.Text.StringBuilder]::new()
+
+    ForEach ($Format in $FileList.Keys) {
+
+        $Alert = New-BootstrapAlert -Text $Format -Class Dark
+        $StringBuilder.Append($Alert)
+
+        $HtmlList = $FileList[$Format] |
+        Sort-Object |
+        Split-Path -Leaf |
+        ConvertTo-HtmlList |
+        ConvertTo-BootstrapListGroup
+
+        $StringBuilder.Append($HtmlList)
+        $StringBuilder.ToString()
+
+    }
+
 }
 function ConvertTo-IgnoredDomainDiv {
 
@@ -1301,17 +1329,15 @@ function Get-HtmlReportElements {
     # Convert the output directory path to a Boostrap alert
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' small'
 
+    # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
 
-    # Convert the list of generated report files to a Bootstrap list group
-    $HtmlListOfReports = $ListOfReports |
-    Split-Path -Leaf |
-    ConvertTo-HtmlList |
-    ConvertTo-BootstrapListGroup
+    # Convert the hashtable of generated report files to a Bootstrap list group
+    $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
 
     # Arrange the lists of generated files in two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlListOfReports',`$HtmlLogsHeading`$HtmlListOfLogs"
-    $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlListOfReports", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
+    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
+    $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlReportsDiv", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
@@ -5088,6 +5114,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
