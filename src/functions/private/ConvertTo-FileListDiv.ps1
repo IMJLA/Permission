@@ -20,10 +20,11 @@ function ConvertTo-FileListDiv {
             ConvertTo-BootstrapListGroup
 
             $StringBuilder.Append($HtmlList)
-            $StringBuilder.ToString()
 
         }
 
     }
+
+    return $StringBuilder.ToString()
 
 }
