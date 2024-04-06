@@ -52,17 +52,22 @@ function ConvertTo-FileList {
 
                 ForEach ($Level in $Detail) {
 
-                    # Get shorter versions of the detail strings to use in file names
-                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                    # Currently no CSV reports are generated for detail levels 8/9/10
+                    if ($Detail -lt 8) {
 
-                    # Convert the shorter strings to Title Case
-                    $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                        # Get shorter versions of the detail strings to use in file names
+                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                    # Remove spaces from the shorter strings
-                    $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                        # Convert the shorter strings to Title Case
+                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                    # Build the file path
-                    "$OutputDir\$Level`_$SpacelessDetail.$ThisFormat"
+                        # Remove spaces from the shorter strings
+                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                        # Build the file path
+                        "$OutputDir\$Level`_$SpacelessDetail.$ThisFormat"
+
+                    }
 
                 }
 
@@ -88,7 +93,7 @@ function ConvertTo-FileList {
 
             }
 
-            'json' {
+            'js' {
 
                 ForEach ($Level in $Detail) {
 
@@ -112,21 +117,32 @@ function ConvertTo-FileList {
 
                 $Level = 9
 
-                # Get shorter versions of the detail strings to use in file names
-                $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                # Level 9 is the only level applicable for the PrtgXml format
+                if ($Detail -contains $Level) {
 
-                # Convert the shorter strings to Title Case
-                $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                    # Get shorter versions of the detail strings to use in file names
+                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                # Remove spaces from the shorter strings
-                $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                    # Convert the shorter strings to Title Case
+                    $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                # Build the file path
-                "$OutputDir\$Level`_$SpacelessDetail`_$ThisFormat.xml"
+                    # Remove spaces from the shorter strings
+                    $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                    # Build the file path
+                    "$OutputDir\$Level`_$SpacelessDetail`_$ThisFormat.xml"
+
+                }
 
             }
 
-            default {}
+            'json' {
+                #TODO
+            }
+
+            'xml' {
+                #TODO
+            }
 
         }
 

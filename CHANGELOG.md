@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.537] - 2024-04-06 - bugfixes for files not generated
+
 ## [0.0.536] - 2024-04-06 - debug pause
 
 ## [0.0.535] - 2024-04-06 - why is this an array of objects? casting as str even though I need to find root cause
