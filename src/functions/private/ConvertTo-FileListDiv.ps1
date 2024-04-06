@@ -1,6 +1,8 @@
 function ConvertTo-FileListDiv {
 
-    param ([hashtable]$FileList)
+    param (
+        [hashtable]$FileList
+    )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
 
@@ -25,8 +27,6 @@ function ConvertTo-FileListDiv {
 
     }
 
-    [string]$Div = $StringBuilder.ToString()
-    pause
-    return $Div
+    return $StringBuilder.ToString()
 
 }

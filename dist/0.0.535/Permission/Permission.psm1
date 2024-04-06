@@ -172,7 +172,9 @@ function ConvertTo-FileList {
 }
 function ConvertTo-FileListDiv {
 
-    param ([hashtable]$FileList)
+    param (
+        [hashtable]$FileList
+    )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
 
@@ -197,9 +199,7 @@ function ConvertTo-FileListDiv {
 
     }
 
-    [string]$Div = $StringBuilder.ToString()
-    pause
-    return $Div
+    return $StringBuilder.ToString()
 
 }
 function ConvertTo-IgnoredDomainDiv {
@@ -1342,7 +1342,7 @@ function Get-HtmlReportElements {
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
 
     # Convert the hashtable of generated report files to a Bootstrap list group
-    $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
+    [string]$HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
 
     # Arrange the lists of generated files in two Bootstrap columns
     Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
@@ -5123,6 +5123,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

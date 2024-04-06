@@ -170,7 +170,7 @@ function Get-HtmlReportElements {
     $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
 
     # Convert the hashtable of generated report files to a Bootstrap list group
-    $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
+    [string]$HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
 
     # Arrange the lists of generated files in two Bootstrap columns
     Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
