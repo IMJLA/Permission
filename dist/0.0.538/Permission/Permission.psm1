@@ -215,7 +215,9 @@ function ConvertTo-FileListDiv {
 
     }
 
-    return $StringBuilder.ToString()
+    $Div = $StringBuilder.ToString()
+    Write-Host "Type is $($Div.GetType().FullName) and Count is $($Div.Count)" -ForegroundColor Cyan
+    return $Div
 
 }
 function ConvertTo-IgnoredDomainDiv {
@@ -1361,6 +1363,7 @@ function Get-HtmlReportElements {
 
     # Convert the hashtable of generated report files to a Bootstrap list group
     $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
+    Write-Host "Type is $($HtmlReportsDiv.GetType().FullName) and Count is $($HtmlReportsDiv.Count)" -ForegroundColor Cyan
 
     # Arrange the lists of generated files in two Bootstrap columns
     Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
@@ -5141,6 +5144,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

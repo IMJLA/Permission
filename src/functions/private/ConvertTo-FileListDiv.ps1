@@ -27,6 +27,8 @@ function ConvertTo-FileListDiv {
 
     }
 
-    return $StringBuilder.ToString()
+    $Div = $StringBuilder.ToString()
+    Write-Host "Type is $($Div.GetType().FullName) and Count is $($Div.Count)" -ForegroundColor Cyan
+    return $Div
 
 }
