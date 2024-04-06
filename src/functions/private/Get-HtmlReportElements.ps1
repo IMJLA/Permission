@@ -105,7 +105,9 @@ function Get-HtmlReportElements {
         [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item',
 
-        [string]$Split
+        [string]$Split,
+
+        [string]$FileName
 
     )
 
@@ -167,7 +169,7 @@ function Get-HtmlReportElements {
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' small'
 
     # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
-    $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats
+    $ListOfReports = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName
 
     # Convert the hashtable of generated report files to a Bootstrap list group
     $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ListOfReports) -join "`r`n"

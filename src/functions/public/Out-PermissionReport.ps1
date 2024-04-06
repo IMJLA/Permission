@@ -417,6 +417,7 @@ function Out-PermissionReport {
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
+                $Params['FileName'] = $FileName
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{

@@ -22,7 +22,9 @@ function ConvertTo-FileList {
             9   XML custom sensor output for Paessler PRTG Network Monitor                                  $PrtgXml
             10  Permission Report
         #>
-        [int[]]$Detail = @(0..10)
+        [int[]]$Detail = @(0..10),
+
+        [string]$FileName
 
     )
 
@@ -50,6 +52,8 @@ function ConvertTo-FileList {
 
             'csv' {
 
+                $Suffix = '.csv'
+
                 ForEach ($Level in $Detail) {
 
                     # Currently no CSV reports are generated for detail levels 8/9/10
@@ -65,56 +69,77 @@ function ConvertTo-FileList {
                         $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
 
                         # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail.$ThisFormat"
+                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
 
                     }
 
                 }
 
+                break
+
             }
 
             'html' {
 
+                $Suffix = "_$FileName.htm"
+
                 ForEach ($Level in $Detail) {
 
-                    # Get shorter versions of the detail strings to use in file names
-                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                    # Currently no HTML reports are generated for detail levels 8/9
+                    if ($Level -notin 8, 9) {
 
-                    # Convert the shorter strings to Title Case
-                    $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                        # Get shorter versions of the detail strings to use in file names
+                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                    # Remove spaces from the shorter strings
-                    $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                        # Convert the shorter strings to Title Case
+                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                    # Build the file path
-                    "$OutputDir\$Level`_$SpacelessDetail.htm"
+                        # Remove spaces from the shorter strings
+                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                        # Build the file path
+                        "$OutputDir\$Level`_$SpacelessDetail.htm"
+
+                    }
 
                 }
+
+                break
 
             }
 
             'js' {
 
+                $Suffix = "_$Format`_$FileName.htm"
+
                 ForEach ($Level in $Detail) {
 
-                    # Get shorter versions of the detail strings to use in file names
-                    $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                    # Currently no JS reports are generated for detail levels 8/9
+                    if ($Level -notin 8, 9) {
 
-                    # Convert the shorter strings to Title Case
-                    $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                        # Get shorter versions of the detail strings to use in file names
+                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                    # Remove spaces from the shorter strings
-                    $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                        # Convert the shorter strings to Title Case
+                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                    # Build the file path
-                    "$OutputDir\$Level`_$SpacelessDetail`_$ThisFormat.htm"
+                        # Remove spaces from the shorter strings
+                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                        # Build the file path
+                        "$OutputDir\$Level`_$SpacelessDetail`_$ThisFormat.htm"
+
+                    }
 
                 }
+
+                break
 
             }
 
             'prtgxml' {
 
+                $Suffix = '.xml'
                 $Level = 9
 
                 # Level 9 is the only level applicable for the PrtgXml format
@@ -134,14 +159,28 @@ function ConvertTo-FileList {
 
                 }
 
+                break
+
             }
 
             'json' {
+
+                $Suffix = "_$Format`_$FileName.json"
+
                 #TODO
+
+                break
+
             }
 
             'xml' {
+
+                $Suffix = '.xml'
+
                 #TODO
+
+                break
+
             }
 
         }

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.544] - 2024-04-06 - integrate per-networkpath filename logic
+
+## [0.0.543] - 2024-04-06 - integrate per-networkpath filename logic
+
 ## [0.0.542] - 2024-04-06 - sort formats in report output
 
 ## [0.0.541] - 2024-04-06 - remove debug write-host
