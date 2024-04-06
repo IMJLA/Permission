@@ -2996,6 +2996,9 @@ function Get-CachedCimInstance {
         # Name of the CIM class whose instances to return
         [string]$ClassName,
 
+        # Name of the CIM namespace containing the class
+        [string]$Namespace,
+
         # CIM query to run. Overrides ClassName if used (but not efficiently, so don't use both)
         [string]$Query,
 
@@ -3068,14 +3071,23 @@ function Get-CachedCimInstance {
 
     if ($CimSession) {
 
+        $GetCimInstanceParams = @{
+            CimSession  = $CimSession
+            ErrorAction = 'SilentlyContinue'
+        }
+
+        if ($Namespace) {
+            $GetCimInstanceParams['Namespace'] = $Namespace
+        }
+
         if ($PSBoundParameters.ContainsKey('ClassName')) {
             Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
-            $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession -ErrorAction SilentlyContinue
+            $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
             Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
-            $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession -ErrorAction SilentlyContinue
+            $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
         }
 
         if ($CimInstance) {
@@ -5174,6 +5186,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

@@ -8,6 +8,9 @@ function Get-CachedCimInstance {
         # Name of the CIM class whose instances to return
         [string]$ClassName,
 
+        # Name of the CIM namespace containing the class
+        [string]$Namespace,
+
         # CIM query to run. Overrides ClassName if used (but not efficiently, so don't use both)
         [string]$Query,
 
@@ -80,14 +83,23 @@ function Get-CachedCimInstance {
 
     if ($CimSession) {
 
+        $GetCimInstanceParams = @{
+            CimSession  = $CimSession
+            ErrorAction = 'SilentlyContinue'
+        }
+
+        if ($Namespace) {
+            $GetCimInstanceParams['Namespace'] = $Namespace
+        }
+
         if ($PSBoundParameters.ContainsKey('ClassName')) {
             Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
-            $CimInstance = Get-CimInstance -ClassName $ClassName -CimSession $CimSession -ErrorAction SilentlyContinue
+            $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
             Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
-            $CimInstance = Get-CimInstance -Query $Query -CimSession $CimSession -ErrorAction SilentlyContinue
+            $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
         }
 
         if ($CimInstance) {

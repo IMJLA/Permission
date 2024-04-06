@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.550] - 2024-04-06 - add namespace param support for get-ciminstance
+
 ## [0.0.549] - 2024-04-06 - remove debug pauses and sleeps
 
 ## [0.0.548] - 2024-04-06 - debug progress bars with start-sleep

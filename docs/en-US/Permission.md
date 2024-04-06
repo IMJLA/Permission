@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.549
+Help Version: 0.0.550
 Locale: en-US
 ---
 
@@ -58,7 +58,7 @@ Get-AccessControlList [[-TargetPath] <hashtable>] [[-ThreadCount] <ushort>] [[-D
 
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
 
-Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Query] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [<CommonParameters>]
+Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Namespace] <string>] [[-Query] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [<CommonParameters>]
 
 
 ### [Get-CachedCimSession](Get-CachedCimSession.md)
