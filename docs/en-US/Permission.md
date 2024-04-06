@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.551
+Help Version: 0.0.552
 Locale: en-US
 ---
 
@@ -126,9 +126,6 @@ Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutput
 
 Resolve-FormatParameter [[-FileFormat] <string[]>] [[-OutputFormat] <string>]
 
-
-### [Resolve-IdentityReferenceDomainDNS](Resolve-IdentityReferenceDomainDNS.md)
-{{ Fill in the Description }}
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
