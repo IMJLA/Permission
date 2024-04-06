@@ -339,6 +339,8 @@ function ConvertTo-PermissionList {
 
         [string]$ShortestPath,
 
+        [string]$NetworkPath,
+
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item',
@@ -417,9 +419,7 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
-                pause
-
-                $Heading = New-HtmlHeading 'Permissions' -Level 6
+                $Heading = New-HtmlHeading "Permissions in $NetworkPath" -Level 6
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $Table = $Html | New-BootstrapTable
 
@@ -2641,7 +2641,7 @@ function Format-Permission {
                     ForEach ($Format in $Formats) {
 
                         $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
-                        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
+                        $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $ShortestPath -GroupBy $GroupBy -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path
 
                     }
 
@@ -5071,6 +5071,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
+
 
 
 

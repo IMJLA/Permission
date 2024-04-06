@@ -13,6 +13,8 @@ function ConvertTo-PermissionList {
 
         [string]$ShortestPath,
 
+        [string]$NetworkPath,
+
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item',
@@ -91,9 +93,7 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
-                pause
-
-                $Heading = New-HtmlHeading 'Permissions' -Level 6
+                $Heading = New-HtmlHeading "Permissions in $NetworkPath" -Level 6
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $Table = $Html | New-BootstrapTable
 
