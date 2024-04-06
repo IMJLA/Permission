@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.546] - 2024-04-06 - debug pause
+
 ## [0.0.545] - 2024-04-06 - update file naming
 
 ## [0.0.544] - 2024-04-06 - integrate per-networkpath filename logic

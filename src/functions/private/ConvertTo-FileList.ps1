@@ -186,7 +186,7 @@ function ConvertTo-FileList {
         }
 
     }
-
+    pause
     return $FileList
 
 }
