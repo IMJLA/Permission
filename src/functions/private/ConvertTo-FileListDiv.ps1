@@ -4,7 +4,7 @@ function ConvertTo-FileListDiv {
         [hashtable]$FileList
     )
 
-    ForEach ($Format in $FileList.Keys) {
+    ForEach ($Format in ($FileList.Keys | Sort-Object)) {
 
         $Files = $FileList[$Format]
 
