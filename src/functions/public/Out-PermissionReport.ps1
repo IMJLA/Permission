@@ -240,7 +240,6 @@ function Out-PermissionReport {
 
                     $DetailScripts[10] = {
 
-                        #if ($Permission.FlatPermissions) {
                         if (
                             $GroupBy -eq 'none' -or
                             $GroupBy -eq $Split

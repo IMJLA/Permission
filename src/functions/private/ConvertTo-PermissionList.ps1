@@ -91,6 +91,8 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
+                pause
+
                 $Heading = New-HtmlHeading 'Permissions' -Level 6
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $Table = $Html | New-BootstrapTable

@@ -417,6 +417,8 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
+                pause
+
                 $Heading = New-HtmlHeading 'Permissions' -Level 6
                 $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
                 $Table = $Html | New-BootstrapTable
@@ -2608,16 +2610,22 @@ function Format-Permission {
             [PSCustomObject]@{
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
+
                     $Prop = $Grouping['Property']
+
                     if ($Prop -eq 'items') {
+
                         $Selection = [System.Collections.Generic.List[PSCustomObject]]::new()
+
                         # Add the network path itself
                         $Selection.Add([PSCustomObject]@{
                                 Item   = $NetworkPath.Item
                                 Access = $NetworkPath.Access
                             })
+
                         # Add child items
                         $Selection.AddRange([PSCustomObject[]]$NetworkPath.$Prop)
+
                     } else {
                         $Selection = $NetworkPath.$Prop
                     }
@@ -3874,7 +3882,6 @@ function Out-PermissionReport {
 
                     $DetailScripts[10] = {
 
-                        #if ($Permission.FlatPermissions) {
                         if (
                             $GroupBy -eq 'none' -or
                             $GroupBy -eq $Split
@@ -5064,6 +5071,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.524] - 2024-04-05 - add debug pause
+
 ## [0.0.523] - 2024-03-31 - bugfix DetailString needs to be array of strings not single string
 
 ## [0.0.522] - 2024-03-31 - shrink heading sizes
