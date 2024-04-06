@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.531] - 2024-04-06 - fix padding and filter formats with no files generated due to level param
+
 ## [0.0.530] - 2024-04-06 - split html list of files into a div of lists per format folder
 
 ## [0.0.529] - 2024-04-06 - bugfix missing detail param
