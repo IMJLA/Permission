@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.541] - 2024-04-06 - remove debug write-host
+
 ## [0.0.540] - 2024-04-06 - abandon stringbuilder, adjust margins and padding
 
 ## [0.0.539] - 2024-04-06 - testing without stringbuilder
