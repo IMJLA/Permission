@@ -192,7 +192,7 @@ function ConvertTo-FileListDiv {
         [hashtable]$FileList
     )
 
-    $StringBuilder = [System.Text.StringBuilder]::new()
+    #$StringBuilder = [System.Text.StringBuilder]::new()
 
     ForEach ($Format in $FileList.Keys) {
 
@@ -200,24 +200,26 @@ function ConvertTo-FileListDiv {
 
         if ($Files) {
 
-            $Alert = New-BootstrapAlert -Text $Format -Class Dark -Padding ' pb-0 pt-2'
-            $StringBuilder.Append($Alert)
+            #$Alert = New-BootstrapAlert -Text $Format -Class Dark -Padding ' pb-0 pt-2'
+            #$StringBuilder.Append($Alert)
+            New-BootstrapAlert -Text $Format -Class Dark -Padding ' pb-0 pt-2'
 
-            $HtmlList = $Files |
+            #$HtmlList = $Files |
+            $Files |
             Sort-Object |
             Split-Path -Leaf |
             ConvertTo-HtmlList |
             ConvertTo-BootstrapListGroup
 
-            $StringBuilder.Append($HtmlList)
+            #$StringBuilder.Append($HtmlList)
 
         }
 
     }
 
-    $Div = $StringBuilder.ToString()
-    Write-Host "Type is $($Div.GetType().FullName) and Count is $($Div.Count)" -ForegroundColor Cyan
-    return $Div
+    #$Div = $StringBuilder.ToString()
+    #Write-Host "Type is $($Div.GetType().FullName) and Count is $($Div.Count)" -ForegroundColor Cyan
+    #return $Div
 
 }
 function ConvertTo-IgnoredDomainDiv {
@@ -1362,7 +1364,7 @@ function Get-HtmlReportElements {
     pause
 
     # Convert the hashtable of generated report files to a Bootstrap list group
-    $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
+    $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ListOfReports) -join "`r`n"
     Write-Host "Type is $($HtmlReportsDiv.GetType().FullName) and Count is $($HtmlReportsDiv.Count)" -ForegroundColor Cyan
 
     # Arrange the lists of generated files in two Bootstrap columns
@@ -5144,6 +5146,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

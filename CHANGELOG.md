@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.539] - 2024-04-06 - testing without stringbuilder
+
 ## [0.0.538] - 2024-04-06 - add debug output with write-host
 
 ## [0.0.537] - 2024-04-06 - bugfixes for files not generated

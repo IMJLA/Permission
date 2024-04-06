@@ -172,7 +172,7 @@ function Get-HtmlReportElements {
     pause
 
     # Convert the hashtable of generated report files to a Bootstrap list group
-    $HtmlReportsDiv = ConvertTo-FileListDiv -FileList $ListOfReports
+    $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ListOfReports) -join "`r`n"
     Write-Host "Type is $($HtmlReportsDiv.GetType().FullName) and Count is $($HtmlReportsDiv.Count)" -ForegroundColor Cyan
 
     # Arrange the lists of generated files in two Bootstrap columns
