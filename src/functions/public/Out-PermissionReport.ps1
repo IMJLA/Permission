@@ -143,10 +143,10 @@ function Out-PermissionReport {
         {
 
             switch ($GroupBy) {
-                'account' { $Permission.AccountPermissions }
-                'none' { $Permission.FlatPermissions }
-                'item' { $Permission.ItemPermissions }
-                'target' { $Permission.TargetPermissions }
+                'account' { $Permission.AccountPermissions ; break }
+                'none' { $Permission.FlatPermissions ; break }
+                'item' { $Permission.ItemPermissions ; break }
+                'target' { $Permission.TargetPermissions ; break }
             }
 
         },
@@ -165,6 +165,7 @@ function Out-PermissionReport {
                 $FileNameProperty = $Split
                 $FileNameSubproperty = 'ResolvedAccountName'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
+                break
             }
 
             'item' {
@@ -172,6 +173,7 @@ function Out-PermissionReport {
                 $FileNameProperty = $Split
                 $FileNameSubproperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
+                break
             }
 
             'none' {
@@ -182,7 +184,7 @@ function Out-PermissionReport {
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                     Path         = $FormattedPermission['SplitByTarget'].Path.FullName
                 }
-
+                break
             }
 
             'target' {
@@ -190,6 +192,7 @@ function Out-PermissionReport {
                 $FileNameProperty = ''
                 $FileNameSubproperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
+                break
             }
 
         }
@@ -219,6 +222,7 @@ function Out-PermissionReport {
                     )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -274,6 +278,7 @@ function Out-PermissionReport {
                         New-BootstrapReport -Body $Body @ReportParameters
 
                     }
+                    break
 
                 }
 
@@ -329,6 +334,7 @@ function Out-PermissionReport {
                     }
 
                     $FormatString = 'json'
+                    break
 
                 }
 
@@ -349,6 +355,7 @@ function Out-PermissionReport {
                     )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -357,6 +364,7 @@ function Out-PermissionReport {
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -375,6 +383,7 @@ function Out-PermissionReport {
                     )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -442,18 +451,21 @@ function Out-PermissionReport {
                     'csv' {
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
+                        break
 
                     }
 
                     'html' {
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
+                        break
 
                     }
 
                     'js' {
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
+                        break
 
                     }
 
@@ -464,10 +476,13 @@ function Out-PermissionReport {
 
                         # Save the XML file to disk
                         #$null = Set-Content -LiteralPath $XmlFile -Value $XMLOutput
+                        break
 
                     }
 
-                    'xml' {}
+                    'xml' {
+                        break
+                    }
 
                 }
 

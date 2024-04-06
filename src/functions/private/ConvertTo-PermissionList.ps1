@@ -50,6 +50,7 @@ function ConvertTo-PermissionList {
                                 Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
                             }
                         }
+                        break
 
                     }
 
@@ -60,6 +61,7 @@ function ConvertTo-PermissionList {
                                 Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
                             }
                         }
+                        break
 
                     }
 
@@ -77,12 +79,14 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -122,6 +126,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -142,6 +147,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -161,12 +167,14 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -239,6 +247,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -279,6 +288,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -319,12 +329,14 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -350,6 +362,7 @@ function ConvertTo-PermissionList {
             $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
             [PSCustomObject]$OutputObject
             #>
+            break
 
         }
 
@@ -375,6 +388,7 @@ function ConvertTo-PermissionList {
                                 Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
                             }
                         }
+                        break
 
                     }
 
@@ -385,6 +399,7 @@ function ConvertTo-PermissionList {
                                 Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
                             }
                         }
+                        break
 
                     }
 
@@ -395,12 +410,14 @@ function ConvertTo-PermissionList {
                                 Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
                             }
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 

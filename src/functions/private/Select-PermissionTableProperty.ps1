@@ -38,6 +38,7 @@ function Select-PermissionTableProperty {
                 }
 
             }
+            break
 
         }
 
@@ -72,6 +73,7 @@ function Select-PermissionTableProperty {
                 }
 
             }
+            break
 
         }
 
@@ -108,6 +110,7 @@ function Select-PermissionTableProperty {
                 }
 
             }
+            break
 
         }
 

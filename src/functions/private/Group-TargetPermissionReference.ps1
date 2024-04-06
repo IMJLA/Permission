@@ -95,6 +95,7 @@ function Group-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -121,6 +122,7 @@ function Group-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -151,6 +153,7 @@ function Group-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 

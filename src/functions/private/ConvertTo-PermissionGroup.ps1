@@ -34,6 +34,7 @@ function ConvertTo-PermissionGroup {
 
         'csv' {
             $OutputObject['Data'] = $Permission | ConvertTo-Csv
+            break
         }
 
         'html' {
@@ -42,6 +43,7 @@ function ConvertTo-PermissionGroup {
             $Html = $Permission | ConvertTo-Html -Fragment
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
+            break
 
         }
 
@@ -57,12 +59,14 @@ function ConvertTo-PermissionGroup {
                 'account' {
                     $OrderedProperties = $AccountProperty
                     $JavaScriptTable['SearchableColumn'] = $OrderedProperties
+                    break
                 }
 
                 'item' {
                     $OrderedProperties = $ItemProperty
                     $JavaScriptTable['SearchableColumn'] = 'Folder'
                     $JavaScriptTable['DropdownColumn'] = 'Inheritance'
+                    break
                 }
 
             }
@@ -71,11 +75,13 @@ function ConvertTo-PermissionGroup {
             $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
             $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission -PropNames $OrderedProperties
             $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
+            break
 
         }
 
         'xml' {
             $OutputObject['Data'] = ($Permission | ConvertTo-Xml).InnerXml
+            break
         }
 
         default {}

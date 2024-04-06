@@ -17,6 +17,7 @@ function Get-SummaryTableHeader {
                 'Includes accounts in the permissions, and their group members'
 
             }
+            break
 
         }
 
@@ -25,18 +26,24 @@ function Get-SummaryTableHeader {
             switch ($RecurseDepth ) {
                 0 {
                     'Includes the target folder only (option to report on subfolders was declined)'
+                    break
                 }
                 -1 {
                     'Includes the target folder and all subfolders with unique permissions'
+                    break
                 }
                 default {
                     "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
+                    break
                 }
             }
+            break
 
         }
 
-        'target' { }
+        'target' {
+            break
+        }
 
     }
 

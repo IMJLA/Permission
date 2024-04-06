@@ -375,6 +375,7 @@ function ConvertTo-PermissionGroup {
 
         'csv' {
             $OutputObject['Data'] = $Permission | ConvertTo-Csv
+            break
         }
 
         'html' {
@@ -383,6 +384,7 @@ function ConvertTo-PermissionGroup {
             $Html = $Permission | ConvertTo-Html -Fragment
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
+            break
 
         }
 
@@ -398,12 +400,14 @@ function ConvertTo-PermissionGroup {
                 'account' {
                     $OrderedProperties = $AccountProperty
                     $JavaScriptTable['SearchableColumn'] = $OrderedProperties
+                    break
                 }
 
                 'item' {
                     $OrderedProperties = $ItemProperty
                     $JavaScriptTable['SearchableColumn'] = 'Folder'
                     $JavaScriptTable['DropdownColumn'] = 'Inheritance'
+                    break
                 }
 
             }
@@ -412,11 +416,13 @@ function ConvertTo-PermissionGroup {
             $OutputObject['Data'] = ConvertTo-Json -Compress -InputObject @($Permission)
             $OutputObject['Columns'] = Get-ColumnJson -InputObject $Permission -PropNames $OrderedProperties
             $OutputObject['Table'] = ConvertTo-BootstrapJavaScriptTable -InputObject $Permission -PropNames $OrderedProperties -DataFilterControl -PageSize 25 @JavaScriptTable
+            break
 
         }
 
         'xml' {
             $OutputObject['Data'] = ($Permission | ConvertTo-Xml).InnerXml
+            break
         }
 
         default {}
@@ -478,6 +484,7 @@ function ConvertTo-PermissionList {
                                 Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
                             }
                         }
+                        break
 
                     }
 
@@ -488,6 +495,7 @@ function ConvertTo-PermissionList {
                                 Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
                             }
                         }
+                        break
 
                     }
 
@@ -505,12 +513,14 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -550,6 +560,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -570,6 +581,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -589,12 +601,14 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -667,6 +681,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -707,6 +722,7 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
@@ -747,12 +763,14 @@ function ConvertTo-PermissionList {
                             }
 
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -778,6 +796,7 @@ function ConvertTo-PermissionList {
             $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
             [PSCustomObject]$OutputObject
             #>
+            break
 
         }
 
@@ -803,6 +822,7 @@ function ConvertTo-PermissionList {
                                 Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
                             }
                         }
+                        break
 
                     }
 
@@ -813,6 +833,7 @@ function ConvertTo-PermissionList {
                                 Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
                             }
                         }
+                        break
 
                     }
 
@@ -823,12 +844,14 @@ function ConvertTo-PermissionList {
                                 Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
                             }
                         }
+                        break
 
                     }
 
                 }
 
             }
+            break
 
         }
 
@@ -1003,6 +1026,7 @@ function Expand-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -1045,6 +1069,7 @@ function Expand-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -1079,6 +1104,7 @@ function Expand-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -1141,10 +1167,10 @@ function Get-DetailDivHeader {
     } else {
 
         switch ($GroupBy) {
-            'account' { 'Folders Included in Those Permissions' }
-            'item' { 'Accounts Included in Those Permissions' }
-            'target' { 'Target Paths' }
-            'none' { 'Permissions' }
+            'account' { 'Folders Included in Those Permissions'; break }
+            'item' { 'Accounts Included in Those Permissions'; break }
+            'target' { 'Target Paths'; break }
+            'none' { 'Permissions'; break }
         }
 
     }
@@ -1504,13 +1530,13 @@ function Get-ReportDescription {
     switch ($RecurseDepth ) {
 
         0 {
-            'Does not include permissions on subfolders (option was declined)'
+            'Does not include permissions on subfolders (option was declined)'; break
         }
         -1 {
-            'Includes all subfolders with unique permissions (including ∞ levels of subfolders)'
+            'Includes all subfolders with unique permissions (including ∞ levels of subfolders)'; break
         }
         default {
-            "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"
+            "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"; break
         }
 
     }
@@ -1530,10 +1556,10 @@ function Get-SummaryDivHeader {
     } else {
 
         switch ($GroupBy) {
-            'account' { 'Folders Included in Those Permissions' }
-            'item' { 'Accounts Included in Those Permissions' }
-            'target' { 'Target Paths' }
-            'none' { 'Permissions' }
+            'account' { 'Folders Included in Those Permissions'; break }
+            'item' { 'Accounts Included in Those Permissions'; break }
+            'target' { 'Target Paths'; break }
+            'none' { 'Permissions'; break }
         }
 
     }
@@ -1558,6 +1584,7 @@ function Get-SummaryTableHeader {
                 'Includes accounts in the permissions, and their group members'
 
             }
+            break
 
         }
 
@@ -1566,18 +1593,24 @@ function Get-SummaryTableHeader {
             switch ($RecurseDepth ) {
                 0 {
                     'Includes the target folder only (option to report on subfolders was declined)'
+                    break
                 }
                 -1 {
                     'Includes the target folder and all subfolders with unique permissions'
+                    break
                 }
                 default {
                     "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
+                    break
                 }
             }
+            break
 
         }
 
-        'target' { }
+        'target' {
+            break
+        }
 
     }
 
@@ -1743,6 +1776,7 @@ function Group-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -1769,6 +1803,7 @@ function Group-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -1799,6 +1834,7 @@ function Group-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -1990,6 +2026,94 @@ function Resolve-GroupByParameter {
     }
 
 }
+function Resolve-IdentityReferenceDomainDNS {
+
+    param (
+
+        [string]$IdentityReference,
+
+        [object]$ItemPath,
+
+        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+
+        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
+        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = $Global:LogMessages,
+
+        # Cache of CIM sessions and instances to reduce connections and queries
+        [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))
+
+    )
+
+    $LogParams = @{
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        LogMsgCache  = $LogMsgCache
+        WhoAmI       = $WhoAmI
+    }
+
+    switch -Wildcard ($IdentityReference) {
+
+        "S-1-*" {
+            # IdentityReference is a SID (Revision 1)
+            $IndexOfLastHyphen = $IdentityReference.LastIndexOf("-")
+            $DomainSid = $IdentityReference.Substring(0, $IndexOfLastHyphen)
+            if ($DomainSid) {
+                $DomainCacheResult = $DomainsBySID[$DomainSid]
+                if ($DomainCacheResult) {
+                    Write-LogMsg @LogParams -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
+                    $DomainDNS = $DomainCacheResult.Dns
+                } else {
+                    Write-LogMsg @LogParams -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
+                }
+            }
+            break
+        }
+        "NT SERVICE\*" { break }
+        "BUILTIN\*" { break }
+        "NT AUTHORITY\*" { break }
+        default {
+            $DomainNetBIOS = ($IdentityReference -split '\\')[0]
+            if ($DomainNetBIOS) {
+                $DomainDNS = $DomainsByNetbios[$DomainNetBIOS].Dns #Doesn't work for BUILTIN, etc.
+            }
+            if (-not $DomainDNS) {
+                $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
+                $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
+            }
+            break
+        }
+    }
+
+    if (-not $DomainDNS) {
+        # TODO - Bug: I think this will report incorrectly for a remote domain not in the cache (trust broken or something)
+        Write-LogMsg @LogParams -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
+        $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+    }
+
+    return $DomainDNS
+
+}
 function Resolve-SplitByParameter {
 
     param (
@@ -2117,6 +2241,7 @@ function Select-PermissionTableProperty {
                 }
 
             }
+            break
 
         }
 
@@ -2151,6 +2276,7 @@ function Select-PermissionTableProperty {
                 }
 
             }
+            break
 
         }
 
@@ -2187,6 +2313,7 @@ function Select-PermissionTableProperty {
                 }
 
             }
+            break
 
         }
 
@@ -3899,10 +4026,10 @@ function Out-PermissionReport {
         {
 
             switch ($GroupBy) {
-                'account' { $Permission.AccountPermissions }
-                'none' { $Permission.FlatPermissions }
-                'item' { $Permission.ItemPermissions }
-                'target' { $Permission.TargetPermissions }
+                'account' { $Permission.AccountPermissions ; break }
+                'none' { $Permission.FlatPermissions ; break }
+                'item' { $Permission.ItemPermissions ; break }
+                'target' { $Permission.TargetPermissions ; break }
             }
 
         },
@@ -3921,6 +4048,7 @@ function Out-PermissionReport {
                 $FileNameProperty = $Split
                 $FileNameSubproperty = 'ResolvedAccountName'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
+                break
             }
 
             'item' {
@@ -3928,6 +4056,7 @@ function Out-PermissionReport {
                 $FileNameProperty = $Split
                 $FileNameSubproperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
+                break
             }
 
             'none' {
@@ -3938,7 +4067,7 @@ function Out-PermissionReport {
                     NetworkPaths = $FormattedPermission['SplitByTarget'].NetworkPaths
                     Path         = $FormattedPermission['SplitByTarget'].Path.FullName
                 }
-
+                break
             }
 
             'target' {
@@ -3946,6 +4075,7 @@ function Out-PermissionReport {
                 $FileNameProperty = ''
                 $FileNameSubproperty = 'Path'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
+                break
             }
 
         }
@@ -3975,6 +4105,7 @@ function Out-PermissionReport {
                     )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -4030,6 +4161,7 @@ function Out-PermissionReport {
                         New-BootstrapReport -Body $Body @ReportParameters
 
                     }
+                    break
 
                 }
 
@@ -4085,6 +4217,7 @@ function Out-PermissionReport {
                     }
 
                     $FormatString = 'json'
+                    break
 
                 }
 
@@ -4105,6 +4238,7 @@ function Out-PermissionReport {
                     )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -4113,6 +4247,7 @@ function Out-PermissionReport {
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -4131,6 +4266,7 @@ function Out-PermissionReport {
                     )
 
                     $DetailScripts[10] = { }
+                    break
 
                 }
 
@@ -4198,18 +4334,21 @@ function Out-PermissionReport {
                     'csv' {
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
+                        break
 
                     }
 
                     'html' {
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
+                        break
 
                     }
 
                     'js' {
 
                         Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -FileName $FileName -Culture $Culture -DetailString $DetailStrings
+                        break
 
                     }
 
@@ -4220,10 +4359,13 @@ function Out-PermissionReport {
 
                         # Save the XML file to disk
                         #$null = Set-Content -LiteralPath $XmlFile -Value $XMLOutput
+                        break
 
                     }
 
-                    'xml' {}
+                    'xml' {
+                        break
+                    }
 
                 }
 
@@ -4969,92 +5111,6 @@ function Resolve-FormatParameter {
     return [string[]]$AllFormats.Keys
 
 }
-function Resolve-IdentityReferenceDomainDNS {
-
-    param (
-
-        [string]$IdentityReference,
-
-        [object]$ItemPath,
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))
-
-    )
-
-    $LogParams = @{
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
-        WhoAmI       = $WhoAmI
-    }
-
-    switch -Wildcard ($IdentityReference) {
-
-        "S-1-*" {
-            # IdentityReference is a SID (Revision 1)
-            $IndexOfLastHyphen = $IdentityReference.LastIndexOf("-")
-            $DomainSid = $IdentityReference.Substring(0, $IndexOfLastHyphen)
-            if ($DomainSid) {
-                $DomainCacheResult = $DomainsBySID[$DomainSid]
-                if ($DomainCacheResult) {
-                    Write-LogMsg @LogParams -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
-                    $DomainDNS = $DomainCacheResult.Dns
-                } else {
-                    Write-LogMsg @LogParams -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
-                }
-            }
-        }
-        "NT SERVICE\*" {}
-        "BUILTIN\*" {}
-        "NT AUTHORITY\*" {}
-        default {
-            $DomainNetBIOS = ($IdentityReference -split '\\')[0]
-            if ($DomainNetBIOS) {
-                $DomainDNS = $DomainsByNetbios[$DomainNetBIOS].Dns #Doesn't work for BUILTIN, etc.
-            }
-            if (-not $DomainDNS) {
-                $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
-                $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
-            }
-        }
-    }
-
-    if (-not $DomainDNS) {
-        # TODO - Bug: I think this will report incorrectly for a remote domain not in the cache (trust broken or something)
-        Write-LogMsg @LogParams -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
-        $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
-    }
-
-    return $DomainDNS
-
-}
 function Resolve-PermissionTarget {
 
     # Resolve each target path to all of its associated UNC paths (including all DFS folder targets)
@@ -5185,7 +5241,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-IdentityReferenceDomainDNS','Resolve-PermissionTarget','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

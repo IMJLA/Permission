@@ -24,7 +24,7 @@ Resolve-IdentityReferenceDomainDNS [[-IdentityReference] <String>] [[-ItemPath] 
 ## EXAMPLES
 
 ### Example 1
-```powershell
+```
 PS C:\> {{ Add example code here }}
 ```
 
@@ -170,7 +170,6 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
-
 ## OUTPUTS
 
 ### System.Object

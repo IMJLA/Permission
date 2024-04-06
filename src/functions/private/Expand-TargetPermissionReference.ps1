@@ -40,6 +40,7 @@ function Expand-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -82,6 +83,7 @@ function Expand-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 
@@ -116,6 +118,7 @@ function Expand-TargetPermissionReference {
                 [pscustomobject]$TargetProperties
 
             }
+            break
 
         }
 

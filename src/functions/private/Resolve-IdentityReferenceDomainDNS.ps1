@@ -59,10 +59,11 @@ function Resolve-IdentityReferenceDomainDNS {
                     Write-LogMsg @LogParams -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
                 }
             }
+            break
         }
-        "NT SERVICE\*" {}
-        "BUILTIN\*" {}
-        "NT AUTHORITY\*" {}
+        "NT SERVICE\*" { break }
+        "BUILTIN\*" { break }
+        "NT AUTHORITY\*" { break }
         default {
             $DomainNetBIOS = ($IdentityReference -split '\\')[0]
             if ($DomainNetBIOS) {
@@ -72,6 +73,7 @@ function Resolve-IdentityReferenceDomainDNS {
                 $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
                 $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
             }
+            break
         }
     }
 
