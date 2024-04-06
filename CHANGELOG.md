@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.534] - 2024-04-06 - force cast as string
+
 ## [0.0.533] - 2024-04-06 - pause for debug
 
 ## [0.0.532] - 2024-04-06 - bugfix incorrect location for returning the final string

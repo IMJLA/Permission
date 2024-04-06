@@ -24,7 +24,9 @@ function ConvertTo-FileListDiv {
         }
 
     }
+
+    [string]$Div = $StringBuilder.ToString()
     pause
-    return $StringBuilder.ToString()
+    return $Div
 
 }
