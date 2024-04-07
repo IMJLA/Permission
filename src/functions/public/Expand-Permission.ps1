@@ -3,10 +3,9 @@ function Expand-Permission {
     # TODO: If SplitBy account or item, each file needs to include inherited permissions (with default $SplitBy = 'none', the parent folder's inherited permissions are already included)
 
     param (
-        $SortedPaths,
         $SplitBy,
         $GroupBy,
-        $AceGUIDsByPath,
+        $AceGuidByPath,
         $AceGUIDsByResolvedID,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
@@ -46,6 +45,9 @@ function Expand-Permission {
     Write-LogMsg -Text "Resolve-SplitByParameter -SplitBy $SplitBy" @LogParams
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
 
+    Write-LogMsg @LogParams -Text "`$SortedPaths = `$AceGuidByPath.Keys | Sort-Object"
+    $SortedPaths = $AceGuidByPath.Keys | Sort-Object
+
     $CommonParams = @{
         ACEsByGUID             = $ACEsByGUID
         PrincipalsByResolvedID = $PrincipalsByResolvedID
@@ -72,8 +74,8 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the path to their associated item.
-        Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath' @LogParams
-        $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath
+        Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath' @LogParams
+        $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams' @LogParams
@@ -86,8 +88,8 @@ function Expand-Permission {
     ) {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
-        Write-LogMsg -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath @CommonParams' @LogParams
-        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath @CommonParams
+        Write-LogMsg -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams' @LogParams
+        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -97,8 +99,8 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by their associated TargetPath.
-        Write-LogMsg -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams' @LogParams
-        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
+        Write-LogMsg -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams' @LogParams
+        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams' @LogParams

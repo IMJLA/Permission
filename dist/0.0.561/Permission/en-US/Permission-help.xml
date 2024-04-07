@@ -246,18 +246,6 @@
       <command:syntaxItem>
         <maml:name>Expand-Permission</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>SortedPaths</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill SortedPaths Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>SplitBy</maml:name>
           <maml:description>
             <maml:para>{{ Fill SplitBy Description }}</maml:para>
@@ -269,19 +257,19 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
-          <maml:name>ThisHostName</maml:name>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>GroupBy</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+            <maml:para>{{ Fill GroupBy Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
-            <maml:name>System.String</maml:name>
+            <maml:name>System.Object</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
           <maml:name>WhoAmI</maml:name>
           <maml:description>
             <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -293,7 +281,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
           <maml:name>LogMsgCache</maml:name>
           <maml:description>
             <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -305,7 +293,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
           <maml:name>DebugOutputStream</maml:name>
           <maml:description>
             <maml:para>{{ Fill DebugOutputStream Description }}</maml:para>
@@ -330,7 +318,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
           <maml:name>ProgressParentId</maml:name>
           <maml:description>
             <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -343,9 +331,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>GroupBy</maml:name>
+          <maml:name>AceGuidByPath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill GroupBy Description }}</maml:para>
+            <maml:para>{{ Fill AceGuidByPath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -355,18 +343,6 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>AceGUIDsByPath</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill AceGUIDsByPath Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Object</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>AceGUIDsByResolvedID</maml:name>
           <maml:description>
             <maml:para>{{ Fill AceGUIDsByResolvedID Description }}</maml:para>
@@ -378,7 +354,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
           <maml:name>ACEsByGUID</maml:name>
           <maml:description>
             <maml:para>{{ Fill ACEsByGUID Description }}</maml:para>
@@ -390,7 +366,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
           <maml:name>PrincipalsByResolvedID</maml:name>
           <maml:description>
             <maml:para>{{ Fill PrincipalsByResolvedID Description }}</maml:para>
@@ -402,7 +378,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
           <maml:name>ACLsByPath</maml:name>
           <maml:description>
             <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
@@ -414,7 +390,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
           <maml:name>TargetPath</maml:name>
           <maml:description>
             <maml:para>{{ Fill TargetPath Description }}</maml:para>
@@ -426,7 +402,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
           <maml:name>Children</maml:name>
           <maml:description>
             <maml:para>{{ Fill Children Description }}</maml:para>
@@ -438,13 +414,25 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+          <maml:name>ThisHostName</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>AceGUIDsByPath</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>AceGuidByPath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AceGUIDsByPath Description }}</maml:para>
+          <maml:para>{{ Fill AceGuidByPath Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
@@ -453,7 +441,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
         <maml:name>AceGUIDsByResolvedID</maml:name>
         <maml:description>
           <maml:para>{{ Fill AceGUIDsByResolvedID Description }}</maml:para>
@@ -465,7 +453,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
         <maml:name>ACEsByGUID</maml:name>
         <maml:description>
           <maml:para>{{ Fill ACEsByGUID Description }}</maml:para>
@@ -477,7 +465,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
         <maml:name>ACLsByPath</maml:name>
         <maml:description>
           <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
@@ -489,7 +477,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
         <maml:name>Children</maml:name>
         <maml:description>
           <maml:para>{{ Fill Children Description }}</maml:para>
@@ -501,7 +489,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
         <maml:name>DebugOutputStream</maml:name>
         <maml:description>
           <maml:para>{{ Fill DebugOutputStream Description }}</maml:para>
@@ -513,7 +501,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>GroupBy</maml:name>
         <maml:description>
           <maml:para>{{ Fill GroupBy Description }}</maml:para>
@@ -525,7 +513,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
         <maml:name>LogMsgCache</maml:name>
         <maml:description>
           <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
@@ -537,7 +525,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
         <maml:name>PrincipalsByResolvedID</maml:name>
         <maml:description>
           <maml:para>{{ Fill PrincipalsByResolvedID Description }}</maml:para>
@@ -549,7 +537,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
         <maml:name>ProgressParentId</maml:name>
         <maml:description>
           <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
@@ -562,18 +550,6 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>SortedPaths</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill SortedPaths Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>SplitBy</maml:name>
         <maml:description>
           <maml:para>{{ Fill SplitBy Description }}</maml:para>
@@ -585,7 +561,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="7" aliases="none">
         <maml:name>TargetPath</maml:name>
         <maml:description>
           <maml:para>{{ Fill TargetPath Description }}</maml:para>
@@ -597,7 +573,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
         <maml:name>ThisHostName</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisHostName Description }}</maml:para>
@@ -609,7 +585,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
         <maml:name>WhoAmI</maml:name>
         <maml:description>
           <maml:para>{{ Fill WhoAmI Description }}</maml:para>
@@ -6611,6 +6587,18 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+          <maml:name>ProgressParentId</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
           <maml:name>ProgressAction</maml:name>
           <maml:description>
@@ -6682,6 +6670,18 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.ActionPreference</command:parameterValue>
         <dev:type>
           <maml:name>System.Management.Automation.ActionPreference</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="8" aliases="none">
+        <maml:name>ProgressParentId</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ProgressParentId Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int32</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
