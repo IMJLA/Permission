@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-ShortestPath] <String>] [[-Culture] <CultureInfo>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -119,21 +119,6 @@ Aliases:
 
 Required: False
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ShortestPath
-{{ Fill ShortestPath Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

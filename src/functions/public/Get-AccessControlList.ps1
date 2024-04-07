@@ -67,10 +67,10 @@ function Get-AccessControlList {
         ACLsByPath        = $Output
     }
 
-    if ($ThreadCount -eq 1) {
+    $TargetIndex = 0
+    $ParentCount = $TargetPath.Keys.Count
 
-        $TargetIndex = 0
-        $ParentCount = $TargetPath.Keys.Count
+    if ($ThreadCount -eq 1) {
 
         ForEach ($Parent in $TargetPath.Keys) {
 
@@ -110,20 +110,37 @@ function Get-AccessControlList {
 
     } else {
 
-        $SplitThread = @{
-            Command           = 'Get-DirectorySecurity'
-            InputObject       = $ChildValues
-            InputParameter    = 'LiteralPath'
-            DebugOutputStream = $DebugOutputStream
-            TodaysHostname    = $TodaysHostname
-            WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogMsgCache
-            Threads           = $ThreadCount
-            AddParam          = $GetDirectorySecurity
+        ForEach ($Parent in $TargetPath.Keys) {
+
+            [int]$PercentComplete = $TargetIndex / $ParentCount * 100
+            $TargetIndex++
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
+            $Children = $TargetPath[$Parent]
+
+            $SplitThread = @{
+                Command           = 'Get-DirectorySecurity'
+                InputObject       = $Children
+                InputParameter    = 'LiteralPath'
+                DebugOutputStream = $DebugOutputStream
+                TodaysHostname    = $TodaysHostname
+                WhoAmI            = $WhoAmI
+                LogMsgCache       = $LogMsgCache
+                Threads           = $ThreadCount
+                ProgressParentId  = $ChildProgress['Id']
+                AddParam          = $GetDirectorySecurity
+            }
+
+            Split-Thread @SplitThread
 
         }
 
-        Split-Thread @SplitThread
+        Write-Progress @ChildProgress -Completed
+
+
+
+
+
 
     }
 
@@ -136,13 +153,13 @@ function Get-AccessControlList {
         ACLsByPath = $Output
     }
 
+    $ParentIndex = 0
+
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
         # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
         # First return the owner of the parent item
-
-        $ParentIndex = 0
 
         ForEach ($Parent in $TargetPath.Keys) {
 
@@ -182,19 +199,29 @@ function Get-AccessControlList {
 
     } else {
 
-        $SplitThread = @{
-            Command           = 'Get-OwnerAce'
-            InputObject       = $ChildValues
-            InputParameter    = 'Item'
-            DebugOutputStream = $DebugOutputStream
-            TodaysHostname    = $TodaysHostname
-            WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogMsgCache
-            Threads           = $ThreadCount
-            AddParam          = $GetOwnerAce
-        }
+        ForEach ($Parent in $TargetPath.Keys) {
 
-        Split-Thread @SplitThread
+            [int]$PercentComplete = $ParentIndex / $ParentCount * 100
+            $ParentIndex++
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Get-OwnerAce -Item $Parent @GetOwnerAce
+            $Children = $TargetPath[$Parent]
+
+            $SplitThread = @{
+                Command           = 'Get-OwnerAce'
+                InputObject       = $Children
+                InputParameter    = 'Item'
+                DebugOutputStream = $DebugOutputStream
+                TodaysHostname    = $TodaysHostname
+                WhoAmI            = $WhoAmI
+                LogMsgCache       = $LogMsgCache
+                Threads           = $ThreadCount
+                AddParam          = $GetOwnerAce
+            }
+
+            Split-Thread @SplitThread
+
+        }
 
     }
 

@@ -26,8 +26,6 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string]$OutputFormat = 'passthru',
 
-        [string]$ShortestPath,
-
         [cultureinfo]$Culture = (Get-Culture)
 
     )
