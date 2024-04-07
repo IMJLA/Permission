@@ -152,6 +152,7 @@ function Get-PermissionPrincipal {
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
+            ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
         }
 

@@ -216,6 +216,7 @@ function Get-AccessControlList {
                 WhoAmI            = $WhoAmI
                 LogMsgCache       = $LogMsgCache
                 Threads           = $ThreadCount
+                ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce
             }
 

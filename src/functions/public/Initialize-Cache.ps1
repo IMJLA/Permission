@@ -133,15 +133,16 @@ function Initialize-Cache {
     } else {
 
         $SplitThread = @{
-            Command        = 'Get-AdsiServer'
-            InputObject    = $ServerFqdns
-            InputParameter = 'Fqdn'
-            TodaysHostname = $ThisHostname
-            WhoAmI         = $WhoAmI
-            LogMsgCache    = $LogMsgCache
-            Timeout        = 600
-            Threads        = $ThreadCount
-            AddParam       = $GetAdsiServer
+            Command          = 'Get-AdsiServer'
+            InputObject      = $ServerFqdns
+            InputParameter   = 'Fqdn'
+            TodaysHostname   = $ThisHostname
+            WhoAmI           = $WhoAmI
+            LogMsgCache      = $LogMsgCache
+            Timeout          = 600
+            Threads          = $ThreadCount
+            ProgressParentId = $ProgressId
+            AddParam         = $GetAdsiServer
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"

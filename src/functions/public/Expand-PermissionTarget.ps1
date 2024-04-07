@@ -103,6 +103,7 @@ function Expand-PermissionTarget {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
+            $ProgressParentId = $Progress['Id']
             AddParam          = $GetSubfolderParams
         }
 

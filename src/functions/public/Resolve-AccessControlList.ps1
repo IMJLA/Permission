@@ -140,14 +140,15 @@ function Resolve-AccessControlList {
     } else {
 
         $SplitThreadParams = @{
-            Command        = 'Resolve-Acl'
-            InputObject    = $Paths
-            InputParameter = 'ItemPath'
-            TodaysHostname = $ThisHostname
-            WhoAmI         = $WhoAmI
-            LogMsgCache    = $LogMsgCache
-            Threads        = $ThreadCount
-            AddParam       = $ResolveAclParams
+            Command          = 'Resolve-Acl'
+            InputObject      = $Paths
+            InputParameter   = 'ItemPath'
+            TodaysHostname   = $ThisHostname
+            WhoAmI           = $WhoAmI
+            LogMsgCache      = $LogMsgCache
+            Threads          = $ThreadCount
+            ProgressParentId = $Progress['Id']
+            AddParam         = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
         }
 

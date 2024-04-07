@@ -2611,6 +2611,7 @@ function Expand-PermissionTarget {
             WhoAmI            = $WhoAmI
             LogMsgCache       = $LogMsgCache
             Threads           = $ThreadCount
+            $ProgressParentId = $Progress['Id']
             AddParam          = $GetSubfolderParams
         }
 
@@ -3133,6 +3134,7 @@ function Get-AccessControlList {
                 WhoAmI            = $WhoAmI
                 LogMsgCache       = $LogMsgCache
                 Threads           = $ThreadCount
+                ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce
             }
 
@@ -3646,6 +3648,7 @@ function Get-PermissionPrincipal {
             WhoAmI               = $WhoAmI
             LogMsgCache          = $LogMsgCache
             Threads              = $ThreadCount
+            ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
         }
 
@@ -3862,15 +3865,16 @@ function Initialize-Cache {
     } else {
 
         $SplitThread = @{
-            Command        = 'Get-AdsiServer'
-            InputObject    = $ServerFqdns
-            InputParameter = 'Fqdn'
-            TodaysHostname = $ThisHostname
-            WhoAmI         = $WhoAmI
-            LogMsgCache    = $LogMsgCache
-            Timeout        = 600
-            Threads        = $ThreadCount
-            AddParam       = $GetAdsiServer
+            Command          = 'Get-AdsiServer'
+            InputObject      = $ServerFqdns
+            InputParameter   = 'Fqdn'
+            TodaysHostname   = $ThisHostname
+            WhoAmI           = $WhoAmI
+            LogMsgCache      = $LogMsgCache
+            Timeout          = 600
+            Threads          = $ThreadCount
+            ProgressParentId = $ProgressId
+            AddParam         = $GetAdsiServer
         }
 
         Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($ServerFqdns -join "',")')"
@@ -4574,14 +4578,15 @@ function Resolve-AccessControlList {
     } else {
 
         $SplitThreadParams = @{
-            Command        = 'Resolve-Acl'
-            InputObject    = $Paths
-            InputParameter = 'ItemPath'
-            TodaysHostname = $ThisHostname
-            WhoAmI         = $WhoAmI
-            LogMsgCache    = $LogMsgCache
-            Threads        = $ThreadCount
-            AddParam       = $ResolveAclParams
+            Command          = 'Resolve-Acl'
+            InputObject      = $Paths
+            InputParameter   = 'ItemPath'
+            TodaysHostname   = $ThisHostname
+            WhoAmI           = $WhoAmI
+            LogMsgCache      = $LogMsgCache
+            Threads          = $ThreadCount
+            ProgressParentId = $Progress['Id']
+            AddParam         = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
         }
 
@@ -5274,6 +5279,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
