@@ -269,6 +269,67 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+          <maml:name>ThisHostName</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+          <maml:name>WhoAmI</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill WhoAmI Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+          <maml:name>LogMsgCache</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+          <maml:name>DebugOutputStream</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill DebugOutputStream Description }}</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">Silent</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Quiet</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Success</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Debug</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Verbose</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Output</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Host</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Warning</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Error</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">Information</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false"></command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>GroupBy</maml:name>
           <maml:description>
@@ -428,6 +489,18 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
+        <maml:name>DebugOutputStream</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill DebugOutputStream Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>GroupBy</maml:name>
         <maml:description>
@@ -436,6 +509,18 @@
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
           <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
+        <maml:name>LogMsgCache</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -484,6 +569,30 @@
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
           <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+        <maml:name>ThisHostName</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
+        <maml:name>WhoAmI</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill WhoAmI Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -2539,9 +2648,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
-          <maml:name>ThisFqdn</maml:name>
+          <maml:name>ThisHostName</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
+            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -2683,9 +2792,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
-          <maml:name>ThisHostName</maml:name>
+          <maml:name>ThisFqdn</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ThisHostName Description }}</maml:para>
+            <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
@@ -2852,7 +2961,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
         <maml:name>ThisFqdn</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisFqdn Description }}</maml:para>
@@ -2864,7 +2973,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="10" aliases="none">
         <maml:name>ThisHostName</maml:name>
         <maml:description>
           <maml:para>{{ Fill ThisHostName Description }}</maml:para>
@@ -4922,7 +5031,7 @@
             <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>$Global:LogMessages</dev:defaultValue>
+          <dev:defaultValue>([hashtable]::Synchronized(@{}))</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
           <maml:name>CimCache</maml:name>
@@ -5275,7 +5384,7 @@
           <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>$Global:LogMessages</dev:defaultValue>
+        <dev:defaultValue>([hashtable]::Synchronized(@{}))</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
         <maml:name>ProgressAction</maml:name>
@@ -5515,7 +5624,7 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
             <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>$Global:LogMessages</dev:defaultValue>
+          <dev:defaultValue>([hashtable]::Synchronized(@{}))</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
           <maml:name>CimCache</maml:name>
@@ -5844,7 +5953,7 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>$Global:LogMessages</dev:defaultValue>
+        <dev:defaultValue>([hashtable]::Synchronized(@{}))</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
         <maml:name>ProgressAction</maml:name>

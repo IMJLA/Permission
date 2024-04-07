@@ -30,7 +30,7 @@ function Resolve-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         [hashtable]$Output = [hashtable]::Synchronized(@{})
 

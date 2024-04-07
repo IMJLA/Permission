@@ -2058,7 +2058,7 @@ function Resolve-IdentityReferenceDomainDNS {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))
@@ -2401,9 +2401,35 @@ function Expand-Permission {
         $PrincipalsByResolvedID,
         $ACLsByPath,
         [hashtable]$TargetPath,
-        [hashtable]$Children
+        [hashtable]$Children,
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [string]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug'
+
     )
 
+    $LogParams = @{
+        LogMsgCache  = $LogMsgCache
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputStream
+        WhoAmI       = $WhoAmI
+    }
+
+    Write-LogMsg -Text "Resolve-SplitByParameter -SplitBy $SplitBy" @LogParams
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
 
     $CommonParams = @{
@@ -2417,10 +2443,12 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the name of their associated account.
+        Write-LogMsg -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID' @LogParams
         $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        $AccountPermissions = Expand-AccountPermissionReference @CommonParams -Reference $AccountPermissionReferences
+        Write-LogMsg -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams' @LogParams
+        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams
 
     }
 
@@ -2430,36 +2458,12 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the path to their associated item.
+        Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath' @LogParams
         $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        $ItemPermissions = Expand-ItemPermissionReference @CommonParams -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath
-
-    }
-
-    if (
-        $HowToSplit['account'] -or
-        $GroupBy -eq 'account'
-    ) {
-
-        # Group reference GUIDs by the name of their associated account.
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
-
-        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        $AccountPermissions = Expand-AccountPermissionReference @CommonParams -Reference $AccountPermissionReferences
-
-    }
-
-    if (
-        $HowToSplit['item'] -or
-        $GroupBy -eq 'item'
-    ) {
-
-        # Group reference GUIDs by the path to their associated item.
-        $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath
-
-        # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        $ItemPermissions = Expand-ItemPermissionReference @CommonParams -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath
+        Write-LogMsg -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams' @LogParams
+        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams
 
     }
 
@@ -2468,7 +2472,8 @@ function Expand-Permission {
     ) {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
-        $FlatPermissions = Expand-FlatPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath
+        Write-LogMsg -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath @CommonParams' @LogParams
+        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGUIDsByPath @CommonParams
 
     }
 
@@ -2478,9 +2483,11 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by their associated TargetPath.
+        Write-LogMsg -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams' @LogParams
         $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGUIDsByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
+        Write-LogMsg -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams' @LogParams
         $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams
 
     }
@@ -2524,7 +2531,7 @@ function Expand-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -2929,7 +2936,7 @@ function Get-AccessControlList {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
@@ -3149,7 +3156,7 @@ function Get-CachedCimInstance {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         [Parameter(Mandatory)]
         [string]$KeyProperty,
@@ -3273,7 +3280,7 @@ function Get-CachedCimSession {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{}))
     )
 
     $LogParams = @{
@@ -3492,24 +3499,24 @@ function Get-PermissionPrincipal {
         [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
 
         <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
         [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [string]$ThisHostName = (HOSTNAME.EXE),
+
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         <#
         Do not get group members (only report the groups themselves)
@@ -3756,7 +3763,7 @@ function Initialize-Cache {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -4458,7 +4465,7 @@ function Resolve-AccessControlList {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -4704,7 +4711,7 @@ function Resolve-Ace {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -4926,7 +4933,7 @@ function Resolve-Acl {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
@@ -4993,7 +5000,7 @@ function Resolve-Folder {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{}))
     )
 
     $LogParams = @{
@@ -5138,7 +5145,7 @@ function Resolve-PermissionTarget {
         [string]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         [hashtable]$Output = [hashtable]::Synchronized(@{})
 
@@ -5237,6 +5244,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

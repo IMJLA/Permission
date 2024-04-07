@@ -30,7 +30,7 @@ function Resolve-IdentityReferenceDomainDNS {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))

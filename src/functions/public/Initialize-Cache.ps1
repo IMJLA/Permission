@@ -64,7 +64,7 @@ function Initialize-Cache {
         [string]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = $Global:LogMessages,
+        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId

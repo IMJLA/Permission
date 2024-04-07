@@ -16,7 +16,8 @@ schema: 2.0.0
 Expand-Permission [[-SortedPaths] <Object>] [[-SplitBy] <Object>] [[-GroupBy] <Object>]
  [[-AceGUIDsByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>]
  [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>] [[-TargetPath] <Hashtable>]
- [[-Children] <Hashtable>]
+ [[-Children] <Hashtable>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-DebugOutputStream] <String>]
 ```
 
 ## DESCRIPTION
@@ -108,6 +109,22 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -DebugOutputStream
+{{ Fill DebugOutputStream Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
+
+Required: False
+Position: 13
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -GroupBy
 {{ Fill GroupBy Description }}
 
@@ -118,6 +135,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -LogMsgCache
+{{ Fill LogMsgCache Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -178,6 +210,36 @@ Aliases:
 
 Required: False
 Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ThisHostName
+{{ Fill ThisHostName Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhoAmI
+{{ Fill WhoAmI Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

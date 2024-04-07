@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.558] - 2024-04-06 - bugfix remove redundant code
+
 ## [0.0.557] - 2024-04-06 - bugfix js report should use json data
 
 ## [0.0.556] - 2024-04-06 - bugfix missing commas

@@ -16,7 +16,7 @@ schema: 2.0.0
 Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-PrincipalsByResolvedID] <Hashtable>] [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
- [[-DomainsByFqdn] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
+ [[-DomainsByFqdn] <Hashtable>] [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>]
  [[-LogMsgCache] <Hashtable>] [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
 ```
 
@@ -224,7 +224,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -239,7 +239,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

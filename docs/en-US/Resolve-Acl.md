@@ -319,7 +319,7 @@ Aliases:
 
 Required: False
 Position: 13
-Default value: $Global:LogMessages
+Default value: ([hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -12,7 +12,7 @@
 RootModule = 'Permission.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.557'
+ModuleVersion = '0.0.558'
 
 # Supported PSEditions
 # CompatiblePSEditions = @()
