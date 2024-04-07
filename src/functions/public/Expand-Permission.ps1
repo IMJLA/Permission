@@ -104,12 +104,4 @@ function Expand-Permission {
         SplitBy            = $HowToSplit
     }
 
-    return [PSCustomObject]@{
-        AccountPermissions = $AccountPermissions
-        FlatPermissions    = $FlatPermissions
-        ItemPermissions    = $ItemPermissions
-        TargetPermissions  = $TargetPermissions
-        SplitBy            = $HowToSplit
-    }
-
 }
