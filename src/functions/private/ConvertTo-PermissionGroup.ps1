@@ -47,7 +47,7 @@ function ConvertTo-PermissionGroup {
 
         }
 
-        'json' {
+        'js' {
 
             #TODO: Change table id to "Groupings" instead of Folders to allow for Grouping by Account
             $JavaScriptTable = @{

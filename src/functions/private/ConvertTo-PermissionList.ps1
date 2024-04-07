@@ -178,7 +178,7 @@ function ConvertTo-PermissionList {
 
         }
 
-        'json' {
+        'js' {
 
             if (
                 $GroupBy -eq 'none' -or

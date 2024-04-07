@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.555] - 2024-04-06 - js = html with js vs json = raw json
+
 ## [0.0.554] - 2024-04-06 - bugfix returning twice as many objects as needed
 
 ## [0.0.553] - 2024-04-06 - remove unnecessary expansion into flatpermissions when splitby does not contain none
