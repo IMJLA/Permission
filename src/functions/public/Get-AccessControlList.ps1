@@ -31,7 +31,7 @@ function Get-AccessControlList {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [hashtable]$AclByPath = [hashtable]::Synchronized(@{})
+        [hashtable]$Output = [hashtable]::Synchronized(@{})
 
     )
 
@@ -64,7 +64,7 @@ function Get-AccessControlList {
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
         OwnerCache        = $OwnerCache
-        ACLsByPath        = $AclByPath
+        ACLsByPath        = $Output
     }
 
     if ($ThreadCount -eq 1) {
@@ -131,16 +131,16 @@ function Get-AccessControlList {
     $ChildProgress['Activity'] = 'Get ACL owners'
     $GrandChildProgress['Activity'] = 'Get ACL owners'
 
+    $GetOwnerAce = @{
+        OwnerCache = $OwnerCache
+        ACLsByPath = $Output
+    }
+
     # Then return the owners of any items that differ from their parents' owners
     if ($ThreadCount -eq 1) {
 
         # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
         # First return the owner of the parent item
-
-        $GetOwnerAce = @{
-            OwnerCache = $OwnerCache
-            ACLsByPath = $AclByPath
-        }
 
         $ParentIndex = 0
 

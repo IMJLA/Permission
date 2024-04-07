@@ -16,7 +16,7 @@ schema: 2.0.0
 Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
  [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
- [[-ProgressParentId] <Int32>] [[-AclByPath] <Hashtable>]
+ [[-ProgressParentId] <Int32>] [[-Output] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -32,21 +32,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -AclByPath
-{{ Fill AclByPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -DebugOutputStream
 {{ Fill DebugOutputStream Description }}
@@ -73,6 +58,21 @@ Aliases:
 
 Required: False
 Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Output
+{{ Fill Output Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

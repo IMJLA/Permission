@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.562] - 2024-04-07 - param rename for clarity of purpose
+
 ## [0.0.561] - 2024-04-07 - progress + splat cleanup
 
 ## [0.0.560] - 2024-04-07 - bugfix get-accesscontrol list, add progressparentidparam to expand-permission
