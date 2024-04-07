@@ -75,8 +75,7 @@ function Expand-Permission {
     }
 
     if (
-        $HowToSplit['none'] -or
-        $GroupBy -eq 'none'
+        $HowToSplit['none']
     ) {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.

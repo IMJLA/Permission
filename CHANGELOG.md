@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.553] - 2024-04-06 - remove unnecessary expansion into flatpermissions when splitby does not contain none
+
 ## [0.0.552] - 2024-04-06 - remove unnecessary inefficient switch stmt
 
 ## [0.0.551] - 2024-04-06 - add breaks in switch statements
