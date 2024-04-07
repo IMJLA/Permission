@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.566] - 2024-04-07 - update summary div header for groupby account
+
 ## [0.0.565] - 2024-04-07 - bugfix remove dollar sign that shouldn't be there
 
 ## [0.0.564] - 2024-04-07 - implement parentprogressid for split-thread

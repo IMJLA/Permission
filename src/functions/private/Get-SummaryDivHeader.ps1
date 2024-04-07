@@ -12,7 +12,7 @@ function Get-SummaryDivHeader {
     } else {
 
         switch ($GroupBy) {
-            'account' { 'Folders Included in Those Permissions'; break }
+            'account' { 'Accounts With Permissions'; break }
             'item' { 'Items With Unique Permissions'; break }
             'target' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
