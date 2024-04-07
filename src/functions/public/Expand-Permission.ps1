@@ -29,7 +29,10 @@ function Expand-Permission {
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug'
+        [string]$DebugOutputStream = 'Debug',
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 

@@ -2418,7 +2418,10 @@ function Expand-Permission {
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug'
+        [string]$DebugOutputStream = 'Debug',
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId
 
     )
 
@@ -5159,10 +5162,7 @@ function Resolve-PermissionTarget {
     }
 
     $ResolveFolderParams = @{
-        LogMsgCache       = $LogMsgCache
-        ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
         CimCache          = $CimCache
         ThisFqdn          = $ThisFqdn
     }
@@ -5170,7 +5170,7 @@ function Resolve-PermissionTarget {
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderParams
+        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @LogParams @ResolveFolderParams
 
     }
 
@@ -5244,6 +5244,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
