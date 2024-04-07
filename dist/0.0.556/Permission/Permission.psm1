@@ -3985,7 +3985,7 @@ function Out-PermissionReport {
     # TODO: Move to i18n
     $DetailStrings = @(
         'Item paths',
-        'Resolved item paths (server names and DFS targets resolved)'
+        'Resolved item paths (server names and DFS targets resolved)',
         'Expanded resolved item paths (resolved target paths expanded into their children)',
         'Access lists',
         'Access rules (resolved identity references and inheritance flags)',
@@ -3993,7 +3993,7 @@ function Out-PermissionReport {
         'Expanded access rules (expanded with account info)', # #ToDo: Expand DirectoryEntry objects in the DirectoryEntry and Members properties
         'Formatted permissions',
         'Best Practice issues',
-        'Custom sensor output for Paessler PRTG Network Monitor'
+        'Custom sensor output for Paessler PRTG Network Monitor',
         'Permission report'
     )
 
@@ -5232,6 +5232,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-FolderPermissionsBlockUNUSED','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
