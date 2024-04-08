@@ -48,12 +48,13 @@ function Select-UniquePrincipal {
 
         $ThisKnownUser = $null
         $ThisKnownUser = $UniquePrincipal[$ShortName]
-        if ($null -eq $ThisKnownUser) {
-            $UniquePrincipal[$ShortName] = [System.Collections.Generic.List[string]]::new()
 
+        if ($null -eq $ThisKnownUser) {
+            $ThisKnownUser = [System.Collections.Generic.List[string]]::new()
         }
 
-        $null = $UniquePrincipal[$ShortName].Add($ThisID)
+        $null = $ThisKnownUser.Add($ThisID)
+        $UniquePrincipal[$ShortName] = $ThisKnownUser
         $UniquePrincipalsByResolvedID[$ThisID] = $ShortName
 
     }
