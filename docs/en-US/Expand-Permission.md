@@ -17,7 +17,7 @@ Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] 
  [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
  [[-ACLsByPath] <Object>] [[-TargetPath] <Hashtable>] [[-Children] <Hashtable>] [[-ThisHostName] <String>]
  [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-DebugOutputStream] <String>]
- [[-ProgressParentId] <Int32>]
+ [[-ProgressParentId] <Int32>] [[-IdByShortName] <Hashtable>] [[-ShortNameByID] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -140,6 +140,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -IdByShortName
+{{ Fill IdByShortName Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 14
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -LogMsgCache
 {{ Fill LogMsgCache Description }}
 
@@ -180,6 +195,21 @@ Aliases:
 
 Required: False
 Position: 13
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ShortNameByID
+{{ Fill ShortNameByID Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

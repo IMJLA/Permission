@@ -5,7 +5,9 @@ function Group-ItemPermissionReference {
         $AceGUIDsByPath,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
-        [hashtable]$Property = @{}
+        [hashtable]$Property = @{},
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
     )
 
     ForEach ($ItemPath in $SortedPath) {
@@ -13,13 +15,11 @@ function Group-ItemPermissionReference {
         $Property['Path'] = $ItemPath
         $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-        $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
-
+        $Property['Access'] = ForEach ($ShortName in ($ShortNameByID[$IDsWithAccess.Keys] | Sort-Object)) {
             [PSCustomObject]@{
-                Account  = $ID
-                AceGUIDs = $IDsWithAccess[$ID]
+                Account  = $ShortName
+                AceGUIDs = $IDsWithAccess[$IdByShortName[$ShortName]]
             }
-
         }
 
         [PSCustomObject]$Property

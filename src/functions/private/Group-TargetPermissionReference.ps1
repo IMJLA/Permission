@@ -14,7 +14,10 @@ function Group-TargetPermissionReference {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [string]$GroupBy = 'item',
+
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -65,8 +68,12 @@ function Group-TargetPermissionReference {
                     }
 
                     $AceGuidByIDForThisNetworkPath = @{}
+                    $IdByShortNameForThisTarget = @{}
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
+
+                        $ShortName = $ShortNameByID[$ID]
+                        $IdByShortNameForThisTarget[$ShortName] = $IdByShortName[$ShortName]
 
                         $IdentityString = [string]$ID
                         $GuidsForThisIDAndNetworkPath = [System.Collections.Generic.List[guid]]::new()
@@ -87,7 +94,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IdByShortNameForThisTarget -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
                     }
 
                 }
@@ -112,10 +119,10 @@ function Group-TargetPermissionReference {
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $TopLevelItemProperties = @{
-                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
                     }
 
-                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
 
                 }
 
@@ -145,7 +152,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path   = $NetworkPath
-                        Access = Expand-FlatPermissionReference -SortedPath $ItemsForThisNetworkPath @CommonParams
+                        Access = Expand-FlatPermissionReference -SortedPath $ItemsForThisNetworkPath -ShortNameByID $ShortNameByID @CommonParams
                     }
 
                 }

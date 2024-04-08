@@ -887,7 +887,9 @@ function Expand-AccountPermissionReference {
 
         $Reference,
         $PrincipalsByResolvedID,
-        $ACEsByGUID
+        $ACEsByGUID,
+
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
 
     )
 
@@ -907,9 +909,10 @@ function Expand-AccountPermissionReference {
         }
 
         [PSCustomObject]@{
-            Account    = $PrincipalsByResolvedID[$Account.Account]
-            Access     = $Access
-            PSTypeName = 'Permission.AccountPermission'
+            Account     = $PrincipalsByResolvedID[$IdByShortName[$Account.Account]]
+            AccountName = $Account.Account
+            Access      = $Access
+            PSTypeName  = 'Permission.AccountPermission'
         }
 
     }
@@ -924,7 +927,8 @@ function Expand-FlatPermissionReference {
         $SortedPath,
         $PrincipalsByResolvedID,
         $ACEsByGUID,
-        $AceGUIDsByPath
+        $AceGUIDsByPath,
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -936,7 +940,7 @@ function Expand-FlatPermissionReference {
 
         ForEach ($ACE in $ACEsByGUID[$AceGUIDs]) {
 
-            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved] -PrincipalsByResolvedID $PrincipalsByResolvedID
+            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID -ShortNameByID $ShortNameByID
 
         }
 
@@ -947,16 +951,18 @@ function Expand-ItemPermissionAccountAccessReference {
 
     param (
         $Reference,
-        [hashtable]$PrincipalsByResolvedID,
-        [hashtable]$ACEsByGUID
+        [hashtable]$PrincipalByResolvedID,
+        [hashtable]$AceByGUID,
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
     )
 
     ForEach ($PermissionRef in $Reference) {
 
         [PSCustomObject]@{
-            Account    = $PrincipalsByResolvedID[$PermissionRef.Account]
-            Access     = $ACEsByGUID[$PermissionRef.AceGUIDs]
-            PSTypeName = 'Permission.ItemPermissionAccountAccess'
+            Account     = $PrincipalByResolvedID[$IdByShortName[$PermissionRef.Account]]
+            AccountName = $PermissionRef.Account
+            Access      = $AceByGUID[$PermissionRef.AceGUIDs]
+            PSTypeName  = 'Permission.ItemPermissionAccountAccess'
         }
 
     }
@@ -969,7 +975,8 @@ function Expand-ItemPermissionReference {
         $Reference,
         $PrincipalsByResolvedID,
         $ACEsByGUID,
-        $ACLsByPath
+        $ACLsByPath,
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
 
     )
 
@@ -977,7 +984,7 @@ function Expand-ItemPermissionReference {
 
         [PSCustomObject]@{
             Item       = $ACLsByPath[$Item.Path]
-            Access     = Expand-ItemPermissionAccountAccessReference -Reference $Item.Access -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+            Access     = Expand-ItemPermissionAccountAccessReference -Reference $Item.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID -IdByShortName $IdByShortName
             PSTypeName = 'Permission.ItemPermission'
         }
 
@@ -1018,7 +1025,7 @@ function Expand-TargetPermissionReference {
                     [pscustomobject]@{
                         Item       = $AclsByPath[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -IdByShortName $IdByShortName
                     }
 
                 }
@@ -1618,24 +1625,27 @@ function Get-SummaryTableHeader {
 function Group-AccountPermissionReference {
 
     param (
-        $ID,
+        [hashtable]$ID,
         [hashtable]$AceGuidByID,
         [hashtable]$AceByGuid
     )
 
-    ForEach ($Identity in ($ID | Sort-Object)) {
+    ForEach ($ShortName in ($ID.Keys | Sort-Object)) {
 
         $ItemPaths = @{}
 
-        ForEach ($Guid in $AceGuidByID[$Identity]) {
+        ForEach ($Identity in $ID[$ShortName]) {
 
-            $Ace = $AceByGuid[$Guid]
-            Add-CacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type ([guid])
+            ForEach ($Guid in $AceGuidByID[$Identity]) {
+
+                Add-CacheItem -Cache $ItemPaths -Key $AceByGuid[$Guid].Path -Value $Guid -Type ([guid])
+
+            }
 
         }
 
         [PSCustomObject]@{
-            Account = $Identity
+            Account = $ShortName
             Access  = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
                 [PSCustomObject]@{
@@ -1657,7 +1667,9 @@ function Group-ItemPermissionReference {
         $AceGUIDsByPath,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
-        [hashtable]$Property = @{}
+        [hashtable]$Property = @{},
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
     )
 
     ForEach ($ItemPath in $SortedPath) {
@@ -1665,13 +1677,11 @@ function Group-ItemPermissionReference {
         $Property['Path'] = $ItemPath
         $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-        $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
-
+        $Property['Access'] = ForEach ($ShortName in ($ShortNameByID[$IDsWithAccess.Keys] | Sort-Object)) {
             [PSCustomObject]@{
-                Account  = $ID
-                AceGUIDs = $IDsWithAccess[$ID]
+                Account  = $ShortName
+                AceGUIDs = $IDsWithAccess[$IdByShortName[$ShortName]]
             }
-
         }
 
         [PSCustomObject]$Property
@@ -1695,7 +1705,10 @@ function Group-TargetPermissionReference {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [string]$GroupBy = 'item',
+
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -1746,8 +1759,12 @@ function Group-TargetPermissionReference {
                     }
 
                     $AceGuidByIDForThisNetworkPath = @{}
+                    $IdByShortNameForThisTarget = @{}
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
+
+                        $ShortName = $ShortNameByID[$ID]
+                        $IdByShortNameForThisTarget[$ShortName] = $IdByShortName[$ShortName]
 
                         $IdentityString = [string]$ID
                         $GuidsForThisIDAndNetworkPath = [System.Collections.Generic.List[guid]]::new()
@@ -1768,7 +1785,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IdByShortNameForThisTarget -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
                     }
 
                 }
@@ -1793,10 +1810,10 @@ function Group-TargetPermissionReference {
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $TopLevelItemProperties = @{
-                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
                     }
 
-                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
 
                 }
 
@@ -1826,7 +1843,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path   = $NetworkPath
-                        Access = Expand-FlatPermissionReference -SortedPath $ItemsForThisNetworkPath @CommonParams
+                        Access = Expand-FlatPermissionReference -SortedPath $ItemsForThisNetworkPath -ShortNameByID $ShortNameByID @CommonParams
                     }
 
                 }
@@ -1915,18 +1932,24 @@ $Size = (SizeOf -t [hashtable] -value $Test)/1KB
 }
 function Merge-AceAndPrincipal {
 
-    param ($Principal, $ACE, $PrincipalsByResolvedID)
+    param (
+        $Principal,
+        $ACE,
+        $PrincipalByResolvedID,
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
+    )
 
     ForEach ($Member in $Principal.Members) {
 
-        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$Member] -PrincipalsByResolvedID $PrincipalsByResolvedID
+        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID[$Member] -PrincipalByResolvedID $PrincipalByResolvedID -ShortNameByID $ShortNameByID
 
     }
 
     $OutputProperties = @{
-        PSTypeName = 'Permission.FlatPermission'
-        ItemPath   = $ACE.Path
-        AdsiPath   = $Principal.Path
+        PSTypeName  = 'Permission.FlatPermission'
+        ItemPath    = $ACE.Path
+        AdsiPath    = $Principal.Path
+        AccountName = $ShortNameByID[$Principal.ResolvedAccountName]
     }
 
     ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
@@ -2420,7 +2443,11 @@ function Expand-Permission {
         [string]$DebugOutputStream = 'Debug',
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -2449,11 +2476,12 @@ function Expand-Permission {
 
         # Group reference GUIDs by the name of their associated account.
         Write-LogMsg -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID' @LogParams
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
+        #$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $IdByShortName -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams' @LogParams
-        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams
+        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -IdByShortName $IdByShortName @CommonParams
 
     }
 
@@ -2464,11 +2492,11 @@ function Expand-Permission {
 
         # Group reference GUIDs by the path to their associated item.
         Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath' @LogParams
-        $ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath
+        $ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams' @LogParams
-        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams
+        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName @CommonParams
 
     }
 
@@ -2478,7 +2506,7 @@ function Expand-Permission {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
         Write-LogMsg -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams' @LogParams
-        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams
+        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ShortNameByID $ShortNameByID @CommonParams
 
     }
 
@@ -2489,7 +2517,7 @@ function Expand-Permission {
 
         # Group reference GUIDs by their associated TargetPath.
         Write-LogMsg -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams' @LogParams
-        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
+        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams' @LogParams
@@ -5102,10 +5130,9 @@ function Select-UniquePrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        # Hashtable will be used to deduplicate
-        $ResolvedIdByShortName = [hashtable]::Synchronized(@{}),
+        $IdByShortName = [hashtable]::Synchronized(@{}),
 
-        $ShortNameByResolvedID = [hashtable]::Synchronized(@{})
+        $ShortNameByID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -5132,15 +5159,15 @@ function Select-UniquePrincipal {
         }
 
         $ThisKnownUser = $null
-        $ThisKnownUser = $ResolvedIdByShortName[$ShortName]
+        $ThisKnownUser = $IdByShortName[$ShortName]
 
         if ($null -eq $ThisKnownUser) {
             $ThisKnownUser = [System.Collections.Generic.List[string]]::new()
         }
 
         $null = $ThisKnownUser.Add($ThisID)
-        $ResolvedIdByShortName[$ShortName] = $ThisKnownUser
-        $ShortNameByResolvedID[$ThisID] = $ShortName
+        $IdByShortName[$ShortName] = $ThisKnownUser
+        $ShortNameByID[$ThisID] = $ShortName
 
     }
 
@@ -5153,6 +5180,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

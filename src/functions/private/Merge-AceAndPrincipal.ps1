@@ -1,17 +1,23 @@
 function Merge-AceAndPrincipal {
 
-    param ($Principal, $ACE, $PrincipalsByResolvedID)
+    param (
+        $Principal,
+        $ACE,
+        $PrincipalByResolvedID,
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
+    )
 
     ForEach ($Member in $Principal.Members) {
 
-        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$Member] -PrincipalsByResolvedID $PrincipalsByResolvedID
+        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID[$Member] -PrincipalByResolvedID $PrincipalByResolvedID -ShortNameByID $ShortNameByID
 
     }
 
     $OutputProperties = @{
-        PSTypeName = 'Permission.FlatPermission'
-        ItemPath   = $ACE.Path
-        AdsiPath   = $Principal.Path
+        PSTypeName  = 'Permission.FlatPermission'
+        ItemPath    = $ACE.Path
+        AdsiPath    = $Principal.Path
+        AccountName = $ShortNameByID[$Principal.ResolvedAccountName]
     }
 
     ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
