@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Select-UniquePrincipal [[-PrincipalsByResolvedID] <Hashtable>] [[-ExcludeAccount] <String[]>]
- [[-IgnoreDomain] <String[]>] [[-UniquePrincipal] <Object>] [[-UniquePrincipalsByResolvedID] <Object>]
+ [[-IgnoreDomain] <String[]>] [[-ResolvedIdByShortName] <Object>] [[-ShortNameByResolvedID] <Object>]
 ```
 
 ## DESCRIPTION
@@ -76,8 +76,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -UniquePrincipal
-{{ Fill UniquePrincipal Description }}
+### -ResolvedIdByShortName
+{{ Fill ResolvedIdByShortName Description }}
 
 ```yaml
 Type: System.Object
@@ -91,8 +91,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -UniquePrincipalsByResolvedID
-{{ Fill UniquePrincipalsByResolvedID Description }}
+### -ShortNameByResolvedID
+{{ Fill ShortNameByResolvedID Description }}
 
 ```yaml
 Type: System.Object

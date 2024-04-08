@@ -18,9 +18,9 @@ function Select-UniquePrincipal {
         [string[]]$IgnoreDomain,
 
         # Hashtable will be used to deduplicate
-        $UniquePrincipal = [hashtable]::Synchronized(@{}),
+        $ResolvedIdByShortName = [hashtable]::Synchronized(@{}),
 
-        $UniquePrincipalsByResolvedID = [hashtable]::Synchronized(@{})
+        $ShortNameByResolvedID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -47,15 +47,15 @@ function Select-UniquePrincipal {
         }
 
         $ThisKnownUser = $null
-        $ThisKnownUser = $UniquePrincipal[$ShortName]
+        $ThisKnownUser = $ResolvedIdByShortName[$ShortName]
 
         if ($null -eq $ThisKnownUser) {
             $ThisKnownUser = [System.Collections.Generic.List[string]]::new()
         }
 
         $null = $ThisKnownUser.Add($ThisID)
-        $UniquePrincipal[$ShortName] = $ThisKnownUser
-        $UniquePrincipalsByResolvedID[$ThisID] = $ShortName
+        $ResolvedIdByShortName[$ShortName] = $ThisKnownUser
+        $ShortNameByResolvedID[$ThisID] = $ShortName
 
     }
 

@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.567
+Help Version: 0.0.568
 Locale: en-US
 ---
 
@@ -129,7 +129,7 @@ Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtab
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
 
-Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-UniquePrincipal] <Object>] [[-UniquePrincipalsByResolvedID] <Object>]
+Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-ResolvedIdByShortName] <Object>] [[-ShortNameByResolvedID] <Object>]
 
 
 

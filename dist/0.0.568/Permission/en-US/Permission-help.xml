@@ -6624,9 +6624,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>UniquePrincipal</maml:name>
+          <maml:name>ResolvedIdByShortName</maml:name>
           <maml:description>
-            <maml:para>{{ Fill UniquePrincipal Description }}</maml:para>
+            <maml:para>{{ Fill ResolvedIdByShortName Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -6636,9 +6636,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-          <maml:name>UniquePrincipalsByResolvedID</maml:name>
+          <maml:name>ShortNameByResolvedID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill UniquePrincipalsByResolvedID Description }}</maml:para>
+            <maml:para>{{ Fill ShortNameByResolvedID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -6687,9 +6687,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>UniquePrincipal</maml:name>
+        <maml:name>ResolvedIdByShortName</maml:name>
         <maml:description>
-          <maml:para>{{ Fill UniquePrincipal Description }}</maml:para>
+          <maml:para>{{ Fill ResolvedIdByShortName Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
@@ -6699,9 +6699,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-        <maml:name>UniquePrincipalsByResolvedID</maml:name>
+        <maml:name>ShortNameByResolvedID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill UniquePrincipalsByResolvedID Description }}</maml:para>
+          <maml:para>{{ Fill ShortNameByResolvedID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
