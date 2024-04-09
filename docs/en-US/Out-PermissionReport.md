@@ -17,7 +17,7 @@ Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>]
  [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <String>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
- [[-ACEsByGUID] <Hashtable>] [[-ACLsByPath] <Hashtable>] [[-PrincipalsByResolvedID] <Object>]
+ [[-AceByGUID] <Hashtable>] [[-AclByPath] <Hashtable>] [[-PrincipalByID] <Hashtable>]
  [[-BestPracticeIssue] <Object>] [[-Parent] <Hashtable>] [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>]
  [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-SplitBy] <String[]>]
 ```
@@ -36,8 +36,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ACEsByGUID
-{{ Fill ACEsByGUID Description }}
+### -AceByGUID
+{{ Fill AceByGUID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -51,8 +51,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ACLsByPath
-{{ Fill ACLsByPath Description }}
+### -AclByPath
+{{ Fill AclByPath Description }}
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -309,11 +309,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PrincipalsByResolvedID
-{{ Fill PrincipalsByResolvedID Description }}
+### -PrincipalByID
+{{ Fill PrincipalByID Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 

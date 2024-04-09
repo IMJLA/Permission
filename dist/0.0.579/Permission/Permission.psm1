@@ -1306,9 +1306,9 @@ function Get-HtmlReportElements {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$ACEsByGUID,
-        [hashtable]$ACLsByPath,
-        $PrincipalsByResolvedID,
+        [hashtable]$AceByGUID,
+        [hashtable]$AclByPath,
+        [hashtable]$PrincipalByID,
         $BestPracticeIssue,
         [string[]]$Parent,
 
@@ -1316,10 +1316,10 @@ function Get-HtmlReportElements {
         Level of detail to export to file
             0   Item paths                                                                                  $TargetPath
             1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents
-            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys
-            3   Access rules                                                                                $ACLsByPath.Values
-            4   Resolved access rules (server names resolved, inheritance flags resolved)                   $ACEsByGUID.Values | %{$_} | Sort Path,IdentityReferenceResolved
-            5   Accounts with access                                                                        $PrincipalsByResolvedID.Values | %{$_} | Sort ResolvedAccountName
+            2   Expanded resolved item paths (parent paths expanded into children)                          $AclByPath.Keys
+            3   Access rules                                                                                $AclByPath.Values
+            4   Resolved access rules (server names resolved, inheritance flags resolved)                   $AceByGUID.Values | %{$_} | Sort Path,IdentityReferenceResolved
+            5   Accounts with access                                                                        $PrincipalByID.Values | %{$_} | Sort ResolvedAccountName
             6   Expanded resolved access rules (expanded with account info)                                 $Permissions
             7   Formatted permissions                                                                       $FormattedPermissions
             8   Best Practice issues                                                                        $BestPracticeIssues
@@ -1439,21 +1439,12 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
-
-
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
-        ItemCount        = $ACLsByPath.Keys.Count
-        PermissionCount  = (
-            @(
-                $Permission.AccountPermissions.Access.Access.Count,
-                $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.TargetPermissions.NetworkPaths.Access.Count
-            ) |
-            Measure-Object -Maximum
-        ).Maximum
-        PrincipalCount   = $PrincipalsByResolvedID.Keys.Count
+        ItemCount        = $AclByPath.Keys.Count
+        PermissionCount  = $AceByGUID.Keys.Count
+        PrincipalCount   = $PrincipalByID.Keys.Count
         ReportInstanceId = $ReportInstanceId
         StopWatch        = $StopWatch
         ThisFqdn         = $ThisFqdn
@@ -3879,9 +3870,9 @@ function Out-PermissionReport {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$ACEsByGUID,
-        [hashtable]$ACLsByPath,
-        $PrincipalsByResolvedID,
+        [hashtable]$AceByGUID,
+        [hashtable]$AclByPath,
+        [hashtable]$PrincipalByID,
         $BestPracticeIssue,
         [hashtable]$Parent,
 
@@ -5203,6 +5194,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

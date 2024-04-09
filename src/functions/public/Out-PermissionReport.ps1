@@ -47,9 +47,9 @@ function Out-PermissionReport {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$ACEsByGUID,
-        [hashtable]$ACLsByPath,
-        $PrincipalsByResolvedID,
+        [hashtable]$AceByGUID,
+        [hashtable]$AclByPath,
+        [hashtable]$PrincipalByID,
         $BestPracticeIssue,
         [hashtable]$Parent,
 

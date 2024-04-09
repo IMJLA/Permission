@@ -3636,9 +3636,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
-          <maml:name>ACEsByGUID</maml:name>
+          <maml:name>AceByGUID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ACEsByGUID Description }}</maml:para>
+            <maml:para>{{ Fill AceByGUID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -3648,9 +3648,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
-          <maml:name>ACLsByPath</maml:name>
+          <maml:name>AclByPath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
+            <maml:para>{{ Fill AclByPath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -3660,13 +3660,13 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="none">
-          <maml:name>PrincipalsByResolvedID</maml:name>
+          <maml:name>PrincipalByID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill PrincipalsByResolvedID Description }}</maml:para>
+            <maml:para>{{ Fill PrincipalByID Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
-            <maml:name>System.Object</maml:name>
+            <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3909,9 +3909,9 @@
     </command:syntax>
     <command:parameters>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
-        <maml:name>ACEsByGUID</maml:name>
+        <maml:name>AceByGUID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ACEsByGUID Description }}</maml:para>
+          <maml:para>{{ Fill AceByGUID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -3921,9 +3921,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
-        <maml:name>ACLsByPath</maml:name>
+        <maml:name>AclByPath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill ACLsByPath Description }}</maml:para>
+          <maml:para>{{ Fill AclByPath Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -4125,13 +4125,13 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="17" aliases="none">
-        <maml:name>PrincipalsByResolvedID</maml:name>
+        <maml:name>PrincipalByID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill PrincipalsByResolvedID Description }}</maml:para>
+          <maml:para>{{ Fill PrincipalByID Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
