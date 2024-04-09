@@ -13,11 +13,18 @@ function Merge-AceAndPrincipal {
 
     }
 
+    $AccountName = $ShortNameByID[$Principal.ResolvedAccountName]
+
+    # If the Export-Permission parameters excluded this principal it will not exist in the $ShortNameByID hashtable so we do not want to return this ACE; return nothing instead.
+    if (-not $AccountName) {
+        return
+    }
+
     $OutputProperties = @{
         PSTypeName  = 'Permission.FlatPermission'
         ItemPath    = $ACE.Path
         AdsiPath    = $Principal.Path
-        AccountName = $ShortNameByID[$Principal.ResolvedAccountName]
+        AccountName = $AccountName
     }
 
     ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
@@ -28,6 +35,6 @@ function Merge-AceAndPrincipal {
         $OutputProperties[$Prop] = $Principal.$Prop
     }
 
-    [pscustomobject]$OutputProperties
+    return [pscustomobject]$OutputProperties
 
 }
