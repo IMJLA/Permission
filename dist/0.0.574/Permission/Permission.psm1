@@ -961,7 +961,11 @@ function Expand-ItemPermissionAccountAccessReference {
         [PSCustomObject]@{
             Account     = $PrincipalByResolvedID[$IdByShortName[$PermissionRef.Account]]
             AccountName = $PermissionRef.Account
-            Access      = $AceByGUID[$PermissionRef.AceGUIDs]
+            Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
+                ForEach ($Guid in $GuidList) {
+                    $AceByGUID[$Guid]
+                }
+            }
             PSTypeName  = 'Permission.ItemPermissionAccountAccess'
         }
 
@@ -1001,7 +1005,7 @@ function Expand-TargetPermissionReference {
         $PrincipalsByResolvedID,
         $ACEsByGUID,
         $ACLsByPath,
-
+        [hashtable]$AceGuidByPath,
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item'
@@ -1084,7 +1088,7 @@ function Expand-TargetPermissionReference {
         default {
 
             $ExpansionParameters = @{
-                AceGUIDsByPath         = $AceGUIDsByPath
+                AceGUIDsByPath         = $AceGuidByPath
                 ACEsByGUID             = $ACEsByGUID
                 PrincipalsByResolvedID = $PrincipalsByResolvedID
             }
@@ -2521,7 +2525,7 @@ function Expand-Permission {
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams' @LogParams
-        $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams
+        $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -5180,6 +5184,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

@@ -8,7 +8,7 @@ function Expand-TargetPermissionReference {
         $PrincipalsByResolvedID,
         $ACEsByGUID,
         $ACLsByPath,
-
+        [hashtable]$AceGuidByPath,
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item'
@@ -91,7 +91,7 @@ function Expand-TargetPermissionReference {
         default {
 
             $ExpansionParameters = @{
-                AceGUIDsByPath         = $AceGUIDsByPath
+                AceGUIDsByPath         = $AceGuidByPath
                 ACEsByGUID             = $ACEsByGUID
                 PrincipalsByResolvedID = $PrincipalsByResolvedID
             }
