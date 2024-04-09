@@ -101,7 +101,18 @@ function Out-PermissionReport {
             account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [string]$GroupBy = 'item',
+
+        <#
+        How to split up the exported files:
+            none    generate 1 file with all permissions
+            target  generate 1 file per target
+            item    generate 1 file per item
+            account generate 1 file per account
+            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+        #>
+        [ValidateSet('none', 'all', 'target', 'item', 'account')]
+        [string[]]$SplitBy = 'target'
 
     )
 
@@ -142,7 +153,7 @@ function Out-PermissionReport {
         { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
         {
 
-            switch ($GroupBy) {
+            switch ($SplitBy) {
                 'account' { $Permission.AccountPermissions ; break }
                 'none' { $Permission.FlatPermissions ; break }
                 'item' { $Permission.ItemPermissions ; break }

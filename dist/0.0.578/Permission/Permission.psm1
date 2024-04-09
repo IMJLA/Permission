@@ -2482,8 +2482,8 @@ function Expand-Permission {
     }
 
     if (
-        $HowToSplit['account'] -or
-        $GroupBy -eq 'account'
+        $HowToSplit['account']# -or
+        #$GroupBy -eq 'account'
     ) {
 
         # Group reference GUIDs by the name of their associated account.
@@ -2498,14 +2498,14 @@ function Expand-Permission {
     }
 
     if (
-        $HowToSplit['item'] -or
-        $GroupBy -eq 'item'
+        $HowToSplit['item']# -or
+        #$GroupBy -eq 'item'
     ) {
 
         # Group reference GUIDs by the path to their associated item.
         Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath' @LogParams
         $ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
-        pause
+
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams' @LogParams
         $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName @CommonParams
@@ -2523,8 +2523,8 @@ function Expand-Permission {
     }
 
     if (
-        $HowToSplit['target'] -or
-        $GroupBy -eq 'target'
+        $HowToSplit['target']# -or
+        #$GroupBy -eq 'target'
     ) {
 
         # Group reference GUIDs by their associated TargetPath.
@@ -3933,7 +3933,18 @@ function Out-PermissionReport {
             account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [string]$GroupBy = 'item',
+
+        <#
+        How to split up the exported files:
+            none    generate 1 file with all permissions
+            target  generate 1 file per target
+            item    generate 1 file per item
+            account generate 1 file per account
+            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+        #>
+        [ValidateSet('none', 'all', 'target', 'item', 'account')]
+        [string[]]$SplitBy = 'target'
 
     )
 
@@ -3974,7 +3985,7 @@ function Out-PermissionReport {
         { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
         {
 
-            switch ($GroupBy) {
+            switch ($SplitBy) {
                 'account' { $Permission.AccountPermissions ; break }
                 'none' { $Permission.FlatPermissions ; break }
                 'item' { $Permission.ItemPermissions ; break }
@@ -5192,6 +5203,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

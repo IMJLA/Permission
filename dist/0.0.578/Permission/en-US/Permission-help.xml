@@ -3791,6 +3791,25 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="25" aliases="none">
+          <maml:name>SplitBy</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill SplitBy Description }}</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">none</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">all</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">target</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">item</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">account</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>TargetPath</maml:name>
           <maml:description>
@@ -4137,6 +4156,18 @@
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
           <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="25" aliases="none">
+        <maml:name>SplitBy</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill SplitBy Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

@@ -19,7 +19,7 @@ Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
  [[-ACEsByGUID] <Hashtable>] [[-ACLsByPath] <Hashtable>] [[-PrincipalsByResolvedID] <Object>]
  [[-BestPracticeIssue] <Object>] [[-Parent] <Hashtable>] [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-SplitBy] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -349,6 +349,22 @@ Aliases:
 
 Required: False
 Position: 14
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SplitBy
+{{ Fill SplitBy Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+Accepted values: none, all, target, item, account
+
+Required: False
+Position: 25
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

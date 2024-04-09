@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.578] - 2024-04-08 - reduce unnecessary work in expand-permission
+
 ## [0.0.577] - 2024-04-08 - oops that was supposed to be continue not return
 
 ## [0.0.576] - 2024-04-08 - reduce line count and bugfix groupby account
