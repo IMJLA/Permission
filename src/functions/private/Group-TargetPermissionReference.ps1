@@ -75,7 +75,7 @@ function Group-TargetPermissionReference {
                         $ShortName = $null
                         $ShortName = $ShortNameByID[$ID]
 
-                        if (-not $ShortName) { return }
+                        if (-not $ShortName) { continue }
                         $IdByShortNameForThisTarget[$ShortName] = $IdByShortName[$ShortName]
 
                         $IdentityString = [string]$ID
