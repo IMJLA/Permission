@@ -1767,7 +1767,10 @@ function Group-TargetPermissionReference {
 
                     ForEach ($ID in $IDsWithAccess.Keys) {
 
+                        $ShortName = $null
                         $ShortName = $ShortNameByID[$ID]
+
+                        if (-not $ShortName) { return }
                         $IdByShortNameForThisTarget[$ShortName] = $IdByShortName[$ShortName]
 
                         $IdentityString = [string]$ID
@@ -1952,9 +1955,7 @@ function Merge-AceAndPrincipal {
     $AccountName = $ShortNameByID[$Principal.ResolvedAccountName]
 
     # If the Export-Permission parameters excluded this principal it will not exist in the $ShortNameByID hashtable so we do not want to return this ACE; return nothing instead.
-    if (-not $AccountName) {
-        return
-    }
+    if (-not $AccountName) { return }
 
     $OutputProperties = @{
         PSTypeName  = 'Permission.FlatPermission'
@@ -5191,6 +5192,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

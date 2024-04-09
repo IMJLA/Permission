@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.576] - 2024-04-08 - reduce line count and bugfix groupby account
+
 ## [0.0.575] - 2024-04-08 - bugfix Merge-AceAndPrincipal was not respecting the output of Select-UniquePrincipal
 
 ## [0.0.574] - 2024-04-08 - bugfixes
