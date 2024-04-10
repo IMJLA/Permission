@@ -1439,11 +1439,21 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
+    pause
+
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
         ItemCount        = $AclByPath.Keys.Count
-        PermissionCount  = $AceByGUID.Keys.Count
+        PermissionCount  = (
+            @(
+                $Permission.AccountPermissions.Access.Access.Count,
+                $Permission.ItemPermissions.Access.Access.Count,
+                $Permission.TargetPermissions.NetworkPaths.Access.Count#,
+                #$AceByGUID.Keys.Count
+            ) |
+            Measure-Object -Maximum
+        ).Maximum
         PrincipalCount   = $PrincipalByID.Keys.Count
         ReportInstanceId = $ReportInstanceId
         StopWatch        = $StopWatch
@@ -5194,6 +5204,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
