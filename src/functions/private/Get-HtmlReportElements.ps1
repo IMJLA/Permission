@@ -188,9 +188,11 @@ function Get-HtmlReportElements {
         ItemCount        = $AclByPath.Keys.Count
         PermissionCount  = (
             @(
-                $Permission.AccountPermissions.Access.Access.Count,
+                $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.TargetPermissions.NetworkPaths.Access.Count,
+                $Permission.TargetPermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account/none
+                ($Permission.TargetPermissions.NetworkPaths.Items.Access.Access.Count + $Permissions.TargetPermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
+                $Permission.TargetPermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target
                 $AceByGUID.Keys.Count
             ) |
             Measure-Object -Maximum
