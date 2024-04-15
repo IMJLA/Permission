@@ -59,7 +59,7 @@ function Out-PermissionReport {
             1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents
             2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys
             3   Access rules                                                                                $ACLsByPath.Values
-            4   Resolved access rules (server names resolved, inheritance flags resolved)                   $ACEsByGUID.Values | %{$_} | Sort Path,IdentityReferenceResolved
+            4   Resolved access rules (server names resolved, inheritance flags resolved)                   $AceByGUID.Values | %{$_} | Sort Path,IdentityReferenceResolved
             5   Accounts with access                                                                        $PrincipalsByResolvedID.Values | %{$_} | Sort ResolvedAccountName
             6   Expanded resolved access rules (expanded with account info)                                 $Permissions
             7   Formatted permissions                                                                       $FormattedPermissions
@@ -149,7 +149,7 @@ function Out-PermissionReport {
         },
         { $ACLsByPath.Keys },
         { $ACLsByPath.Values },
-        { ForEach ($val in $ACEsByGUID.Values) { $val } },
+        { ForEach ($val in $AceByGUID.Values) { $val } },
         { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
         {
 

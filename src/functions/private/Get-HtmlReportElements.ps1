@@ -182,8 +182,6 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
-    pause
-
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
@@ -192,8 +190,8 @@ function Get-HtmlReportElements {
             @(
                 $Permission.AccountPermissions.Access.Access.Count,
                 $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.TargetPermissions.NetworkPaths.Access.Count#,
-                #$AceByGUID.Keys.Count
+                $Permission.TargetPermissions.NetworkPaths.Access.Count,
+                $AceByGUID.Keys.Count
             ) |
             Measure-Object -Maximum
         ).Maximum
