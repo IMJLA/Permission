@@ -200,6 +200,8 @@ function Get-HtmlReportElements {
         StopWatch        = $StopWatch
         ThisFqdn         = $ThisFqdn
         WhoAmI           = $WhoAmI
+        AceByGUID        = $AceByGUID
+        AclByPath        = $AclByPath
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
