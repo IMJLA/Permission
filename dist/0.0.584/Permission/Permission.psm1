@@ -1448,7 +1448,7 @@ function Get-HtmlReportElements {
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
                 $Permission.TargetPermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account/none
-                ($Permission.TargetPermissions.NetworkPaths.Items.Access.Access.Count + $Permissions.TargetPermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
+                ($Permission.TargetPermissions.NetworkPaths.Items.Access.Access.Count + $Permission.TargetPermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
                 $Permission.TargetPermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target
                 $AceByGUID.Keys.Count
             ) |
@@ -5209,6 +5209,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
