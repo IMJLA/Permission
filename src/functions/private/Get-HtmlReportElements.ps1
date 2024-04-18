@@ -44,7 +44,6 @@ function Get-HtmlReportElements {
         $Title,
 
         $Permission,
-        $FormattedPermission,
         $LogParams,
         $RecurseDepth,
         $LogFileList,
@@ -52,8 +51,6 @@ function Get-HtmlReportElements {
         [hashtable]$AceByGUID,
         [hashtable]$AclByPath,
         [hashtable]$PrincipalByID,
-        $BestPracticeIssue,
-        [string[]]$Parent,
 
         <#
         Level of detail to export to file
@@ -78,14 +75,6 @@ function Get-HtmlReportElements {
         #>
         [cultureinfo]$Culture = (Get-Culture),
 
-        # File format(s) to export
-        [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string[]]$FileFormat = @('csv', 'html', 'js', 'json', 'prtgxml', 'xml'),
-
-        # Type of output returned to the output stream
-        [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru',
-
         <#
         How to group the permissions in the output stream and within each exported file
 
@@ -107,7 +96,22 @@ function Get-HtmlReportElements {
 
         [string]$Split,
 
-        [string]$FileName
+        [string]$FileName,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        $FormattedPermission,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        $BestPracticeIssue,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [string[]]$Parent,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [string[]]$FileFormat,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [string]$OutputFormat
 
     )
 
@@ -157,7 +161,7 @@ function Get-HtmlReportElements {
 
     # Convert the list of generated log files to a Bootstrap list group
     $HtmlListOfLogs = $LogFileList |
-    Split-Path -Leaf | # the output directory will be shown in a Bootstrap alert so this row removes the path from the file names
+    Split-Path -Leaf | # the output directory will already be shown in a Bootstrap alert above the list, so this row removes the path from the file names
     ConvertTo-HtmlList |
     ConvertTo-BootstrapListGroup
 

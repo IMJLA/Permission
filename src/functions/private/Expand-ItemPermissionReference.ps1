@@ -5,8 +5,8 @@ function Expand-ItemPermissionReference {
         $Reference,
         $PrincipalsByResolvedID,
         $ACEsByGUID,
-        $ACLsByPath,
-        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
+        $ACLsByPath##,
+        ##[hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
 
     )
 
@@ -14,7 +14,7 @@ function Expand-ItemPermissionReference {
 
         [PSCustomObject]@{
             Item       = $ACLsByPath[$Item.Path]
-            Access     = Expand-ItemPermissionAccountAccessReference -Reference $Item.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID -IdByShortName $IdByShortName
+            Access     = Expand-ItemPermissionAccountAccessReference -Reference $Item.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID ##-IdByShortName $IdByShortName
             PSTypeName = 'Permission.ItemPermission'
         }
 

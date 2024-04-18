@@ -14,7 +14,8 @@ schema: 2.0.0
 
 ```
 Select-UniquePrincipal [[-PrincipalsByResolvedID] <Hashtable>] [[-ExcludeAccount] <String[]>]
- [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Object>] [[-ShortNameByID] <Object>]
+ [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>] [[-ShortNameByID] <Hashtable>]
+ [[-FilterContents] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -46,11 +47,26 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -FilterContents
+{{ Fill FilterContents Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -IdByShortName
 {{ Fill IdByShortName Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 
@@ -95,7 +111,7 @@ Accept wildcard characters: False
 {{ Fill ShortNameByID Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 

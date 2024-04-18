@@ -17,13 +17,13 @@ function Select-UniquePrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        $IdByShortName = [hashtable]::Synchronized(@{}),
+        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
 
-        $ShortNameByID = [hashtable]::Synchronized(@{})
+        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{}),
+
+        [hashtable]$FilterContents = [hashtable]::Synchronized(@{})
 
     )
-
-    $FilterContents = @{}
 
     ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
 

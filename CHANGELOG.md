@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.588] - 2024-04-17 - remove dependency on select-uniqueprincipal
+
+## [0.0.587] - 2024-04-17 - remove dependency on select-uniqueprincipal
+
+## [0.0.586] - 2024-04-17 - remove dependency on select-uniqueprincipal because its functionality will move to format-permission
+
 ## [0.0.585] - 2024-04-15 - fix comments
 
 ## [0.0.584] - 2024-04-15 - bugfix footer missing owner aces due to incorrect plural vs singular var name

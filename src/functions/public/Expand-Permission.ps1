@@ -31,11 +31,11 @@ function Expand-Permission {
         [string]$DebugOutputStream = 'Debug',
 
         # ID of the parent progress bar under which to show progres
-        [int]$ProgressParentId,
+        [int]$ProgressParentId##,
 
-        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        ##[hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
 
-        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
+        ##[hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
 
     )
 
@@ -58,33 +58,34 @@ function Expand-Permission {
     }
 
     if (
-        $HowToSplit['account']# -or
-        #$GroupBy -eq 'account'
+        $HowToSplit['account']
     ) {
 
         # Group reference GUIDs by the name of their associated account.
         Write-LogMsg -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID' @LogParams
-        #$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $IdByShortName -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
+        ##$AccountPermissionReferences = Group-AccountPermissionReference -ID $IdByShortName -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams' @LogParams
-        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -IdByShortName $IdByShortName @CommonParams
+        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams
+        ##$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -IdByShortName $IdByShortName @CommonParams
 
     }
 
     if (
-        $HowToSplit['item']# -or
-        #$GroupBy -eq 'item'
+        $HowToSplit['item']
     ) {
 
         # Group reference GUIDs by the path to their associated item.
         Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath' @LogParams
-        $ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
+        $ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath @CommonParams
+        ##$ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams' @LogParams
-        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName @CommonParams
+        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams
+        ##$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath -IdByShortName $IdByShortName @CommonParams
 
     }
 
@@ -94,18 +95,19 @@ function Expand-Permission {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
         Write-LogMsg -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams' @LogParams
-        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ShortNameByID $ShortNameByID @CommonParams
+        ##$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ShortNameByID $ShortNameByID @CommonParams
+        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams
 
     }
 
     if (
-        $HowToSplit['target']# -or
-        #$GroupBy -eq 'target'
+        $HowToSplit['target']
     ) {
 
         # Group reference GUIDs by their associated TargetPath.
         Write-LogMsg -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams' @LogParams
-        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
+        ##$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID -IdByShortName $IdByShortName -ShortNameByID $ShortNameByID @CommonParams
+        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams' @LogParams

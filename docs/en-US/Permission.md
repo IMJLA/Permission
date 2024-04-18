@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.585
+Help Version: 0.0.588
 Locale: en-US
 ---
 
@@ -23,7 +23,7 @@ ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
 
 ### [Expand-Permission](Expand-Permission.md)
 
-Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>] [[-TargetPath] <hashtable>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>] [[-IdByShortName] <hashtable>] [[-ShortNameByID] <hashtable>]
+Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] <Object>] [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>] [[-TargetPath] <hashtable>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>]
 
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
@@ -129,7 +129,7 @@ Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtab
 
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
 
-Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-IdByShortName] <Object>] [[-ShortNameByID] <Object>]
+Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-IdByShortName] <hashtable>] [[-ShortNameByID] <hashtable>] [[-FilterContents] <hashtable>]
 
 
 

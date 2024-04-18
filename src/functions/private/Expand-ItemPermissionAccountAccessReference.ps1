@@ -3,14 +3,15 @@ function Expand-ItemPermissionAccountAccessReference {
     param (
         $Reference,
         [hashtable]$PrincipalByResolvedID,
-        [hashtable]$AceByGUID,
-        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
+        [hashtable]$AceByGUID##,
+        ##[hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
     )
 
     ForEach ($PermissionRef in $Reference) {
 
         [PSCustomObject]@{
-            Account     = $PrincipalByResolvedID[$IdByShortName[$PermissionRef.Account]]
+            ##Account     = $PrincipalByResolvedID[$IdByShortName[$PermissionRef.Account]]
+            Account     = $PrincipalByResolvedID[$PermissionRef.Account]
             AccountName = $PermissionRef.Account
             Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
                 ForEach ($Guid in $GuidList) {
