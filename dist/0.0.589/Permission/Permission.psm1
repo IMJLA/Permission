@@ -1642,27 +1642,23 @@ function Get-SummaryTableHeader {
 function Group-AccountPermissionReference {
 
     param (
-        [hashtable]$ID,
+        [string[]]$ID,
         [hashtable]$AceGuidByID,
         [hashtable]$AceByGuid
     )
 
-    ForEach ($ShortName in ($ID.Keys | Sort-Object)) {
+    ForEach ($Identity in ($ID | Sort-Object)) {
 
         $ItemPaths = @{}
 
-        ForEach ($Identity in $ID[$ShortName]) {
+        ForEach ($Guid in $AceGuidByID[$Identity]) {
 
-            ForEach ($Guid in $AceGuidByID[$Identity]) {
-
-                Add-CacheItem -Cache $ItemPaths -Key $AceByGuid[$Guid].Path -Value $Guid -Type ([guid])
-
-            }
+            Add-CacheItem -Cache $ItemPaths -Key $AceByGuid[$Guid].Path -Value $Guid -Type ([guid])
 
         }
 
         [PSCustomObject]@{
-            Account = $ShortName
+            Account = $Identity
             Access  = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
 
                 [PSCustomObject]@{
@@ -5227,6 +5223,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 
