@@ -4,9 +4,7 @@ function Expand-AccountPermissionReference {
 
         $Reference,
         $PrincipalsByResolvedID,
-        $ACEsByGUID##,
-
-        ##[hashtable]$IdByShortName = [hashtable]::Synchronized(@{})
+        $ACEsByGUID
 
     )
 
@@ -26,7 +24,6 @@ function Expand-AccountPermissionReference {
         }
 
         [PSCustomObject]@{
-            #Account     = $PrincipalsByResolvedID[$IdByShortName[$Account.Account]]
             Account     = $PrincipalsByResolvedID[$Account.Account]
             AccountName = $Account.Account
             Access      = $Access

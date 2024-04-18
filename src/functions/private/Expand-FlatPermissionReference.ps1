@@ -7,8 +7,7 @@ function Expand-FlatPermissionReference {
         $SortedPath,
         $PrincipalsByResolvedID,
         $ACEsByGUID,
-        $AceGUIDsByPath##,
-        ##[hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
+        $AceGUIDsByPath
 
     )
 
@@ -20,7 +19,7 @@ function Expand-FlatPermissionReference {
 
         ForEach ($ACE in $ACEsByGUID[$AceGUIDs]) {
 
-            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID ##-ShortNameByID $ShortNameByID
+            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
 
         }
 
