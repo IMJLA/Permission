@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.590] - 2024-04-17 - bugfix ID param for groupaccountpermissionreference needs to contain all accounts not just 1
+
 ## [0.0.589] - 2024-04-17 - bugfix hashtable vs str array param type
 
 ## [0.0.588] - 2024-04-17 - remove dependency on select-uniqueprincipal

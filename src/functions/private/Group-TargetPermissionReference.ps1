@@ -99,7 +99,7 @@ function Group-TargetPermissionReference {
                     [PSCustomObject]@{
                         Path     = $NetworkPath
                         #Accounts = Group-AccountPermissionReference -ID $IdByShortNameForThisTarget -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
-                        Accounts = Group-AccountPermissionReference -ID $ID -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
                     }
 
                 }
