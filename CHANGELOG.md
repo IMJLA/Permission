@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.593] - 2024-04-18 - update param types
+
 ## [0.0.592] - 2024-04-17 - add debug pause to figure out implementing IgnoreDomain,ExcludeClass,ExcludeAccount,IncludeClass,IncludeAccount
 
 ## [0.0.591] - 2024-04-17 - bugfixes and progress improvements for initialize-cache

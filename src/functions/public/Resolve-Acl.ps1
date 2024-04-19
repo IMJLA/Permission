@@ -25,7 +25,7 @@ function Resolve-Acl {
     Get-FolderAce -LiteralPath C:\Test -IncludeInherited |
     Resolve-Ace
     .EXAMPLE
-    [System.String]$FolderPath = 'C:\Test'
+    [String]$FolderPath = 'C:\Test'
     [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
     $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
     $FileSecurity = [System.Security.AccessControl.FileSecurity]::new($DirectoryInfo,$Sections)
@@ -39,7 +39,7 @@ function Resolve-Acl {
     It uses the GetAccessRules method on the [System.Security.AccessControl.FileSecurity] class
     The targetType parameter of the method is used to specify that the accounts in the ACL are returned as SIDs
     .EXAMPLE
-    [System.String]$FolderPath = 'C:\Test'
+    [String]$FolderPath = 'C:\Test'
     [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
     $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor
     [System.Security.AccessControl.AccessControlSections]::Owner -bor
@@ -55,7 +55,7 @@ function Resolve-Acl {
     It uses the GetAccessRules method on the [System.Security.AccessControl.FileSecurity] class
     The targetType parameter of the method is used to specify that the accounts in the ACL are returned as NT account names (DOMAIN\User)
     .EXAMPLE
-    [System.String]$FolderPath = 'C:\Test'
+    [String]$FolderPath = 'C:\Test'
     [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
     [System.Security.AccessControl.DirectorySecurity]$DirectorySecurity = $DirectoryInfo.GetAccessControl('Access')
     [System.Security.AccessControl.AuthorizationRuleCollection]$AuthRules = $DirectorySecurity.Access
@@ -67,7 +67,7 @@ function Resolve-Acl {
     This method is removed in modern versions of .Net Core
 
     .EXAMPLE
-    [System.String]$FolderPath = 'C:\Test'
+    [String]$FolderPath = 'C:\Test'
     [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
     $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
     $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($DirectoryInfo,$Sections)

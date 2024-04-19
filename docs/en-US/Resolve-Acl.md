@@ -50,7 +50,7 @@ Resolve-Ace
 
 ### EXAMPLE 3
 ```
-[System.String]$FolderPath = 'C:\Test'
+[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
 $FileSecurity = [System.Security.AccessControl.FileSecurity]::new($DirectoryInfo,$Sections)
@@ -67,7 +67,7 @@ The targetType parameter of the method is used to specify that the accounts in t
 
 ### EXAMPLE 4
 ```
-[System.String]$FolderPath = 'C:\Test'
+[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor
 [System.Security.AccessControl.AccessControlSections]::Owner -bor
@@ -86,7 +86,7 @@ The targetType parameter of the method is used to specify that the accounts in t
 
 ### EXAMPLE 5
 ```
-[System.String]$FolderPath = 'C:\Test'
+[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 [System.Security.AccessControl.DirectorySecurity]$DirectorySecurity = $DirectoryInfo.GetAccessControl('Access')
 [System.Security.AccessControl.AuthorizationRuleCollection]$AuthRules = $DirectorySecurity.Access
@@ -100,7 +100,7 @@ This method is removed in modern versions of .Net Core
 
 ### EXAMPLE 6
 ```
-[System.String]$FolderPath = 'C:\Test'
+[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
 $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($DirectoryInfo,$Sections)

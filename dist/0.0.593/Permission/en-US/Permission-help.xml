@@ -5327,7 +5327,7 @@ Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
 $FileSecurity = [System.Security.AccessControl.FileSecurity]::new($DirectoryInfo,$Sections)
@@ -5342,7 +5342,7 @@ Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor
 [System.Security.AccessControl.AccessControlSections]::Owner -bor
@@ -5359,7 +5359,7 @@ Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 5 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 [System.Security.AccessControl.DirectorySecurity]$DirectorySecurity = $DirectoryInfo.GetAccessControl('Access')
 [System.Security.AccessControl.AuthorizationRuleCollection]$AuthRules = $DirectorySecurity.Access
@@ -5370,7 +5370,7 @@ $AuthRules | Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 6 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
 $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($DirectoryInfo,$Sections)</dev:code>
@@ -5884,7 +5884,7 @@ Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 3 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
 $FileSecurity = [System.Security.AccessControl.FileSecurity]::new($DirectoryInfo,$Sections)
@@ -5899,7 +5899,7 @@ Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 4 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor
 [System.Security.AccessControl.AccessControlSections]::Owner -bor
@@ -5916,7 +5916,7 @@ Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 5 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 [System.Security.AccessControl.DirectorySecurity]$DirectorySecurity = $DirectoryInfo.GetAccessControl('Access')
 [System.Security.AccessControl.AuthorizationRuleCollection]$AuthRules = $DirectorySecurity.Access
@@ -5927,7 +5927,7 @@ $AuthRules | Resolve-Ace</dev:code>
       </command:example>
       <command:example>
         <maml:title>-------------------------- EXAMPLE 6 --------------------------</maml:title>
-        <dev:code>[System.String]$FolderPath = 'C:\Test'
+        <dev:code>[String]$FolderPath = 'C:\Test'
 [System.IO.DirectoryInfo]$DirectoryInfo = Get-Item -LiteralPath $FolderPath
 $Sections = [System.Security.AccessControl.AccessControlSections]::Access -bor [System.Security.AccessControl.AccessControlSections]::Owner
 $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($DirectoryInfo,$Sections)</dev:code>

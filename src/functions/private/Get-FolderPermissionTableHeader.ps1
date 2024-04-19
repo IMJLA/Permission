@@ -1,5 +1,5 @@
 function Get-FolderPermissionTableHeader {
-    [OutputType([System.String])]
+    [OutputType([String])]
     param (
         $Group,
         [string]$GroupID,
