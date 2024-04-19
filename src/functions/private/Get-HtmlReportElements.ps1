@@ -78,18 +78,18 @@ function Get-HtmlReportElements {
         <#
         How to group the permissions in the output stream and within each exported file
 
-            SplitBy	GroupBy
-            none	none	$FlatPermissions all in 1 file per $TargetPath
-            none	account	$AccountPermissions all in 1 file per $TargetPath
-            none	item	$ItemPermissions all in 1 file per $TargetPath (default behavior)
+            SplitBy GroupBy
+            none    none    $FlatPermissions all in 1 file per $TargetPath
+            none    account $AccountPermissions all in 1 file per $TargetPath
+            none    item    $ItemPermissions all in 1 file per $TargetPath (default behavior)
 
-            item	none	1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
-            item	account	1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
-            item	item	(same as -SplitBy item -GroupBy none)
+            item    none    1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
+            item    account 1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
+            item    item    (same as -SplitBy item -GroupBy none)
 
-            account	none	1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
-            account	account	(same as -SplitBy account -GroupBy none)
-            account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
+            account none    1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
+            account account (same as -SplitBy account -GroupBy none)
+            account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
         [string]$GroupBy = 'item',
