@@ -10,7 +10,7 @@ function SizeOfObj {
     } elseif ($null -eq $thevalue) {
         return 0
     } elseif ($thevalue.GetType().Name -eq 'String') {
-        $returnval = ([System.Text.Encoding]::Default).GetByteCount([string]$thevalue)
+        $returnval = ([System.Text.Encoding]::Default).GetByteCount([String]$thevalue)
     } elseif (
         $type.IsArray -and
         $type.GetElementType().IsValueType
@@ -66,7 +66,7 @@ while ($i -lt $n) {
     $Test[$i] = [pscustomobject]@{prop1 = 'blah'}
     $i++
 }
-$Size = (SizeOf -t [hashtable] -value $Test)/1KB
+$Size = (SizeOf -t [Hashtable] -value $Test)/1KB
 "$Size KiB"
 #>
 }

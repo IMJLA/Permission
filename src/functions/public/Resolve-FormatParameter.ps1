@@ -7,7 +7,7 @@ function Resolve-FormatParameter {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru'
+        [String]$OutputFormat = 'passthru'
 
     )
 

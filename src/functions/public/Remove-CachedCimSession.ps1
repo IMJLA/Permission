@@ -3,7 +3,7 @@ function Remove-CachedCimSession {
     param (
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{}))
 
     )
 

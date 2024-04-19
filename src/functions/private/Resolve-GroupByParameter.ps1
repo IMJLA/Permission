@@ -3,9 +3,9 @@ function Resolve-GroupByParameter {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
-        [hashtable]$HowToSplit
+        [Hashtable]$HowToSplit
 
     )
 

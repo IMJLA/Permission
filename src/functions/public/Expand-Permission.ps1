@@ -10,25 +10,25 @@ function Expand-Permission {
         $ACEsByGUID,
         $PrincipalsByResolvedID,
         $ACLsByPath,
-        [hashtable]$TargetPath,
-        [hashtable]$Children,
+        [Hashtable]$TargetPath,
+        [Hashtable]$Children,
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId

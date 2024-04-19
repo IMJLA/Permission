@@ -3,23 +3,23 @@ function ConvertTo-PermissionList {
     param (
 
         # Permission object from Expand-Permission
-        [hashtable]$Permission,
+        [Hashtable]$Permission,
 
         [PSCustomObject[]]$PermissionGrouping,
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$Format,
+        [String]$Format,
 
-        [string]$ShortestPath,
+        [String]$ShortestPath,
 
-        [string]$NetworkPath,
+        [String]$NetworkPath,
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
-        [hashtable]$HowToSplit
+        [Hashtable]$HowToSplit
 
     )
 

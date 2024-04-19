@@ -7,17 +7,17 @@ function ConvertTo-PermissionGroup {
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$Format,
+        [String]$Format,
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
         [string[]]$AccountProperty = @('Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'),
 
         [string[]]$ItemProperty = @('Folder', 'Inheritance'),
 
-        [hashtable]$HowToSplit
+        [Hashtable]$HowToSplit
 
     )
 

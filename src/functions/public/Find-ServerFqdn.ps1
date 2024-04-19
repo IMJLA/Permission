@@ -9,14 +9,14 @@ function Find-ServerFqdn {
         [string[]]$Known,
 
         # File paths whose server FQDNs to include in the output
-        [hashtable]$TargetPath,
+        [Hashtable]$TargetPath,
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId

@@ -4,8 +4,8 @@ function Group-TargetPermissionReference {
 
     param (
 
-        [hashtable]$TargetPath,
-        [hashtable]$Children,
+        [Hashtable]$TargetPath,
+        [Hashtable]$Children,
         $PrincipalsByResolvedID,
         $AceGUIDsByResolvedID,
         $ACEsByGUID,
@@ -14,7 +14,7 @@ function Group-TargetPermissionReference {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [String]$GroupBy = 'item'
 
     )
 
@@ -38,7 +38,7 @@ function Group-TargetPermissionReference {
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
-                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
                     $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
@@ -138,7 +138,7 @@ function Group-TargetPermissionReference {
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
-                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
 

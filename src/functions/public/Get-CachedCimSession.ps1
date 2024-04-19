@@ -3,34 +3,34 @@ function Get-CachedCimSession {
     param (
 
         # Name of the computer to query via CIM
-        [string]$ComputerName,
+        [String]$ComputerName,
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{}))
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
     )
 
     $LogParams = @{
@@ -57,7 +57,7 @@ function Get-CachedCimSession {
     } else {
 
         Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
-        $CimCache[$ComputerName] = [hashtable]::Synchronized(@{})
+        $CimCache[$ComputerName] = [Hashtable]::Synchronized(@{})
 
     }
 
@@ -68,7 +68,7 @@ function Get-CachedCimSession {
         $ComputerName -eq "$ThisFqdn." -or
         $ComputerName -eq 'localhost' -or
         $ComputerName -eq '127.0.0.1' -or
-        [string]::IsNullOrEmpty($ComputerName)
+        [String]::IsNullOrEmpty($ComputerName)
     ) {
         Write-LogMsg @LogParams -Text '$CimSession = New-CimSession'
         $CimSession = New-CimSession

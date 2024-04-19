@@ -3,8 +3,8 @@ function ConvertTo-ScriptHtml {
     param (
         $Permission,
         $PermissionGrouping,
-        [string]$GroupBy,
-        [string]$Split
+        [String]$GroupBy,
+        [String]$Split
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()

@@ -4,8 +4,8 @@ function Select-PermissionTableProperty {
     param (
         $InputObject,
         $IgnoreDomain,
-        [hashtable]$OutputHash = [hashtable]::Synchronized(@{}),
-        [string]$GroupBy
+        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{}),
+        [String]$GroupBy
     )
 
     switch ($GroupBy) {

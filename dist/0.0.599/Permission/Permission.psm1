@@ -59,7 +59,7 @@ function ConvertTo-FileList {
         #>
         [int[]]$Detail = @(0..10),
 
-        [string]$FileName
+        [String]$FileName
 
     )
 
@@ -228,7 +228,7 @@ function ConvertTo-FileList {
 function ConvertTo-FileListDiv {
 
     param (
-        [hashtable]$FileList
+        [Hashtable]$FileList
     )
 
     ForEach ($Format in ($FileList.Keys | Sort-Object)) {
@@ -348,17 +348,17 @@ function ConvertTo-PermissionGroup {
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$Format,
+        [String]$Format,
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
         [string[]]$AccountProperty = @('Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'),
 
         [string[]]$ItemProperty = @('Folder', 'Inheritance'),
 
-        [hashtable]$HowToSplit
+        [Hashtable]$HowToSplit
 
     )
 
@@ -437,23 +437,23 @@ function ConvertTo-PermissionList {
     param (
 
         # Permission object from Expand-Permission
-        [hashtable]$Permission,
+        [Hashtable]$Permission,
 
         [PSCustomObject[]]$PermissionGrouping,
 
         # Type of output returned to the output stream
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$Format,
+        [String]$Format,
 
-        [string]$ShortestPath,
+        [String]$ShortestPath,
 
-        [string]$NetworkPath,
+        [String]$NetworkPath,
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
-        [hashtable]$HowToSplit
+        [Hashtable]$HowToSplit
 
     )
 
@@ -863,8 +863,8 @@ function ConvertTo-ScriptHtml {
     param (
         $Permission,
         $PermissionGrouping,
-        [string]$GroupBy,
-        [string]$Split
+        [String]$GroupBy,
+        [String]$Split
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
@@ -948,8 +948,8 @@ function Expand-ItemPermissionAccountAccessReference {
 
     param (
         $Reference,
-        [hashtable]$PrincipalByResolvedID,
-        [hashtable]$AceByGUID
+        [Hashtable]$PrincipalByResolvedID,
+        [Hashtable]$AceByGUID
     )
 
     ForEach ($PermissionRef in $Reference) {
@@ -1000,10 +1000,10 @@ function Expand-TargetPermissionReference {
         $PrincipalsByResolvedID,
         $ACEsByGUID,
         $ACLsByPath,
-        [hashtable]$AceGuidByPath,
+        [Hashtable]$AceGuidByPath,
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [String]$GroupBy = 'item'
 
     )
 
@@ -1123,7 +1123,7 @@ function Get-ColumnJson {
     param (
         $InputObject,
         [string[]]$PropNames,
-        [hashtable]$ColumnDefinition = @{
+        [Hashtable]$ColumnDefinition = @{
             'Inheritance' = @{
                 'width' = '1'
             }
@@ -1162,8 +1162,8 @@ function Get-ColumnJson {
 function Get-DetailDivHeader {
 
     param (
-        [string]$GroupBy,
-        [string]$Split
+        [String]$GroupBy,
+        [String]$Split
     )
 
     if ( $GroupBy -eq $Split ) {
@@ -1186,8 +1186,8 @@ function Get-FolderPermissionTableHeader {
     [OutputType([String])]
     param (
         $Group,
-        [string]$GroupID,
-        [string]$ShortestFolderPath
+        [String]$GroupID,
+        [String]$ShortestFolderPath
     )
     $Parent = $GroupID | Split-Path -Parent
     $Leaf = $Parent | Split-Path -Leaf -ErrorAction SilentlyContinue
@@ -1300,9 +1300,9 @@ function Get-HtmlReportElements {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$AceByGUID,
-        [hashtable]$AclByPath,
-        [hashtable]$PrincipalByID,
+        [Hashtable]$AceByGUID,
+        [Hashtable]$AclByPath,
+        [Hashtable]$PrincipalByID,
 
         <#
         Level of detail to export to file
@@ -1344,11 +1344,11 @@ function Get-HtmlReportElements {
             account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
-        [string]$Split,
+        [String]$Split,
 
-        [string]$FileName,
+        [String]$FileName,
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         $FormattedPermission,
@@ -1363,7 +1363,7 @@ function Get-HtmlReportElements {
         [string[]]$FileFormat,
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        [string]$OutputFormat
+        [String]$OutputFormat
 
     )
 
@@ -1482,20 +1482,20 @@ function Get-HtmlReportFooter {
         [System.Diagnostics.Stopwatch]$StopWatch,
 
         # NT Account caption (CONTOSO\User) of the account running this function
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         <#
         FQDN of the computer running this function
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         [uint64]$ItemCount,
 
         [uint64]$TotalBytes,
 
-        [string]$ReportInstanceId,
+        [String]$ReportInstanceId,
 
         [UInt64]$PermissionCount,
 
@@ -1503,9 +1503,9 @@ function Get-HtmlReportFooter {
 
         [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second'),
 
-        [hashtable]$AceByGUID,
+        [Hashtable]$AceByGUID,
 
-        [hashtable]$AclByPath
+        [Hashtable]$AclByPath
     )
 
     $null = $StopWatch.Stop()
@@ -1561,8 +1561,8 @@ function Get-ReportDescription {
 function Get-SummaryDivHeader {
 
     param (
-        [string]$GroupBy,
-        [string]$Split
+        [String]$GroupBy,
+        [String]$Split
     )
 
     if ( $GroupBy -eq $Split ) {
@@ -1584,7 +1584,7 @@ function Get-SummaryDivHeader {
 function Get-SummaryTableHeader {
     param (
         [int]$RecurseDepth,
-        [string]$GroupBy
+        [String]$GroupBy
     )
 
     switch ($GroupBy) {
@@ -1635,8 +1635,8 @@ function Group-AccountPermissionReference {
 
     param (
         [string[]]$ID,
-        [hashtable]$AceGuidByID,
-        [hashtable]$AceByGuid
+        [Hashtable]$AceGuidByID,
+        [Hashtable]$AceByGuid
     )
 
     ForEach ($Identity in ($ID | Sort-Object)) {
@@ -1672,9 +1672,9 @@ function Group-ItemPermissionReference {
         $AceGUIDsByPath,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
-        [hashtable]$Property = @{}##,
-        ##[hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
-        ##[hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
+        [Hashtable]$Property = @{}##,
+        ##[Hashtable]$IdByShortName = [Hashtable]::Synchronized(@{}),
+        ##[Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
     )
 
     ForEach ($ItemPath in $SortedPath) {
@@ -1703,8 +1703,8 @@ function Group-TargetPermissionReference {
 
     param (
 
-        [hashtable]$TargetPath,
-        [hashtable]$Children,
+        [Hashtable]$TargetPath,
+        [Hashtable]$Children,
         $PrincipalsByResolvedID,
         $AceGUIDsByResolvedID,
         $ACEsByGUID,
@@ -1713,7 +1713,7 @@ function Group-TargetPermissionReference {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item'
+        [String]$GroupBy = 'item'
 
     )
 
@@ -1737,7 +1737,7 @@ function Group-TargetPermissionReference {
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
-                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
                     $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
@@ -1837,7 +1837,7 @@ function Group-TargetPermissionReference {
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
-                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[string]]::new()
+                    $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
 
@@ -1870,7 +1870,7 @@ function SizeOfObj {
     } elseif ($null -eq $thevalue) {
         return 0
     } elseif ($thevalue.GetType().Name -eq 'String') {
-        $returnval = ([System.Text.Encoding]::Default).GetByteCount([string]$thevalue)
+        $returnval = ([System.Text.Encoding]::Default).GetByteCount([String]$thevalue)
     } elseif (
         $type.IsArray -and
         $type.GetElementType().IsValueType
@@ -1926,7 +1926,7 @@ while ($i -lt $n) {
     $Test[$i] = [pscustomobject]@{prop1 = 'blah'}
     $i++
 }
-$Size = (SizeOf -t [hashtable] -value $Test)/1KB
+$Size = (SizeOf -t [Hashtable] -value $Test)/1KB
 "$Size KiB"
 #>
 }
@@ -1966,14 +1966,14 @@ function Out-PermissionDetailReport {
 
     param (
         [int[]]$Detail,
-        [hashtable]$ReportObject,
+        [Hashtable]$ReportObject,
         [scriptblock[]]$DetailExport,
-        [string]$Format,
-        [string]$OutputDir,
+        [String]$Format,
+        [String]$OutputDir,
         [cultureinfo]$Culture,
         [string[]]$DetailString,
-        [string]$FileName,
-        [string]$FormatToReturn = 'js',
+        [String]$FileName,
+        [String]$FormatToReturn = 'js',
         [int]$LevelToReturn = 10
     )
 
@@ -2022,9 +2022,9 @@ function Resolve-GroupByParameter {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
-        [hashtable]$HowToSplit
+        [Hashtable]$HowToSplit
 
     )
 
@@ -2052,38 +2052,38 @@ function Resolve-IdentityReferenceDomainDNS {
 
     param (
 
-        [string]$IdentityReference,
+        [String]$IdentityReference,
 
         [object]$ItemPath,
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{}))
 
     )
 
@@ -2228,8 +2228,8 @@ function Select-PermissionTableProperty {
     param (
         $InputObject,
         $IgnoreDomain,
-        [hashtable]$OutputHash = [hashtable]::Synchronized(@{}),
-        [string]$GroupBy
+        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{}),
+        [String]$GroupBy
     )
 
     switch ($GroupBy) {
@@ -2351,7 +2351,7 @@ function Add-CacheItem {
 
     param (
 
-        [hashtable]$Cache,
+        [Hashtable]$Cache,
 
         $Key,
 
@@ -2421,25 +2421,25 @@ function Expand-Permission {
         $ACEsByGUID,
         $PrincipalsByResolvedID,
         $ACLsByPath,
-        [hashtable]$TargetPath,
-        [hashtable]$Children,
+        [Hashtable]$TargetPath,
+        [Hashtable]$Children,
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -2546,21 +2546,21 @@ function Expand-PermissionTarget {
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
 
         # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [string]$DebugOutputStream = 'Silent',
+        [String]$DebugOutputStream = 'Silent',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$ThisHostname = (HOSTNAME.EXE),
+        [String]$ThisHostname = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        [hashtable]$TargetPath
+        [Hashtable]$TargetPath
 
     )
 
@@ -2585,7 +2585,7 @@ function Expand-PermissionTarget {
         WhoAmI       = $WhoAmI
     }
 
-    [hashtable]$Output = [hashtable]::Synchronized(@{})
+    [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
         LogMsgCache       = $LogMsgCache
@@ -2646,9 +2646,9 @@ function Find-ResolvedIDsWithAccess {
 
     param (
         $ItemPath,
-        [hashtable]$AceGUIDsByPath,
-        [hashtable]$ACEsByGUID,
-        [hashtable]$PrincipalsByResolvedID
+        [Hashtable]$AceGUIDsByPath,
+        [Hashtable]$ACEsByGUID,
+        [Hashtable]$PrincipalsByResolvedID
     )
 
     $IDsWithAccess = @{}
@@ -2694,14 +2694,14 @@ function Find-ServerFqdn {
         [string[]]$Known,
 
         # File paths whose server FQDNs to include in the output
-        [hashtable]$TargetPath,
+        [Hashtable]$TargetPath,
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -2776,7 +2776,7 @@ function Format-Permission {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
         # File formats to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -2784,7 +2784,7 @@ function Format-Permission {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru',
+        [String]$OutputFormat = 'passthru',
 
         [cultureinfo]$Culture = (Get-Culture)
 
@@ -2944,22 +2944,22 @@ function Get-AccessControlList {
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
-        [hashtable]$TargetPath,
+        [Hashtable]$TargetPath,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
 
         # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$TodaysHostname = (HOSTNAME.EXE),
+        [String]$TodaysHostname = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
@@ -2968,7 +2968,7 @@ function Get-AccessControlList {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [hashtable]$Output = [hashtable]::Synchronized(@{})
+        [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -3171,46 +3171,46 @@ function Get-CachedCimInstance {
     param (
 
         # Name of the computer to query via CIM
-        [string]$ComputerName,
+        [String]$ComputerName,
 
         # Name of the CIM class whose instances to return
-        [string]$ClassName,
+        [String]$ClassName,
 
         # Name of the CIM namespace containing the class
-        [string]$Namespace,
+        [String]$Namespace,
 
         # CIM query to run. Overrides ClassName if used (but not efficiently, so don't use both)
-        [string]$Query,
+        [String]$Query,
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         [Parameter(Mandatory)]
-        [string]$KeyProperty,
+        [String]$KeyProperty,
 
         [string[]]$CacheByProperty = $KeyProperty
 
@@ -3272,7 +3272,7 @@ function Get-CachedCimInstance {
 
         if ($CimInstance) {
 
-            $InstanceCache = [hashtable]::Synchronized(@{})
+            $InstanceCache = [Hashtable]::Synchronized(@{})
 
             ForEach ($Prop in $CacheByProperty) {
 
@@ -3304,34 +3304,34 @@ function Get-CachedCimSession {
     param (
 
         # Name of the computer to query via CIM
-        [string]$ComputerName,
+        [String]$ComputerName,
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{}))
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
     )
 
     $LogParams = @{
@@ -3358,7 +3358,7 @@ function Get-CachedCimSession {
     } else {
 
         Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
-        $CimCache[$ComputerName] = [hashtable]::Synchronized(@{})
+        $CimCache[$ComputerName] = [Hashtable]::Synchronized(@{})
 
     }
 
@@ -3369,7 +3369,7 @@ function Get-CachedCimSession {
         $ComputerName -eq "$ThisFqdn." -or
         $ComputerName -eq 'localhost' -or
         $ComputerName -eq '127.0.0.1' -or
-        [string]::IsNullOrEmpty($ComputerName)
+        [String]::IsNullOrEmpty($ComputerName)
     ) {
         Write-LogMsg @LogParams -Text '$CimSession = New-CimSession'
         $CimSession = New-CimSession
@@ -3392,55 +3392,55 @@ function Get-PermissionPrincipal {
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of security principals keyed by resolved identity reference. END STATE
-        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$PrincipalsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
-        [hashtable]$ACEsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$ACEsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
         Defaults to an empty thread-safe hashtable
         #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         <#
         Do not get group members (only report the groups themselves)
@@ -3456,7 +3456,7 @@ function Get-PermissionPrincipal {
 
         # The current domain
         # Can be passed as a parameter to reduce calls to Get-CurrentDomain
-        [string]$CurrentDomain = (Get-CurrentDomain)
+        [String]$CurrentDomain = (Get-CurrentDomain)
 
     )
 
@@ -3557,7 +3557,7 @@ function Get-PrtgXmlSensorOutput {
         $NtfsIssues
     )
 
-    $Channels = [System.Collections.Generic.List[string]]::new()
+    $Channels = [System.Collections.Generic.List[String]]::new()
 
 
     # Build our XML output formatted for PRTG.
@@ -3646,49 +3646,49 @@ function Initialize-Cache {
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
         Defaults to an empty thread-safe hashtable
         #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -3768,7 +3768,7 @@ function Invoke-PermissionCommand {
 
     param (
 
-        [string]$Command
+        [String]$Command
 
     )
 
@@ -3828,7 +3828,7 @@ function Out-PermissionReport {
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         # Expects an NTAccount Name (e.g. DOMAIN\user)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # FQDN of the computer running the script
         $ThisFqdn,
@@ -3845,11 +3845,11 @@ function Out-PermissionReport {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$AceByGUID,
-        [hashtable]$AclByPath,
-        [hashtable]$PrincipalByID,
+        [Hashtable]$AceByGUID,
+        [Hashtable]$AclByPath,
+        [Hashtable]$PrincipalByID,
         $BestPracticeIssue,
-        [hashtable]$Parent,
+        [Hashtable]$Parent,
 
         <#
         Level of detail to export to file
@@ -3880,7 +3880,7 @@ function Out-PermissionReport {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru',
+        [String]$OutputFormat = 'passthru',
 
         <#
         How to group the permissions in the output stream and within each exported file
@@ -3899,7 +3899,7 @@ function Out-PermissionReport {
             account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
         <#
         How to split up the exported files:
@@ -4231,7 +4231,7 @@ function Out-PermissionReport {
 
                 $ReportObjects = @{}
 
-                [hashtable]$Params = $PSBoundParameters
+                [Hashtable]$Params = $PSBoundParameters
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
@@ -4307,7 +4307,7 @@ function Remove-CachedCimSession {
     param (
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{}))
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{}))
 
     )
 
@@ -4334,62 +4334,62 @@ function Resolve-AccessControlList {
     param (
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
+        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of access control entries keyed by GUID generated in this function
-        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
-        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
         Defaults to an empty thread-safe hashtable
         #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -4586,7 +4586,7 @@ function Resolve-Ace {
         [object]$ACE,
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
+        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
 
         [Parameter(
             ValueFromPipeline
@@ -4594,62 +4594,62 @@ function Resolve-Ace {
         [object]$ItemPath,
 
         # Cache of access control entries keyed by GUID generated in this function
-        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
-        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
         Defaults to an empty thread-safe hashtable
         #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         <#
     Hostname of the computer running this function.
 
     Can be provided as a string to avoid calls to HOSTNAME.EXE
     #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
     FQDN of the computer running this function.
 
     Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
     #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         [string[]]$ACEPropertyName = (Get-Member -InputObject $ACE -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
 
         # Will be set as the Source property of the output object.
         # Intended to reflect permissions resulting from Ownership rather than Discretionary Access Lists
-        [string]$Source,
+        [String]$Source,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
@@ -4813,59 +4813,59 @@ function Resolve-Acl {
         [object]$ItemPath,
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
+        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
 
         # Cache of access control entries keyed by GUID generated in this function
-        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
-        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
         Defaults to an empty thread-safe hashtable
         #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         [string[]]$ACEPropertyName = (Get-Member -InputObject $ItemPath -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
 
@@ -4902,30 +4902,30 @@ function Resolve-Folder {
     param (
 
         # Path of the folder(s) to resolve to all their associated UNC paths
-        [string]$TargetPath,
+        [String]$TargetPath,
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$ThisHostname = (HOSTNAME.EXE),
+        [String]$ThisHostname = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{}))
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
     )
 
     $LogParams = @{
@@ -5021,7 +5021,7 @@ function Resolve-FormatParameter {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru'
+        [String]$OutputFormat = 'passthru'
 
     )
 
@@ -5050,29 +5050,29 @@ function Resolve-PermissionTarget {
         [System.IO.DirectoryInfo[]]$TargetPath,
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$ThisHostname = (HOSTNAME.EXE),
+        [String]$ThisHostname = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
-        [hashtable]$Output = [hashtable]::Synchronized(@{}),
+        [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -5105,7 +5105,7 @@ function Select-UniquePrincipal {
     param (
 
         # Cache of security principals keyed by resolved identity reference
-        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$PrincipalsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
@@ -5119,11 +5119,11 @@ function Select-UniquePrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        [Hashtable]$IdByShortName = [Hashtable]::Synchronized(@{}),
 
-        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{}),
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
-        [hashtable]$FilterContents = [hashtable]::Synchronized(@{})
+        [Hashtable]$FilterContents = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -5151,7 +5151,7 @@ function Select-UniquePrincipal {
         $ThisKnownUser = $IdByShortName[$ShortName]
 
         if ($null -eq $ThisKnownUser) {
-            $ThisKnownUser = [System.Collections.Generic.List[string]]::new()
+            $ThisKnownUser = [System.Collections.Generic.List[String]]::new()
         }
 
         $null = $ThisKnownUser.Add($ThisID)
@@ -5169,6 +5169,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

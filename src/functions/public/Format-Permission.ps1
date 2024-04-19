@@ -16,7 +16,7 @@ function Format-Permission {
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
         # File formats to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -24,7 +24,7 @@ function Format-Permission {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru',
+        [String]$OutputFormat = 'passthru',
 
         [cultureinfo]$Culture = (Get-Culture)
 

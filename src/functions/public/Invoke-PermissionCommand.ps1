@@ -2,7 +2,7 @@ function Invoke-PermissionCommand {
 
     param (
 
-        [string]$Command
+        [String]$Command
 
     )
 

@@ -6,62 +6,62 @@ function Resolve-AccessControlList {
     param (
 
         # Cache of access control lists keyed by path
-        [hashtable]$ACLsByPath = [hashtable]::Synchronized(@{}),
+        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of access control entries keyed by GUID generated in this function
-        [hashtable]$ACEsByGUID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [hashtable]$AceGUIDsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
-        [hashtable]$AceGUIDsByPath = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [hashtable]$CimCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
         Defaults to an empty thread-safe hashtable
         #>
-        [hashtable]$DirectoryEntryCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [hashtable]$DomainsByFqdn = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsByNetbios = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [hashtable]$DomainsBySid = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
 
         <#
         Hostname of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE
         #>
-        [string]$ThisHostName = (HOSTNAME.EXE),
+        [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
         FQDN of the computer running this function.
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,

@@ -30,7 +30,7 @@ function Out-PermissionReport {
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         # Expects an NTAccount Name (e.g. DOMAIN\user)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # FQDN of the computer running the script
         $ThisFqdn,
@@ -47,11 +47,11 @@ function Out-PermissionReport {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$AceByGUID,
-        [hashtable]$AclByPath,
-        [hashtable]$PrincipalByID,
+        [Hashtable]$AceByGUID,
+        [Hashtable]$AclByPath,
+        [Hashtable]$PrincipalByID,
         $BestPracticeIssue,
-        [hashtable]$Parent,
+        [Hashtable]$Parent,
 
         <#
         Level of detail to export to file
@@ -82,7 +82,7 @@ function Out-PermissionReport {
 
         # Type of output returned to the output stream
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
-        [string]$OutputFormat = 'passthru',
+        [String]$OutputFormat = 'passthru',
 
         <#
         How to group the permissions in the output stream and within each exported file
@@ -101,7 +101,7 @@ function Out-PermissionReport {
             account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
         <#
         How to split up the exported files:
@@ -433,7 +433,7 @@ function Out-PermissionReport {
 
                 $ReportObjects = @{}
 
-                [hashtable]$Params = $PSBoundParameters
+                [Hashtable]$Params = $PSBoundParameters
                 $Params['TargetPath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split

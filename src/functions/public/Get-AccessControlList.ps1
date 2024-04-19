@@ -7,22 +7,22 @@ function Get-AccessControlList {
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
-        [hashtable]$TargetPath,
+        [Hashtable]$TargetPath,
 
         # Number of asynchronous threads to use
         [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
 
         # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [string]$DebugOutputStream = 'Debug',
+        [String]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$TodaysHostname = (HOSTNAME.EXE),
+        [String]$TodaysHostname = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [hashtable]$LogMsgCache = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
@@ -31,7 +31,7 @@ function Get-AccessControlList {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [hashtable]$Output = [hashtable]::Synchronized(@{})
+        [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     )
 

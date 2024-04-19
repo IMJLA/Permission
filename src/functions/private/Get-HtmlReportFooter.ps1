@@ -5,20 +5,20 @@ function Get-HtmlReportFooter {
         [System.Diagnostics.Stopwatch]$StopWatch,
 
         # NT Account caption (CONTOSO\User) of the account running this function
-        [string]$WhoAmI = (whoami.EXE),
+        [String]$WhoAmI = (whoami.EXE),
 
         <#
         FQDN of the computer running this function
 
         Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
         #>
-        [string]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         [uint64]$ItemCount,
 
         [uint64]$TotalBytes,
 
-        [string]$ReportInstanceId,
+        [String]$ReportInstanceId,
 
         [UInt64]$PermissionCount,
 
@@ -26,9 +26,9 @@ function Get-HtmlReportFooter {
 
         [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second'),
 
-        [hashtable]$AceByGUID,
+        [Hashtable]$AceByGUID,
 
-        [hashtable]$AclByPath
+        [Hashtable]$AclByPath
     )
 
     $null = $StopWatch.Stop()

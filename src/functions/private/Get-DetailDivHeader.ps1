@@ -1,8 +1,8 @@
 function Get-DetailDivHeader {
 
     param (
-        [string]$GroupBy,
-        [string]$Split
+        [String]$GroupBy,
+        [String]$Split
     )
 
     if ( $GroupBy -eq $Split ) {

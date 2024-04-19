@@ -5,9 +5,9 @@ function Group-ItemPermissionReference {
         $AceGUIDsByPath,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
-        [hashtable]$Property = @{}##,
-        ##[hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
-        ##[hashtable]$ShortNameByID = [hashtable]::Synchronized(@{})
+        [Hashtable]$Property = @{}##,
+        ##[Hashtable]$IdByShortName = [Hashtable]::Synchronized(@{}),
+        ##[Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
     )
 
     ForEach ($ItemPath in $SortedPath) {

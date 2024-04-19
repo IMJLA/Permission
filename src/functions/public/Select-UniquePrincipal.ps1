@@ -3,7 +3,7 @@ function Select-UniquePrincipal {
     param (
 
         # Cache of security principals keyed by resolved identity reference
-        [hashtable]$PrincipalsByResolvedID = ([hashtable]::Synchronized(@{})),
+        [Hashtable]$PrincipalsByResolvedID = ([Hashtable]::Synchronized(@{})),
 
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
@@ -17,11 +17,11 @@ function Select-UniquePrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        [hashtable]$IdByShortName = [hashtable]::Synchronized(@{}),
+        [Hashtable]$IdByShortName = [Hashtable]::Synchronized(@{}),
 
-        [hashtable]$ShortNameByID = [hashtable]::Synchronized(@{}),
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
-        [hashtable]$FilterContents = [hashtable]::Synchronized(@{})
+        [Hashtable]$FilterContents = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -49,7 +49,7 @@ function Select-UniquePrincipal {
         $ThisKnownUser = $IdByShortName[$ShortName]
 
         if ($null -eq $ThisKnownUser) {
-            $ThisKnownUser = [System.Collections.Generic.List[string]]::new()
+            $ThisKnownUser = [System.Collections.Generic.List[String]]::new()
         }
 
         $null = $ThisKnownUser.Add($ThisID)

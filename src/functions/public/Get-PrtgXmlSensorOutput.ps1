@@ -3,7 +3,7 @@ function Get-PrtgXmlSensorOutput {
         $NtfsIssues
     )
 
-    $Channels = [System.Collections.Generic.List[string]]::new()
+    $Channels = [System.Collections.Generic.List[String]]::new()
 
 
     # Build our XML output formatted for PRTG.

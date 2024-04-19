@@ -24,7 +24,7 @@ function ConvertTo-FileList {
         #>
         [int[]]$Detail = @(0..10),
 
-        [string]$FileName
+        [String]$FileName
 
     )
 

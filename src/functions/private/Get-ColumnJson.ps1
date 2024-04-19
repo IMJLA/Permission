@@ -4,7 +4,7 @@ function Get-ColumnJson {
     param (
         $InputObject,
         [string[]]$PropNames,
-        [hashtable]$ColumnDefinition = @{
+        [Hashtable]$ColumnDefinition = @{
             'Inheritance' = @{
                 'width' = '1'
             }

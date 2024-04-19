@@ -1,7 +1,7 @@
 function Get-SummaryTableHeader {
     param (
         [int]$RecurseDepth,
-        [string]$GroupBy
+        [String]$GroupBy
     )
 
     switch ($GroupBy) {

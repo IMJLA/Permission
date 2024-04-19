@@ -2,14 +2,14 @@ function Out-PermissionDetailReport {
 
     param (
         [int[]]$Detail,
-        [hashtable]$ReportObject,
+        [Hashtable]$ReportObject,
         [scriptblock[]]$DetailExport,
-        [string]$Format,
-        [string]$OutputDir,
+        [String]$Format,
+        [String]$OutputDir,
         [cultureinfo]$Culture,
         [string[]]$DetailString,
-        [string]$FileName,
-        [string]$FormatToReturn = 'js',
+        [String]$FileName,
+        [String]$FormatToReturn = 'js',
         [int]$LevelToReturn = 10
     )
 

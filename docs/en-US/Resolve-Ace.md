@@ -136,7 +136,7 @@ Aliases:
 
 Required: False
 Position: 6
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -151,7 +151,7 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -181,7 +181,7 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -196,7 +196,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: [hashtable]::Synchronized(@{})
+Default value: [Hashtable]::Synchronized(@{})
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -211,7 +211,7 @@ Aliases:
 
 Required: False
 Position: 15
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -243,7 +243,7 @@ Aliases:
 
 Required: False
 Position: 7
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -258,7 +258,7 @@ Aliases:
 
 Required: False
 Position: 10
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -273,7 +273,7 @@ Aliases:
 
 Required: False
 Position: 8
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -288,7 +288,7 @@ Aliases:
 
 Required: False
 Position: 9
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -334,7 +334,7 @@ Aliases:
 
 Required: False
 Position: 14
-Default value: ([hashtable]::Synchronized(@{}))
+Default value: ([Hashtable]::Synchronized(@{}))
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

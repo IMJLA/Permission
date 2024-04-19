@@ -2,8 +2,8 @@ function Group-AccountPermissionReference {
 
     param (
         [string[]]$ID,
-        [hashtable]$AceGuidByID,
-        [hashtable]$AceByGuid
+        [Hashtable]$AceGuidByID,
+        [Hashtable]$AceByGuid
     )
 
     ForEach ($Identity in ($ID | Sort-Object)) {

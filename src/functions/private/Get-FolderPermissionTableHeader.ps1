@@ -2,8 +2,8 @@ function Get-FolderPermissionTableHeader {
     [OutputType([String])]
     param (
         $Group,
-        [string]$GroupID,
-        [string]$ShortestFolderPath
+        [String]$GroupID,
+        [String]$ShortestFolderPath
     )
     $Parent = $GroupID | Split-Path -Parent
     $Leaf = $Parent | Split-Path -Leaf -ErrorAction SilentlyContinue

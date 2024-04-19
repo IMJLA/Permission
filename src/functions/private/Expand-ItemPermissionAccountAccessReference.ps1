@@ -2,8 +2,8 @@ function Expand-ItemPermissionAccountAccessReference {
 
     param (
         $Reference,
-        [hashtable]$PrincipalByResolvedID,
-        [hashtable]$AceByGUID
+        [Hashtable]$PrincipalByResolvedID,
+        [Hashtable]$AceByGUID
     )
 
     ForEach ($PermissionRef in $Reference) {

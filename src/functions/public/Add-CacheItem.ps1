@@ -6,7 +6,7 @@ function Add-CacheItem {
 
     param (
 
-        [hashtable]$Cache,
+        [Hashtable]$Cache,
 
         $Key,
 

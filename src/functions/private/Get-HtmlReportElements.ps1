@@ -48,9 +48,9 @@ function Get-HtmlReportElements {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [hashtable]$AceByGUID,
-        [hashtable]$AclByPath,
-        [hashtable]$PrincipalByID,
+        [Hashtable]$AceByGUID,
+        [Hashtable]$AclByPath,
+        [Hashtable]$PrincipalByID,
 
         <#
         Level of detail to export to file
@@ -92,11 +92,11 @@ function Get-HtmlReportElements {
             account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
         #>
         [ValidateSet('account', 'item', 'none', 'target')]
-        [string]$GroupBy = 'item',
+        [String]$GroupBy = 'item',
 
-        [string]$Split,
+        [String]$Split,
 
-        [string]$FileName,
+        [String]$FileName,
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         $FormattedPermission,
@@ -111,7 +111,7 @@ function Get-HtmlReportElements {
         [string[]]$FileFormat,
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        [string]$OutputFormat
+        [String]$OutputFormat
 
     )
 
