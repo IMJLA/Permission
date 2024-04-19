@@ -21,6 +21,7 @@ BeforeDiscovery {
     }
     $commands = Get-Command @params
 
+    Update-Help -Module $env:BHProjectName
     ## When testing help, remember that help is cached at the beginning of each session.
     ## To test, restart session.
 }
