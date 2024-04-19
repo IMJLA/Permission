@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.595] - 2024-04-18 - troubleshoot build issues
+
 ## [0.0.589] - 2024-04-18 - troubleshoot build issues
 
 ## [0.0.593] - 2024-04-18 - update param types
