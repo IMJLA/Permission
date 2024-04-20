@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.602] - 2024-04-19 - bugfix groupby account with ignoredomain
+
 ## [0.0.601] - 2024-04-19 - bugfix implement ignoredomain in the summary table
 
 ## [0.0.600] - 2024-04-19 - implement ignoredomain

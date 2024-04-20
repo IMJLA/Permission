@@ -23,9 +23,6 @@ function ConvertTo-PermissionList {
 
     )
 
-    # TODO: Replace .Item.Path with GroupingProperty variable somehow
-    #$GroupingProperty = @($PermissionGrouping[0] | Get-Member -Type NoteProperty)[0].Name
-
     switch ($Format) {
 
         'csv' {
@@ -112,9 +109,10 @@ function ConvertTo-PermissionList {
 
                     'account' {
 
-                        ForEach ($Group in $PermissionGrouping) {
+                        ##ForEach ($Group in $PermissionGrouping) {
+                        ForEach ($GroupID in $Permission.Keys) {
 
-                            $GroupID = $Group.Account.ResolvedAccountName
+                            ##$GroupID = $Group.Account.ResolvedAccountName
                             $Heading = New-HtmlHeading "Folders accessible to $GroupID" -Level 6
                             $StartingPermissions = $Permission[$GroupID]
                             $Html = $StartingPermissions | ConvertTo-Html -Fragment
@@ -220,9 +218,10 @@ function ConvertTo-PermissionList {
 
                     'account' {
 
-                        ForEach ($Group in $PermissionGrouping) {
+                        ##ForEach ($Group in $PermissionGrouping) {
+                        ForEach ($GroupID in $Permission.Keys) {
 
-                            $GroupID = $Group.Account.ResolvedAccountName
+                            ##$GroupID = $Group.Account.ResolvedAccountName
                             $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
                             $StartingPermissions = $Permission[$GroupID]
 
