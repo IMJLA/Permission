@@ -47,7 +47,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
             ForEach ($Format in $Formats) {
@@ -76,7 +76,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
             ForEach ($Format in $Formats) {
@@ -130,7 +130,7 @@ function Format-Permission {
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)" # -Splitby none -GroupBy none
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)"# -Splitby target -GroupBy target
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
                     ForEach ($Format in $Formats) {

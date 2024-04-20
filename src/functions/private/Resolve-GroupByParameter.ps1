@@ -23,7 +23,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = "$GroupBy`s"
-            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1]")
+            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1] -IgnoreDomain `$args[2]")
         }
 
     }

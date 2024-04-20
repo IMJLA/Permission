@@ -2042,7 +2042,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = "$GroupBy`s"
-            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1]")
+            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1] -IgnoreDomain `$args[2]")
         }
 
     }
@@ -2185,14 +2185,21 @@ function Select-AccountTableProperty {
     # For the HTML table
 
     param (
-        $InputObject
+        $InputObject,
+        [string[]]$IgnoreDomain
     )
 
     ForEach ($Object in $InputObject) {
 
+        $AccountName = $Object.Account.ResolvedAccountName
+
+        ForEach ($IgnoreThisDomain in $IgnoreDomain) {
+            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+        }
+
         # This appears to be what determines the order of columns in the html report
         [PSCustomObject]@{
-            Account     = $Object.Account.ResolvedAccountName
+            Account     = $AccountName
             Name        = $Object.Account.Name
             DisplayName = $Object.Account.DisplayName
             Description = $Object.Account.Description
@@ -2209,7 +2216,8 @@ function Select-ItemTableProperty {
 
     param (
         $InputObject,
-        [cultureinfo]$Culture = (Get-Culture)
+        [cultureinfo]$Culture = (Get-Culture),
+        [string[]]$IgnoreDomain #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
     )
 
     ForEach ($Object in $InputObject) {
@@ -2841,7 +2849,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
             ForEach ($Format in $Formats) {
@@ -2870,7 +2878,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
             ForEach ($Format in $Formats) {
@@ -2924,7 +2932,7 @@ function Format-Permission {
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)" # -Splitby none -GroupBy none
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)"# -Splitby target -GroupBy target
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
 
                     ForEach ($Format in $Formats) {
@@ -5209,6 +5217,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

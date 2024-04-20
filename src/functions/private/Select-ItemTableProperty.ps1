@@ -4,7 +4,8 @@ function Select-ItemTableProperty {
 
     param (
         $InputObject,
-        [cultureinfo]$Culture = (Get-Culture)
+        [cultureinfo]$Culture = (Get-Culture),
+        [string[]]$IgnoreDomain #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
     )
 
     ForEach ($Object in $InputObject) {
