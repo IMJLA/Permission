@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.600] - 2024-04-19 - implement ignoredomain
+
 ## [0.0.599] - 2024-04-18 - ensuring non-updateable help is fixed
 
 ## [0.0.598] - 2024-04-18 - rebuild help
