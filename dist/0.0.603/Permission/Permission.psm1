@@ -654,6 +654,7 @@ function ConvertTo-PermissionList {
 
                         ##ForEach ($Group in $PermissionGrouping) {
                         ForEach ($GroupID in $Permission.Keys) {
+                            # TODO: $Permission.Keys | Sort-Object would result in this being sorted, but this wasn't needed previously.  Investigate to avoid redundant sorting.
 
                             ##$GroupID = $Group.Account.ResolvedAccountName
                             $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
@@ -2193,7 +2194,7 @@ function Select-AccountTableProperty {
         $AccountName = $Object.Account.ResolvedAccountName
 
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
         }
 
         # This appears to be what determines the order of columns in the html report
@@ -2250,7 +2251,7 @@ function Select-PermissionTableProperty {
                 $AccountName = $Object.Account.ResolvedAccountName
 
                 ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                    $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+                    $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
                 }
 
                 ForEach ($ACE in $Object.Access) {
@@ -2263,7 +2264,7 @@ function Select-PermissionTableProperty {
                     #    $GroupString = '[self]'
                     #} else {
                     ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '')
+                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
                     }
                     #}
 
@@ -2297,7 +2298,7 @@ function Select-PermissionTableProperty {
                     $AccountName = $ACE.Account.ResolvedAccountName
 
                     ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
                     }
 
                     Add-CacheItem -Cache $Accounts -Key $AccountName -Value $ACE -Type $Type
@@ -2316,7 +2317,7 @@ function Select-PermissionTableProperty {
                         #    $GroupString = '[self]'
                         #} else {
                         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                            $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '')
+                            $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
                         }
                         #}
 
@@ -2356,8 +2357,8 @@ function Select-PermissionTableProperty {
                     #    $GroupString = '[self]'
                     #} else {
                     ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
-                        $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
+                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
+                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
                     }
                     #}
 
@@ -5216,6 +5217,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

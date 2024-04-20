@@ -12,7 +12,7 @@ function Select-AccountTableProperty {
         $AccountName = $Object.Account.ResolvedAccountName
 
         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
         }
 
         # This appears to be what determines the order of columns in the html report

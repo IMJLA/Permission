@@ -19,7 +19,7 @@ function Select-PermissionTableProperty {
                 $AccountName = $Object.Account.ResolvedAccountName
 
                 ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                    $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+                    $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
                 }
 
                 ForEach ($ACE in $Object.Access) {
@@ -32,7 +32,7 @@ function Select-PermissionTableProperty {
                     #    $GroupString = '[self]'
                     #} else {
                     ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '')
+                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
                     }
                     #}
 
@@ -66,7 +66,7 @@ function Select-PermissionTableProperty {
                     $AccountName = $ACE.Account.ResolvedAccountName
 
                     ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
+                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
                     }
 
                     Add-CacheItem -Cache $Accounts -Key $AccountName -Value $ACE -Type $Type
@@ -85,7 +85,7 @@ function Select-PermissionTableProperty {
                         #    $GroupString = '[self]'
                         #} else {
                         ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                            $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '')
+                            $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
                         }
                         #}
 
@@ -125,8 +125,8 @@ function Select-PermissionTableProperty {
                     #    $GroupString = '[self]'
                     #} else {
                     ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '')
-                        $GroupString = $GroupString -replace "$IgnoreThisDomain\\", ''
+                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
+                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
                     }
                     #}
 
