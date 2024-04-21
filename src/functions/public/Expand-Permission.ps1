@@ -116,6 +116,8 @@ function Expand-Permission {
 
     }
 
+    Write-Progress @Progress -Completed
+
     return [PSCustomObject]@{
         AccountPermissions = $AccountPermissions
         FlatPermissions    = $FlatPermissions

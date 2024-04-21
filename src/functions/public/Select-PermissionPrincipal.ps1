@@ -111,4 +111,6 @@ function Select-PermissionPrincipal {
 
     }
 
+    Write-Progress @Progress -Completed
+
 }
