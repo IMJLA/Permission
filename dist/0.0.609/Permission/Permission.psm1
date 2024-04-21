@@ -5281,13 +5281,13 @@ function Select-PermissionPrincipal {
                     $true
                 } else {
                     ForEach ($RegEx in $IncludeAccount) {
-                        if ($AccountName -match $RegEx) {
+                        if ($ThisID -match $RegEx) {
                             # If the account name matches one of the regular expressions, then return $true here
                             # This will be reversed into a $false by the -not operator above
                             # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
                             $true
                         } else {
-                            $IncludeFilterContents[$AccountName] = $AccountName
+                            $IncludeFilterContents[$ThisID] = $ThisID
                         }
                     }
                 }
@@ -5315,6 +5315,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

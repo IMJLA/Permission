@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.609] - 2024-04-21 - bugfix wrong var name should not be $AccountName
+
 ## [0.0.608] - 2024-04-21 - implement IncludeAccount and rename Select-UniquePrincipal to Select-PermissionPrincipal and add more Write-Progress
 
 ## [0.0.607] - 2024-04-21 - remove debug pause

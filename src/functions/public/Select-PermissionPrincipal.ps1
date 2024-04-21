@@ -86,13 +86,13 @@ function Select-PermissionPrincipal {
                     $true
                 } else {
                     ForEach ($RegEx in $IncludeAccount) {
-                        if ($AccountName -match $RegEx) {
+                        if ($ThisID -match $RegEx) {
                             # If the account name matches one of the regular expressions, then return $true here
                             # This will be reversed into a $false by the -not operator above
                             # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
                             $true
                         } else {
-                            $IncludeFilterContents[$AccountName] = $AccountName
+                            $IncludeFilterContents[$ThisID] = $ThisID
                         }
                     }
                 }
