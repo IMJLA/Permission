@@ -2035,14 +2035,14 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = 'Access'
-            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -Culture `$args[1]")
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2]")
         }
 
     } else {
 
         return @{
             Property = "$GroupBy`s"
-            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1] -IgnoreDomain `$args[2]")
+            Script   = [scriptblock]::create("Select-$GroupBy`TableProperty -InputObject `$args[0] -Culture `$args[1] -ShortNameById `$args[2]")
         }
 
     }
@@ -2186,25 +2186,32 @@ function Select-AccountTableProperty {
 
     param (
         $InputObject,
-        [string[]]$IgnoreDomain
+        [cultureinfo]$Culture = (Get-Culture), #Unused but exists here for parameter consistency with Select-AccountTableProperty
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
     )
 
     ForEach ($Object in $InputObject) {
 
-        $AccountName = $Object.Account.ResolvedAccountName
+        $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
-        ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
-        }
+        if ($AccountName) {
 
-        # This appears to be what determines the order of columns in the html report
-        [PSCustomObject]@{
-            Account     = $AccountName
-            Name        = $Object.Account.Name
-            DisplayName = $Object.Account.DisplayName
-            Description = $Object.Account.Description
-            Department  = $Object.Account.Department
-            Title       = $Object.Account.Title
+            $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
+
+            if ($GroupString) {
+
+                # This appears to be what determines the order of columns in the html report
+                [PSCustomObject]@{
+                    Account     = $AccountName
+                    Name        = $Object.Account.Name
+                    DisplayName = $Object.Account.DisplayName
+                    Description = $Object.Account.Description
+                    Department  = $Object.Account.Department
+                    Title       = $Object.Account.Title
+                }
+
+            }
+
         }
 
     }
@@ -2217,14 +2224,26 @@ function Select-ItemTableProperty {
     param (
         $InputObject,
         [cultureinfo]$Culture = (Get-Culture),
-        [string[]]$IgnoreDomain #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}) #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
     )
 
     ForEach ($Object in $InputObject) {
 
-        [PSCustomObject]@{
-            Folder      = $Object.Item.Path
-            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
+        $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+
+        if ($AccountNames) {
+
+            $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
+
+            if ($GroupString) {
+
+                [PSCustomObject]@{
+                    Folder      = $Object.Item.Path
+                    Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
+                }
+
+            }
+
         }
 
     }
@@ -2235,9 +2254,9 @@ function Select-PermissionTableProperty {
     # For the HTML table
     param (
         $InputObject,
-        $IgnoreDomain,
-        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{}),
-        [String]$GroupBy
+        [String]$GroupBy,
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
+        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{})
     )
 
     $Type = [PSCustomObject]
@@ -2248,38 +2267,36 @@ function Select-PermissionTableProperty {
 
             ForEach ($Object in $InputObject) {
 
-                $AccountName = $Object.Account.ResolvedAccountName
+                $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
-                ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                    $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
-                }
+                if ($AccountName) {
 
-                ForEach ($ACE in $Object.Access) {
+                    ForEach ($ACE in $Object.Access) {
 
-                    # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                    $GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
+                        ##$GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+                        $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
 
-                    # ToDo: param to allow setting [self] instead of the objects own name for this property
-                    #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
-                    #    $GroupString = '[self]'
-                    #} else {
-                    ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
+                        if ($GroupString) {
+                            # ToDo: param to allow setting [self] instead of the objects own name for this property
+                            #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
+                            #    $GroupString = '[self]'
+                            #}
+
+                            $Value = [pscustomobject]@{
+                                'Path'                 = $ACE.Path
+                                'Access'               = $ACE.Access.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                'Due to Membership In' = $GroupString
+                                'Source of Access'     = $ACE.Access.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                            }
+
+                            Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
+
+                        }
+
                     }
-                    #}
-
-                    $Value = [pscustomobject]@{
-                        'Path'                 = $ACE.Path
-                        'Access'               = ($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
-                        'Due to Membership In' = $GroupString
-                        'Source of Access'     = ($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
-                    }
-
-                    Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
 
                 }
-
-
 
             }
             break
@@ -2295,40 +2312,49 @@ function Select-PermissionTableProperty {
                 # Apply the -IgnoreDomain parameter
                 ForEach ($ACE in $Object.Access) {
 
-                    $AccountName = $ACE.Account.ResolvedAccountName
+                    $AccountName = $ShortNameByID[$ACE.Account.ResolvedAccountName]
 
-                    ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
+                    # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
+                    # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
+                    # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
+                    if ($AccountName) {
+
+                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
+                        ##$GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+                        $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
+
+                        # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
+                        # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
+                        # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
+                        if ($GroupString) {
+                            Add-CacheItem -Cache $Accounts -Key $AccountName -Value $ACE -Type $Type
+                        }
+
                     }
-
-                    Add-CacheItem -Cache $Accounts -Key $AccountName -Value $ACE -Type $Type
 
                 }
 
-                $OutputHash[$Object.Item.Path] = ForEach ($AccountName in $Accounts.Keys) {
+                $OutputHash[$Object.Item.Path] = ForEach ($ResolvedName in $Accounts.Keys) {
 
-                    ForEach ($ACE in $Accounts[$AccountName]) {
+                    ForEach ($AceList in $Accounts[$ResolvedName]) {
 
-                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                        $GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+                        ForEach ($ACE in $AceList) {
 
-                        # ToDo: param to allow setting [self] instead of the objects own name for this property
-                        #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
-                        #    $GroupString = '[self]'
-                        #} else {
-                        ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                            $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
-                        }
-                        #}
+                            # ToDo: param to allow setting [self] instead of the objects own name for this property
+                            #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
+                            #    $GroupString = '[self]'
+                            #}
 
-                        [pscustomobject]@{
-                            'Account'              = $AccountName
-                            'Access'               = ($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
-                            'Due to Membership In' = $GroupString
-                            'Source of Access'     = ($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
-                            'Name'                 = $ACE.Account.Name
-                            'Department'           = $ACE.Account.Department
-                            'Title'                = $ACE.Account.Title
+                            [pscustomobject]@{
+                                'Account'              = $ShortNameByID[$ResolvedName]
+                                'Access'               = $ACE.Access.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                'Due to Membership In' = $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
+                                'Source of Access'     = $ACE.Access.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                'Name'                 = $ACE.Account.Name
+                                'Department'           = $ACE.Account.Department
+                                'Title'                = $ACE.Account.Title
+                            }
+
                         }
 
                     }
@@ -2343,37 +2369,51 @@ function Select-PermissionTableProperty {
         # 'none' and 'target' behave the same
         default {
 
+            $i = 0
+
             ForEach ($Object in $InputObject) {
 
-                $OutputHash[[guid]::NewGuid()] = ForEach ($ACE in $Object) {
+                $OutputHash[$i] = ForEach ($ACE in $Object) {
 
-                    $AccountName = $ACE.ResolvedAccountName
+                    $AccountName = $ShortNameByID[$ACE.ResolvedAccountName]
 
-                    # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                    $GroupString = ($ACE.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+                    # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
+                    # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
+                    # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
+                    if ($AccountName) {
 
-                    # ToDo: param to allow setting [self] instead of the objects own name for this property
-                    #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
-                    #    $GroupString = '[self]'
-                    #} else {
-                    ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-                        $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
-                        $GroupString = $GroupString.Replace("$IgnoreThisDomain\", '', 5)
-                    }
-                    #}
+                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
+                        #$GroupString = ($ACE.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
+                        $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
 
-                    [pscustomobject]@{
-                        'Item'                 = $Object.ItemPath
-                        'Account'              = $AccountName
-                        'Access'               = ($ACE.Access | Sort-Object -Unique) -join ' ; '
-                        'Due to Membership In' = $GroupString
-                        'Source of Access'     = ($ACE.SourceOfAccess | Sort-Object -Unique) -join ' ; '
-                        'Name'                 = $ACE.Name
-                        'Department'           = $ACE.Department
-                        'Title'                = $ACE.Title
+                        # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
+                        # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
+                        # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
+                        if ($GroupString) {
+
+                            # ToDo: param to allow setting [self] instead of the objects own name for this property
+                            #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
+                            #    $GroupString = '[self]'
+                            #}
+
+                            [pscustomobject]@{
+                                'Item'                 = $Object.ItemPath
+                                'Account'              = $AccountName
+                                'Access'               = $ACE.Access # | Sort-Object -Unique) -join ' ; '
+                                'Due to Membership In' = $GroupString
+                                'Source of Access'     = $ACE.SourceOfAccess # | Sort-Object -Unique) -join ' ; '
+                                'Name'                 = $ACE.Name
+                                'Department'           = $ACE.Department
+                                'Title'                = $ACE.Title
+                            }
+
+                        }
+
                     }
 
                 }
+
+                $i = $i + 1
 
             }
             break
@@ -2828,7 +2868,9 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$OutputFormat = 'passthru',
 
-        [cultureinfo]$Culture = (Get-Culture)
+        [cultureinfo]$Culture = (Get-Culture),
+
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -2850,7 +2892,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 
             ForEach ($Format in $Formats) {
 
@@ -2879,7 +2921,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 
             ForEach ($Format in $Formats) {
 
@@ -2932,8 +2974,8 @@ function Format-Permission {
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)" # -Splitby none -GroupBy none
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)"# -Splitby target -GroupBy target
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 
                     ForEach ($Format in $Formats) {
 
@@ -5171,21 +5213,49 @@ function Select-UniquePrincipal {
 
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
-        [Hashtable]$FilterContents = [Hashtable]::Synchronized(@{})
+        [Hashtable]$ExcludeFilterContents = [Hashtable]::Synchronized(@{}),
+
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
 
     )
+
+    $Type = [string]
 
     ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
 
         if (
+
             # Exclude the objects whose names match the regular expressions specified in the parameters
             [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        $FilterContents[$ThisID] = $ThisID
+                        $ExcludeFilterContents[$ThisID] = $ThisID
                         $true
                     }
                 }
+            ) -or
+
+            # Include the objects whose names match the regular expressions specified in the -IncludeAccount parameter
+            -not [bool]$(
+
+                if ($IncludeAccount.Count -eq 0) {
+                    # If no regular expressions were specified, then return $true here
+                    # This will be reversed into a $false by the -not operator above
+                    # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
+                    $true
+                } else {
+                    ForEach ($RegEx in $IncludeAccount) {
+                        if ($AccountName -match $RegEx) {
+                            # If the account name matches one of the regular expressions, then return $true here
+                            # This will be reversed into a $false by the -not operator above
+                            # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
+                            $true
+                        } else {
+                            $IncludeFilterContents[$AccountName] = $AccountName
+                        }
+                    }
+                }
+
             )
         ) { continue }
 
@@ -5195,15 +5265,7 @@ function Select-UniquePrincipal {
             $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
         }
 
-        $ThisKnownUser = $null
-        $ThisKnownUser = $IdByShortName[$ShortName]
-
-        if ($null -eq $ThisKnownUser) {
-            $ThisKnownUser = [System.Collections.Generic.List[String]]::new()
-        }
-
-        $null = $ThisKnownUser.Add($ThisID)
-        $IdByShortName[$ShortName] = $ThisKnownUser
+        Add-CacheItem -Cache $IdByShortName -Key $ShortName -Value $ThisID -Type $Type
         $ShortNameByID[$ThisID] = $ShortName
 
     }
@@ -5217,6 +5279,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

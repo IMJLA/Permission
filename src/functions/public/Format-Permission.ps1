@@ -26,7 +26,9 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$OutputFormat = 'passthru',
 
-        [cultureinfo]$Culture = (Get-Culture)
+        [cultureinfo]$Culture = (Get-Culture),
+
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -48,7 +50,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 
             ForEach ($Format in $Formats) {
 
@@ -77,7 +79,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 
             ForEach ($Format in $Formats) {
 
@@ -130,8 +132,8 @@ function Format-Permission {
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)" # -Splitby none -GroupBy none
                     # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)"# -Splitby target -GroupBy target
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -IgnoreDomain $IgnoreDomain -GroupBy $GroupBy
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 
                     ForEach ($Format in $Formats) {
 

@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Select-UniquePrincipal [[-PrincipalsByResolvedID] <Hashtable>] [[-ExcludeAccount] <String[]>]
  [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>] [[-ShortNameByID] <Hashtable>]
- [[-FilterContents] <Hashtable>]
+ [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -47,8 +47,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -FilterContents
-{{ Fill FilterContents Description }}
+### -ExcludeFilterContents
+{{ Fill ExcludeFilterContents Description }}
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -87,6 +87,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeFilterContents
+{{ Fill IncludeFilterContents Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

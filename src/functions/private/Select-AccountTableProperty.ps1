@@ -4,25 +4,32 @@ function Select-AccountTableProperty {
 
     param (
         $InputObject,
-        [string[]]$IgnoreDomain
+        [cultureinfo]$Culture = (Get-Culture), #Unused but exists here for parameter consistency with Select-AccountTableProperty
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
     )
 
     ForEach ($Object in $InputObject) {
 
-        $AccountName = $Object.Account.ResolvedAccountName
+        $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
-        ForEach ($IgnoreThisDomain in $IgnoreDomain) {
-            $AccountName = $AccountName.Replace("$IgnoreThisDomain\", '', 5)
-        }
+        if ($AccountName) {
 
-        # This appears to be what determines the order of columns in the html report
-        [PSCustomObject]@{
-            Account     = $AccountName
-            Name        = $Object.Account.Name
-            DisplayName = $Object.Account.DisplayName
-            Description = $Object.Account.Description
-            Department  = $Object.Account.Department
-            Title       = $Object.Account.Title
+            $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
+
+            if ($GroupString) {
+
+                # This appears to be what determines the order of columns in the html report
+                [PSCustomObject]@{
+                    Account     = $AccountName
+                    Name        = $Object.Account.Name
+                    DisplayName = $Object.Account.DisplayName
+                    Description = $Object.Account.Description
+                    Department  = $Object.Account.Department
+                    Title       = $Object.Account.Title
+                }
+
+            }
+
         }
 
     }

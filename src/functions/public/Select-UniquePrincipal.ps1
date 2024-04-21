@@ -21,21 +21,49 @@ function Select-UniquePrincipal {
 
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
-        [Hashtable]$FilterContents = [Hashtable]::Synchronized(@{})
+        [Hashtable]$ExcludeFilterContents = [Hashtable]::Synchronized(@{}),
+
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
 
     )
+
+    $Type = [string]
 
     ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
 
         if (
+
             # Exclude the objects whose names match the regular expressions specified in the parameters
             [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        $FilterContents[$ThisID] = $ThisID
+                        $ExcludeFilterContents[$ThisID] = $ThisID
                         $true
                     }
                 }
+            ) -or
+
+            # Include the objects whose names match the regular expressions specified in the -IncludeAccount parameter
+            -not [bool]$(
+
+                if ($IncludeAccount.Count -eq 0) {
+                    # If no regular expressions were specified, then return $true here
+                    # This will be reversed into a $false by the -not operator above
+                    # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
+                    $true
+                } else {
+                    ForEach ($RegEx in $IncludeAccount) {
+                        if ($AccountName -match $RegEx) {
+                            # If the account name matches one of the regular expressions, then return $true here
+                            # This will be reversed into a $false by the -not operator above
+                            # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
+                            $true
+                        } else {
+                            $IncludeFilterContents[$AccountName] = $AccountName
+                        }
+                    }
+                }
+
             )
         ) { continue }
 
@@ -45,15 +73,7 @@ function Select-UniquePrincipal {
             $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
         }
 
-        $ThisKnownUser = $null
-        $ThisKnownUser = $IdByShortName[$ShortName]
-
-        if ($null -eq $ThisKnownUser) {
-            $ThisKnownUser = [System.Collections.Generic.List[String]]::new()
-        }
-
-        $null = $ThisKnownUser.Add($ThisID)
-        $IdByShortName[$ShortName] = $ThisKnownUser
+        Add-CacheItem -Cache $IdByShortName -Key $ShortName -Value $ThisID -Type $Type
         $ShortNameByID[$ThisID] = $ShortName
 
     }
