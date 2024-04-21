@@ -1370,7 +1370,7 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
-    $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture |
+    $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture -SkipFilterCheck |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 
@@ -2224,26 +2224,24 @@ function Select-ItemTableProperty {
     param (
         $InputObject,
         [cultureinfo]$Culture = (Get-Culture),
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}) #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}), #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
+        [switch]$SkipFilterCheck
     )
 
     ForEach ($Object in $InputObject) {
 
-        $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+        if (-not $SkipFilterCheck) {
 
-        if ($AccountNames) {
-
+            $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+            if (-not $AccountNames) { continue }
             $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
+            if (-not $GroupString) { continue }
 
-            if ($GroupString) {
+        }
 
-                [PSCustomObject]@{
-                    Folder      = $Object.Item.Path
-                    Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
-                }
-
-            }
-
+        [PSCustomObject]@{
+            Folder      = $Object.Item.Path
+            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
         }
 
     }
@@ -5273,6 +5271,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

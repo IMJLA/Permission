@@ -5,26 +5,24 @@ function Select-ItemTableProperty {
     param (
         $InputObject,
         [cultureinfo]$Culture = (Get-Culture),
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}) #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}), #Unused but exists here for parameter consistency with Select-AccountTableProperty and Select-PermissionTableProperty
+        [switch]$SkipFilterCheck
     )
 
     ForEach ($Object in $InputObject) {
 
-        $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+        if (-not $SkipFilterCheck) {
 
-        if ($AccountNames) {
-
+            $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+            if (-not $AccountNames) { continue }
             $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
+            if (-not $GroupString) { continue }
 
-            if ($GroupString) {
+        }
 
-                [PSCustomObject]@{
-                    Folder      = $Object.Item.Path
-                    Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
-                }
-
-            }
-
+        [PSCustomObject]@{
+            Folder      = $Object.Item.Path
+            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
         }
 
     }
