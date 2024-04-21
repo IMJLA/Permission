@@ -114,7 +114,7 @@ function Get-HtmlReportElements {
         [String]$OutputFormat
 
     )
-    pause
+
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 

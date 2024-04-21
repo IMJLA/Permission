@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.607] - 2024-04-21 - remove debug pause
+
 ## [0.0.606] - 2024-04-21 - added skipfiltercheck param to select-itemtableproperty
 
 ## [0.0.605] - 2024-04-21 - move debug pause
