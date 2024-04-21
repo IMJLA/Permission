@@ -126,12 +126,6 @@ function Format-Permission {
                         passthru = $Selection
                     }
 
-                    pause #Here is where I need to implement IgnoreDomain and Include/Exclude Account/Class
-                    # "$($Selection[0].AccountName $Selection[0].Account.SchemaClassNameDoesNotExist)" # -Splitby none -GroupBy account
-                    # "$($Selection[0].Access[0].AccountName $Selection[0].Access[0].Account.?)" # -Splitby none -GroupBy item
-                    # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)" # -Splitby none -GroupBy none
-                    # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)"# -Splitby target -GroupBy target
-
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
 

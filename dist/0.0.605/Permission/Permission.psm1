@@ -1366,7 +1366,7 @@ function Get-HtmlReportElements {
         [String]$OutputFormat
 
     )
-
+    pause
     Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
@@ -2967,12 +2967,6 @@ function Format-Permission {
                         Item     = $NetworkPath.Item
                         passthru = $Selection
                     }
-
-                    pause #Here is where I need to implement IgnoreDomain and Include/Exclude Account/Class
-                    # "$($Selection[0].AccountName $Selection[0].Account.SchemaClassNameDoesNotExist)" # -Splitby none -GroupBy account
-                    # "$($Selection[0].Access[0].AccountName $Selection[0].Access[0].Account.?)" # -Splitby none -GroupBy item
-                    # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)" # -Splitby none -GroupBy none
-                    # "$($Selection[0].IdentityReferenceResolved) $($Selection[0].SchemaClassName)"# -Splitby target -GroupBy target
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
@@ -5279,6 +5273,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+
 
 
 

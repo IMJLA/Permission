@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.605] - 2024-04-21 - move debug pause
+
 ## [0.0.604] - 2024-04-21 - implement permission filtering in format-permission and children
 
 ## [0.0.603] - 2024-04-19 - make ignoredomain case insensitive
