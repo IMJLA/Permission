@@ -2526,6 +2526,17 @@ function Expand-Permission {
 
     )
 
+    $Progress = @{
+        Activity = 'Expand-Permission'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+    Write-Progress @Progress -Status "0% : Group permission references, then expand them into objects" -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
+
     $LogParams = @{
         LogMsgCache  = $LogMsgCache
         ThisHostname = $ThisHostname
@@ -5182,15 +5193,18 @@ function Resolve-PermissionTarget {
     }
 
 }
-function Select-UniquePrincipal {
+function Select-PermissionPrincipal {
 
     param (
 
         # Cache of security principals keyed by resolved identity reference
-        [Hashtable]$PrincipalsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$PrincipalByID = ([Hashtable]::Synchronized(@{})),
 
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
+
+        # Regular expressions matching names of Users or Groups to exclude from the Html report
+        [string[]]$IncludeAccount,
 
         <#
         Domain(s) to ignore (they will be removed from the username)
@@ -5207,13 +5221,43 @@ function Select-UniquePrincipal {
 
         [Hashtable]$ExcludeFilterContents = [Hashtable]::Synchronized(@{}),
 
-        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{}),
+
+        # ID of the parent progress bar under which to show progres
+        [int]$ProgressParentId,
+
+        <#
+        Hostname of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
+        [String]$ThisHostName = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$WhoAmI = (whoami.EXE),
+
+        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
 
     )
 
+    $Progress = @{
+        Activity = 'Select-PermissionPrincipal'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    $IDs = $PrincipalByID.Keys
+    $Count = $IDs.Count
+    Write-Progress @Progress -Status "0% (principal 0 of $Count) Select principals as specified in parameters" -CurrentOperation 'Ignore domains, and include/exclude principals based on name or class' -PercentComplete 0
+
     $Type = [string]
 
-    ForEach ($ThisID in $PrincipalsByResolvedID.Keys) {
+    ForEach ($ThisID in $IDs) {
 
         if (
 
@@ -5270,7 +5314,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-UniquePrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

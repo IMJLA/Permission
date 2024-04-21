@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Select-UniquePrincipal
+# Select-PermissionPrincipal
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,9 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Select-UniquePrincipal [[-PrincipalsByResolvedID] <Hashtable>] [[-ExcludeAccount] <String[]>]
- [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>] [[-ShortNameByID] <Hashtable>]
- [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>]
+Select-PermissionPrincipal [[-PrincipalByID] <Hashtable>] [[-ExcludeAccount] <String[]>]
+ [[-IncludeAccount] <String[]>] [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>]
+ [[-ShortNameByID] <Hashtable>] [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>]
+ [[-ProgressParentId] <Int32>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -24,7 +25,7 @@ Select-UniquePrincipal [[-PrincipalsByResolvedID] <Hashtable>] [[-ExcludeAccount
 ## EXAMPLES
 
 ### Example 1
-```
+```powershell
 PS C:\> {{ Add example code here }}
 ```
 
@@ -56,7 +57,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -71,7 +72,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -79,6 +80,21 @@ Accept wildcard characters: False
 
 ### -IgnoreDomain
 {{ Fill IgnoreDomain Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeAccount
+{{ Fill IncludeAccount Description }}
 
 ```yaml
 Type: System.String[]
@@ -101,14 +117,29 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PrincipalsByResolvedID
-{{ Fill PrincipalsByResolvedID Description }}
+### -LogMsgCache
+{{ Fill LogMsgCache Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 11
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrincipalByID
+{{ Fill PrincipalByID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -117,6 +148,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -131,7 +177,37 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 5
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ThisHostName
+{{ Fill ThisHostName Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -WhoAmI
+{{ Fill WhoAmI Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -140,6 +216,7 @@ Accept wildcard characters: False
 ## INPUTS
 
 ### None
+
 ## OUTPUTS
 
 ### System.Object

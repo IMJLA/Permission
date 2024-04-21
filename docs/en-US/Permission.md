@@ -1,8 +1,8 @@
 ---
 Module Name: Permission
-Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
+Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.607
+Help Version: 0.0.608
 Locale: en-US
 ---
 
@@ -127,9 +127,12 @@ Resolve-FormatParameter [[-FileFormat] <string[]>] [[-OutputFormat] <string>]
 Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>] [[-Output] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
 
 
+### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
+
+Select-PermissionPrincipal [[-PrincipalByID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-IdByShortName] <hashtable>] [[-ShortNameByID] <hashtable>] [[-ExcludeFilterContents] <hashtable>] [[-IncludeFilterContents] <hashtable>] [[-ProgressParentId] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+
+
 ### [Select-UniquePrincipal](Select-UniquePrincipal.md)
-
-Select-UniquePrincipal [[-PrincipalsByResolvedID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-IdByShortName] <hashtable>] [[-ShortNameByID] <hashtable>] [[-ExcludeFilterContents] <hashtable>] [[-IncludeFilterContents] <hashtable>]
-
+{{ Fill in the Description }}
 
 
