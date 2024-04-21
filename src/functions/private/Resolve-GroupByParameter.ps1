@@ -16,7 +16,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = 'Access'
-            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2]")
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeFilterContents `$args[3]")
         }
 
     } else {

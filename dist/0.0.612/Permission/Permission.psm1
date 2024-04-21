@@ -2035,7 +2035,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = 'Access'
-            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2]")
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeFilterContents `$args[3]")
         }
 
     } else {
@@ -2252,10 +2252,16 @@ function Select-PermissionTableProperty {
     # For the HTML table
     param (
         $InputObject,
+
         [String]$GroupBy,
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
-        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{}),
-        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
+
+        # Dictionary of shortened account IDs keyed by full resolved account IDs
+        # Populated by Select-PermissionPrincipal
+        [Hashtable]$ShortNameByID = @{},
+
+        [Hashtable]$OutputHash = @{},
+
+        [Hashtable]$IncludeFilterContents = @{}
     )
 
     $Type = [PSCustomObject]
@@ -2268,6 +2274,7 @@ function Select-PermissionTableProperty {
 
             ForEach ($Object in $InputObject) {
 
+                # Determine whether the account should be included according to inclusion/exclusion parameters
                 $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
                 if ($AccountName) {
@@ -2925,7 +2932,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
@@ -2954,7 +2961,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
@@ -3002,7 +3009,7 @@ function Format-Permission {
                         passthru = $Selection
                     }
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeFilterContents
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
                     ForEach ($Format in $Formats) {
@@ -5342,6 +5349,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

@@ -3,10 +3,16 @@ function Select-PermissionTableProperty {
     # For the HTML table
     param (
         $InputObject,
+
         [String]$GroupBy,
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
-        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{}),
-        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
+
+        # Dictionary of shortened account IDs keyed by full resolved account IDs
+        # Populated by Select-PermissionPrincipal
+        [Hashtable]$ShortNameByID = @{},
+
+        [Hashtable]$OutputHash = @{},
+
+        [Hashtable]$IncludeFilterContents = @{}
     )
 
     $Type = [PSCustomObject]
@@ -19,6 +25,7 @@ function Select-PermissionTableProperty {
 
             ForEach ($Object in $InputObject) {
 
+                # Determine whether the account should be included according to inclusion/exclusion parameters
                 $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
                 if ($AccountName) {

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.612] - 2024-04-21 - missing parts of implementing IncludeFilterContents
+
 ## [0.0.611] - 2024-04-21 - Use IncludeFilterContent to solve bug where IncludeAccount filters out included accounts because the group they are a member of was not included by regex
 
 ## [0.0.610] - 2024-04-21 - Write-Progress -Complete the progress bars
