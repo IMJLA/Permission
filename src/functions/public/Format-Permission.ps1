@@ -28,7 +28,9 @@ function Format-Permission {
 
         [cultureinfo]$Culture = (Get-Culture),
 
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
+
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -50,7 +52,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -79,7 +81,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -127,7 +129,7 @@ function Format-Permission {
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
                     ForEach ($Format in $Formats) {
 

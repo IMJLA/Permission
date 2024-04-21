@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
  [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>]
- [[-ShortNameByID] <Hashtable>]
+ [[-ShortNameByID] <Hashtable>] [[-IncludeFilterContents] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -89,6 +89,21 @@ Aliases:
 
 Required: False
 Position: 1
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -IncludeFilterContents
+{{ Fill IncludeFilterContents Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

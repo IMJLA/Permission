@@ -2254,10 +2254,13 @@ function Select-PermissionTableProperty {
         $InputObject,
         [String]$GroupBy,
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
-        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{})
+        [Hashtable]$OutputHash = [Hashtable]::Synchronized(@{}),
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
     )
 
     $Type = [PSCustomObject]
+
+    $IncludeFilterCount = $IncludeFilterContents.Keys.Count
 
     switch ($GroupBy) {
 
@@ -2269,26 +2272,44 @@ function Select-PermissionTableProperty {
 
                 if ($AccountName) {
 
-                    ForEach ($ACE in $Object.Access) {
+                    ForEach ($AceList in $Object.Access) {
 
-                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                        ##$GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
-                        $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
+                        ForEach ($ACE in $AceList) {
 
-                        if ($GroupString) {
-                            # ToDo: param to allow setting [self] instead of the objects own name for this property
-                            #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
-                            #    $GroupString = '[self]'
-                            #}
+                            if ($ACE.Access.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
 
-                            $Value = [pscustomobject]@{
-                                'Path'                 = $ACE.Path
-                                'Access'               = $ACE.Access.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
-                                'Due to Membership In' = $GroupString
-                                'Source of Access'     = $ACE.Access.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                                $GroupString = ''
+
+                            } else {
+
+                                # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
+                                $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
+
+                                if (
+                                    -not $GroupString -and
+                                    (
+                                        $IncludeFilterCount -gt 0 -and -not
+                                        $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                    )
+                                ) {
+                                    $GroupString = $ACE.Access.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                }
+
                             }
 
-                            Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
+                            if ($GroupString) {
+
+                                $Value = [pscustomobject]@{
+                                    'Path'                 = $ACE.Path
+                                    'Access'               = $ACE.Access.Access
+                                    'Due to Membership In' = $GroupString
+                                    'Source of Access'     = $ACE.Access.SourceOfAccess
+                                }
+
+                                Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
+
+                            }
 
                         }
 
@@ -2881,7 +2902,9 @@ function Format-Permission {
 
         [cultureinfo]$Culture = (Get-Culture),
 
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{})
+        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
+
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
 
     )
 
@@ -2903,7 +2926,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -2932,7 +2955,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -2980,7 +3003,7 @@ function Format-Permission {
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
                     ForEach ($Format in $Formats) {
 
@@ -5319,6 +5342,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
