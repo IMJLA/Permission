@@ -2363,7 +2363,7 @@ function Select-PermissionTableProperty {
 
                     ForEach ($ACE in $AceList) {
 
-                        if ($ACE.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
+                        if ($ACE.IdentityReferenceResolved -eq $ResolvedName) {
 
                             # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
                             $GroupString = ''
@@ -5368,6 +5368,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
