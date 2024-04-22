@@ -132,7 +132,7 @@ function Select-PermissionTableProperty {
                                 -not $GroupString -and
                                 (
                                     $IncludeFilterCount -gt 0 -and -not
-                                    $IncludeFilterContents[$ResolvedAccountName]
+                                    $IncludeFilterContents[$ResolvedName]
                                 )
                             ) {
                                 $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
