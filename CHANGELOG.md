@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.639] - 2024-04-21 - implement excludeclassfiltercontents for groupby none/target
+
 ## [0.0.638] - 2024-04-21 - implement excludeclassfiltercontents for groupby item
 
 ## [0.0.637] - 2024-04-21 - implement excludeclassfiltercontents
