@@ -92,23 +92,13 @@ function Select-PermissionTableProperty {
                 $Accounts = @{}
 
                 # Apply the -IgnoreDomain parameter
-                ForEach ($ACE in $Object.Access) {
+                ForEach ($AceList in $Object.Access) {
 
-                    $AccountName = $ShortNameByID[$ACE.Account.ResolvedAccountName]
+                    $AccountName = $ShortNameByID[$AceList.Account.ResolvedAccountName]
 
-                    # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
-                    # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
-                    # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
                     if ($AccountName) {
 
-                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                        ##$GroupString = ($ACE.Access.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
-                        $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
-
-                        # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
-                        # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
-                        # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
-                        if ($GroupString) {
+                        ForEach ($ACE in $AceList.Access) {
                             Add-CacheItem -Cache $Accounts -Key $AccountName -Value $ACE -Type $Type
                         }
 
@@ -116,21 +106,50 @@ function Select-PermissionTableProperty {
 
                 }
 
-                $OutputHash[$Object.Item.Path] = ForEach ($ResolvedName in $Accounts.Keys) {
+            }
 
-                    ForEach ($AceList in $Accounts[$ResolvedName]) {
+            $OutputHash[$Object.Item.Path] = ForEach ($ResolvedName in $Accounts.Keys) {
 
-                        ForEach ($ACE in $AceList) {
+                ForEach ($AceList in $Accounts[$ResolvedName]) {
 
-                            # ToDo: param to allow setting [self] instead of the objects own name for this property
-                            #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
-                            #    $GroupString = '[self]'
-                            #}
+                    ForEach ($ACE in $AceList) {
+
+                        if ($ACE.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
+
+                            # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                            $GroupString = ''
+
+                        } else {
+
+                            # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
+                            # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
+                            # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
+
+                            # Each ACE contains the original IdentityReference representing the group the Object is a member of
+                            $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+
+                            if (
+                                -not $GroupString -and
+                                (
+                                    $IncludeFilterCount -gt 0 -and -not
+                                    $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                )
+                            ) {
+                                $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                            }
+
+                        }
+
+                        # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
+                        # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
+                        # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
+                        # Use '$null -ne' to avoid treating an empty string '' as $null
+                        if ($null -ne $GroupString) {
 
                             [pscustomobject]@{
                                 'Account'              = $ShortNameByID[$ResolvedName]
                                 'Access'               = $ACE.Access.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
-                                'Due to Membership In' = $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
+                                'Due to Membership In' = $GroupString
                                 'Source of Access'     = $ACE.Access.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
                                 'Name'                 = $ACE.Account.Name
                                 'Department'           = $ACE.Account.Department
