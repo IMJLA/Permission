@@ -28,6 +28,10 @@ function Select-PermissionTableProperty {
                 # Determine whether the account should be included according to inclusion/exclusion parameters
                 $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
+                if ($AccountName -like "*\Owner") {
+                    pause
+                }
+
                 if ($AccountName) {
 
                     ForEach ($AceList in $Object.Access) {
