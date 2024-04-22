@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.634
+Help Version: 0.0.635
 Locale: en-US
 ---
 
@@ -43,7 +43,7 @@ Find-ServerFqdn [[-Known] <string[]>] [[-TargetPath] <hashtable>] [[-ThisFqdn] <
 
 ### [Format-Permission](Format-Permission.md)
 
-Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-Culture] <cultureinfo>] [[-ShortNameByID] <hashtable>] [[-IncludeFilterContents] <hashtable>]
+Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-Culture] <cultureinfo>] [[-ShortNameByID] <hashtable>] [[-ExcludeClassFilterContents] <hashtable>] [[-IncludeFilterContents] <hashtable>]
 
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
@@ -129,7 +129,7 @@ Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtab
 
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 
-Select-PermissionPrincipal [[-PrincipalByID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-IdByShortName] <hashtable>] [[-ShortNameByID] <hashtable>] [[-ExcludeFilterContents] <hashtable>] [[-IncludeFilterContents] <hashtable>] [[-ProgressParentId] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
+Select-PermissionPrincipal [[-PrincipalByID] <hashtable>] [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-IdByShortName] <hashtable>] [[-ShortNameByID] <hashtable>] [[-ExcludeClassFilterContents] <hashtable>] [[-ExcludeFilterContents] <hashtable>] [[-IncludeFilterContents] <hashtable>] [[-ProgressParentId] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogMsgCache] <hashtable>]
 
 
 

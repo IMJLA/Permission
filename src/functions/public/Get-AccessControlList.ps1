@@ -46,7 +46,7 @@ function Get-AccessControlList {
     }
     $Progress['Id'] = $ProgressId
     $ChildProgress = @{
-        Activity = 'Get access control lists'
+        Activity = 'Get access control lists for parent and child items'
         Id       = $ProgressId + 1
         ParentId = $ProgressId
     }

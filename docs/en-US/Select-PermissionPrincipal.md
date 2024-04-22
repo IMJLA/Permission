@@ -15,8 +15,9 @@ schema: 2.0.0
 ```
 Select-PermissionPrincipal [[-PrincipalByID] <Hashtable>] [[-ExcludeAccount] <String[]>]
  [[-IncludeAccount] <String[]>] [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>]
- [[-ShortNameByID] <Hashtable>] [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>]
- [[-ProgressParentId] <Int32>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-ShortNameByID] <Hashtable>] [[-ExcludeClassFilterContents] <Hashtable>]
+ [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -48,6 +49,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ExcludeClassFilterContents
+{{ Fill ExcludeClassFilterContents Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 6
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ExcludeFilterContents
 {{ Fill ExcludeFilterContents Description }}
 
@@ -57,7 +73,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -117,7 +133,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -132,7 +148,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -162,7 +178,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -192,7 +208,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 10
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -207,7 +223,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -2035,7 +2035,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = 'Access'
-            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeFilterContents `$args[3]")
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeFilterContents `$args[3] -ExcludeClassFilterContents `$args[4]")
         }
 
     } else {
@@ -2262,6 +2262,8 @@ function Select-PermissionTableProperty {
 
         [Hashtable]$OutputHash = @{},
 
+        [Hashtable]$ExcludeClassFilterContents = @{},
+
         [Hashtable]$IncludeFilterContents = @{}
 
     )
@@ -2293,20 +2295,20 @@ function Select-PermissionTableProperty {
                             } else {
 
                                 # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.IdentityReferenceResolved]) {
-                                    if ($ShortName) {
-                                        $ShortName
-                                    }
-                                }
+                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
 
-                                if (
-                                    -not $GroupString -and
-                                    (
-                                        $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$Object.Account.ResolvedAccountName]
-                                    )
-                                ) {
-                                    $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                if ( -not $GroupString ) {
+
+                                    if (
+                                        $ExcludeClassFilterContents[$Object.Account.ResolvedAccountName] -or
+                                        (
+                                            $IncludeFilterCount -gt 0 -and -not
+                                            $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                        )
+                                    ) {
+                                        $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    }
+
                                 }
 
                             }
@@ -2948,6 +2950,8 @@ function Format-Permission {
 
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
+        [Hashtable]$ExcludeClassFilterContents = @{},
+
         [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
 
     )
@@ -2969,7 +2973,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
@@ -2998,7 +3002,7 @@ function Format-Permission {
                 passthru     = $Selection
             }
 
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
             ForEach ($Format in $Formats) {
@@ -3046,7 +3050,7 @@ function Format-Permission {
                         passthru = $Selection
                     }
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeFilterContents
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeFilterContents, $ExcludeClassFilterContents
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
 
                     ForEach ($Format in $Formats) {
@@ -3145,7 +3149,7 @@ function Get-AccessControlList {
     }
     $Progress['Id'] = $ProgressId
     $ChildProgress = @{
-        Activity = 'Get access control lists'
+        Activity = 'Get access control lists for parent and child items'
         Id       = $ProgressId + 1
         ParentId = $ProgressId
     }
@@ -5283,6 +5287,8 @@ function Select-PermissionPrincipal {
 
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
+        [Hashtable]$ExcludeClassFilterContents = @{},
+
         [Hashtable]$ExcludeFilterContents = [Hashtable]::Synchronized(@{}),
 
         [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{}),
@@ -5332,7 +5338,7 @@ function Select-PermissionPrincipal {
                     $Principal = $PrincipalByID[$ThisID]
 
                     if ($Principal.SchemaClassName -eq $ClassToExclude) {
-                        #$ExcludeFilterContents[$ThisID] = $ThisID
+                        $ExcludeClassFilterContents[$ThisID] = $true
                         $true
                     }
                 }
@@ -5364,7 +5370,7 @@ function Select-PermissionPrincipal {
                             # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
                             $true
                         } else {
-                            $IncludeFilterContents[$ThisID] = $ThisID
+                            $IncludeFilterContents[$ThisID] = $true
                         }
                     }
                 }
@@ -5394,6 +5400,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

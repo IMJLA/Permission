@@ -24,6 +24,8 @@ function Select-PermissionPrincipal {
 
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
+        [Hashtable]$ExcludeClassFilterContents = @{},
+
         [Hashtable]$ExcludeFilterContents = [Hashtable]::Synchronized(@{}),
 
         [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{}),
@@ -73,7 +75,7 @@ function Select-PermissionPrincipal {
                     $Principal = $PrincipalByID[$ThisID]
 
                     if ($Principal.SchemaClassName -eq $ClassToExclude) {
-                        #$ExcludeFilterContents[$ThisID] = $ThisID
+                        $ExcludeClassFilterContents[$ThisID] = $true
                         $true
                     }
                 }
@@ -105,7 +107,7 @@ function Select-PermissionPrincipal {
                             # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
                             $true
                         } else {
-                            $IncludeFilterContents[$ThisID] = $ThisID
+                            $IncludeFilterContents[$ThisID] = $true
                         }
                     }
                 }

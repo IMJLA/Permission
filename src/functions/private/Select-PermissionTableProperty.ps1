@@ -13,6 +13,8 @@ function Select-PermissionTableProperty {
 
         [Hashtable]$OutputHash = @{},
 
+        [Hashtable]$ExcludeClassFilterContents = @{},
+
         [Hashtable]$IncludeFilterContents = @{}
 
     )
@@ -44,20 +46,20 @@ function Select-PermissionTableProperty {
                             } else {
 
                                 # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.IdentityReferenceResolved]) {
-                                    if ($ShortName) {
-                                        $ShortName
-                                    }
-                                }
+                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
 
-                                if (
-                                    -not $GroupString -and
-                                    (
-                                        $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$Object.Account.ResolvedAccountName]
-                                    )
-                                ) {
-                                    $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                if ( -not $GroupString ) {
+
+                                    if (
+                                        $ExcludeClassFilterContents[$Object.Account.ResolvedAccountName] -or
+                                        (
+                                            $IncludeFilterCount -gt 0 -and -not
+                                            $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                        )
+                                    ) {
+                                        $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    }
+
                                 }
 
                             }
