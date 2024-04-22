@@ -2283,50 +2283,46 @@ function Select-PermissionTableProperty {
 
                 if ($AccountName) {
 
-                    ForEach ($ItemAceList in $Object.Access) {
+                    ForEach ($AceList in $Object.Access) {
 
-                        ForEach ($AccountAceList in $ItemAceList) {
+                        ForEach ($ACE in $AceList.Access) {
 
-                            ForEach ($ACE in $AccountAceList) {
+                            if ($ACE.Access.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
 
-                                if ($ACE.Access.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
+                                # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                                $GroupString = ''
 
-                                    # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
-                                    $GroupString = ''
+                            } else {
 
-                                } else {
-
-                                    # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                    $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.Access.IdentityReferenceResolved]) {
-                                        if ($ShortName) {
-                                            $ShortName
-                                        }
+                                # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
+                                $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.Access.IdentityReferenceResolved]) {
+                                    if ($ShortName) {
+                                        $ShortName
                                     }
-
-                                    if (
-                                        -not $GroupString -and
-                                        (
-                                            $IncludeFilterCount -gt 0 -and -not
-                                            $IncludeFilterContents[$Object.Account.ResolvedAccountName]
-                                        )
-                                    ) {
-                                        $GroupString = $ACE.Access.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
-                                    }
-
                                 }
 
-                                if ($GroupString) {
-
-                                    $Value = [pscustomobject]@{
-                                        'Path'                 = $ACE.Path
-                                        'Access'               = $ACE.Access.Access
-                                        'Due to Membership In' = $GroupString
-                                        'Source of Access'     = $ACE.Access.SourceOfAccess
-                                    }
-
-                                    Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
-
+                                if (
+                                    -not $GroupString -and
+                                    (
+                                        $IncludeFilterCount -gt 0 -and -not
+                                        $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                    )
+                                ) {
+                                    $GroupString = $ACE.Access.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
                                 }
+
+                            }
+
+                            if ($GroupString) {
+
+                                $Value = [pscustomobject]@{
+                                    'Path'                 = $ACE.Path
+                                    'Access'               = $ACE.Access.Access
+                                    'Due to Membership In' = $GroupString
+                                    'Source of Access'     = $ACE.Access.SourceOfAccess
+                                }
+
+                                Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
 
                             }
 
@@ -5361,6 +5357,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
