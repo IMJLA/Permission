@@ -2251,6 +2251,7 @@ function Select-PermissionTableProperty {
 
     # For the HTML table
     param (
+
         $InputObject,
 
         [String]$GroupBy,
@@ -2262,6 +2263,7 @@ function Select-PermissionTableProperty {
         [Hashtable]$OutputHash = @{},
 
         [Hashtable]$IncludeFilterContents = @{}
+
     )
 
     $Type = [PSCustomObject]
@@ -2435,7 +2437,6 @@ function Select-PermissionTableProperty {
                         if ($GroupString -eq $ACE.ResolvedAccountName) {
                             $GroupString = ''
                         } else {
-
 
                             # Each ACE contains the original IdentityReference representing the group the Object is a member of
                             $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
@@ -5326,9 +5327,21 @@ function Select-PermissionPrincipal {
 
             # Exclude the objects whose names match the regular expressions specified in the parameters
             [bool]$(
+                ForEach ($ClassToExclude in $ExcludeClass) {
+                    $Principal = $PrincipalByID[$ThisID]
+                    pause
+                    if ($Principal.SchemaClassName -eq $ClassToExclude) {
+                        #$ExcludeFilterContents[$ThisID] = $ThisID
+                        $true
+                    }
+                }
+            ) -or
+
+            # Exclude the objects whose names match the regular expressions specified in the parameters
+            [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        $ExcludeFilterContents[$ThisID] = $ThisID
+                        #$ExcludeFilterContents[$ThisID] = $ThisID
                         $true
                     }
                 }
@@ -5380,6 +5393,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

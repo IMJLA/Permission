@@ -68,9 +68,21 @@ function Select-PermissionPrincipal {
 
             # Exclude the objects whose names match the regular expressions specified in the parameters
             [bool]$(
+                ForEach ($ClassToExclude in $ExcludeClass) {
+                    $Principal = $PrincipalByID[$ThisID]
+                    pause
+                    if ($Principal.SchemaClassName -eq $ClassToExclude) {
+                        #$ExcludeFilterContents[$ThisID] = $ThisID
+                        $true
+                    }
+                }
+            ) -or
+
+            # Exclude the objects whose names match the regular expressions specified in the parameters
+            [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        $ExcludeFilterContents[$ThisID] = $ThisID
+                        #$ExcludeFilterContents[$ThisID] = $ThisID
                         $true
                     }
                 }

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.633] - 2024-04-21 - add debug pause
+
 ## [0.0.632] - 2024-04-21 - bugfix empty account name
 
 ## [0.0.631] - 2024-04-21 - constrain debug pause

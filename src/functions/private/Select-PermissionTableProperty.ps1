@@ -2,6 +2,7 @@ function Select-PermissionTableProperty {
 
     # For the HTML table
     param (
+
         $InputObject,
 
         [String]$GroupBy,
@@ -13,6 +14,7 @@ function Select-PermissionTableProperty {
         [Hashtable]$OutputHash = @{},
 
         [Hashtable]$IncludeFilterContents = @{}
+
     )
 
     $Type = [PSCustomObject]
@@ -186,7 +188,6 @@ function Select-PermissionTableProperty {
                         if ($GroupString -eq $ACE.ResolvedAccountName) {
                             $GroupString = ''
                         } else {
-
 
                             # Each ACE contains the original IdentityReference representing the group the Object is a member of
                             $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
