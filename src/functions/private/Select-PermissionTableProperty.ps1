@@ -183,26 +183,38 @@ function Select-PermissionTableProperty {
                     # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
                     if ($AccountName) {
 
-                        # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                        #$GroupString = ($ACE.IdentityReferenceResolved | Sort-Object -Unique) -join ' ; '
-                        $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                        if ($GroupString -eq $ACE.ResolvedAccountName) {
+                            $GroupString = ''
+                        } else {
+
+
+                            # Each ACE contains the original IdentityReference representing the group the Object is a member of
+                            $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+
+                            if (
+                                -not $GroupString -and
+                                (
+                                    $IncludeFilterCount -gt 0 -and -not
+                                    $IncludeFilterContents[$ACE.ResolvedAccountName]
+                                )
+                            ) {
+                                $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                            }
+
+                        }
 
                         # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
                         # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
                         # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
-                        if ($GroupString) {
-
-                            # ToDo: param to allow setting [self] instead of the objects own name for this property
-                            #if ($GroupString -eq $Object.Account.ResolvedAccountName) {
-                            #    $GroupString = '[self]'
-                            #}
+                        # Use '$null -ne' to avoid treating an empty string '' as $null
+                        if ($null -ne $GroupString) {
 
                             [pscustomobject]@{
                                 'Item'                 = $Object.ItemPath
                                 'Account'              = $AccountName
-                                'Access'               = $ACE.Access # | Sort-Object -Unique) -join ' ; '
+                                'Access'               = $ACE.Access
                                 'Due to Membership In' = $GroupString
-                                'Source of Access'     = $ACE.SourceOfAccess # | Sort-Object -Unique) -join ' ; '
+                                'Source of Access'     = $ACE.SourceOfAccess
                                 'Name'                 = $ACE.Name
                                 'Department'           = $ACE.Department
                                 'Title'                = $ACE.Title
