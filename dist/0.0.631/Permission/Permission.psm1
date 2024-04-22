@@ -2392,7 +2392,7 @@ function Select-PermissionTableProperty {
                             # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
                             # Use '$null -ne' to avoid treating an empty string '' as $null
                             if ($null -ne $GroupString) {
-                                pause
+                                if (-not $ShortNameByID[$ResolvedName]) { pause }
                                 [pscustomobject]@{
                                     'Account'              = $ShortNameByID[$ResolvedName]
                                     'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
@@ -5380,6 +5380,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
