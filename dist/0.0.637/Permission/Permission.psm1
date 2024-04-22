@@ -2974,7 +2974,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -3003,7 +3003,7 @@ function Format-Permission {
             }
 
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -3051,7 +3051,7 @@ function Format-Permission {
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeFilterContents, $ExcludeClassFilterContents
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     ForEach ($Format in $Formats) {
 
@@ -5400,6 +5400,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
