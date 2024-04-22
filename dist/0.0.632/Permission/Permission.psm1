@@ -2355,13 +2355,13 @@ function Select-PermissionTableProperty {
 
                 }
 
-                $OutputHash[$Object.Item.Path] = ForEach ($ResolvedName in $Accounts.Keys) {
+                $OutputHash[$Object.Item.Path] = ForEach ($AccountName in $Accounts.Keys) {
 
-                    ForEach ($AceList in $Accounts[$ResolvedName]) {
+                    ForEach ($AceList in $Accounts[$AccountName]) {
 
                         ForEach ($ACE in $AceList) {
 
-                            if ($ACE.IdentityReferenceResolved -eq $ResolvedName) {
+                            if ($ACE.IdentityReferenceResolved -eq $AccountName) {
 
                                 # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
                                 $GroupString = ''
@@ -2379,7 +2379,7 @@ function Select-PermissionTableProperty {
                                     -not $GroupString -and
                                     (
                                         $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$ResolvedName]
+                                        $IncludeFilterContents[$AccountName]
                                     )
                                 ) {
                                     $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -2392,9 +2392,9 @@ function Select-PermissionTableProperty {
                             # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
                             # Use '$null -ne' to avoid treating an empty string '' as $null
                             if ($null -ne $GroupString) {
-                                if (-not $ShortNameByID[$ResolvedName]) { pause }
+
                                 [pscustomobject]@{
-                                    'Account'              = $ShortNameByID[$ResolvedName]
+                                    'Account'              = $AccountName
                                     'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
                                     'Due to Membership In' = $GroupString
                                     'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
@@ -5380,6 +5380,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
