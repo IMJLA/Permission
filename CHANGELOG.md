@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.621] - 2024-04-21 - bugfix string comparison
+
 ## [0.0.620] - 2024-04-21 - add debug pause
 
 ## [0.0.619] - 2024-04-21 - update progress bar status text

@@ -23,8 +23,6 @@ function Select-PermissionTableProperty {
 
         'account' {
 
-            pause
-
             ForEach ($Object in $InputObject) {
 
                 # Determine whether the account should be included according to inclusion/exclusion parameters
@@ -62,7 +60,8 @@ function Select-PermissionTableProperty {
 
                             }
 
-                            if ($GroupString) {
+                            # Use '$null -ne' to avoid treating an empty string '' as $null
+                            if ($null -ne $GroupString) {
 
                                 $Value = [pscustomobject]@{
                                     'Path'                 = $ACE.Path
