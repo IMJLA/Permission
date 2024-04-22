@@ -2355,54 +2355,54 @@ function Select-PermissionTableProperty {
 
                 }
 
-            }
+                $OutputHash[$Object.Item.Path] = ForEach ($ResolvedName in $Accounts.Keys) {
 
-            $OutputHash[$Object.Item.Path] = ForEach ($ResolvedName in $Accounts.Keys) {
+                    ForEach ($AceList in $Accounts[$ResolvedName]) {
 
-                ForEach ($AceList in $Accounts[$ResolvedName]) {
+                        ForEach ($ACE in $AceList) {
 
-                    ForEach ($ACE in $AceList) {
+                            if ($ACE.IdentityReferenceResolved -eq $ResolvedName) {
 
-                        if ($ACE.IdentityReferenceResolved -eq $ResolvedName) {
+                                # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                                $GroupString = ''
 
-                            # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
-                            $GroupString = ''
+                            } else {
 
-                        } else {
+                                # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
+                                # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
+                                # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
 
-                            # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
-                            # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
-                            # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
+                                # Each ACE contains the original IdentityReference representing the group the Object is a member of
+                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
 
-                            # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                            $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                                if (
+                                    -not $GroupString -and
+                                    (
+                                        $IncludeFilterCount -gt 0 -and -not
+                                        $IncludeFilterContents[$ResolvedName]
+                                    )
+                                ) {
+                                    $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                }
 
-                            if (
-                                -not $GroupString -and
-                                (
-                                    $IncludeFilterCount -gt 0 -and -not
-                                    $IncludeFilterContents[$ResolvedName]
-                                )
-                            ) {
-                                $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
                             }
 
-                        }
+                            # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
+                            # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
+                            # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
+                            # Use '$null -ne' to avoid treating an empty string '' as $null
+                            if ($null -ne $GroupString) {
 
-                        # Exclude the virtual ACEs for members of groups whose group names match the regular expressions specified in the -ExcludeAccount parameter
-                        # Include the virtual ACEs for members of groups whose group names match the regular expressions specified in the -IncludeAccount parameter
-                        # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
-                        # Use '$null -ne' to avoid treating an empty string '' as $null
-                        if ($null -ne $GroupString) {
+                                [pscustomobject]@{
+                                    'Account'              = $ShortNameByID[$ResolvedName]
+                                    'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                    'Due to Membership In' = $GroupString
+                                    'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                    'Name'                 = $AceList.Account.Name
+                                    'Department'           = $AceList.Account.Department
+                                    'Title'                = $AceList.Account.Title
+                                }
 
-                            [pscustomobject]@{
-                                'Account'              = $ShortNameByID[$ResolvedName]
-                                'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
-                                'Due to Membership In' = $GroupString
-                                'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
-                                'Name'                 = $AceList.Account.Name
-                                'Department'           = $AceList.Account.Department
-                                'Title'                = $AceList.Account.Title
                             }
 
                         }
@@ -5368,6 +5368,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
