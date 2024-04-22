@@ -51,7 +51,7 @@ function Select-PermissionTableProperty {
                                 if ( -not $GroupString ) {
 
                                     if (
-                                        $ExcludeClassFilterContents[$Object.Account.ResolvedAccountName] -or
+                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
                                         (
                                             $IncludeFilterCount -gt 0 -and -not
                                             $IncludeFilterContents[$Object.Account.ResolvedAccountName]
