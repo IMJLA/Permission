@@ -2379,14 +2379,18 @@ function Select-PermissionTableProperty {
                                 # Each ACE contains the original IdentityReference representing the group the Object is a member of
                                 $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
 
-                                if (
-                                    -not $GroupString -and
-                                    (
-                                        $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$AccountName]
-                                    )
-                                ) {
-                                    $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                if ( -not $GroupString ) {
+
+                                    if (
+                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                        (
+                                            $IncludeFilterCount -gt 0 -and -not
+                                            $IncludeFilterContents[$AccountName]
+                                        )
+                                    ) {
+                                        $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    }
+
                                 }
 
                             }
@@ -5400,6 +5404,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

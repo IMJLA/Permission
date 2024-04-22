@@ -130,14 +130,18 @@ function Select-PermissionTableProperty {
                                 # Each ACE contains the original IdentityReference representing the group the Object is a member of
                                 $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
 
-                                if (
-                                    -not $GroupString -and
-                                    (
-                                        $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$AccountName]
-                                    )
-                                ) {
-                                    $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                if ( -not $GroupString ) {
+
+                                    if (
+                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                        (
+                                            $IncludeFilterCount -gt 0 -and -not
+                                            $IncludeFilterContents[$AccountName]
+                                        )
+                                    ) {
+                                        $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    }
+
                                 }
 
                             }
