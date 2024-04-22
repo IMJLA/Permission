@@ -56,7 +56,7 @@ function Get-AccessControlList {
         ParentId = $ProgressId + 1
     }
 
-    Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists' -CurrentOperation 'Get access control lists' -PercentComplete 0
+    Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0
 
     $GetDirectorySecurity = @{
         LogMsgCache       = $LogMsgCache
@@ -76,7 +76,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Write-Progress @GrandChildProgress -Status "0% (parent) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $Parent -PercentComplete 0
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
             $Children = $TargetPath[$Parent]
@@ -114,7 +114,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
             $Children = $TargetPath[$Parent]
 
@@ -139,7 +139,7 @@ function Get-AccessControlList {
 
     }
 
-    Write-Progress @Progress -Status '50% (step 2 of 2) Find non-inherited owners' -CurrentOperation 'Find non-inherited owners' -PercentComplete 50
+    Write-Progress @Progress -Status '50% (step 2 of 2) Find non-inherited owners' -CurrentOperation 'Find non-inherited owners for parent and child items' -PercentComplete 50
     $ChildProgress['Activity'] = 'Get ACL owners'
     $GrandChildProgress['Activity'] = 'Get ACL owners'
 
@@ -160,7 +160,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Write-Progress @GrandChildProgress -Status "0% (parent) Get-OwnerAce" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
             $Children = $TargetPath[$Parent]
@@ -198,7 +198,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
             $Children = $TargetPath[$Parent]
 
