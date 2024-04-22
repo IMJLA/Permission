@@ -3142,7 +3142,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Write-Progress @GrandChildProgress -Status "0% (parent) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $Parent -PercentComplete 0
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
             $Children = $TargetPath[$Parent]
@@ -3180,7 +3180,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
             $Children = $TargetPath[$Parent]
 
@@ -3202,11 +3202,6 @@ function Get-AccessControlList {
         }
 
         Write-Progress @ChildProgress -Completed
-
-
-
-
-
 
     }
 
@@ -3231,7 +3226,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Write-Progress @GrandChildProgress -Status "0% (parent) Get-OwnerAce" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
             $Children = $TargetPath[$Parent]
@@ -3269,7 +3264,7 @@ function Get-AccessControlList {
 
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
-            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Get ACL Owners for parent and child items" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
             $Children = $TargetPath[$Parent]
 
@@ -5353,6 +5348,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
