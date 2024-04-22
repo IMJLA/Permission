@@ -143,7 +143,7 @@ function Select-PermissionTableProperty {
                             # Exclude the virtual ACEs for members of groups whose group classes were included in the -ExcludeClass parameter
                             # Use '$null -ne' to avoid treating an empty string '' as $null
                             if ($null -ne $GroupString) {
-
+                                pause
                                 [pscustomobject]@{
                                     'Account'              = $ShortNameByID[$ResolvedName]
                                     'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
