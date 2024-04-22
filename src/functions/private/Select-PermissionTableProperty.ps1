@@ -45,6 +45,8 @@ function Select-PermissionTableProperty {
 
                             } else {
 
+                                pause
+
                                 # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
                                 $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.Access.IdentityReferenceResolved]) {
                                     if ($ShortName) {

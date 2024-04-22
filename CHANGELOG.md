@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.616] - 2024-04-21 - add debug pause
+
 ## [0.0.615] - 2024-04-21 - misunderstood the russian nesting doll
 
 ## [0.0.614] - 2024-04-21 - found another layer of the russian nesting doll to unwrap
