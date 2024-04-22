@@ -34,42 +34,50 @@ function Select-PermissionTableProperty {
 
                 if ($AccountName) {
 
-                    ForEach ($AceList in $Object.Access) {
+                    ForEach ($ItemAceList in $Object.Access) {
 
-                        ForEach ($ACE in $AceList) {
+                        ForEach ($AccountAceList in $ItemAceList) {
 
-                            if ($ACE.Access.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
+                            ForEach ($ACE in $AccountAceList) {
 
-                                # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
-                                $GroupString = ''
+                                if ($ACE.Access.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
 
-                            } else {
+                                    # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                                    $GroupString = ''
 
-                                # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                $GroupString = $ShortNameByID[$ACE.Access.IdentityReferenceResolved]
+                                } else {
 
-                                if (
-                                    -not $GroupString -and
-                                    (
-                                        $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$Object.Account.ResolvedAccountName]
-                                    )
-                                ) {
-                                    $GroupString = $ACE.Access.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
+                                    $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.Access.IdentityReferenceResolved]) {
+                                        if ($ShortName) {
+                                            $ShortName
+                                        }
+                                    }
+
+                                    if (
+                                        -not $GroupString -and
+                                        (
+                                            $IncludeFilterCount -gt 0 -and -not
+                                            $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                        )
+                                    ) {
+                                        $GroupString = $ACE.Access.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    }
+
                                 }
 
-                            }
+                                if ($GroupString) {
 
-                            if ($GroupString) {
+                                    $Value = [pscustomobject]@{
+                                        'Path'                 = $ACE.Path
+                                        'Access'               = $ACE.Access.Access
+                                        'Due to Membership In' = $GroupString
+                                        'Source of Access'     = $ACE.Access.SourceOfAccess
+                                    }
 
-                                $Value = [pscustomobject]@{
-                                    'Path'                 = $ACE.Path
-                                    'Access'               = $ACE.Access.Access
-                                    'Due to Membership In' = $GroupString
-                                    'Source of Access'     = $ACE.Access.SourceOfAccess
+                                    Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
+
                                 }
-
-                                Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
 
                             }
 
