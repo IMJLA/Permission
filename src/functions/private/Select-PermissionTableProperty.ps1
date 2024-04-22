@@ -23,6 +23,8 @@ function Select-PermissionTableProperty {
 
         'account' {
 
+            pause
+
             ForEach ($Object in $InputObject) {
 
                 # Determine whether the account should be included according to inclusion/exclusion parameters
