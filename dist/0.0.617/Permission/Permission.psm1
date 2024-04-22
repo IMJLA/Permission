@@ -2277,27 +2277,21 @@ function Select-PermissionTableProperty {
                 # Determine whether the account should be included according to inclusion/exclusion parameters
                 $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
 
-                if ($AccountName -like "*\Owner") {
-                    pause
-                }
-
                 if ($AccountName) {
 
                     ForEach ($AceList in $Object.Access) {
 
                         ForEach ($ACE in $AceList.Access) {
 
-                            if ($ACE.Access.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
+                            if ($ACE.IdentityReferenceResolved -eq $Object.Account.ResolvedAccountName) {
 
                                 # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
                                 $GroupString = ''
 
                             } else {
 
-                                pause
-
                                 # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.Access.IdentityReferenceResolved]) {
+                                $GroupString = ForEach ($ShortName in $ShortNameByID[$ACE.IdentityReferenceResolved]) {
                                     if ($ShortName) {
                                         $ShortName
                                     }
@@ -5359,6 +5353,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
