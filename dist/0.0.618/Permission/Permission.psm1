@@ -2304,7 +2304,7 @@ function Select-PermissionTableProperty {
                                         $IncludeFilterContents[$Object.Account.ResolvedAccountName]
                                     )
                                 ) {
-                                    $GroupString = $ACE.Access.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                    $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
                                 }
 
                             }
@@ -2313,9 +2313,9 @@ function Select-PermissionTableProperty {
 
                                 $Value = [pscustomobject]@{
                                     'Path'                 = $ACE.Path
-                                    'Access'               = $ACE.Access.Access
+                                    'Access'               = $ACE.Access
                                     'Due to Membership In' = $GroupString
-                                    'Source of Access'     = $ACE.Access.SourceOfAccess
+                                    'Source of Access'     = $ACE.SourceOfAccess
                                 }
 
                                 Add-CacheItem -Cache $OutputHash -Key $AccountName -Value $Value -Type $Type
@@ -5353,6 +5353,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
