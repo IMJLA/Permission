@@ -191,7 +191,7 @@ function Select-PermissionTableProperty {
                     # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
                     if ($AccountName) {
 
-                        if ($GroupString -eq $ACE.ResolvedAccountName) {
+                        if ($ACE.IdentityReferenceResolved -eq $ACE.ResolvedAccountName) {
                             $GroupString = ''
                         } else {
 
