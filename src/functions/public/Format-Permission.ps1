@@ -45,16 +45,15 @@ function Format-Permission {
         $FormattedResults['SplitByAccount'] = ForEach ($Account in $Permission.AccountPermissions) {
 
             $Selection = $Account
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
                 Account      = $Account.Account
                 Path         = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                passthru     = $Selection
+                passthru     = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
             }
-
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -74,16 +73,15 @@ function Format-Permission {
         $FormattedResults['SplitByItem'] = ForEach ($Item in $Permission.ItemPermissions) {
 
             $Selection = $Item.Access
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
                 Item         = $Item.Item
                 TargetPaths  = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                passthru     = $Selection
+                passthru     = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
             }
-
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             ForEach ($Format in $Formats) {
 
@@ -125,13 +123,13 @@ function Format-Permission {
                         $Selection = $NetworkPath.$Prop
                     }
 
-                    $OutputProperties = @{
-                        Item     = $NetworkPath.Item
-                        passthru = $Selection
-                    }
-
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeFilterContents, $ExcludeClassFilterContents
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+
+                    $OutputProperties = @{
+                        Item     = $NetworkPath.Item
+                        passthru = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                    }
 
                     ForEach ($Format in $Formats) {
 
