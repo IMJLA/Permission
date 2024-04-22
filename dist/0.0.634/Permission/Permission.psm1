@@ -2196,21 +2196,21 @@ function Select-AccountTableProperty {
 
         if ($AccountName) {
 
-            $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
+            #$GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
 
-            if ($GroupString) {
+            #if ($GroupString) {
 
-                # This appears to be what determines the order of columns in the html report
-                [PSCustomObject]@{
-                    Account     = $AccountName
-                    Name        = $Object.Account.Name
-                    DisplayName = $Object.Account.DisplayName
-                    Description = $Object.Account.Description
-                    Department  = $Object.Account.Department
-                    Title       = $Object.Account.Title
-                }
-
+            # This appears to be what determines the order of columns in the html report
+            [PSCustomObject]@{
+                Account     = $AccountName
+                Name        = $Object.Account.Name
+                DisplayName = $Object.Account.DisplayName
+                Description = $Object.Account.Description
+                Department  = $Object.Account.Department
+                Title       = $Object.Account.Title
             }
+
+            #}
 
         }
 
@@ -5328,8 +5328,9 @@ function Select-PermissionPrincipal {
             # Exclude the objects whose names match the regular expressions specified in the parameters
             [bool]$(
                 ForEach ($ClassToExclude in $ExcludeClass) {
+
                     $Principal = $PrincipalByID[$ThisID]
-                    pause
+
                     if ($Principal.SchemaClassName -eq $ClassToExclude) {
                         #$ExcludeFilterContents[$ThisID] = $ThisID
                         $true
@@ -5393,6 +5394,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
