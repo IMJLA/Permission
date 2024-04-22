@@ -132,7 +132,7 @@ function Select-PermissionTableProperty {
                                 -not $GroupString -and
                                 (
                                     $IncludeFilterCount -gt 0 -and -not
-                                    $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                    $IncludeFilterContents[$ResolvedAccountName]
                                 )
                             ) {
                                 $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -148,12 +148,12 @@ function Select-PermissionTableProperty {
 
                             [pscustomobject]@{
                                 'Account'              = $ShortNameByID[$ResolvedName]
-                                'Access'               = $ACE.Access.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
                                 'Due to Membership In' = $GroupString
-                                'Source of Access'     = $ACE.Access.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
-                                'Name'                 = $ACE.Account.Name
-                                'Department'           = $ACE.Account.Department
-                                'Title'                = $ACE.Account.Title
+                                'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                'Name'                 = $AceList.Account.Name
+                                'Department'           = $AceList.Account.Department
+                                'Title'                = $AceList.Account.Title
                             }
 
                         }
