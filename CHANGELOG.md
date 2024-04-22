@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.624] - 2024-04-21 - update progress status txt
+
 ## [0.0.623] - 2024-04-21 - update progress status txt
 
 ## [0.0.622] - 2024-04-21 - add nesting doll logic for groupby item
