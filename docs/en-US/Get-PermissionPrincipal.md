@@ -17,7 +17,7 @@ Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-PrincipalsByResolvedID] <Hashtable>] [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>]
  [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
  [[-DomainsByFqdn] <Hashtable>] [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
+ [[-LogBuffer] <Hashtable>] [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
 ```
 
 ## DESCRIPTION
@@ -155,8 +155,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-{{ Fill LogMsgCache Description }}
+### -LogBuffer
+{{ Fill LogBuffer Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

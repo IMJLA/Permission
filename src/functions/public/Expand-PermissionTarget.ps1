@@ -27,8 +27,8 @@ function Expand-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -51,8 +51,8 @@ function Expand-PermissionTarget {
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -61,7 +61,7 @@ function Expand-PermissionTarget {
     [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
-        LogMsgCache       = $LogMsgCache
+        LogMsgCache       = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -87,7 +87,7 @@ function Expand-PermissionTarget {
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
+            Write-LogMsg @Log -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
             Get-Subfolder -TargetPath $ThisFolder @GetSubfolderParams
 
         }
@@ -101,7 +101,7 @@ function Expand-PermissionTarget {
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogMsgCache
+            LogMsgCache       = $LogBuffer
             Threads           = $ThreadCount
             ProgressParentId  = $Progress['Id']
             AddParam          = $GetSubfolderParams

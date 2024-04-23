@@ -60,8 +60,8 @@ function Resolve-AccessControlList {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -86,8 +86,8 @@ function Resolve-AccessControlList {
     $Count = $Paths.Count
     Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -103,7 +103,7 @@ function Resolve-AccessControlList {
         ThisHostName            = $ThisHostName
         ThisFqdn                = $ThisFqdn
         WhoAmI                  = $WhoAmI
-        LogMsgCache             = $LogMsgCache
+        LogBuffer               = $LogBuffer
         CimCache                = $CimCache
         ACEsByGuid              = $ACEsByGUID
         AceGUIDsByPath          = $AceGUIDsByPath
@@ -132,7 +132,7 @@ function Resolve-AccessControlList {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
+            Write-LogMsg @Log -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -145,14 +145,14 @@ function Resolve-AccessControlList {
             InputParameter   = 'ItemPath'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogMsgCache      = $LogMsgCache
+            LogBuffer        = $LogBuffer
             Threads          = $ThreadCount
             ProgressParentId = $Progress['Id']
             AddParam         = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
         Split-Thread @SplitThreadParams
 
     }

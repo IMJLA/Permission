@@ -13,11 +13,11 @@ function Invoke-PermissionCommand {
     )
     $Steps.Add(
         'Get the hostname of the computer running the script',
-        { Get-CurrentWhoAmI -LogMsgCache $LogMsgCache -ThisHostName $ThisHostname }
+        { Get-CurrentWhoAmI -LogBuffer $LogBuffer -ThisHostName $ThisHostname }
     )
 
     $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         #Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI

@@ -16,8 +16,7 @@ schema: 2.0.0
 Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] <Object>]
  [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
  [[-ACLsByPath] <Object>] [[-TargetPath] <Hashtable>] [[-Children] <Hashtable>] [[-ThisHostName] <String>]
- [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>] [[-DebugOutputStream] <String>]
- [[-ProgressParentId] <Int32>]
+ [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>] [[-DebugOutputStream] <String>] [[-ProgressParentId] <Int32>]
 ```
 
 ## DESCRIPTION
@@ -140,8 +139,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-{{ Fill LogMsgCache Description }}
+### -LogBuffer
+{{ Fill LogBuffer Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <Hashtable>]
  [[-DebugOutputStream] <String>] [[-ThisHostname] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>]
- [[-LogMsgCache] <Hashtable>] [[-Output] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-LogBuffer] <Hashtable>] [[-Output] <Hashtable>] [[-ProgressParentId] <Int32>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -64,8 +64,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-{{ Fill LogMsgCache Description }}
+### -LogBuffer
+{{ Fill LogBuffer Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

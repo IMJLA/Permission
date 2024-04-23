@@ -16,7 +16,7 @@ Use ADSI to lookup info about IdentityReferences from Authorization Rule Collect
 Resolve-Ace [[-ACE] <Object>] [[-ACLsByPath] <Hashtable>] [[-ItemPath] <Object>] [[-ACEsByGUID] <Hashtable>]
  [[-AceGUIDsByResolvedID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
  [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
- [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
  [[-CimCache] <Hashtable>] [[-DebugOutputStream] <String>] [[-ACEPropertyName] <String[]>] [[-Source] <String>]
  [[-InheritanceFlagResolved] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -211,7 +211,7 @@ Aliases:
 
 Required: False
 Position: 15
-Default value: ([Hashtable]::Synchronized(@{}))
+Default value: @{}
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -324,8 +324,8 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+### -LogBuffer
+Log messages which have not yet been written to disk
 
 ```yaml
 Type: System.Collections.Hashtable
@@ -334,7 +334,7 @@ Aliases:
 
 Required: False
 Position: 14
-Default value: ([Hashtable]::Synchronized(@{}))
+Default value: @{}
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

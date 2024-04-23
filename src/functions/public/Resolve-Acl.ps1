@@ -140,8 +140,8 @@ function Resolve-Acl {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
@@ -158,22 +158,22 @@ function Resolve-Acl {
 
     )
 
-    $LogParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
     $ACL = $ACLsByPath[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
-        Write-LogMsg -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters" @LogParams
+        Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
         Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @PSBoundParameters
     }
 
     ForEach ($ACE in $ACL.Access) {
-        Write-LogMsg -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters" @LogParams
+        Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
         Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @PSBoundParameters
     }
 

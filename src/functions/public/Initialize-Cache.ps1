@@ -63,8 +63,8 @@ function Initialize-Cache {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -84,8 +84,8 @@ function Initialize-Cache {
     $Progress['Id'] = $ProgressId
     $Count = $Fqdn.Count
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -99,7 +99,7 @@ function Initialize-Cache {
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
-        LogMsgCache         = $LogMsgCache
+        LogMsgCache         = $LogBuffer
         CimCache            = $CimCache
     }
 
@@ -112,7 +112,7 @@ function Initialize-Cache {
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
+            Write-LogMsg @Log -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
             $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }
@@ -125,14 +125,14 @@ function Initialize-Cache {
             InputParameter   = 'Fqdn'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogMsgCache      = $LogMsgCache
+            LogMsgCache      = $LogBuffer
             Timeout          = 600
             Threads          = $ThreadCount
             ProgressParentId = $ProgressParentId
             AddParam         = $GetAdsiServer
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($Fqdn -join "',")')"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($Fqdn -join "',")')"
         $null = Split-Thread @SplitThread
 
     }

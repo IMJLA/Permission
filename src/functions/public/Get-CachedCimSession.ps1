@@ -29,14 +29,14 @@ function Get-CachedCimSession {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{}))
     )
 
-    $LogParams = @{
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
         WhoAmI       = $WhoAmI
     }
 
@@ -44,19 +44,19 @@ function Get-CachedCimSession {
 
     if ($CimCacheResult) {
 
-        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCacheResult['CimSession']
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM session cache hit for '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $CimCacheSubresult
         } else {
-            Write-LogMsg @LogParams -Text " # CIM session cache miss for '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
         }
 
     } else {
 
-        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache miss for '$ComputerName'"
         $CimCache[$ComputerName] = [Hashtable]::Synchronized(@{})
 
     }
@@ -70,12 +70,12 @@ function Get-CachedCimSession {
         $ComputerName -eq '127.0.0.1' -or
         [String]::IsNullOrEmpty($ComputerName)
     ) {
-        Write-LogMsg @LogParams -Text '$CimSession = New-CimSession'
+        Write-LogMsg @Log -Text '$CimSession = New-CimSession'
         $CimSession = New-CimSession
     } else {
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
-        Write-LogMsg @LogParams -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
+        Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
         $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue
     }
 

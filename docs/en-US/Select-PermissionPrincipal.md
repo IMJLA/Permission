@@ -17,7 +17,7 @@ Select-PermissionPrincipal [[-PrincipalByID] <Hashtable>] [[-ExcludeAccount] <St
  [[-IncludeAccount] <String[]>] [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>]
  [[-ShortNameByID] <Hashtable>] [[-ExcludeClassFilterContents] <Hashtable>]
  [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>] [[-ProgressParentId] <Int32>]
- [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -139,8 +139,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-{{ Fill LogMsgCache Description }}
+### -LogBuffer
+{{ Fill LogBuffer Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

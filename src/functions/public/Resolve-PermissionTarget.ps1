@@ -29,8 +29,8 @@ function Resolve-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
@@ -39,14 +39,14 @@ function Resolve-PermissionTarget {
 
     )
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
-    $ResolveFolderParams = @{
+    $ResolveFolderSplat = @{
         DebugOutputStream = $DebugOutputStream
         CimCache          = $CimCache
         ThisFqdn          = $ThisFqdn
@@ -54,8 +54,8 @@ function Resolve-PermissionTarget {
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
-        Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @LogParams @ResolveFolderParams
+        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
+        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @Log @ResolveFolderSplat
 
     }
 

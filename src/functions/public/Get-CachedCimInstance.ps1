@@ -38,8 +38,8 @@ function Get-CachedCimInstance {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         [Parameter(Mandatory)]
         [String]$KeyProperty,
@@ -48,10 +48,10 @@ function Get-CachedCimInstance {
 
     )
 
-    $LogParams = @{
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
         WhoAmI       = $WhoAmI
     }
 
@@ -65,21 +65,21 @@ function Get-CachedCimInstance {
 
     if ($CimCacheResult) {
 
-        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCacheResult[$InstanceCacheKey]
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $CimCacheSubresult.Values
         } else {
-            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
         }
 
     } else {
-        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache miss for '$ComputerName'"
     }
 
-    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
+    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @Log
 
     if ($CimSession) {
 
@@ -93,12 +93,12 @@ function Get-CachedCimInstance {
         }
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
-            Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
-            Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
         }
 
@@ -116,7 +116,7 @@ function Get-CachedCimInstance {
 
                 ForEach ($Instance in $CimInstance) {
                     $InstancePropertyValue = $Instance.$Prop
-                    Write-LogMsg @LogParams -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
+                    Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
                     $InstanceCache[$InstancePropertyValue] = $Instance
                 }
 

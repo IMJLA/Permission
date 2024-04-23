@@ -51,8 +51,8 @@ function Get-PermissionPrincipal {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         <#
         Do not get group members (only report the groups themselves)
@@ -86,8 +86,8 @@ function Get-PermissionPrincipal {
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -101,7 +101,7 @@ function Get-PermissionPrincipal {
         ThisHostName           = $ThisHostName
         ThisFqdn               = $ThisFqdn
         WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogMsgCache
+        LogMsgCache            = $LogBuffer
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
         PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
@@ -132,7 +132,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
+            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -150,13 +150,13 @@ function Get-PermissionPrincipal {
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogMsgCache
+            LogMsgCache          = $LogBuffer
             Threads              = $ThreadCount
             ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
         Split-Thread @SplitThreadParams
 
     }

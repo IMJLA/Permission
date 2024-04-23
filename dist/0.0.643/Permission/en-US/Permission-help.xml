@@ -282,9 +282,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -514,9 +514,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -710,9 +710,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -761,9 +761,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -1657,9 +1657,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -1720,9 +1720,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -2013,9 +2013,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -2112,9 +2112,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="9" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -2333,9 +2333,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -2384,9 +2384,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -2545,9 +2545,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -2787,9 +2787,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -3166,9 +3166,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -3373,9 +3373,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="11" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -4473,9 +4473,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -4740,9 +4740,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -4926,16 +4926,16 @@
           <dev:defaultValue>(whoami.EXE)</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)</maml:para>
+            <maml:para>Log messages which have not yet been written to disk</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
             <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>([Hashtable]::Synchronized(@{}))</dev:defaultValue>
+          <dev:defaultValue>@{}</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="15" aliases="none">
           <maml:name>CimCache</maml:name>
@@ -4947,7 +4947,7 @@
             <maml:name>System.Collections.Hashtable</maml:name>
             <maml:uri />
           </dev:type>
-          <dev:defaultValue>([Hashtable]::Synchronized(@{}))</dev:defaultValue>
+          <dev:defaultValue>@{}</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
           <maml:name>DebugOutputStream</maml:name>
@@ -5191,7 +5191,7 @@
           <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>([Hashtable]::Synchronized(@{}))</dev:defaultValue>
+        <dev:defaultValue>@{}</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
         <maml:name>DebugOutputStream</maml:name>
@@ -5279,16 +5279,16 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="14" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)</maml:para>
+          <maml:para>Log messages which have not yet been written to disk</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
           <maml:name>System.Collections.Hashtable</maml:name>
           <maml:uri />
         </dev:type>
-        <dev:defaultValue>([Hashtable]::Synchronized(@{}))</dev:defaultValue>
+        <dev:defaultValue>@{}</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="proga">
         <maml:name>ProgressAction</maml:name>
@@ -5519,9 +5519,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <dev:defaultValue>(whoami.EXE)</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)</maml:para>
+            <maml:para>Log messages which have not yet been written to disk</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -5848,9 +5848,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)</maml:para>
+          <maml:para>Log messages which have not yet been written to disk</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -6111,9 +6111,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -6150,9 +6150,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -6468,9 +6468,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -6543,9 +6543,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="6" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -6739,9 +6739,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
-          <maml:name>LogMsgCache</maml:name>
+          <maml:name>LogBuffer</maml:name>
           <maml:description>
-            <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+            <maml:para>{{ Fill LogBuffer Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -6934,9 +6934,9 @@ $FileSecurity = [System.IO.FileSystemAclExtensions]::GetAccessControl($Directory
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="12" aliases="none">
-        <maml:name>LogMsgCache</maml:name>
+        <maml:name>LogBuffer</maml:name>
         <maml:description>
-          <maml:para>{{ Fill LogMsgCache Description }}</maml:para>
+          <maml:para>{{ Fill LogBuffer Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>

@@ -27,19 +27,19 @@ function Resolve-Folder {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{}))
     )
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
-    $LoggingParams = @{
-        LogMsgCache       = $LogMsgCache
+    $LogSplat = @{
+        LogBuffer         = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -49,8 +49,8 @@ function Resolve-Folder {
 
     if ($TargetPath -match $RegEx) {
 
-        Write-LogMsg @LogParams -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LoggingParams
+        Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LogSplat
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -66,7 +66,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server
+            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
 
@@ -75,7 +75,7 @@ function Resolve-Folder {
         ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
         ## https://github.com/IMJLA/Export-Permission/issues/46
         ## https://github.com/IMJLA/PsNtfs/issues/1
-        Write-LogMsg @LogParams -Text "Get-NetDfsEnum -FolderPath '$TargetPath'"
+        Write-LogMsg @Log -Text "Get-NetDfsEnum -FolderPath '$TargetPath'"
         $AllDfs = Get-NetDfsEnum -FolderPath $TargetPath -ErrorAction SilentlyContinue
 
         if ($AllDfs) {
@@ -107,7 +107,7 @@ function Resolve-Folder {
         } else {
 
             $Server = $TargetPath.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server
+            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
             $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
 
         }

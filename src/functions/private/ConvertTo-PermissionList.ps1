@@ -351,7 +351,7 @@ function ConvertTo-PermissionList {
                 GroupNameRule     = $GroupNameRule
                 TodaysHostname    = $ThisHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogCache
+                LogBuffer            = $LogBuffer
             }
 
             Write-LogMsg @LogParams -Text 'New-NtfsAclIssueReport @NtfsIssueParams'

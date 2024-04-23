@@ -29,18 +29,18 @@ function Resolve-IdentityReferenceDomainDNS {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = @{},
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{}))
+        [Hashtable]$CimCache = @{}
 
     )
 
-    $LogParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
@@ -51,10 +51,10 @@ function Resolve-IdentityReferenceDomainDNS {
         if ($DomainSid) {
             $DomainCacheResult = $DomainsBySID[$DomainSid]
             if ($DomainCacheResult) {
-                Write-LogMsg @LogParams -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
+                Write-LogMsg @Log -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
                 $DomainDNS = $DomainCacheResult.Dns
             } else {
-                Write-LogMsg @LogParams -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
+                Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
             }
         }
     } else {
@@ -78,7 +78,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
     if (-not $DomainDNS) {
         # TODO - Bug: I think this will report incorrectly for a remote domain not in the cache (trust broken or something)
-        Write-LogMsg @LogParams -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
+        Write-LogMsg @Log -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
         $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
     }
 

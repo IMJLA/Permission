@@ -16,7 +16,7 @@ Use ADSI to lookup info about IdentityReferences from Authorization Rule Collect
 Resolve-Acl [[-ItemPath] <Object>] [[-ACLsByPath] <Hashtable>] [[-ACEsByGUID] <Hashtable>]
  [[-AceGUIDsByResolvedID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
  [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
- [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogMsgCache] <Hashtable>]
+ [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
  [[-CimCache] <Hashtable>] [[-DebugOutputStream] <String>] [[-ACEPropertyName] <String[]>]
  [[-InheritanceFlagResolved] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -309,8 +309,8 @@ Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
 
-### -LogMsgCache
-Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
+### -LogBuffer
+Log messages which have not yet been written to disk
 
 ```yaml
 Type: System.Collections.Hashtable

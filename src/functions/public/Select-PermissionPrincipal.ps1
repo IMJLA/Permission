@@ -33,18 +33,14 @@ function Select-PermissionPrincipal {
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        <#
-        Hostname of the computer running this function.
+        # Unused parameter
+        [String]$ThisHostName,
 
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
+        # Unused parameter
+        [String]$WhoAmI,
 
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
+        # Unused parameter
+        [Hashtable]$LogBuffer
 
     )
 

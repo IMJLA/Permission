@@ -785,7 +785,7 @@ function ConvertTo-PermissionList {
                 GroupNameRule     = $GroupNameRule
                 TodaysHostname    = $ThisHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogCache
+                LogBuffer            = $LogBuffer
             }
 
             Write-LogMsg @LogParams -Text 'New-NtfsAclIssueReport @NtfsIssueParams'
@@ -2079,18 +2079,18 @@ function Resolve-IdentityReferenceDomainDNS {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = @{},
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{}))
+        [Hashtable]$CimCache = @{}
 
     )
 
-    $LogParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
@@ -2101,10 +2101,10 @@ function Resolve-IdentityReferenceDomainDNS {
         if ($DomainSid) {
             $DomainCacheResult = $DomainsBySID[$DomainSid]
             if ($DomainCacheResult) {
-                Write-LogMsg @LogParams -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
+                Write-LogMsg @Log -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
                 $DomainDNS = $DomainCacheResult.Dns
             } else {
-                Write-LogMsg @LogParams -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
+                Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
             }
         }
     } else {
@@ -2128,7 +2128,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
     if (-not $DomainDNS) {
         # TODO - Bug: I think this will report incorrectly for a remote domain not in the cache (trust broken or something)
-        Write-LogMsg @LogParams -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
+        Write-LogMsg @Log -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
         $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
     }
 
@@ -2589,8 +2589,8 @@ function Expand-Permission {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = @{},
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -2612,17 +2612,17 @@ function Expand-Permission {
     }
     Write-Progress @Progress -Status "0% : Group permission references, then expand them into objects" -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
 
-    Write-LogMsg -Text "Resolve-SplitByParameter -SplitBy $SplitBy" @LogParams
+    Write-LogMsg @Log -Text "Resolve-SplitByParameter -SplitBy $SplitBy"
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
 
-    Write-LogMsg @LogParams -Text "`$SortedPaths = `$AceGuidByPath.Keys | Sort-Object"
+    Write-LogMsg @Log -Text "`$SortedPaths = `$AceGuidByPath.Keys | Sort-Object"
     $SortedPaths = $AceGuidByPath.Keys | Sort-Object
 
     $CommonParams = @{
@@ -2635,11 +2635,11 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the name of their associated account.
-        Write-LogMsg -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID' @LogParams
+        Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID'
         $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-LogMsg -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams' @LogParams
+        Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams'
         $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams
 
     }
@@ -2649,11 +2649,11 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the path to their associated item.
-        Write-LogMsg -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath' @LogParams
+        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath'
         $ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-LogMsg -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams' @LogParams
+        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams'
         $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams
 
     }
@@ -2663,7 +2663,7 @@ function Expand-Permission {
     ) {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
-        Write-LogMsg -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams' @LogParams
+        Write-LogMsg @Log -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams'
         $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams
 
     }
@@ -2673,11 +2673,11 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by their associated TargetPath.
-        Write-LogMsg -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams' @LogParams
+        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams'
         $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-LogMsg -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams' @LogParams
+        Write-LogMsg @Log -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
         $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
 
     }
@@ -2722,8 +2722,8 @@ function Expand-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -2746,8 +2746,8 @@ function Expand-PermissionTarget {
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -2756,7 +2756,7 @@ function Expand-PermissionTarget {
     [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
-        LogMsgCache       = $LogMsgCache
+        LogMsgCache       = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -2782,7 +2782,7 @@ function Expand-PermissionTarget {
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
+            Write-LogMsg @Log -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
             Get-Subfolder -TargetPath $ThisFolder @GetSubfolderParams
 
         }
@@ -2796,7 +2796,7 @@ function Expand-PermissionTarget {
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogMsgCache
+            LogMsgCache       = $LogBuffer
             Threads           = $ThreadCount
             ProgressParentId  = $Progress['Id']
             AddParam          = $GetSubfolderParams
@@ -3089,6 +3089,59 @@ function Format-Permission {
 
     return $FormattedResults
 
+
+    <#
+    switch ($OutputFormat) {
+        'PassThru' {
+            $TypeData = @{
+                TypeName                  = 'Permission.PassThruPermission'
+                DefaultDisplayPropertySet = 'Folder', 'Account', 'Access'
+                ErrorAction               = 'SilentlyContinue'
+            }
+            Update-TypeData @TypeData
+            return $FolderPermissions
+        }
+        'GroupByFolder' {
+            Update-TypeData -MemberName Folder -Value { $This.Name } -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
+            Update-TypeData -MemberName Access -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
+                $Access = ForEach ($Permission in $This.Access) {
+                    [pscustomobject]@{
+                        Account = $Permission.Account
+                        Access  = $Permission.Access
+                    }
+                }
+                $Access
+            }
+            Update-TypeData -DefaultDisplayPropertySet ('Path', 'Access') -TypeName 'Permission.FolderPermission' -ErrorAction SilentlyContinue
+            return $GroupedPermissions
+        }
+        'PrtgXml' {
+            # Output the XML so the script can be directly used as a PRTG sensor
+            # Caution: This use may be a problem for a PRTG probe because of how long the script can run on large folders/domains
+            # Recommendation: Specify the appropriate parameters to run this as a PRTG push sensor instead
+            return $XMLOutput
+        }
+        'GroupByAccount' {
+            Update-TypeData -MemberName Account -Value { $This.Name } -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
+            Update-TypeData -MemberName Access -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
+                $Access = ForEach ($Permission in $This.Group) {
+                    [pscustomobject]@{
+                        Folder = $Permission.Folder
+                        Access = $Permission.Access
+                    }
+                }
+                $Access
+            }
+            Update-TypeData -DefaultDisplayPropertySet ('Account', 'Access') -TypeName 'Permission.AccountPermission' -ErrorAction SilentlyContinue
+
+            #Group-Permission -InputObject $FolderPermissions -Property Account |
+            #Sort-Object -Property Name
+            return
+        }
+        Default { return }
+    }
+    #>
+
 }
 function Format-TimeSpan {
     param (
@@ -3136,8 +3189,8 @@ function Get-AccessControlList {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
@@ -3174,7 +3227,7 @@ function Get-AccessControlList {
     Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists for parent and child items' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0
 
     $GetDirectorySecurity = @{
-        LogMsgCache       = $LogMsgCache
+        LogMsgCache       = $LogBuffer
         ThisHostname      = $TodaysHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -3240,7 +3293,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogMsgCache
+                LogMsgCache       = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetDirectorySecurity
@@ -3324,7 +3377,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogMsgCache
+                LogMsgCache       = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce
@@ -3379,8 +3432,8 @@ function Get-CachedCimInstance {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         [Parameter(Mandatory)]
         [String]$KeyProperty,
@@ -3389,10 +3442,10 @@ function Get-CachedCimInstance {
 
     )
 
-    $LogParams = @{
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
         WhoAmI       = $WhoAmI
     }
 
@@ -3406,21 +3459,21 @@ function Get-CachedCimInstance {
 
     if ($CimCacheResult) {
 
-        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCacheResult[$InstanceCacheKey]
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $CimCacheSubresult.Values
         } else {
-            Write-LogMsg @LogParams -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
         }
 
     } else {
-        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache miss for '$ComputerName'"
     }
 
-    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @LogParams
+    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @Log
 
     if ($CimSession) {
 
@@ -3434,12 +3487,12 @@ function Get-CachedCimInstance {
         }
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
-            Write-LogMsg @LogParams -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
-            Write-LogMsg @LogParams -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
         }
 
@@ -3457,7 +3510,7 @@ function Get-CachedCimInstance {
 
                 ForEach ($Instance in $CimInstance) {
                     $InstancePropertyValue = $Instance.$Prop
-                    Write-LogMsg @LogParams -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
+                    Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
                     $InstanceCache[$InstancePropertyValue] = $Instance
                 }
 
@@ -3503,14 +3556,14 @@ function Get-CachedCimSession {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{}))
     )
 
-    $LogParams = @{
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
         WhoAmI       = $WhoAmI
     }
 
@@ -3518,19 +3571,19 @@ function Get-CachedCimSession {
 
     if ($CimCacheResult) {
 
-        Write-LogMsg @LogParams -Text " # CIM cache hit for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache hit for '$ComputerName'"
         $CimCacheSubresult = $CimCacheResult['CimSession']
 
         if ($CimCacheSubresult) {
-            Write-LogMsg @LogParams -Text " # CIM session cache hit for '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $CimCacheSubresult
         } else {
-            Write-LogMsg @LogParams -Text " # CIM session cache miss for '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
         }
 
     } else {
 
-        Write-LogMsg @LogParams -Text " # CIM cache miss for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM cache miss for '$ComputerName'"
         $CimCache[$ComputerName] = [Hashtable]::Synchronized(@{})
 
     }
@@ -3544,12 +3597,12 @@ function Get-CachedCimSession {
         $ComputerName -eq '127.0.0.1' -or
         [String]::IsNullOrEmpty($ComputerName)
     ) {
-        Write-LogMsg @LogParams -Text '$CimSession = New-CimSession'
+        Write-LogMsg @Log -Text '$CimSession = New-CimSession'
         $CimSession = New-CimSession
     } else {
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
-        Write-LogMsg @LogParams -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
+        Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
         $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue
     }
 
@@ -3612,8 +3665,8 @@ function Get-PermissionPrincipal {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         <#
         Do not get group members (only report the groups themselves)
@@ -3647,8 +3700,8 @@ function Get-PermissionPrincipal {
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -3662,7 +3715,7 @@ function Get-PermissionPrincipal {
         ThisHostName           = $ThisHostName
         ThisFqdn               = $ThisFqdn
         WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogMsgCache
+        LogMsgCache            = $LogBuffer
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
         PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
@@ -3693,7 +3746,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @LogParams -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
+            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -3711,13 +3764,13 @@ function Get-PermissionPrincipal {
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogMsgCache
+            LogMsgCache          = $LogBuffer
             Threads              = $ThreadCount
             ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
         Split-Thread @SplitThreadParams
 
     }
@@ -3860,8 +3913,8 @@ function Initialize-Cache {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId
@@ -3881,8 +3934,8 @@ function Initialize-Cache {
     $Progress['Id'] = $ProgressId
     $Count = $Fqdn.Count
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -3896,7 +3949,7 @@ function Initialize-Cache {
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
-        LogMsgCache         = $LogMsgCache
+        LogMsgCache         = $LogBuffer
         CimCache            = $CimCache
     }
 
@@ -3909,7 +3962,7 @@ function Initialize-Cache {
             [int]$PercentComplete = $i / $Count * 100
             Write-Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
+            Write-LogMsg @Log -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
             $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }
@@ -3922,14 +3975,14 @@ function Initialize-Cache {
             InputParameter   = 'Fqdn'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogMsgCache      = $LogMsgCache
+            LogMsgCache      = $LogBuffer
             Timeout          = 600
             Threads          = $ThreadCount
             ProgressParentId = $ProgressParentId
             AddParam         = $GetAdsiServer
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($Fqdn -join "',")')"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($Fqdn -join "',")')"
         $null = Split-Thread @SplitThread
 
     }
@@ -3952,11 +4005,11 @@ function Invoke-PermissionCommand {
     )
     $Steps.Add(
         'Get the hostname of the computer running the script',
-        { Get-CurrentWhoAmI -LogMsgCache $LogMsgCache -ThisHostName $ThisHostname }
+        { Get-CurrentWhoAmI -LogBuffer $LogBuffer -ThisHostName $ThisHostname }
     )
 
     $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         #Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -4561,8 +4614,8 @@ function Resolve-AccessControlList {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -4587,8 +4640,8 @@ function Resolve-AccessControlList {
     $Count = $Paths.Count
     Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -4604,7 +4657,7 @@ function Resolve-AccessControlList {
         ThisHostName            = $ThisHostName
         ThisFqdn                = $ThisFqdn
         WhoAmI                  = $WhoAmI
-        LogMsgCache             = $LogMsgCache
+        LogBuffer               = $LogBuffer
         CimCache                = $CimCache
         ACEsByGuid              = $ACEsByGUID
         AceGUIDsByPath          = $AceGUIDsByPath
@@ -4633,7 +4686,7 @@ function Resolve-AccessControlList {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            Write-LogMsg @LogParams -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
+            Write-LogMsg @Log -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -4646,14 +4699,14 @@ function Resolve-AccessControlList {
             InputParameter   = 'ItemPath'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogMsgCache      = $LogMsgCache
+            LogBuffer        = $LogBuffer
             Threads          = $ThreadCount
             ProgressParentId = $Progress['Id']
             AddParam         = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @LogParams -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
         Split-Thread @SplitThreadParams
 
     }
@@ -4808,11 +4861,11 @@ function Resolve-Ace {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = @{},
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$CimCache = @{},
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -4830,16 +4883,16 @@ function Resolve-Ace {
 
     )
 
-    $LogParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
-    $Log = @{
+    $LogSplat = @{
         ThisHostname = $ThisHostname
-        LogMsgCache  = $LogMsgCache
+        LogMsgCache  = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
@@ -4854,14 +4907,14 @@ function Resolve-Ace {
         CimCache         = $CimCache
     }
 
-    Write-LogMsg @LogParams -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log"
+    Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log"
     $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @Log
 
-    Write-LogMsg @LogParams -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn'"
-    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS -ThisFqdn $ThisFqdn @GetAdsiServerParams @Cache1 @Cache2 @Log
+    Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn'"
+    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS -ThisFqdn $ThisFqdn @GetAdsiServerParams @Cache1 @Cache2 @LogSplat
 
-    Write-LogMsg @LogParams -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
-    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @Log
+    Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
+    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogSplat
 
     # TODO: add a param to offer DNS instead of or in addition to NetBIOS
 
@@ -5030,8 +5083,8 @@ function Resolve-Acl {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
@@ -5048,22 +5101,22 @@ function Resolve-Acl {
 
     )
 
-    $LogParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        LogMsgCache  = $LogMsgCache
+        Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
     $ACL = $ACLsByPath[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
-        Write-LogMsg -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters" @LogParams
+        Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
         Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @PSBoundParameters
     }
 
     ForEach ($ACE in $ACL.Access) {
-        Write-LogMsg -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters" @LogParams
+        Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
         Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @PSBoundParameters
     }
 
@@ -5097,19 +5150,19 @@ function Resolve-Folder {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{}))
     )
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
-    $LoggingParams = @{
-        LogMsgCache       = $LogMsgCache
+    $LogSplat = @{
+        LogBuffer         = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -5119,8 +5172,8 @@ function Resolve-Folder {
 
     if ($TargetPath -match $RegEx) {
 
-        Write-LogMsg @LogParams -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LoggingParams
+        Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LogSplat
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -5136,7 +5189,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server
+            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
 
@@ -5145,7 +5198,7 @@ function Resolve-Folder {
         ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
         ## https://github.com/IMJLA/Export-Permission/issues/46
         ## https://github.com/IMJLA/PsNtfs/issues/1
-        Write-LogMsg @LogParams -Text "Get-NetDfsEnum -FolderPath '$TargetPath'"
+        Write-LogMsg @Log -Text "Get-NetDfsEnum -FolderPath '$TargetPath'"
         $AllDfs = Get-NetDfsEnum -FolderPath $TargetPath -ErrorAction SilentlyContinue
 
         if ($AllDfs) {
@@ -5177,7 +5230,7 @@ function Resolve-Folder {
         } else {
 
             $Server = $TargetPath.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server
+            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
             $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
 
         }
@@ -5242,8 +5295,8 @@ function Resolve-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Hashtable of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{})),
+        # Log messages which have not yet been written to disk
+        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
@@ -5252,14 +5305,14 @@ function Resolve-PermissionTarget {
 
     )
 
-    $LogParams = @{
-        LogMsgCache  = $LogMsgCache
+    $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
-    $ResolveFolderParams = @{
+    $ResolveFolderSplat = @{
         DebugOutputStream = $DebugOutputStream
         CimCache          = $CimCache
         ThisFqdn          = $ThisFqdn
@@ -5267,8 +5320,8 @@ function Resolve-PermissionTarget {
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
-        Write-LogMsg @LogParams -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @LogParams @ResolveFolderParams
+        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
+        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @Log @ResolveFolderSplat
 
     }
 
@@ -5308,18 +5361,14 @@ function Select-PermissionPrincipal {
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
 
-        <#
-        Hostname of the computer running this function.
+        # Unused parameter
+        [String]$ThisHostName,
 
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
+        # Unused parameter
+        [String]$WhoAmI,
 
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # Dictionary of log messages for Write-LogMsg (can be thread-safe if a synchronized hashtable is provided)
-        [Hashtable]$LogMsgCache = ([Hashtable]::Synchronized(@{}))
+        # Unused parameter
+        [Hashtable]$LogBuffer
 
     )
 
@@ -5412,6 +5461,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
