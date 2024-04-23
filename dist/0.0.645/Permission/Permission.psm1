@@ -5261,7 +5261,14 @@ function Resolve-FormatParameter {
         $AllFormats[$OutputFormat] = $null
     }
 
-    return [string[]]$AllFormats.Keys
+    # Sort the results in descending order to ensure json comes before js.
+    # This is because the js report uses the json formatted data
+    # So, in Format-Permission, the objects in the output hashtable are formatted with json properties rather than js properties even for the js report format
+    # However, ConvertTo-PermissionGroup/List are exclusive to js but not json reports so they output nothing for json
+    # Having json run first means that the "nothing" results will then be overwritten by the valid json results
+    $Sorted = [string[]]$AllFormats.Keys | Sort-Object -Descending
+
+    return $Sorted
 
 }
 function Resolve-PermissionTarget {
@@ -5461,6 +5468,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
