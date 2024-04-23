@@ -99,7 +99,7 @@ function Initialize-Cache {
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
-        LogMsgCache         = $LogBuffer
+        LogBuffer           = $LogBuffer
         CimCache            = $CimCache
     }
 
@@ -125,7 +125,7 @@ function Initialize-Cache {
             InputParameter   = 'Fqdn'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogMsgCache      = $LogBuffer
+            LogBuffer      = $LogBuffer
             Timeout          = 600
             Threads          = $ThreadCount
             ProgressParentId = $ProgressParentId

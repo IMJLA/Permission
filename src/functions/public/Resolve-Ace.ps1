@@ -176,7 +176,7 @@ function Resolve-Ace {
 
     $LogSplat = @{
         ThisHostname = $ThisHostname
-        LogMsgCache  = $LogBuffer
+        LogBuffer    = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 

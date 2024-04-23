@@ -59,7 +59,7 @@ function Get-AccessControlList {
     Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists for parent and child items' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0
 
     $GetDirectorySecurity = @{
-        LogMsgCache       = $LogBuffer
+        LogBuffer         = $LogBuffer
         ThisHostname      = $TodaysHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -125,7 +125,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogBuffer
+                LogBuffer         = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetDirectorySecurity
@@ -209,7 +209,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogBuffer
+                LogBuffer       = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce

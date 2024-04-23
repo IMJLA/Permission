@@ -61,7 +61,7 @@ function Expand-PermissionTarget {
     [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
-        LogMsgCache       = $LogBuffer
+        LogBuffer         = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -101,7 +101,7 @@ function Expand-PermissionTarget {
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogBuffer
+            LogBuffer       = $LogBuffer
             Threads           = $ThreadCount
             ProgressParentId  = $Progress['Id']
             AddParam          = $GetSubfolderParams

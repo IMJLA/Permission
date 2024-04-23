@@ -2756,7 +2756,7 @@ function Expand-PermissionTarget {
     [Hashtable]$Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
-        LogMsgCache       = $LogBuffer
+        LogBuffer         = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -2796,7 +2796,7 @@ function Expand-PermissionTarget {
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
-            LogMsgCache       = $LogBuffer
+            LogBuffer       = $LogBuffer
             Threads           = $ThreadCount
             ProgressParentId  = $Progress['Id']
             AddParam          = $GetSubfolderParams
@@ -3227,7 +3227,7 @@ function Get-AccessControlList {
     Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists for parent and child items' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0
 
     $GetDirectorySecurity = @{
-        LogMsgCache       = $LogBuffer
+        LogBuffer         = $LogBuffer
         ThisHostname      = $TodaysHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -3293,7 +3293,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogBuffer
+                LogBuffer         = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetDirectorySecurity
@@ -3377,7 +3377,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogMsgCache       = $LogBuffer
+                LogBuffer       = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce
@@ -3715,7 +3715,7 @@ function Get-PermissionPrincipal {
         ThisHostName           = $ThisHostName
         ThisFqdn               = $ThisFqdn
         WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogBuffer
+        LogBuffer              = $LogBuffer
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
         PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
@@ -3764,7 +3764,7 @@ function Get-PermissionPrincipal {
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogBuffer
+            LogBuffer          = $LogBuffer
             Threads              = $ThreadCount
             ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
@@ -3949,7 +3949,7 @@ function Initialize-Cache {
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
-        LogMsgCache         = $LogBuffer
+        LogBuffer           = $LogBuffer
         CimCache            = $CimCache
     }
 
@@ -3975,7 +3975,7 @@ function Initialize-Cache {
             InputParameter   = 'Fqdn'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogMsgCache      = $LogBuffer
+            LogBuffer      = $LogBuffer
             Timeout          = 600
             Threads          = $ThreadCount
             ProgressParentId = $ProgressParentId
@@ -4892,7 +4892,7 @@ function Resolve-Ace {
 
     $LogSplat = @{
         ThisHostname = $ThisHostname
-        LogMsgCache  = $LogBuffer
+        LogBuffer    = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
@@ -5461,6 +5461,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

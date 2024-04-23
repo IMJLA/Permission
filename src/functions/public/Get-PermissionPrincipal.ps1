@@ -101,7 +101,7 @@ function Get-PermissionPrincipal {
         ThisHostName           = $ThisHostName
         ThisFqdn               = $ThisFqdn
         WhoAmI                 = $WhoAmI
-        LogMsgCache            = $LogBuffer
+        LogBuffer              = $LogBuffer
         CimCache               = $CimCache
         DebugOutputStream      = $DebugOutputStream
         PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
@@ -150,7 +150,7 @@ function Get-PermissionPrincipal {
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
-            LogMsgCache          = $LogBuffer
+            LogBuffer          = $LogBuffer
             Threads              = $ThreadCount
             ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
