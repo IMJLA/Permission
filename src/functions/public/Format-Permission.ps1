@@ -52,7 +52,9 @@ function Format-Permission {
                 Account      = $Account.Account
                 Path         = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                passthru     = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                passthru     = [PSCustomObject]@{
+                    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                }
             }
 
             ForEach ($Format in $Formats) {
@@ -80,7 +82,9 @@ function Format-Permission {
                 Item         = $Item.Item
                 TargetPaths  = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                passthru     = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                passthru     = [PSCustomObject]@{
+                    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                }
             }
 
             ForEach ($Format in $Formats) {
@@ -128,7 +132,9 @@ function Format-Permission {
 
                     $OutputProperties = @{
                         Item     = $NetworkPath.Item
-                        passthru = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                        passthru = [PSCustomObject]@{
+                            'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                        }
                     }
 
                     ForEach ($Format in $Formats) {

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.642] - 2024-04-22 - have passthru property match structure of the permissionlist
+
 ## [0.0.641] - 2024-04-22 - bugfix passthru
 
 ## [0.0.640] - 2024-04-21 - bugfix non-blank 'due to membership in' column for groupby none/target
