@@ -483,6 +483,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
                                 PassThru = $Permission[$Group.Account.ResolvedAccountName]
+                                Grouping = $Group.Account.ResolvedAccountName
                             }
                         }
                         break
@@ -495,6 +496,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = $Permission[$Group.Item.Path] | ConvertTo-Csv
                                 PassThru = $Permission[$Group.Item.Path]
+                                Grouping = $Group.Item.Path
                             }
                         }
                         break
@@ -510,6 +512,7 @@ function ConvertTo-PermissionList {
                             if ($Perm) {
                                 [PSCustomObject]@{
                                     Data     = $Perm | ConvertTo-Csv
+                                    Grouping = $Group.Path
                                     PassThru = $Perm
                                 }
 
@@ -563,6 +566,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = $Html
                                 Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping = $GroupID
                                 PassThru = $StartingPermissions
                             }
 
@@ -585,6 +589,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = $Html
                                 Div      = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping = $GroupID
                                 PassThru = $StartingPermissions
                             }
 
@@ -606,6 +611,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = $Html
                                 Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping = $GroupID
                                 PassThru = $StartingPermissions
                             }
 
@@ -689,6 +695,7 @@ function ConvertTo-PermissionList {
                                 Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                 PassThru = $ObjectsForJsonData
+                                Grouping = $GroupID
                                 Table    = $TableId
                             }
 
@@ -728,6 +735,7 @@ function ConvertTo-PermissionList {
                                     Columns  = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                                     Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                     Div      = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                    Grouping = $GroupID
                                     PassThru = $ObjectsForJsonData
                                     Table    = $TableId
                                 }
@@ -772,6 +780,7 @@ function ConvertTo-PermissionList {
                                 Columns  = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
                                 Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping = $GroupID
                                 PassThru = $ObjectsForJsonData
                                 Table    = $TableId
                             }
@@ -836,6 +845,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
                                 PassThru = $Permission[$Account.ResolvedAccountName]
+                                Grouping = $Account.ResolvedAccountName
                             }
                         }
                         break
@@ -848,6 +858,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
                                 PassThru = $Permission[$Group.Item.Path]
+                                Grouping = $Group.Item.Path
                             }
                         }
                         break
@@ -860,6 +871,7 @@ function ConvertTo-PermissionList {
                             [PSCustomObject]@{
                                 Data     = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
                                 PassThru = $Permission[$Group.Path]
+                                Grouping = $Group.Path
                             }
                         }
                         break
@@ -5486,6 +5498,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
