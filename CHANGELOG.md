@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.646] - 2024-04-23 - updated passthru functionality
+
 ## [0.0.645] - 2024-04-22 - bugfix resolve-formatparameter
 
 ## [0.0.644] - 2024-04-22 - rename logmsgcache to logbuffer

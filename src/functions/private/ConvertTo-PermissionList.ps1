@@ -32,8 +32,11 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
+                $Sorted = $Permission.Values | Sort-Object -Property Item, Account
+
                 [PSCustomObject]@{
-                    Data = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Csv
+                    Data     = $Sorted | ConvertTo-Csv
+                    PassThru = $Sorted
                 }
 
             } else {
@@ -44,7 +47,8 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
+                                Data     = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
+                                PassThru = $Permission[$Group.Account.ResolvedAccountName]
                             }
                         }
                         break
@@ -55,7 +59,8 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                                Data     = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                                PassThru = $Permission[$Group.Item.Path]
                             }
                         }
                         break
@@ -70,7 +75,8 @@ function ConvertTo-PermissionList {
 
                             if ($Perm) {
                                 [PSCustomObject]@{
-                                    Data = $Perm | ConvertTo-Csv
+                                    Data     = $Perm | ConvertTo-Csv
+                                    PassThru = $Perm
                                 }
 
                             }
@@ -95,12 +101,14 @@ function ConvertTo-PermissionList {
             ) {
 
                 $Heading = New-HtmlHeading "Permissions in $NetworkPath" -Level 6
-                $Html = $Permission.Values | Sort-Object -Property Item, Account | ConvertTo-Html -Fragment
+                $Sorted = $Permission.Values | Sort-Object -Property Item, Account
+                $Html = $Sorted | ConvertTo-Html -Fragment
                 $Table = $Html | New-BootstrapTable
 
                 [PSCustomObject]@{
-                    Data = $Html
-                    Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                    Data     = $Html
+                    Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                    PassThru = $Sorted
                 }
 
             } else {
@@ -119,8 +127,9 @@ function ConvertTo-PermissionList {
                             $Table = $Html | New-BootstrapTable
 
                             [PSCustomObject]@{
-                                Data = $Html
-                                Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Data     = $Html
+                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                PassThru = $StartingPermissions
                             }
 
                         }
@@ -140,8 +149,9 @@ function ConvertTo-PermissionList {
                             $Table = $Html | New-BootstrapTable
 
                             [PSCustomObject]@{
-                                Data = $Html
-                                Div  = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Data     = $Html
+                                Div      = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                PassThru = $StartingPermissions
                             }
 
                         }
@@ -160,8 +170,9 @@ function ConvertTo-PermissionList {
                             $Table = $Html | New-BootstrapTable
 
                             [PSCustomObject]@{
-                                Data = $Html
-                                Div  = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Data     = $Html
+                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                PassThru = $StartingPermissions
                             }
 
                         }
@@ -240,10 +251,11 @@ function ConvertTo-PermissionList {
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
 
                             [PSCustomObject]@{
-                                Columns = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
-                                Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Table   = $TableId
+                                Columns  = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
+                                Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                PassThru = $ObjectsForJsonData
+                                Table    = $TableId
                             }
 
                         }
@@ -279,10 +291,11 @@ function ConvertTo-PermissionList {
                                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
 
                                 [PSCustomObject]@{
-                                    Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                                    Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                    Div     = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                    Table   = $TableId
+                                    Columns  = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                    Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                    Div      = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                    PassThru = $ObjectsForJsonData
+                                    Table    = $TableId
                                 }
 
                             }
@@ -322,10 +335,11 @@ function ConvertTo-PermissionList {
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
 
                             [PSCustomObject]@{
-                                Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                                Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Table   = $TableId
+                                Columns  = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                PassThru = $ObjectsForJsonData
+                                Table    = $TableId
                             }
 
                         }
@@ -373,9 +387,10 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
-                $OutputObject = @{}
-                $OutputObject['Data'] = ($Permission.Values | ConvertTo-Xml).InnerXml
-                [PSCustomObject]$OutputObject
+                [PSCustomObject]@{
+                    Data     = ($Permission.Values | ConvertTo-Xml).InnerXml
+                    PassThru = $Permission.Values
+                }
 
             } else {
 
@@ -385,7 +400,8 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+                                Data     = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+                                PassThru = $Permission[$Account.ResolvedAccountName]
                             }
                         }
                         break
@@ -396,7 +412,8 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                                Data     = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                                PassThru = $Permission[$Group.Item.Path]
                             }
                         }
                         break
@@ -407,7 +424,8 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                                Data     = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                                PassThru = $Permission[$Group.Path]
                             }
                         }
                         break

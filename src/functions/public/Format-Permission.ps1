@@ -52,9 +52,9 @@ function Format-Permission {
                 Account      = $Account.Account
                 Path         = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                passthru     = [PSCustomObject]@{
-                    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
-                }
+                #passthru     = [PSCustomObject]@{
+                #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                #}
             }
 
             ForEach ($Format in $Formats) {
@@ -82,9 +82,9 @@ function Format-Permission {
                 Item         = $Item.Item
                 TargetPaths  = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                passthru     = [PSCustomObject]@{
-                    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
-                }
+                #passthru     = [PSCustomObject]@{
+                #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                #}
             }
 
             ForEach ($Format in $Formats) {
@@ -131,10 +131,10 @@ function Format-Permission {
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        Item     = $NetworkPath.Item
-                        passthru = [PSCustomObject]@{
-                            'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
-                        }
+                        Item = $NetworkPath.Item
+                        #passthru = [PSCustomObject]@{
+                        #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
+                        #}
                     }
 
                     ForEach ($Format in $Formats) {
