@@ -95,30 +95,28 @@ function Out-Permission {
     }
     Update-TypeData -DefaultDisplayPropertySet ('ParentPath', 'ChildPath') -TypeName 'Permission.Parent' -ErrorAction SilentlyContinue
 
-    if ($Key -eq 'SplitByTarget' -and $GroupBy -eq 'item') {
+    #if ($Key -eq 'SplitByTarget' -and $GroupBy -eq 'item') {
 
-        # Output the result to the pipeline
-        ForEach ($Key in $FormattedPermission.Keys) {
+    # Output the result to the pipeline
+    ForEach ($Key in $FormattedPermission.Keys) {
 
-            ForEach ($Target in $FormattedPermission[$Key]) {
+        ForEach ($Target in $FormattedPermission[$Key]) {
 
-                ForEach ($NetworkPath in $Target.NetworkPaths) {
+            ForEach ($NetworkPath in $Target.NetworkPaths) {
 
-                    [PSCustomObject]@{
-                        Parent     = $NetworkPath.Item
-                        Children   = ForEach ($Permission in $NetworkPath.$OutputFormat) {
+                [PSCustomObject]@{
+                    Parent     = $NetworkPath.Item
+                    Children   = ForEach ($Permission in $NetworkPath.$OutputFormat) {
 
-                            [PSCustomObject]@{
-                                Item       = $Permission.Grouping
-                                Access     = $Permission.$OutputFormat
-                                PSTypeName = 'Permission.Item'
-                            }
-
+                        [PSCustomObject]@{
+                            Item       = $Permission.Grouping
+                            Access     = $Permission.$OutputFormat
+                            PSTypeName = 'Permission.Item'
                         }
 
-                        PSTypeName = 'Permission.Parent'
-
                     }
+
+                    PSTypeName = 'Permission.Parent'
 
                 }
 
@@ -127,6 +125,8 @@ function Out-Permission {
         }
 
     }
+
+    #}
 
 
     if ($OutputFormat -eq 'PrtgXml') {
