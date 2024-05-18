@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Out-Permission [[-OutputFormat] <String>] [[-FormattedPermission] <Hashtable>]
+Out-Permission [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-FormattedPermission] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -37,6 +37,22 @@ PS C:\> {{ Add example code here }}
 Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -GroupBy
+{{ Fill GroupBy Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: account, item, none, target
 
 Required: False
 Position: 1

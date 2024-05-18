@@ -3598,6 +3598,24 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+          <maml:name>GroupBy</maml:name>
+          <maml:description>
+            <maml:para>{{ Fill GroupBy Description }}</maml:para>
+          </maml:description>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">account</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">item</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">none</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">target</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>FormattedPermission</maml:name>
           <maml:description>
             <maml:para>{{ Fill FormattedPermission Description }}</maml:para>
@@ -3612,7 +3630,7 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>FormattedPermission</maml:name>
         <maml:description>
           <maml:para>{{ Fill FormattedPermission Description }}</maml:para>
@@ -3620,6 +3638,18 @@
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
           <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
+        <maml:name>GroupBy</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill GroupBy Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

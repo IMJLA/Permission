@@ -469,8 +469,9 @@ function ConvertTo-PermissionList {
                 $Sorted = $Permission.Values | Sort-Object -Property Item, Account
 
                 [PSCustomObject]@{
-                    Data     = $Sorted | ConvertTo-Csv
-                    PassThru = $Sorted
+                    PSTypeName = 'Permission.PermissionList'
+                    Data       = $Sorted | ConvertTo-Csv
+                    PassThru   = $Sorted
                 }
 
             } else {
@@ -481,9 +482,10 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data     = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
-                                PassThru = $Permission[$Group.Account.ResolvedAccountName]
-                                Grouping = $Group.Account.ResolvedAccountName
+                                PSTypeName = 'Permission.PermissionList'
+                                Data       = $Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Csv
+                                PassThru   = $Permission[$Group.Account.ResolvedAccountName]
+                                Grouping   = $Group.Account.ResolvedAccountName
                             }
                         }
                         break
@@ -494,9 +496,10 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data     = $Permission[$Group.Item.Path] | ConvertTo-Csv
-                                PassThru = $Permission[$Group.Item.Path]
-                                Grouping = $Group.Item.Path
+                                PSTypeName = 'Permission.PermissionList'
+                                Data       = $Permission[$Group.Item.Path] | ConvertTo-Csv
+                                PassThru   = $Permission[$Group.Item.Path]
+                                Grouping   = $Group.Item.Path
                             }
                         }
                         break
@@ -511,9 +514,10 @@ function ConvertTo-PermissionList {
 
                             if ($Perm) {
                                 [PSCustomObject]@{
-                                    Data     = $Perm | ConvertTo-Csv
-                                    Grouping = $Group.Path
-                                    PassThru = $Perm
+                                    PSTypeName = 'Permission.PermissionList'
+                                    Data       = $Perm | ConvertTo-Csv
+                                    Grouping   = $Group.Path
+                                    PassThru   = $Perm
                                 }
 
                             }
@@ -543,9 +547,10 @@ function ConvertTo-PermissionList {
                 $Table = $Html | New-BootstrapTable
 
                 [PSCustomObject]@{
-                    Data     = $Html
-                    Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                    PassThru = $Sorted
+                    PSTypeName = 'Permission.PermissionList'
+                    Data       = $Html
+                    Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                    PassThru   = $Sorted
                 }
 
             } else {
@@ -564,10 +569,11 @@ function ConvertTo-PermissionList {
                             $Table = $Html | New-BootstrapTable
 
                             [PSCustomObject]@{
-                                Data     = $Html
-                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Grouping = $GroupID
-                                PassThru = $StartingPermissions
+                                PSTypeName = 'Permission.PermissionList'
+                                Data       = $Html
+                                Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping   = $GroupID
+                                PassThru   = $StartingPermissions
                             }
 
                         }
@@ -587,10 +593,11 @@ function ConvertTo-PermissionList {
                             $Table = $Html | New-BootstrapTable
 
                             [PSCustomObject]@{
-                                Data     = $Html
-                                Div      = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Grouping = $GroupID
-                                PassThru = $StartingPermissions
+                                PSTypeName = 'Permission.PermissionList'
+                                Data       = $Html
+                                Div        = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping   = $GroupID
+                                PassThru   = $StartingPermissions
                             }
 
                         }
@@ -609,10 +616,11 @@ function ConvertTo-PermissionList {
                             $Table = $Html | New-BootstrapTable
 
                             [PSCustomObject]@{
-                                Data     = $Html
-                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Grouping = $GroupID
-                                PassThru = $StartingPermissions
+                                PSTypeName = 'Permission.PermissionList'
+                                Data       = $Html
+                                Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping   = $GroupID
+                                PassThru   = $StartingPermissions
                             }
 
                         }
@@ -634,7 +642,6 @@ function ConvertTo-PermissionList {
                 $HowToSplit[$GroupBy]
             ) {
 
-                $OutputObject = @{}
                 $Heading = New-HtmlHeading "Permissions in $NetworkPath" -Level 6
                 $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
 
@@ -657,10 +664,11 @@ function ConvertTo-PermissionList {
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
 
                 [PSCustomObject]@{
-                    Columns = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                    Data    = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                    Div     = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                    Table   = $TableId
+                    PSTypeName = 'Permission.PermissionList'
+                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                    Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                    Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                    Table      = $TableId
                 }
 
             } else {
@@ -691,12 +699,13 @@ function ConvertTo-PermissionList {
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
 
                             [PSCustomObject]@{
-                                Columns  = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
-                                Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                PassThru = $ObjectsForJsonData
-                                Grouping = $GroupID
-                                Table    = $TableId
+                                PSTypeName = 'Permission.AccountPermissionList'
+                                Columns    = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
+                                Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                PassThru   = $ObjectsForJsonData
+                                Grouping   = $GroupID
+                                Table      = $TableId
                             }
 
                         }
@@ -732,12 +741,13 @@ function ConvertTo-PermissionList {
                                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
 
                                 [PSCustomObject]@{
-                                    Columns  = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                                    Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                    Div      = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                    Grouping = $GroupID
-                                    PassThru = $ObjectsForJsonData
-                                    Table    = $TableId
+                                    PSTypeName = 'Permission.ItemPermissionList'
+                                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                    Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                    Div        = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                    Grouping   = $GroupID
+                                    PassThru   = $ObjectsForJsonData
+                                    Table      = $TableId
                                 }
 
                             }
@@ -777,12 +787,13 @@ function ConvertTo-PermissionList {
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
 
                             [PSCustomObject]@{
-                                Columns  = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
-                                Data     = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div      = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                Grouping = $GroupID
-                                PassThru = $ObjectsForJsonData
-                                Table    = $TableId
+                                PSTypeName = 'Permission.TargetPermissionList'
+                                Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Grouping   = $GroupID
+                                PassThru   = $ObjectsForJsonData
+                                Table      = $TableId
                             }
 
                         }
@@ -831,8 +842,9 @@ function ConvertTo-PermissionList {
             ) {
 
                 [PSCustomObject]@{
-                    Data     = ($Permission.Values | ConvertTo-Xml).InnerXml
-                    PassThru = $Permission.Values
+                    PSTypeName = 'Permission.PermissionList'
+                    Data       = ($Permission.Values | ConvertTo-Xml).InnerXml
+                    PassThru   = $Permission.Values
                 }
 
             } else {
@@ -843,9 +855,10 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data     = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
-                                PassThru = $Permission[$Account.ResolvedAccountName]
-                                Grouping = $Account.ResolvedAccountName
+                                PSTypeName = 'Permission.AccountPermissionList'
+                                Data       = ($Permission[$Group.Account.ResolvedAccountName] | ConvertTo-Xml).InnerXml
+                                PassThru   = $Permission[$Account.ResolvedAccountName]
+                                Grouping   = $Account.ResolvedAccountName
                             }
                         }
                         break
@@ -856,9 +869,10 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data     = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
-                                PassThru = $Permission[$Group.Item.Path]
-                                Grouping = $Group.Item.Path
+                                PSTypeName = 'Permission.ItemPermissionList'
+                                Data       = ($Permission[$Group.Item.Path] | ConvertTo-Xml).InnerXml
+                                PassThru   = $Permission[$Group.Item.Path]
+                                Grouping   = $Group.Item.Path
                             }
                         }
                         break
@@ -869,9 +883,10 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                Data     = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
-                                PassThru = $Permission[$Group.Path]
-                                Grouping = $Group.Path
+                                PSTypeName = 'Permission.TargetPermissionList'
+                                Data       = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
+                                PassThru   = $Permission[$Group.Path]
+                                Grouping   = $Group.Path
                             }
                         }
                         break
@@ -4007,13 +4022,36 @@ function Out-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string]$OutputFormat = 'passthru',
 
+        <#
+        How to group the permissions in the output stream and within each exported file
+
+            SplitBy	GroupBy
+            none	none	$FlatPermissions all in 1 file
+            none	account	$AccountPermissions all in 1 file
+            none	item	$ItemPermissions all in 1 file
+
+            account	none	1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
+            account	account	(same as -SplitBy account -GroupBy none)
+            account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
+
+            item	none	1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
+            item	account	1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
+            item	item	(same as -SplitBy item -GroupBy none)
+
+            target	none	1 file per $TargetPath.  In each file, sort ACEs by item path then account name
+            target	account	1 file per $TargetPath.  In each file, group ACEs by account and sort by account name
+            target	item	1 file per $TargetPath.  In each file, group ACEs by item and sort by item path
+            target  target  (same as -SplitBy target -GroupBy none)
+        #>
+        [ValidateSet('account', 'item', 'none', 'target')]
+        [string]$GroupBy = 'item',
+
         [hashtable]$FormattedPermission
 
     )
-
     <#
-    switch ($OutputFormat) {
-        'PassThru' {
+    switch ($GroupBy) {
+        'None' {
             $TypeData = @{
                 TypeName                  = 'Permission.PassThruPermission'
                 DefaultDisplayPropertySet = 'Folder', 'Account', 'Access'
@@ -4022,7 +4060,7 @@ function Out-Permission {
             Update-TypeData @TypeData
             return $FolderPermissions
         }
-        'GroupByFolder' {
+        'Item' {
             Update-TypeData -MemberName Folder -Value { $This.Name } -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
             Update-TypeData -MemberName Access -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
                 $Access = ForEach ($Permission in $This.Access) {
@@ -4036,13 +4074,7 @@ function Out-Permission {
             Update-TypeData -DefaultDisplayPropertySet ('Path', 'Access') -TypeName 'Permission.FolderPermission' -ErrorAction SilentlyContinue
             return $GroupedPermissions
         }
-        'PrtgXml' {
-            # Output the XML so the script can be directly used as a PRTG sensor
-            # Caution: This use may be a problem for a PRTG probe because of how long the script can run on large folders/domains
-            # Recommendation: Specify the appropriate parameters to run this as a PRTG push sensor instead
-            return $XMLOutput
-        }
-        'GroupByAccount' {
+        'Account' {
             Update-TypeData -MemberName Account -Value { $This.Name } -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
             Update-TypeData -MemberName Access -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
                 $Access = ForEach ($Permission in $This.Group) {
@@ -4062,21 +4094,62 @@ function Out-Permission {
         Default { return }
     }
     #>
+    #Update-TypeData -MemberName Children -Value { $This.Name } -TypeName 'Permission.Parent' -MemberType ScriptProperty -ErrorAction SilentlyContinue
 
-    # Output the result to the pipeline
-    ForEach ($Key in $FormattedPermission.Keys) {
-        ForEach ($NetworkPath in $FormattedPermission[$Key].NetworkPaths) {
-            [PSCustomObject]@{
-                Parent   = $NetworkPath.Item
-                Children = ForEach ($Permission in $NetworkPath.$OutputFormat) {
+    Update-TypeData -MemberName ChildPath -TypeName 'Permission.Parent' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
+
+        $This.Children.Item.Path
+
+        #$Access = ForEach ($Permission in $Child.Access) {
+        #    [pscustomobject]@{
+        #        Account = $Permission.Account
+        #        Access  = $Permission.Access
+        #    }
+        #}
+        #$Access
+
+    }
+    Update-TypeData -DefaultDisplayPropertySet ('ParentPath', 'ChildPath') -TypeName 'Permission.Parent' -ErrorAction SilentlyContinue
+
+    if ($Key -eq 'SplitByTarget' -and $GroupBy -eq 'item') {
+
+        # Output the result to the pipeline
+        ForEach ($Key in $FormattedPermission.Keys) {
+
+            ForEach ($Target in $FormattedPermission[$Key]) {
+
+                ForEach ($NetworkPath in $Target.NetworkPaths) {
+
                     [PSCustomObject]@{
-                        Item   = $Permission.Grouping
-                        Access = $Permission.$OutputFormat
+                        Parent     = $NetworkPath.Item
+                        Children   = ForEach ($Permission in $NetworkPath.$OutputFormat) {
+
+                            [PSCustomObject]@{
+                                Item       = $Permission.Grouping
+                                Access     = $Permission.$OutputFormat
+                                PSTypeName = 'Permission.Item'
+                            }
+
+                        }
+
+                        PSTypeName = 'Permission.Parent'
+
                     }
+
                 }
-                TypeName = 'Permission.ParentPermission'
+
             }
+
         }
+
+    }
+
+
+    if ($OutputFormat -eq 'PrtgXml') {
+        # Output the XML so the script can be directly used as a PRTG sensor
+        # Caution: This use may be a problem for a PRTG probe because of how long the script can run on large folders/domains
+        # Recommendation: Specify the appropriate parameters to run this as a PRTG push sensor instead
+        return $XMLOutput
     }
 
 }
@@ -5526,6 +5599,12 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
+
+
+
+
 
 
 

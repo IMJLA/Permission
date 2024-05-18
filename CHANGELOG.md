@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.651] - 2024-05-18 - add Document and Types nodes to Types.xml
+
+## [0.0.650] - 2024-05-18 - add Document and Types nodes to Types.xml
+
+## [0.0.649] - 2024-05-18 - move Types.ps1xml to src dir
+
+## [0.0.648] - 2024-05-18 - move Types.ps1xml to src dir
+
+## [0.0.647] - 2024-05-18 - add xml dir
+
+## [0.0.646] - 2024-05-18 - implement Types.ps1xml
+
 ## [0.0.648] - 2024-05-17 - add out-permission
 
 ## [0.0.647] - 2024-04-23 - pass the groupid along with the passthru objects

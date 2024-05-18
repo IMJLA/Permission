@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Types>
+  <Type>
+    <Name>Permission.ParentPermission</Name>
+    <Members>
+      <ScriptProperty>
+        <Name>Path</Name>
+        <GetScriptBlock>
+          $This.Item.Path
+        </GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+</Types>
