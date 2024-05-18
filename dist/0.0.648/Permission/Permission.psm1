@@ -1603,7 +1603,7 @@ function Get-SummaryDivHeader {
 
         switch ($GroupBy) {
             'account' { 'Accounts With Permissions'; break }
-            'item' { 'Items With Unique Permissions'; break }
+            'item' { 'Items in Those Paths with Unique Permissions'; break }
             'target' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
         }
@@ -3119,59 +3119,6 @@ function Format-Permission {
 
     return $FormattedResults
 
-
-    <#
-    switch ($OutputFormat) {
-        'PassThru' {
-            $TypeData = @{
-                TypeName                  = 'Permission.PassThruPermission'
-                DefaultDisplayPropertySet = 'Folder', 'Account', 'Access'
-                ErrorAction               = 'SilentlyContinue'
-            }
-            Update-TypeData @TypeData
-            return $FolderPermissions
-        }
-        'GroupByFolder' {
-            Update-TypeData -MemberName Folder -Value { $This.Name } -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
-            Update-TypeData -MemberName Access -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
-                $Access = ForEach ($Permission in $This.Access) {
-                    [pscustomobject]@{
-                        Account = $Permission.Account
-                        Access  = $Permission.Access
-                    }
-                }
-                $Access
-            }
-            Update-TypeData -DefaultDisplayPropertySet ('Path', 'Access') -TypeName 'Permission.FolderPermission' -ErrorAction SilentlyContinue
-            return $GroupedPermissions
-        }
-        'PrtgXml' {
-            # Output the XML so the script can be directly used as a PRTG sensor
-            # Caution: This use may be a problem for a PRTG probe because of how long the script can run on large folders/domains
-            # Recommendation: Specify the appropriate parameters to run this as a PRTG push sensor instead
-            return $XMLOutput
-        }
-        'GroupByAccount' {
-            Update-TypeData -MemberName Account -Value { $This.Name } -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
-            Update-TypeData -MemberName Access -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
-                $Access = ForEach ($Permission in $This.Group) {
-                    [pscustomobject]@{
-                        Folder = $Permission.Folder
-                        Access = $Permission.Access
-                    }
-                }
-                $Access
-            }
-            Update-TypeData -DefaultDisplayPropertySet ('Account', 'Access') -TypeName 'Permission.AccountPermission' -ErrorAction SilentlyContinue
-
-            #Group-Permission -InputObject $FolderPermissions -Property Account |
-            #Sort-Object -Property Name
-            return
-        }
-        Default { return }
-    }
-    #>
-
 }
 function Format-TimeSpan {
     param (
@@ -4050,6 +3997,87 @@ function Invoke-PermissionCommand {
     $ScriptBlock = $Steps[$Command]
     Write-LogMsg @LogParams -Type Debug -Text $ScriptBlock
     Invoke-Command -ScriptBlock $ScriptBlock
+
+}
+function Out-Permission {
+
+    param (
+
+        # Type of output returned to the output stream
+        [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
+        [string]$OutputFormat = 'passthru',
+
+        [hashtable]$FormattedPermission
+
+    )
+
+    <#
+    switch ($OutputFormat) {
+        'PassThru' {
+            $TypeData = @{
+                TypeName                  = 'Permission.PassThruPermission'
+                DefaultDisplayPropertySet = 'Folder', 'Account', 'Access'
+                ErrorAction               = 'SilentlyContinue'
+            }
+            Update-TypeData @TypeData
+            return $FolderPermissions
+        }
+        'GroupByFolder' {
+            Update-TypeData -MemberName Folder -Value { $This.Name } -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
+            Update-TypeData -MemberName Access -TypeName 'Permission.FolderPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
+                $Access = ForEach ($Permission in $This.Access) {
+                    [pscustomobject]@{
+                        Account = $Permission.Account
+                        Access  = $Permission.Access
+                    }
+                }
+                $Access
+            }
+            Update-TypeData -DefaultDisplayPropertySet ('Path', 'Access') -TypeName 'Permission.FolderPermission' -ErrorAction SilentlyContinue
+            return $GroupedPermissions
+        }
+        'PrtgXml' {
+            # Output the XML so the script can be directly used as a PRTG sensor
+            # Caution: This use may be a problem for a PRTG probe because of how long the script can run on large folders/domains
+            # Recommendation: Specify the appropriate parameters to run this as a PRTG push sensor instead
+            return $XMLOutput
+        }
+        'GroupByAccount' {
+            Update-TypeData -MemberName Account -Value { $This.Name } -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue
+            Update-TypeData -MemberName Access -TypeName 'Permission.AccountPermission' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
+                $Access = ForEach ($Permission in $This.Group) {
+                    [pscustomobject]@{
+                        Folder = $Permission.Folder
+                        Access = $Permission.Access
+                    }
+                }
+                $Access
+            }
+            Update-TypeData -DefaultDisplayPropertySet ('Account', 'Access') -TypeName 'Permission.AccountPermission' -ErrorAction SilentlyContinue
+
+            #Group-Permission -InputObject $FolderPermissions -Property Account |
+            #Sort-Object -Property Name
+            return
+        }
+        Default { return }
+    }
+    #>
+
+    # Output the result to the pipeline
+    ForEach ($Key in $FormattedPermission.Keys) {
+        ForEach ($NetworkPath in $FormattedPermission[$Key].NetworkPaths) {
+            [PSCustomObject]@{
+                Parent   = $NetworkPath.Item
+                Children = ForEach ($Permission in $NetworkPath.$OutputFormat) {
+                    [PSCustomObject]@{
+                        Item   = $Permission.Grouping
+                        Access = $Permission.$OutputFormat
+                    }
+                }
+                TypeName = 'Permission.ParentPermission'
+            }
+        }
+    }
 
 }
 function Out-PermissionReport {
@@ -5497,7 +5525,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
