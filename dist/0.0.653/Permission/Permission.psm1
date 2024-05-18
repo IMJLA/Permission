@@ -4094,22 +4094,6 @@ function Out-Permission {
         Default { return }
     }
     #>
-    #Update-TypeData -MemberName Children -Value { $This.Name } -TypeName 'Permission.Parent' -MemberType ScriptProperty -ErrorAction SilentlyContinue
-
-    Update-TypeData -MemberName ChildPath -TypeName 'Permission.Parent' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
-
-        $This.Children.Item.Path
-
-        #$Access = ForEach ($Permission in $Child.Access) {
-        #    [pscustomobject]@{
-        #        Account = $Permission.Account
-        #        Access  = $Permission.Access
-        #    }
-        #}
-        #$Access
-
-    }
-    Update-TypeData -DefaultDisplayPropertySet ('ParentPath', 'ChildPath') -TypeName 'Permission.Parent' -ErrorAction SilentlyContinue
 
     #if ($Key -eq 'SplitByTarget' -and $GroupBy -eq 'item') {
 
@@ -5599,6 +5583,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Ace','Resolve-Acl','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

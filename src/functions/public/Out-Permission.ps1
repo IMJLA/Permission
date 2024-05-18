@@ -78,22 +78,6 @@ function Out-Permission {
         Default { return }
     }
     #>
-    #Update-TypeData -MemberName Children -Value { $This.Name } -TypeName 'Permission.Parent' -MemberType ScriptProperty -ErrorAction SilentlyContinue
-
-    Update-TypeData -MemberName ChildPath -TypeName 'Permission.Parent' -MemberType ScriptProperty -ErrorAction SilentlyContinue -Value {
-
-        $This.Children.Item.Path
-
-        #$Access = ForEach ($Permission in $Child.Access) {
-        #    [pscustomobject]@{
-        #        Account = $Permission.Account
-        #        Access  = $Permission.Access
-        #    }
-        #}
-        #$Access
-
-    }
-    Update-TypeData -DefaultDisplayPropertySet ('ParentPath', 'ChildPath') -TypeName 'Permission.Parent' -ErrorAction SilentlyContinue
 
     #if ($Key -eq 'SplitByTarget' -and $GroupBy -eq 'item') {
 

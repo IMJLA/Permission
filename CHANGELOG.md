@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.653] - 2024-05-18 - move typedata to Types.ps1xml from Out-Permission
+
 ## [0.0.652] - 2024-05-18 - remove conditional until 1 specific param combo is figured out
 
 ## [0.0.651] - 2024-05-18 - add Document and Types nodes to Types.xml
