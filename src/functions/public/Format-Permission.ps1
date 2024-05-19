@@ -105,6 +105,7 @@ function Format-Permission {
         $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
 
             [PSCustomObject]@{
+                PSTypeName   = 'Permission.TargetPermission'
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
@@ -116,8 +117,9 @@ function Format-Permission {
 
                         # Add the network path itself
                         $Selection.Add([PSCustomObject]@{
-                                Item   = $NetworkPath.Item
-                                Access = $NetworkPath.Access
+                                PSTypeName = 'Permission.ItemPermission'
+                                Item       = $NetworkPath.Item
+                                Access     = $NetworkPath.Access
                             })
 
                         # Add child items
@@ -131,7 +133,8 @@ function Format-Permission {
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        Item = $NetworkPath.Item
+                        PSTypeName = 'Permission.ParentPermission'
+                        Item       = $NetworkPath.Item
                         #passthru = [PSCustomObject]@{
                         #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
                         #}

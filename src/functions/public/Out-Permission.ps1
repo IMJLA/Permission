@@ -89,12 +89,12 @@ function Out-Permission {
             ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                 [PSCustomObject]@{
-                    PSTypeName = 'Permission.Parent'
-                    Parent     = $NetworkPath.Item
-                    Children   = ForEach ($Permission in $NetworkPath.$OutputFormat) {
+                    PSTypeName = 'Permission.ParentItemPermission'
+                    Item       = $NetworkPath.Item
+                    Items      = ForEach ($Permission in $NetworkPath.$OutputFormat) {
 
                         [PSCustomObject]@{
-                            Item       = $Permission.Grouping
+                            Path       = $Permission.Grouping
                             Access     = $Permission.$OutputFormat
                             PSTypeName = 'Permission.Item'
                         }

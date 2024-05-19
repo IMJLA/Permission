@@ -3485,6 +3485,7 @@ function Format-Permission {
         $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
 
             [PSCustomObject]@{
+                PSTypeName   = 'Permission.TargetPermission'
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
@@ -3496,8 +3497,9 @@ function Format-Permission {
 
                         # Add the network path itself
                         $Selection.Add([PSCustomObject]@{
-                                Item   = $NetworkPath.Item
-                                Access = $NetworkPath.Access
+                                PSTypeName = 'Permission.ItemPermission'
+                                Item       = $NetworkPath.Item
+                                Access     = $NetworkPath.Access
                             })
 
                         # Add child items
@@ -3511,7 +3513,8 @@ function Format-Permission {
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        Item = $NetworkPath.Item
+                        PSTypeName = 'Permission.ParentPermission'
+                        Item       = $NetworkPath.Item
                         #passthru = [PSCustomObject]@{
                         #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
                         #}
@@ -4512,12 +4515,12 @@ function Out-Permission {
             ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                 [PSCustomObject]@{
-                    PSTypeName = 'Permission.Parent'
-                    Parent     = $NetworkPath.Item
-                    Children   = ForEach ($Permission in $NetworkPath.$OutputFormat) {
+                    PSTypeName = 'Permission.ParentItemPermission'
+                    Item       = $NetworkPath.Item
+                    Items      = ForEach ($Permission in $NetworkPath.$OutputFormat) {
 
                         [PSCustomObject]@{
-                            Item       = $Permission.Grouping
+                            Path       = $Permission.Grouping
                             Access     = $Permission.$OutputFormat
                             PSTypeName = 'Permission.Item'
                         }
@@ -5582,6 +5585,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-FormatParameter','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
