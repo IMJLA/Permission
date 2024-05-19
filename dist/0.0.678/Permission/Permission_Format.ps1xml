@@ -55,7 +55,7 @@
                 <ScriptBlock>$_.Item.Path</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Children</PropertyName>
+                <PropertyName>Items</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
