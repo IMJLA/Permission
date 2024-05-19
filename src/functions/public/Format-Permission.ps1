@@ -133,7 +133,7 @@ function Format-Permission {
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        PSTypeName = 'Permission.ParentPermission'
+                        PSTypeName = 'Permission.ParentItemPermission'
                         Item       = $NetworkPath.Item
                         #passthru = [PSCustomObject]@{
                         #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
