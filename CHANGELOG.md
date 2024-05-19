@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.657] - 2024-05-19 - could've sworn I had already implemented formatstoprocess, no wonder it was not working!
+
 ## [0.0.669] - 2024-05-19 - remove debug pause
 
 ## [0.0.668] - 2024-05-19 - update parentitempermission format
