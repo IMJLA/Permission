@@ -27,7 +27,6 @@
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
               <Name>Item</Name>
-              <Name>Access</Name>
               <Name>Items</Name>
             </ReferencedProperties>
           </PropertySet>
@@ -35,6 +34,10 @@
       </MemberSet>
       <ScriptProperty>
         <Name>Items</Name>
+        <GetScriptBlock>$this.json.PassThru</GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>ItemPaths</Name>
         <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
       </ScriptProperty>
     </Members>
