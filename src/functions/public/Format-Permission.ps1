@@ -151,7 +151,7 @@ function Format-Permission {
                         $OutputProperties[$FormatString] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -GroupBy $GroupBy -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path
 
                     }
-
+                    pause
                     [PSCustomObject]$OutputProperties
 
                 }
