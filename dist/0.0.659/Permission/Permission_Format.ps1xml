@@ -11,8 +11,26 @@
           <ListEntry>
             <ListItems>
               <ListItem>
-                <Label>Parent</PropertyName>
+                <Label>Parent</Label>
                 <ScriptBlock>$This.Parent.Path</ScriptBlock>
+              </ListItem>
+            </ListItems>
+          </ListEntry>
+        </ListEntries>
+      </ListControl>
+    </View>
+    <View>
+      <Name>Permission.Item</Name>
+      <ViewSelectedBy>
+        <TypeName>Permission.Item</TypeName>
+      </ViewSelectedBy>
+      <ListControl>
+        <ListEntries>
+          <ListEntry>
+            <ListItems>
+              <ListItem>
+                <PropertyName>Item</PropertyName>
+                <PropertyName>Access</PropertyName>
               </ListItem>
             </ListItems>
           </ListEntry>

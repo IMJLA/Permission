@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.659] - 2024-05-18 - update permission.item format
+
 ## [0.0.658] - 2024-05-18 - fix pstypename
 
 ## [0.0.657] - 2024-05-18 - update types
