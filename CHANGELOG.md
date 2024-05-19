@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.683] - 2024-05-19 - enhance items property
+
 ## [0.0.682] - 2024-05-19 - display itempaths but return items
 
 ## [0.0.681] - 2024-05-19 - don't set types unnecessarily

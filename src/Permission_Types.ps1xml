@@ -34,7 +34,15 @@
       </MemberSet>
       <ScriptProperty>
         <Name>Items</Name>
-        <GetScriptBlock>$this.json.PassThru</GetScriptBlock>
+        <GetScriptBlock>
+          ForEach ($item in $this.json) {
+            [PSCustomObject]@{
+              PSTypeName = 'Permission.ItemPermission'
+              Item = $item.Grouping
+              Access = $this.PassThru
+            }
+          }
+        </GetScriptBlock>
       </ScriptProperty>
       <ScriptProperty>
         <Name>ItemPaths</Name>
