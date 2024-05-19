@@ -33,6 +33,10 @@
           </PropertySet>
         </Members>
       </MemberSet>
+      <ScriptProperty>
+        <Name>Children</Name>
+        <GetScriptBlock>$_.json.Grouping</GetScriptBlock>
+      </ScriptProperty>
     </Members>
   </Type>
   <Type>

@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.676] - 2024-05-19 - bugfix node name
+
+## [0.0.675] - 2024-05-19 - move node up outside of memberset
+
+## [0.0.674] - 2024-05-19 - bugfix node name
+
+## [0.0.673] - 2024-05-19 - move scriptblock logic to the type rather than the format
+
+## [0.0.672] - 2024-05-19 - move scriptblock logic to the type rather than the format
+
+## [0.0.671] - 2024-05-19 - move scriptblock logic to the type rather than the format
+
 ## [0.0.670] - 2024-05-19 - hopefully fixed version number problem
 
 ## [0.0.657] - 2024-05-19 - could've sworn I had already implemented formatstoprocess, no wonder it was not working!
