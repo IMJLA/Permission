@@ -39,7 +39,7 @@
             [PSCustomObject]@{
               PSTypeName = 'Permission.ItemPermission'
               Item = $item.Grouping
-              Access = $this.PassThru
+              Access = $item.PassThru
             }
           }
         </GetScriptBlock>
@@ -51,7 +51,7 @@
     </Members>
   </Type>
   <Type>
-    <Name>Permission.ChildItemPermission</Name>
+    <Name>Permission.ItemPermission</Name>
     <Members>
       <MemberSet>
         <Name>PSStandardMembers</Name>
