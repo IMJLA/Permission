@@ -44,10 +44,6 @@
             <Width>15</Width>
           </TableColumnHeader>
           <TableColumnHeader>
-            <Label>Access</Label>
-            <Width>15</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
             <Label>Items</Label>
             <Width>15</Width>
           </TableColumnHeader>
@@ -59,10 +55,7 @@
                 <ScriptBlock>$_.Item.Path</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>Access</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Items</PropertyName>
+                <ScriptBlock>$_.NetworkPaths.json.Grouping</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

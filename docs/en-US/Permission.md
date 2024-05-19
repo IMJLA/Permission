@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.667
+Help Version: 0.0.668
 Locale: en-US
 ---
 
@@ -114,11 +114,6 @@ Resolve-AccessControlList [[-ACLsByPath] <hashtable>] [[-DebugOutputStream] <str
 ### [Resolve-Folder](Resolve-Folder.md)
 
 Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-LogBuffer] <hashtable>]
-
-
-### [Resolve-FormatParameter](Resolve-FormatParameter.md)
-
-Resolve-FormatParameter [[-FileFormat] <string[]>] [[-OutputFormat] <string>]
 
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)

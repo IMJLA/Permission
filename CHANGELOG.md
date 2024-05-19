@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.668] - 2024-05-19 - update parentitempermission format
+
 ## [0.0.667] - 2024-05-19 - add debug pause
 
 ## [0.0.666] - 2024-05-19 - bugfix format xml
