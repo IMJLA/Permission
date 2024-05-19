@@ -58,10 +58,6 @@
       <MemberSet>
         <Name>PSStandardMembers</Name>
         <Members>
-          <NoteProperty>
-            <Name>DefaultDisplayProperty</Name>
-            <Value>Path</Value>
-          </NoteProperty>
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
@@ -69,6 +65,10 @@
               <Name>Access</Name>
             </ReferencedProperties>
           </PropertySet>
+          <NoteProperty>
+            <Name>DefaultDisplayProperty</Name>
+            <Value>Path</Value>
+          </NoteProperty>
           <PropertySet>
             <Name>DefaultKeyPropertySet</Name>
             <ReferencedProperties>
