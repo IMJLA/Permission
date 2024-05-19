@@ -36,7 +36,7 @@
       <ScriptProperty>
         <Name>Items</Name>
         <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
-        <SetScriptBlock>$this.json.Grouping = $args[0]</SetScriptBlock>
+        <SetScriptBlock>$this.Items = $args[0]</SetScriptBlock>
       </ScriptProperty>
     </Members>
   </Type>
