@@ -89,6 +89,7 @@ function Out-Permission {
             ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                 [PSCustomObject]@{
+                    PSTypeName = 'Permission.Parent'
                     Parent     = $NetworkPath.Item
                     Children   = ForEach ($Permission in $NetworkPath.$OutputFormat) {
 
@@ -99,8 +100,6 @@ function Out-Permission {
                         }
 
                     }
-
-                    PSTypeName = 'Permission.Parent'
 
                 }
 
