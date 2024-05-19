@@ -3564,7 +3564,7 @@ function Format-Permission {
                         $OutputProperties[$FormatString] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -GroupBy $GroupBy -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path
 
                     }
-                    pause
+
                     [PSCustomObject]$OutputProperties
 
                 }
@@ -5577,18 +5577,6 @@ function Select-PermissionPrincipal {
     Write-Progress @Progress -Completed
 
 }
-$Name = @(‘Red’, ‘Yellow’, ‘Puce’, ‘Red’, ‘Yellow’, ‘Puce’)
-$Date = @(‘16/03/19’, ‘16/03/19’, ‘16/03/19’, ‘17/03/19’, ‘17/03/19’, ‘16/03/19’)
-$test = [pscustomobject] @{
-    PSTypeName = 'Wibble'
-    Colour     = 'Red'
-    Date       = 'Now'
-    Message    = 'Something random'
-}
-$test.pstypenames
-$test.PSObject.TypeNames
-$Test.PSObject.TypeNames.Insert(0, 'blah')
-$test.PSObject.TypeNames
 
 # Add any custom C# classes as usable (exported) types
 $CSharpFiles = Get-ChildItem -Path "$PSScriptRoot\*.cs"
@@ -5596,7 +5584,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal','test')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

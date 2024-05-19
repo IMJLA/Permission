@@ -55,7 +55,7 @@
                 <ScriptBlock>$_.Item.Path</ScriptBlock>
               </TableColumnItem>
               <TableColumnItem>
-                <ScriptBlock>$_.NetworkPaths.json.Grouping</ScriptBlock>
+                <ScriptBlock>$_.json.Grouping</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
