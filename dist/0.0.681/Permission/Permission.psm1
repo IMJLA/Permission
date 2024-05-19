@@ -1086,18 +1086,16 @@ function Expand-TargetPermissionReference {
             ForEach ($Target in $Reference) {
 
                 $TargetProperties = @{
-                    PSTypeName = 'Permission.TargetPermission'
-                    Path       = $Target.Path
+                    Path = $Target.Path
                 }
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                     [pscustomobject]@{
-                        Access     = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
-                        Item       = $AclsByPath[$NetworkPath.Path]
-                        PSTypeName = 'Permission.ParentItemPermission'
-                        Items      = ForEach ($TargetChild in $NetworkPath.Items) {
+                        Access = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
+                        Item   = $AclsByPath[$NetworkPath.Path]
+                        Items  = ForEach ($TargetChild in $NetworkPath.Items) {
 
                             $Access = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
 
@@ -5585,6 +5583,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

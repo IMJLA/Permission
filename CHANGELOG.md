@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.681] - 2024-05-19 - don't set types unnecessarily
+
 ## [0.0.680] - 2024-05-19 - learning setscriptblock
 
 ## [0.0.679] - 2024-05-19 - learning setscriptblock
