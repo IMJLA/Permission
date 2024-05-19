@@ -35,7 +35,7 @@
       </MemberSet>
       <ScriptProperty>
         <Name>Children</Name>
-        <GetScriptBlock>$_.json.Grouping</GetScriptBlock>
+        <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
       </ScriptProperty>
     </Members>
   </Type>

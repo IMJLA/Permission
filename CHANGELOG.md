@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.677] - 2024-05-19 - troubleshoot getscriptblock
+
 ## [0.0.676] - 2024-05-19 - bugfix node name
 
 ## [0.0.675] - 2024-05-19 - move node up outside of memberset
