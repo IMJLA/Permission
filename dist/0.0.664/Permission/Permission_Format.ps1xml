@@ -2,6 +2,39 @@
 <Configuration>
   <ViewDefinitions>
     <View>
+      <Name>Permission.TargetPermission</Name>
+      <ViewSelectedBy>
+        <TypeName>Permission.TargetPermission</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <AutoSize/>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Path</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>NetworkPaths</Label>
+            <Width>16</Width>
+          </TableColumnHeader>
+          <TableColumnHeader />
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Path</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <Label>NetworkPaths</Label>
+                <ScriptBlock>$This.NetworkPaths.Item</ScriptBlock>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>Permission.Parent</Name>
       <ViewSelectedBy>
         <TypeName>Permission.Parent</TypeName>
