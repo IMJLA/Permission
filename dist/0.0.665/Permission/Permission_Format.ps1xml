@@ -27,7 +27,7 @@
               </TableColumnItem>
               <TableColumnItem>
                 <Label>NetworkPaths</Label>
-                <ScriptBlock>$This.NetworkPaths.Item</ScriptBlock>
+                <ScriptBlock>$This.NetworkPaths.Item.Path</ScriptBlock>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
