@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.693] - 2024-05-19 - add Permission.AccountPermissionList type xml
+
 ## [0.0.692] - 2024-05-19 - complete implementation of GroupBy account dynamic typename for NetworkPaths objects
 
 ## [0.0.691] - 2024-05-19 - implement dynamic typename for NetworkPaths objects

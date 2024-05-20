@@ -85,6 +85,31 @@
     </Members>
   </Type>
   <Type>
+    <Name>Permission.AccountPermissionList</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>AccountCaption</Name>
+              <Name>Access</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+      <AliasProperty>
+        <Name>AccountCaption</Name>
+        <ReferencedMemberName>Grouping</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Access</Name>
+        <ReferencedMemberName>PassThru</ReferencedMemberName>
+      </AliasProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>Permission.ItemPermissionList</Name>
     <Members>
       <MemberSet>
