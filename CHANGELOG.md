@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.687] - 2024-05-19 - retry build
+
+## [0.0.686] - 2024-05-19 - fix permission.itempermissionlist type def
+
+## [0.0.685] - 2024-05-19 - working to minimize scriptblocks in types and formats
+
 ## [0.0.684] - 2024-05-19 - bugfix items property variable name
 
 ## [0.0.683] - 2024-05-19 - enhance items property

@@ -32,18 +32,10 @@
           </PropertySet>
         </Members>
       </MemberSet>
-      <ScriptProperty>
+      <AliasProperty>
         <Name>Items</Name>
-        <GetScriptBlock>
-          ForEach ($item in $this.json) {
-            [PSCustomObject]@{
-              PSTypeName = 'Permission.ItemPermission'
-              Item = $item.Grouping
-              Access = $item.PassThru
-            }
-          }
-        </GetScriptBlock>
-      </ScriptProperty>
+        <ReferencedMemberName>json</ReferencedMemberName>
+      </AliasProperty>
       <ScriptProperty>
         <Name>ItemPaths</Name>
         <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
@@ -65,6 +57,31 @@
           </PropertySet>
         </Members>
       </MemberSet>
+    </Members>
+  </Type>
+  <Type>
+    <Name>Permission.ItemPermissionList</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Item</Name>
+              <Name>Access</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+      <AliasProperty>
+        <Name>Item</Name>
+        <ReferencedMemberName>Grouping</ReferencedMemberName>
+      </AliasProperty>
+      <AliasProperty>
+        <Name>Access</Name>
+        <ReferencedMemberName>PassThru</ReferencedMemberName>
+      </AliasProperty>
     </Members>
   </Type>
   <Type>
