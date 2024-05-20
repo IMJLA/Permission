@@ -18,6 +18,31 @@
     </Members>
   </Type>
   <Type>
+    <Name>Permission.ParentAccountPermission</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Item</Name>
+              <Name>Accounts</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+      <AliasProperty>
+        <Name>Accounts</Name>
+        <ReferencedMemberName>json</ReferencedMemberName>
+      </AliasProperty>
+      <ScriptProperty>
+        <Name>AccountCaptions</Name>
+        <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>Permission.ParentItemPermission</Name>
     <Members>
       <MemberSet>

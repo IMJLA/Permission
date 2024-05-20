@@ -32,6 +32,37 @@
       </TableControl>
     </View>
     <View>
+      <Name>Permission.ParentAccountPermission</Name>
+      <ViewSelectedBy>
+        <TypeName>Permission.ParentAccountPermission</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <AutoSize/>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Item</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Accounts</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Item.Path</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>AccountCaptions</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>Permission.ParentItemPermission</Name>
       <ViewSelectedBy>
         <TypeName>Permission.ParentItemPermission</TypeName>
