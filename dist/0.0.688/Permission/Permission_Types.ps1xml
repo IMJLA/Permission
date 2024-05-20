@@ -68,14 +68,14 @@
           <PropertySet>
             <Name>DefaultDisplayPropertySet</Name>
             <ReferencedProperties>
-              <Name>Item</Name>
+              <Name>Path</Name>
               <Name>Access</Name>
             </ReferencedProperties>
           </PropertySet>
         </Members>
       </MemberSet>
       <AliasProperty>
-        <Name>Item</Name>
+        <Name>Path</Name>
         <ReferencedMemberName>Grouping</ReferencedMemberName>
       </AliasProperty>
       <AliasProperty>
