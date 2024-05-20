@@ -33,6 +33,14 @@ function Out-Permission {
         [hashtable]$FormattedPermission
 
     )
+
+    ForEach ($Split in 'target', 'item', 'account') {
+        $ThisFormat = $FormattedPermission["SplitBy$Split"]
+        if ($ThisFormat) {
+            $ThisFormat
+        }
+    }
+
     <#
     switch ($GroupBy) {
         'None' {
@@ -78,9 +86,7 @@ function Out-Permission {
         Default { return }
     }
     #>
-
-    #if ($Key -eq 'SplitByTarget' -and $GroupBy -eq 'item') {
-
+    <#
     # Output the result to the pipeline
     ForEach ($Key in $FormattedPermission.Keys) {
 
@@ -109,14 +115,14 @@ function Out-Permission {
 
     }
 
-    #}
-
-
+    #>
+    <#
     if ($OutputFormat -eq 'PrtgXml') {
         # Output the XML so the script can be directly used as a PRTG sensor
         # Caution: This use may be a problem for a PRTG probe because of how long the script can run on large folders/domains
         # Recommendation: Specify the appropriate parameters to run this as a PRTG push sensor instead
         return $XMLOutput
     }
+    #>
 
 }
