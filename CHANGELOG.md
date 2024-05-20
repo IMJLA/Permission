@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.689] - 2024-05-19 - undo accidental changes
+
 ## [0.0.688] - 2024-05-19 - rename item prop to path
 
 ## [0.0.687] - 2024-05-19 - retry build
