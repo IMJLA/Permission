@@ -93,5 +93,36 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>Permission.ParentNonePermission</Name>
+      <ViewSelectedBy>
+        <TypeName>Permission.ParentNonePermission</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <AutoSize/>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Item</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Access</Label>
+            <Width>15</Width>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <ScriptBlock>$_.Item.Path</ScriptBlock>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Access</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>

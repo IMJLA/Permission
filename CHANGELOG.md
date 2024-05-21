@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.696] - 2024-05-20 - add Permission.ParentNonePermission format
+
 ## [0.0.695] - 2024-05-20 - add Permission.ParentNonePermission type
 
 ## [0.0.694] - 2024-05-20 - passthru objects for GroupBy none
