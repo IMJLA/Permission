@@ -68,6 +68,35 @@
     </Members>
   </Type>
   <Type>
+    <Name>Permission.ParentNonePermission</Name>
+    <Members>
+      <MemberSet>
+        <Name>PSStandardMembers</Name>
+        <Members>
+          <PropertySet>
+            <Name>DefaultDisplayPropertySet</Name>
+            <ReferencedProperties>
+              <Name>Item</Name>
+              <Name>Access</Name>
+            </ReferencedProperties>
+          </PropertySet>
+        </Members>
+      </MemberSet>
+      <ScriptProperty>
+        <Name>Access</Name>
+        <GetScriptBlock>$this.json.PassThru</GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Items</Name>
+        <GetScriptBlock>$this.json.PassThru.Item</GetScriptBlock>
+      </ScriptProperty>
+      <ScriptProperty>
+        <Name>Accounts</Name>
+        <GetScriptBlock>$this.json.PassThru.Account</GetScriptBlock>
+      </ScriptProperty>
+    </Members>
+  </Type>
+  <Type>
     <Name>Permission.ItemPermission</Name>
     <Members>
       <MemberSet>
