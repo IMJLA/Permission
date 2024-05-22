@@ -376,7 +376,7 @@ function ConvertTo-PermissionList {
         }
 
         'prtgxml' {
-
+            pause
             <#
 
             # ToDo: Users with ownership
