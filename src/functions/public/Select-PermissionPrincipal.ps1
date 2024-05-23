@@ -3,7 +3,7 @@ function Select-PermissionPrincipal {
     param (
 
         # Cache of security principals keyed by resolved identity reference
-        [Hashtable]$PrincipalByID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$PrincipalByID = @{},
 
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
@@ -20,15 +20,15 @@ function Select-PermissionPrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        [Hashtable]$IdByShortName = [Hashtable]::Synchronized(@{}),
+        [Hashtable]$IdByShortName = @{},
 
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
+        [Hashtable]$ShortNameByID = @{},
 
         [Hashtable]$ExcludeClassFilterContents = @{},
 
-        [Hashtable]$ExcludeFilterContents = [Hashtable]::Synchronized(@{}),
+        [Hashtable]$ExcludeFilterContents = @{},
 
-        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{}),
+        [Hashtable]$IncludeFilterContents = @{},
 
         # ID of the parent progress bar under which to show progres
         [int]$ProgressParentId,
@@ -81,7 +81,7 @@ function Select-PermissionPrincipal {
             [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        #$ExcludeFilterContents[$ThisID] = $ThisID
+                        $ExcludeFilterContents[$ThisID] = $true
                         $true
                     }
                 }
