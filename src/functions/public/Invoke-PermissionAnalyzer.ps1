@@ -92,12 +92,12 @@ function Invoke-PermissionAnalyzer {
         }
 
         # ACEs for unresolvable SIDs (recommend removing these ACEs)
-        if ( $_.IdentityReferenceResolved -like "*$($_.IdentityReferenceSID)*" ) {
+        if ( $ACE.IdentityReferenceResolved -like "*$($ACE.IdentityReferenceSID)*" ) {
             $ACEsWithUnresolvedSIDs.Add($ACE)
         }
 
         # CREATOR OWNER access (recommend replacing with group-based access, or with explicit user access for a home folder.)
-        if ( $_.IdentityReferenceResolved -match 'CREATOR OWNER' ) {
+        if ( $ACE.IdentityReferenceResolved -match 'CREATOR OWNER' ) {
             $ACEsWithCreatorOwner.Add($ACE)
         }
 
