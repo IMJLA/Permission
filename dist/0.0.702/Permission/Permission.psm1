@@ -4510,7 +4510,7 @@ function Invoke-PermissionAnalyzer {
 
         # ACEs for users (recommend replacing with group-based access on any folder that is not a home folder)
         if (
-            $PrincipalByID[$_.IdentityReferenceResolved].SchemaClassName -eq 'User' -and
+            $PrincipalByID[$ACE.IdentityReferenceResolved].SchemaClassName -eq 'User' -and
             $_.IdentityReferenceSID -ne 'S-1-5-18' -and # The 'NT AUTHORITY\SYSTEM' account is part of default Windows file permissions and is out of scope
             $_.SourceOfAccess -ne 'Ownership' # Currently Ownership is out of scope.  Should it be?
         ) {
@@ -5705,6 +5705,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

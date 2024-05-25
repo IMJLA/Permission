@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.702] - 2024-05-25 - bugfix incorrect use of $_ should be $ACE
+
+## [0.0.701] - 2024-05-25 - bugfix incorrect use of $_
+
 ## [0.0.700] - 2024-05-25 - implement invoke-permissionanalyzer
 
 ## [0.0.699] - 2024-05-23 - update params
