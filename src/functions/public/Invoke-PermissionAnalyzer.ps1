@@ -59,7 +59,7 @@ function Invoke-PermissionAnalyzer {
     #>
     $ItemsWithBrokenInheritance = $AclByPath.Keys |
     Where-Object -FilterScript {
-        $AclByPath[$_].AreAccessRulesProtected #-and
+        $AclByPath[$_].AreAccessRulesProtected -and
         -not $AllowDisabledInheritance[$_]
     }
 
