@@ -814,7 +814,6 @@ function ConvertTo-PermissionList {
         'prtgxml' {
 
             # Format the issues as a custom XML sensor for Paessler PRTG Network Monitor
-            Write-LogMsg @LogParams -Text "ConvertTo-PermissionPrtgXml -Analysis `$Analysis"
             $OutputObject['Data'] = ConvertTo-PermissionPrtgXml -Analysis $Analysis
             [PSCustomObject]$OutputObject
             break
@@ -5709,6 +5708,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

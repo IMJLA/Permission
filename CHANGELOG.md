@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.707] - 2024-05-26 - remove unnecessary logging
+
 ## [0.0.706] - 2024-05-26 - progressing the restoration of the best practice analysis feature and prtg sensor feature
 
 ## [0.0.705] - 2024-05-26 - progressing the best practice analysis feature restoration

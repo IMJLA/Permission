@@ -380,7 +380,6 @@ function ConvertTo-PermissionList {
         'prtgxml' {
 
             # Format the issues as a custom XML sensor for Paessler PRTG Network Monitor
-            Write-LogMsg @LogParams -Text "ConvertTo-PermissionPrtgXml -Analysis `$Analysis"
             $OutputObject['Data'] = ConvertTo-PermissionPrtgXml -Analysis $Analysis
             [PSCustomObject]$OutputObject
             break
