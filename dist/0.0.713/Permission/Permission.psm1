@@ -5079,9 +5079,9 @@ function Out-PermissionReport {
 
                 'prtgxml' {
                     pause
-                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
+                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { pause ; $args[0] | Out-File -LiteralPath $args[1] } )
 
-                    $DetailScripts[10] = { }
+                    $DetailScripts[9] = { ConvertTo-PermissionPrtgXml -Analysis $Analysis }
                     break
 
                 }
@@ -5711,6 +5711,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

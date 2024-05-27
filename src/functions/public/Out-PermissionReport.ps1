@@ -374,9 +374,9 @@ function Out-PermissionReport {
 
                 'prtgxml' {
                     pause
-                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
+                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { pause ; $args[0] | Out-File -LiteralPath $args[1] } )
 
-                    $DetailScripts[10] = { }
+                    $DetailScripts[9] = { ConvertTo-PermissionPrtgXml -Analysis $Analysis }
                     break
 
                 }

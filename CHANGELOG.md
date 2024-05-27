@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.713] - 2024-05-27 - troubleshooting
+
 ## [0.0.712] - 2024-05-27 - unlike aliasproperty the scriptproperty will not throw error when json prop does not exist
 
 ## [0.0.711] - 2024-05-26 - bugfix object creation
