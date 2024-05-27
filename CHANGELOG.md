@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.710] - 2024-05-26 - progress re-implementation of prtg feature
+
+## [0.0.709] - 2024-05-26 - commit
+
 ## [0.0.708] - 2024-05-26 - remove unnecessary logging
 
 ## [0.0.707] - 2024-05-26 - remove unnecessary logging
