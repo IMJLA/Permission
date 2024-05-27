@@ -32,10 +32,10 @@
           </PropertySet>
         </Members>
       </MemberSet>
-      <AliasProperty>
+      <ScriptProperty>
         <Name>Accounts</Name>
-        <ReferencedMemberName>json</ReferencedMemberName>
-      </AliasProperty>
+        <GetScriptBlock>$this.json</GetScriptBlock>
+      </ScriptProperty>
       <ScriptProperty>
         <Name>AccountCaptions</Name>
         <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
@@ -57,10 +57,10 @@
           </PropertySet>
         </Members>
       </MemberSet>
-      <AliasProperty>
+      <ScriptProperty>
         <Name>Items</Name>
-        <ReferencedMemberName>json</ReferencedMemberName>
-      </AliasProperty>
+        <GetScriptBlock>$this.json</GetScriptBlock>
+      </ScriptProperty>
       <ScriptProperty>
         <Name>ItemPaths</Name>
         <GetScriptBlock>$this.json.Grouping</GetScriptBlock>
