@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.704
+Help Version: 0.0.706
 Locale: en-US
 ---
 
@@ -71,11 +71,6 @@ Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-Deb
 Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-PrincipalsByResolvedID] <hashtable>] [[-ACEsByResolvedID] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <hashtable>] [[-DomainsByNetbios] <hashtable>] [[-DomainsBySid] <hashtable>] [[-DomainsByFqdn] <hashtable>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-LogBuffer] <hashtable>] [[-ProgressParentId] <int>] [[-CurrentDomain] <string>] [-NoGroupMembers]
 
 
-### [Get-PrtgXmlSensorOutput](Get-PrtgXmlSensorOutput.md)
-
-Get-PrtgXmlSensorOutput [[-NtfsIssues] <Object>]
-
-
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
@@ -103,7 +98,7 @@ Out-Permission [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-FormattedPerm
 
 ### [Out-PermissionReport](Out-PermissionReport.md)
 
-Out-PermissionReport [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <string>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-AceByGUID] <hashtable>] [[-AclByPath] <hashtable>] [[-PrincipalByID] <hashtable>] [[-BestPracticeIssue] <Object>] [[-Parent] <hashtable>] [[-Detail] <int[]>] [[-Culture] <cultureinfo>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-SplitBy] <string[]>] [-NoMembers]
+Out-PermissionReport [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <string>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-AceByGUID] <hashtable>] [[-AclByPath] <hashtable>] [[-PrincipalByID] <hashtable>] [[-BestPracticeIssue] <Object>] [[-Parent] <hashtable>] [[-Detail] <int[]>] [[-Culture] <cultureinfo>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-SplitBy] <string[]>] [[-Analysis] <psobject>] [-NoMembers]
 
 
 ### [Remove-CachedCimSession](Remove-CachedCimSession.md)

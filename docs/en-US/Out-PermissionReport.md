@@ -20,6 +20,7 @@ Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>]
  [[-AceByGUID] <Hashtable>] [[-AclByPath] <Hashtable>] [[-PrincipalByID] <Hashtable>]
  [[-BestPracticeIssue] <Object>] [[-Parent] <Hashtable>] [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>]
  [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-SplitBy] <String[]>]
+ [[-Analysis] <PSObject>]
 ```
 
 ## DESCRIPTION
@@ -61,6 +62,21 @@ Aliases:
 
 Required: False
 Position: 16
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Analysis
+{{ Fill Analysis Description }}
+
+```yaml
+Type: System.Management.Automation.PSObject
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 26
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

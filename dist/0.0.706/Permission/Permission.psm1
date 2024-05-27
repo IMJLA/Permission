@@ -453,7 +453,9 @@ function ConvertTo-PermissionList {
         [ValidateSet('account', 'item', 'none', 'target')]
         [String]$GroupBy = 'item',
 
-        [Hashtable]$HowToSplit
+        [Hashtable]$HowToSplit,
+
+        [PSCustomObject]$Analysis
 
     )
 
@@ -810,27 +812,11 @@ function ConvertTo-PermissionList {
         }
 
         'prtgxml' {
-            pause
-            <#
-
-            # ToDo: Users with ownership
-            $NtfsIssueParams = @{
-                FolderPermissions = $Permission.ItemPermissions
-                UserPermissions   = $Permission.AccountPermissions
-                GroupNameRule     = $GroupNameRule
-                TodaysHostname    = $ThisHostname
-                WhoAmI            = $WhoAmI
-                LogBuffer            = $LogBuffer
-            }
-
-            Write-LogMsg @LogParams -Text 'New-NtfsAclIssueReport @NtfsIssueParams'
-            $NtfsIssues = New-NtfsAclIssueReport @NtfsIssueParams
 
             # Format the issues as a custom XML sensor for Paessler PRTG Network Monitor
-            Write-LogMsg @LogParams -Text "Get-PrtgXmlSensorOutput -NtfsIssues `$NtfsIssues"
-            $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
+            Write-LogMsg @LogParams -Text "ConvertTo-PermissionPrtgXml -Analysis `$Analysis"
+            $OutputObject['Data'] = ConvertTo-PermissionPrtgXml -Analysis $Analysis
             [PSCustomObject]$OutputObject
-            #>
             break
 
         }
@@ -902,6 +888,84 @@ function ConvertTo-PermissionList {
         }
 
     }
+
+}
+function ConvertTo-PermissionPrtgXml {
+
+    param (
+        [PSCustomObject]$Analysis
+    )
+
+    $IssuesDetected = $false
+
+    # Group by item rather than by ACE
+    # TODO: Do this for some of the other issue types
+    $ItemsWithCreatorOwner = $Analysis.ACEsWithCreatorOwner.Path | Sort-Object -Unique
+
+    # Count occurrences of each issue
+    $CountItemsWithBrokenInheritance = $Analysis.ItemsWithBrokenInheritance.Count
+    $CountACEsWithNonCompliantAccounts = $Analysis.ACEsWithNonCompliantAccounts.Count
+    $CountACEsWithUsers = $Analysis.ACEsWithUsers.Count
+    $CountACEsWithUnresolvedSIDs = $Analysis.ACEsWithUnresolvedSIDs.Count
+    $CountItemsWithCreatorOwner = $ItemsWithCreatorOwner.Count
+
+    # Use the counts to determine whether any issues occurred
+    if (
+        (
+            $CountItemsWithBrokenInheritance +
+            $CountACEsWithNonCompliantAccounts +
+            $CountACEsWithUsers +
+            $CountACEsWithUnresolvedSIDs +
+            $CountItemsWithCreatorOwner
+        ) -gt 0
+    ) {
+        $IssuesDetected = $true
+    }
+
+    $Channels = [System.Collections.Generic.List[String]]::new()
+
+    # Build our XML output formatted for PRTG.
+    $ChannelParams = @{
+        MaxError   = 0.5
+        Channel    = 'Folders with inheritance disabled'
+        Value      = $CountItemsWithBrokenInheritance
+        CustomUnit = 'folders'
+    }
+    $null = $Channels.Add((Format-PrtgXmlResult @ChannelParams))
+
+    $ChannelParams = @{
+        MaxError   = 0.5
+        Channel    = 'ACEs for groups breaking naming convention'
+        Value      = $CountACEsWithNonCompliantAccounts
+        CustomUnit = 'ACEs'
+    }
+    $null = $Channels.Add((Format-PrtgXmlResult @ChannelParams))
+
+    $ChannelParams = @{
+        MaxError   = 0.5
+        Channel    = 'ACEs for users instead of groups'
+        Value      = $CountACEsWithUsers
+        CustomUnit = 'ACEs'
+    }
+    $null = $Channels.Add((Format-PrtgXmlResult @ChannelParams))
+
+    $ChannelParams = @{
+        MaxError   = 0.5
+        Channel    = 'ACEs for unresolvable SIDs'
+        Value      = $CountACEsWithUnresolvedSIDs
+        CustomUnit = 'ACEs'
+    }
+    $null = $Channels.Add((Format-PrtgXmlResult @ChannelParams))
+
+    $ChannelParams = @{
+        MaxError   = 0.5
+        Channel    = "Folders with 'CREATOR OWNER' access"
+        Value      = $CountItemsWithCreatorOwner
+        CustomUnit = 'folders'
+    }
+    $null = $Channels.Add((Format-PrtgXmlResult @ChannelParams))
+
+    Format-PrtgXmlSensorOutput -PrtgXmlResult $Channels -IssueDetected:$IssuesDetected
 
 }
 function ConvertTo-ScriptHtml {
@@ -3547,9 +3611,6 @@ function Format-Permission {
                     $OutputProperties = @{
                         PSTypeName = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
                         Item       = $NetworkPath.Item
-                        #passthru = [PSCustomObject]@{
-                        #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
-                        #}
                     }
 
                     ForEach ($Format in $Formats) {
@@ -3560,7 +3621,7 @@ function Format-Permission {
                         }
 
                         $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
-                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -GroupBy $GroupBy -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path
+                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -GroupBy $GroupBy -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path -Analysis $Analysis
 
                     }
 
@@ -4212,65 +4273,6 @@ function Get-PermissionPrincipal {
     Write-Progress @Progress -Completed
 
 }
-function Get-PrtgXmlSensorOutput {
-    param (
-        $NtfsIssues
-    )
-
-    $Channels = [System.Collections.Generic.List[String]]::new()
-
-
-    # Build our XML output formatted for PRTG.
-    $ChannelParams = @{
-        MaxError   = 0.5
-        Channel    = 'Folders with inheritance disabled'
-        Value      = ($NtfsIssues.FoldersWithBrokenInheritance | Measure-Object).Count
-        CustomUnit = 'folders'
-    }
-    Format-PrtgXmlResult @ChannelParams |
-    ForEach-Object { $null = $Channels.Add($_) }
-
-    $ChannelParams = @{
-        MaxError   = 0.5
-        Channel    = 'ACEs for groups breaking naming convention'
-        Value      = ($NtfsIssues.NonCompliantGroups | Measure-Object).Count
-        CustomUnit = 'ACEs'
-    }
-    Format-PrtgXmlResult @ChannelParams |
-    ForEach-Object { $null = $Channels.Add($_) }
-
-    $ChannelParams = @{
-        MaxError   = 0.5
-        Channel    = 'ACEs for users instead of groups'
-        Value      = ($NtfsIssues.UserACEs | Measure-Object).Count
-        CustomUnit = 'ACEs'
-    }
-    Format-PrtgXmlResult @ChannelParams |
-    ForEach-Object { $null = $Channels.Add($_) }
-
-
-    $ChannelParams = @{
-        MaxError   = 0.5
-        Channel    = 'ACEs for unresolvable SIDs'
-        Value      = ($NtfsIssues.SIDsToCleanup | Measure-Object).Count
-        CustomUnit = 'ACEs'
-    }
-    Format-PrtgXmlResult @ChannelParams |
-    ForEach-Object { $null = $Channels.Add($_) }
-
-
-    $ChannelParams = @{
-        MaxError   = 0.5
-        Channel    = "Folders with 'CREATOR OWNER' access"
-        Value      = ($NtfsIssues.FoldersWithCreatorOwner | Measure-Object).Count
-        CustomUnit = 'folders'
-    }
-    Format-PrtgXmlResult @ChannelParams |
-    ForEach-Object { $null = $Channels.Add($_) }
-
-    Format-PrtgXmlSensorOutput -PrtgXmlResult $Channels -IssueDetected:$($NtfsIssues.IssueDetected)
-
-}
 function Get-TimeZoneName {
     param (
         [datetime]$Time,
@@ -4813,7 +4815,9 @@ function Out-PermissionReport {
             all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
         #>
         [ValidateSet('none', 'all', 'target', 'item', 'account')]
-        [string[]]$SplitBy = 'target'
+        [string[]]$SplitBy = 'target',
+
+        [PSCustomObject]$Analysis
 
     )
 
@@ -5072,7 +5076,7 @@ function Out-PermissionReport {
                 }
 
                 'prtgxml' {
-
+                    pause
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
 
                     $DetailScripts[10] = { }
@@ -5704,7 +5708,9 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PrtgXmlSensorOutput','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

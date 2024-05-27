@@ -19,7 +19,9 @@ function ConvertTo-PermissionList {
         [ValidateSet('account', 'item', 'none', 'target')]
         [String]$GroupBy = 'item',
 
-        [Hashtable]$HowToSplit
+        [Hashtable]$HowToSplit,
+
+        [PSCustomObject]$Analysis
 
     )
 
@@ -376,27 +378,11 @@ function ConvertTo-PermissionList {
         }
 
         'prtgxml' {
-            pause
-            <#
-
-            # ToDo: Users with ownership
-            $NtfsIssueParams = @{
-                FolderPermissions = $Permission.ItemPermissions
-                UserPermissions   = $Permission.AccountPermissions
-                GroupNameRule     = $GroupNameRule
-                TodaysHostname    = $ThisHostname
-                WhoAmI            = $WhoAmI
-                LogBuffer            = $LogBuffer
-            }
-
-            Write-LogMsg @LogParams -Text 'New-NtfsAclIssueReport @NtfsIssueParams'
-            $NtfsIssues = New-NtfsAclIssueReport @NtfsIssueParams
 
             # Format the issues as a custom XML sensor for Paessler PRTG Network Monitor
-            Write-LogMsg @LogParams -Text "Get-PrtgXmlSensorOutput -NtfsIssues `$NtfsIssues"
-            $OutputObject['Data'] = Get-PrtgXmlSensorOutput -NtfsIssues $NtfsIssues
+            Write-LogMsg @LogParams -Text "ConvertTo-PermissionPrtgXml -Analysis `$Analysis"
+            $OutputObject['Data'] = ConvertTo-PermissionPrtgXml -Analysis $Analysis
             [PSCustomObject]$OutputObject
-            #>
             break
 
         }

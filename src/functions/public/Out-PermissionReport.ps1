@@ -112,7 +112,9 @@ function Out-PermissionReport {
             all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
         #>
         [ValidateSet('none', 'all', 'target', 'item', 'account')]
-        [string[]]$SplitBy = 'target'
+        [string[]]$SplitBy = 'target',
+
+        [PSCustomObject]$Analysis
 
     )
 
@@ -371,7 +373,7 @@ function Out-PermissionReport {
                 }
 
                 'prtgxml' {
-
+                    pause
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { } )
 
                     $DetailScripts[10] = { }
