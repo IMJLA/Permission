@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.711] - 2024-05-26 - bugfix object creation
+
 ## [0.0.710] - 2024-05-26 - progress re-implementation of prtg feature
 
 ## [0.0.709] - 2024-05-26 - commit
