@@ -92,7 +92,7 @@ FormatTaskName {
     Write-Host $taskName -ForegroundColor Blue
 }
 
-task Default -depends Publish
+task Default -depends FinalTasks
 
 #Task Init -FromModule PowerShellBuild -minimumVersion 0.6.1
 
@@ -507,12 +507,15 @@ task WaitForRepoToUpdate -depends Publish {
     if ($timer -eq $timeout) {
         Write-Warning "Cannot retrieve version '$NewModuleVersion' from repo '$PublishPSRepository'"
     }
-}
+} -description 'Await the new version in the defined PowerShell repository'
 
-task Reinstall -depends WaitForRepoToUpdate {
+task Uninstall -depends WaitForRepoToUpdate {
     Uninstall-Module -Name $buildModuleName -AllVersions
+} -description 'Uninstall all versions of the module'
+
+task Reinstall -depends Uninstall {
     Install-Module -Name $buildModuleName -Force
-}
+} -description 'Reinstall the latest version of the module from the defined PowerShell repository'
 
 task FinalTasks -depends Reinstall {
 
