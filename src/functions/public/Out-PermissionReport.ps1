@@ -114,7 +114,7 @@ function Out-PermissionReport {
         [ValidateSet('none', 'all', 'target', 'item', 'account')]
         [string[]]$SplitBy = 'target',
 
-        [PSCustomObject]$Analysis
+        [PSCustomObject]$BestPracticeIssues
 
     )
 
@@ -137,8 +137,8 @@ function Out-PermissionReport {
         'Permission report'
     )
 
-    $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 }
-    $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 }
+    $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 -and $_ -notin 8, 9 }
+    $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 -or $_ -in 8, 9 }
 
     $DetailScripts = @(
         { $TargetPath },
@@ -165,7 +165,7 @@ function Out-PermissionReport {
         },
         { $Permissions.Data },
         { $BestPracticeIssues },
-        { $PrtgXml },
+        { pause $Permission.TargetPermissions },
         {}
     )
 

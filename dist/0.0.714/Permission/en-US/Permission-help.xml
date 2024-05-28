@@ -4050,9 +4050,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="26" aliases="none">
-          <maml:name>Analysis</maml:name>
+          <maml:name>BestPracticeIssues</maml:name>
           <maml:description>
-            <maml:para>{{ Fill Analysis Description }}</maml:para>
+            <maml:para>{{ Fill BestPracticeIssues Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
           <dev:type>
@@ -4183,18 +4183,6 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="26" aliases="none">
-        <maml:name>Analysis</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Analysis Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Management.Automation.PSObject</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
         <maml:name>BestPracticeIssue</maml:name>
         <maml:description>
@@ -4203,6 +4191,18 @@
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
           <maml:name>System.Object</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="26" aliases="none">
+        <maml:name>BestPracticeIssues</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill BestPracticeIssues Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
