@@ -137,8 +137,8 @@ function Out-PermissionReport {
         'Permission report'
     )
 
-    $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 -and $_ -notin 8, 9 }
-    $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 -or $_ -in 8, 9 }
+    $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 -or $_ -in 8, 9 }
+    $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 -and $_ -notin 8, 9 }
 
     $DetailScripts = @(
         { $TargetPath },
