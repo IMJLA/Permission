@@ -173,7 +173,7 @@ task RotateBuilds -depends InitializePowershellBuild {
     $NewLine
 } -description 'Delete all but the last 4 builds, so we will have our 5 most recent builds after the new one is complete'
 
-task UpdateChangeLog -depends RotateBuilds -Action {
+task UpdateChangeLog -depends InitializePowershellBuild -Action {
     <#
 TODO
     This task runs before the Test task so that tests of the change log will pass
@@ -498,23 +498,23 @@ task WaitForRepoToUpdate -depends Publish {
     do {
         Start-Sleep -Seconds 1
         $timer++
-        $VersionInGallery = Find-Module -Name $buildModuleName -Repository $PublishPSRepository
+        $VersionInGallery = Find-Module -Name $env:BHProjectName -Repository $PublishPSRepository
     } while (
         $VersionInGallery.Version -lt $NewModuleVersion -and
         $timer -lt $timeout
     )
 
     if ($timer -eq $timeout) {
-        Write-Warning "Cannot retrieve version '$NewModuleVersion' from repo '$PublishPSRepository'"
+        Write-Warning "Cannot retrieve version '$NewModuleVersion' of module '$env:BHProjectName' from repo '$PublishPSRepository'"
     }
 } -description 'Await the new version in the defined PowerShell repository'
 
 task Uninstall -depends WaitForRepoToUpdate {
-    Uninstall-Module -Name $buildModuleName -AllVersions
+    Uninstall-Module -Name $env:BHProjectName -AllVersions
 } -description 'Uninstall all versions of the module'
 
 task Reinstall -depends Uninstall {
-    Install-Module -Name $buildModuleName -Force
+    Install-Module -Name $env:BHProjectName -Force
 } -description 'Reinstall the latest version of the module from the defined PowerShell repository'
 
 task FinalTasks -depends Reinstall {
