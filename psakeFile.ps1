@@ -171,9 +171,9 @@ task RotateBuilds -depends InitializePowershellBuild {
         $_ | Remove-Item -Recurse -Force
     }
     $NewLine
-} -description 'Delete all but the last 4 builds, so we will have our 5 most recent builds after the new one is complete'
+} -description 'Delete old builds'
 
-task UpdateChangeLog -depends InitializePowershellBuild -Action {
+task UpdateChangeLog -depends RotateBuilds -Action {
     <#
 TODO
     This task runs before the Test task so that tests of the change log will pass
@@ -225,14 +225,14 @@ task ExportPublicFunctions -depends UpdateChangeLog -Action {
     Update-MetaData -Path $env:BHPSModuleManifest -PropertyName FunctionsToExport -Value $publicFunctions
 
 } -description 'Export all public functions in the module'
-
+<#
 task CleanOutputDir -depends ExportPublicFunctions {
     "`tOutput: $env:BHBuildOutput"
     Clear-PSBuildOutputFolder -Path $env:BHBuildOutput
     $NewLine
 } -description 'Clears module output directory'
-
-task BuildModule -depends CleanOutputDir {
+#>
+task BuildModule -depends ExportPublicFunctions {
     $buildParams = @{
         Path               = $env:BHPSModulePath
         ModuleName         = $env:BHProjectName
