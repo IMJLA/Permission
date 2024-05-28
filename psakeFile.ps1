@@ -491,7 +491,30 @@ task Publish -depends SourceControl {
     Publish-Module @publishParams
 } -description 'Publish module to the defined PowerShell repository'
 
-task FinalTasks -depends Publish {
+task WaitForRepoToUpdate -depends Publish {
+
+    $timer = 0
+    $timer = 30
+    do {
+        Start-Sleep -Seconds 1
+        $timer++
+        $VersionInGallery = Find-Module -Name $buildModuleName -Repository $PublishPSRepository
+    } while (
+        $VersionInGallery.Version -lt $NewModuleVersion -and
+        $timer -lt $timeout
+    )
+
+    if ($timer -eq $timeout) {
+        Write-Warning "Cannot retrieve version '$NewModuleVersion' from repo '$PublishPSRepository'"
+    }
+}
+
+task Reinstall -depends WaitForRepoToUpdate {
+    Uninstall-Module -Name $buildModuleName -AllVersions
+    Install-Module -Name $buildModuleName -Force
+}
+
+task FinalTasks -depends Reinstall {
 
     # Remove script-scoped variables to avoid their accidental re-use
     Remove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
