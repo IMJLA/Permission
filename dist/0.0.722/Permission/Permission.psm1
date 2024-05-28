@@ -4703,7 +4703,7 @@ function Out-Permission {
     #>
 
 }
-function Out-PermissionReport {
+function Out-PermissionFile {
 
     # missing
 
@@ -4755,7 +4755,6 @@ function Out-PermissionReport {
         [Hashtable]$AceByGUID,
         [Hashtable]$AclByPath,
         [Hashtable]$PrincipalByID,
-        $BestPracticeIssue,
         [Hashtable]$Parent,
 
         <#
@@ -4768,7 +4767,7 @@ function Out-PermissionReport {
             5   Accounts with access                                                                        $PrincipalsByResolvedID.Values | %{$_} | Sort ResolvedAccountName
             6   Expanded resolved access rules (expanded with account info)                                 $Permissions
             7   Formatted permissions                                                                       $FormattedPermissions
-            8   Best Practice issues                                                                        $BestPracticeIssues
+            8   Best Practice issues                                                                        $BestPracticeEval
             9   XML custom sensor output for Paessler PRTG Network Monitor                                  $PrtgXml
             10  Permission Report
         #>
@@ -4819,7 +4818,7 @@ function Out-PermissionReport {
         [ValidateSet('none', 'all', 'target', 'item', 'account')]
         [string[]]$SplitBy = 'target',
 
-        [PSCustomObject]$BestPracticeIssues
+        [PSCustomObject]$BestPracticeEval
 
     )
 
@@ -4844,7 +4843,7 @@ function Out-PermissionReport {
 
     $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 -or $_ -in 8, 9 }
     $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 -and $_ -notin 8, 9 }
-    pause
+
     $DetailScripts = @(
         { $TargetPath },
         { ForEach ($Key in $Parent.Keys) {
@@ -4869,8 +4868,8 @@ function Out-PermissionReport {
 
         },
         { $Permissions.Data },
-        { $BestPracticeIssues },
-        { $Permission.TargetPermissions },
+        { $BestPracticeEval },
+        { ConvertTo-PermissionPrtgXml -Analysis $Analysis },
         {}
     )
 
@@ -5080,8 +5079,6 @@ function Out-PermissionReport {
                 'prtgxml' {
 
                     $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { $args[0] | Out-File -LiteralPath $args[1] } )
-
-                    $DetailScripts[9] = { ConvertTo-PermissionPrtgXml -Analysis $Analysis }
                     break
 
                 }
@@ -5187,19 +5184,13 @@ function Out-PermissionReport {
 
                     }
 
-                    'prtgxml' {
-
-                        # Output the full path of the XML file (result of the custom XML sensor for Paessler PRTG Network Monitor) to the Information stream
-                        #Write-Information $XmlFile
-
-                        # Save the XML file to disk
-                        #$null = Set-Content -LiteralPath $XmlFile -Value $XMLOutput
-                        break
-
-                    }
+                    # Nothing for 'prtgxml' because it is an Unsplit detail level only
 
                     'xml' {
+
+                        Out-PermissionDetailReport -Detail $SplitDetail -ReportObject $ReportObjects -DetailExport $DetailExports -Format $Format -OutputDir $FormatDir -Culture $Culture -DetailString $DetailStrings
                         break
+
                     }
 
                 }
@@ -5710,7 +5701,9 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionReport','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

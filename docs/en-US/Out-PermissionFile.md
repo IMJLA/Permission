@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Out-PermissionReport
+# Out-PermissionFile
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,14 +13,13 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Out-PermissionReport [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
+Out-PermissionFile [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
  [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <String>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
- [[-AceByGUID] <Hashtable>] [[-AclByPath] <Hashtable>] [[-PrincipalByID] <Hashtable>]
- [[-BestPracticeIssue] <Object>] [[-Parent] <Hashtable>] [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-SplitBy] <String[]>]
- [[-BestPracticeIssues] <PSObject>]
+ [[-AceByGUID] <Hashtable>] [[-AclByPath] <Hashtable>] [[-PrincipalByID] <Hashtable>] [[-Parent] <Hashtable>]
+ [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>] [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
+ [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-BestPracticeEval] <PSObject>]
 ```
 
 ## DESCRIPTION
@@ -67,23 +66,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -BestPracticeIssue
-{{ Fill BestPracticeIssue Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 18
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -BestPracticeIssues
-{{ Fill BestPracticeIssues Description }}
+### -BestPracticeEval
+{{ Fill BestPracticeEval Description }}
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -91,7 +75,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 26
+Position: 25
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -106,7 +90,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 21
+Position: 20
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -121,7 +105,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 20
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -167,7 +151,7 @@ Aliases:
 Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 22
+Position: 21
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -198,7 +182,7 @@ Aliases:
 Accepted values: account, item, none, target
 
 Required: False
-Position: 24
+Position: 23
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -289,7 +273,7 @@ Aliases:
 Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 23
+Position: 22
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -304,7 +288,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -380,7 +364,7 @@ Aliases:
 Accepted values: none, all, target, item, account
 
 Required: False
-Position: 25
+Position: 24
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

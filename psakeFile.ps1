@@ -163,12 +163,16 @@ task InitializePowershellBuild -depends UpdateModuleVersion {
 
 task RotateBuilds -depends InitializePowershellBuild {
     $BuildVersionsToRetain = 1
-    Get-ChildItem -Directory -Path $BuildOutDir |
-    Sort-Object -Property Name |
-    Select-Object -SkipLast ($BuildVersionsToRetain - 1) |
-    ForEach-Object {
-        "`tDeleting old build .\$((($_.FullName -split '\\') | Select-Object -Last 2) -join '\')"
-        $_ | Remove-Item -Recurse -Force
+    if ($BuildOutDir.Length -gt 3) {
+        Get-ChildItem -Directory -Path $BuildOutDir |
+        Sort-Object -Property Name |
+        Select-Object -SkipLast ($BuildVersionsToRetain - 1) |
+        ForEach-Object {
+            "`tDeleting old build .\$((($_.FullName -split '\\') | Select-Object -Last 2) -join '\')"
+            $_ | Remove-Item -Recurse -Force
+        }
+    } else {
+        throw "`$BuildOutDir [$BuildOutDir] must be longer than 3 characters."
     }
     $NewLine
 } -description 'Delete old builds'
@@ -225,13 +229,7 @@ task ExportPublicFunctions -depends UpdateChangeLog -Action {
     Update-MetaData -Path $env:BHPSModuleManifest -PropertyName FunctionsToExport -Value $publicFunctions
 
 } -description 'Export all public functions in the module'
-<#
-task CleanOutputDir -depends ExportPublicFunctions {
-    "`tOutput: $env:BHBuildOutput"
-    Clear-PSBuildOutputFolder -Path $env:BHBuildOutput
-    $NewLine
-} -description 'Clears module output directory'
-#>
+
 task BuildModule -depends ExportPublicFunctions {
     $buildParams = @{
         Path               = $env:BHPSModulePath
