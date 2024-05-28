@@ -139,7 +139,7 @@ function Out-PermissionReport {
 
     $UnsplitDetail = $Detail | Where-Object -FilterScript { $_ -le 5 -or $_ -in 8, 9 }
     $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 -and $_ -notin 8, 9 }
-
+    pause
     $DetailScripts = @(
         { $TargetPath },
         { ForEach ($Key in $Parent.Keys) {
@@ -165,7 +165,7 @@ function Out-PermissionReport {
         },
         { $Permissions.Data },
         { $BestPracticeIssues },
-        { pause $Permission.TargetPermissions },
+        { $Permission.TargetPermissions },
         {}
     )
 
@@ -373,8 +373,8 @@ function Out-PermissionReport {
                 }
 
                 'prtgxml' {
-                    pause
-                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { pause ; $args[0] | Out-File -LiteralPath $args[1] } )
+
+                    $DetailExports = @( { }, { }, { }, { }, { }, { }, { }, { }, { }, { $args[0] | Out-File -LiteralPath $args[1] } )
 
                     $DetailScripts[9] = { ConvertTo-PermissionPrtgXml -Analysis $Analysis }
                     break
