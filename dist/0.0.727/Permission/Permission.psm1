@@ -2896,7 +2896,7 @@ function Select-PermissionTableProperty {
 
                 # Apply the -IgnoreDomain parameter
                 ForEach ($AceList in $Object.Access) {
-                    pause
+                    if (-not $AceList.Account.ResolvedAccountName) { pause }
                     $AccountName = $ShortNameByID[$AceList.Account.ResolvedAccountName]
 
                     if ($AccountName) {
@@ -5720,6 +5720,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
