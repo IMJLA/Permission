@@ -37,6 +37,13 @@ function Get-AccessControlList {
         [hashtable]$WarningCache = [Hashtable]::Synchronized(@{})
     )
 
+    $LogParams = @{
+        ThisHostname = $TodaysHostname
+        Type         = $DebugOutputStream
+        Buffer       = $LogBuffer
+        WhoAmI       = $WhoAmI
+    }
+
     $Progress = @{
         Activity = 'Get-AccessControlList'
     }
