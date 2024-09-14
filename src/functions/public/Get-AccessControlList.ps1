@@ -22,7 +22,7 @@ function Get-AccessControlList {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
@@ -31,8 +31,10 @@ function Get-AccessControlList {
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [Hashtable]$Output = [Hashtable]::Synchronized(@{})
+        [hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
+        # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
+        [hashtable]$WarningCache = [Hashtable]::Synchronized(@{})
     )
 
     $Progress = @{
@@ -65,6 +67,7 @@ function Get-AccessControlList {
         WhoAmI            = $WhoAmI
         OwnerCache        = $OwnerCache
         ACLsByPath        = $Output
+        WarningCache      = $WarningCache
     }
 
     $TargetIndex = 0
@@ -139,6 +142,13 @@ function Get-AccessControlList {
 
     }
 
+    if ($WarningCache.Keys.Count -ge 1) {
+
+        $LogParams['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        Write-LogMsg @LogParams -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists.  See verbose log for details."
+
+    }
+
     Write-Progress @Progress -Status '50% (step 2 of 2) Find non-inherited owners for parent and child items' -CurrentOperation 'Find non-inherited owners for parent and child items' -PercentComplete 50
     $ChildProgress['Activity'] = 'Get ACL owners'
     $GrandChildProgress['Activity'] = 'Get ACL owners'
@@ -209,7 +219,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogBuffer       = $LogBuffer
+                LogBuffer         = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce
