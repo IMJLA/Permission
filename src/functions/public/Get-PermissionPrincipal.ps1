@@ -63,7 +63,7 @@ function Get-PermissionPrincipal {
         #>
         [switch]$NoGroupMembers,
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # The current domain

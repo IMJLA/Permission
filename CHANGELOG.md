@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.723] - 2024-09-14 - fix typo
+
 ## [0.0.722] - 2024-05-27 - rename out-permissionreport to out-permissionfile
 
 ## [0.0.721] - 2024-05-27 - rename out-permissionreport to out-permissionfile

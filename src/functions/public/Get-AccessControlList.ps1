@@ -27,7 +27,7 @@ function Get-AccessControlList {
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path

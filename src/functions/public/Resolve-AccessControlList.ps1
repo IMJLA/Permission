@@ -63,7 +63,7 @@ function Resolve-AccessControlList {
         # Log messages which have not yet been written to disk
         [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum

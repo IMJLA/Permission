@@ -18,7 +18,7 @@ function Find-ServerFqdn {
         #>
         [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
 
     )

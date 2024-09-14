@@ -3146,7 +3146,7 @@ function Expand-Permission {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
 
     )
@@ -3275,7 +3275,7 @@ function Expand-PermissionTarget {
         # Log messages which have not yet been written to disk
         [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         [Hashtable]$TargetPath
@@ -3421,7 +3421,7 @@ function Find-ServerFqdn {
         #>
         [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
 
     )
@@ -3687,17 +3687,19 @@ function Get-AccessControlList {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # Cache of access control lists keyed by path
-        [Hashtable]$Output = [Hashtable]::Synchronized(@{})
+        [hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
+        # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
+        [hashtable]$WarningCache = [Hashtable]::Synchronized(@{})
     )
 
     $Progress = @{
@@ -3730,6 +3732,7 @@ function Get-AccessControlList {
         WhoAmI            = $WhoAmI
         OwnerCache        = $OwnerCache
         ACLsByPath        = $Output
+        WarningCache      = $WarningCache
     }
 
     $TargetIndex = 0
@@ -3804,6 +3807,13 @@ function Get-AccessControlList {
 
     }
 
+    if ($WarningCache.Keys.Count -ge 1) {
+
+        $LogParams['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        Write-LogMsg @LogParams -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists.  See verbose log for details."
+
+    }
+
     Write-Progress @Progress -Status '50% (step 2 of 2) Find non-inherited owners for parent and child items' -CurrentOperation 'Find non-inherited owners for parent and child items' -PercentComplete 50
     $ChildProgress['Activity'] = 'Get ACL owners'
     $GrandChildProgress['Activity'] = 'Get ACL owners'
@@ -3874,7 +3884,7 @@ function Get-AccessControlList {
                 DebugOutputStream = $DebugOutputStream
                 TodaysHostname    = $TodaysHostname
                 WhoAmI            = $WhoAmI
-                LogBuffer       = $LogBuffer
+                LogBuffer         = $LogBuffer
                 Threads           = $ThreadCount
                 ProgressParentId  = $ChildProgress['Id']
                 AddParam          = $GetOwnerAce
@@ -4174,7 +4184,7 @@ function Get-PermissionPrincipal {
         #>
         [switch]$NoGroupMembers,
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # The current domain
@@ -4354,7 +4364,7 @@ function Initialize-Cache {
         # Log messages which have not yet been written to disk
         [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
 
     )
@@ -5291,7 +5301,7 @@ function Resolve-AccessControlList {
         # Log messages which have not yet been written to disk
         [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
@@ -5541,7 +5551,7 @@ function Resolve-PermissionTarget {
 
         [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
 
     )
@@ -5599,7 +5609,7 @@ function Select-PermissionPrincipal {
 
         [Hashtable]$IncludeFilterContents = @{},
 
-        # ID of the parent progress bar under which to show progres
+        # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # Unused parameter
@@ -5702,6 +5712,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
