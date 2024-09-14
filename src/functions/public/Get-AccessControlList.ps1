@@ -35,6 +35,7 @@ function Get-AccessControlList {
 
         # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
         [hashtable]$WarningCache = [Hashtable]::Synchronized(@{})
+
     )
 
     $LogParams = @{
