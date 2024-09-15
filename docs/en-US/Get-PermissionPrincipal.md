@@ -13,11 +13,11 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-PrincipalsByResolvedID] <Hashtable>] [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>]
- [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>]
- [[-DomainsByFqdn] <Hashtable>] [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>]
- [[-LogBuffer] <Hashtable>] [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
+Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-PrincipalByID] <Hashtable>]
+ [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
+ [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
+ [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
+ [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
 ```
 
 ## DESCRIPTION
@@ -185,8 +185,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PrincipalsByResolvedID
-{{ Fill PrincipalsByResolvedID Description }}
+### -PrincipalByID
+{{ Fill PrincipalByID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

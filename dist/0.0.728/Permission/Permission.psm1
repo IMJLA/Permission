@@ -4139,7 +4139,7 @@ function Get-PermissionPrincipal {
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
         # Cache of security principals keyed by resolved identity reference. END STATE
-        [Hashtable]$PrincipalsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$PrincipalByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
         [Hashtable]$ACEsByResolvedID = ([Hashtable]::Synchronized(@{})),
@@ -4223,19 +4223,19 @@ function Get-PermissionPrincipal {
     }
 
     $ADSIConversionParams = @{
-        DirectoryEntryCache    = $DirectoryEntryCache
-        DomainsBySID           = $DomainsBySID
-        DomainsByNetbios       = $DomainsByNetbios
-        DomainsByFqdn          = $DomainsByFqdn
-        ThisHostName           = $ThisHostName
-        ThisFqdn               = $ThisFqdn
-        WhoAmI                 = $WhoAmI
-        LogBuffer              = $LogBuffer
-        CimCache               = $CimCache
-        DebugOutputStream      = $DebugOutputStream
-        PrincipalsByResolvedID = $PrincipalsByResolvedID # end state
-        ACEsByResolvedID       = $ACEsByResolvedID # start state
-        CurrentDomain          = $CurrentDomain
+        DirectoryEntryCache = $DirectoryEntryCache
+        DomainsBySID        = $DomainsBySID
+        DomainsByNetbios    = $DomainsByNetbios
+        DomainsByFqdn       = $DomainsByFqdn
+        ThisHostName        = $ThisHostName
+        ThisFqdn            = $ThisFqdn
+        WhoAmI              = $WhoAmI
+        LogBuffer           = $LogBuffer
+        CimCache            = $CimCache
+        DebugOutputStream   = $DebugOutputStream
+        PrincipalByID       = $PrincipalByID # end state
+        ACEsByResolvedID    = $ACEsByResolvedID # start state
+        CurrentDomain       = $CurrentDomain
     }
 
     if ($ThreadCount -eq 1) {
@@ -4279,7 +4279,7 @@ function Get-PermissionPrincipal {
             ObjectStringProperty = 'Name'
             TodaysHostname       = $ThisHostname
             WhoAmI               = $WhoAmI
-            LogBuffer          = $LogBuffer
+            LogBuffer            = $LogBuffer
             Threads              = $ThreadCount
             ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
@@ -5720,6 +5720,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
