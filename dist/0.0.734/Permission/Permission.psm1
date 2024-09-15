@@ -3599,9 +3599,12 @@ function Format-Permission {
                                 Item       = $NetworkPath.Item
                                 Access     = $NetworkPath.Access
                             })
-                        pause
+
                         # Add child items
-                        $Selection.AddRange([PSCustomObject[]]$NetworkPath.$Prop)
+                        $ChildItems = [PSCustomObject[]]$NetworkPath.$Prop
+                        if ($ChildItems) {
+                            $Selection.AddRange($ChildItems)
+                        }
 
                     } else {
                         $Selection = $NetworkPath.$Prop
@@ -5720,6 +5723,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

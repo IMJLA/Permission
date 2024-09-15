@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.734] - 2024-09-15 - add null check
+
 ## [0.0.733] - 2024-09-15 - move debug pause
 
 ## [0.0.732] - 2024-09-14 - debug logging clarification
