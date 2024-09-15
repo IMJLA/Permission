@@ -121,7 +121,7 @@ function Format-Permission {
                                 Item       = $NetworkPath.Item
                                 Access     = $NetworkPath.Access
                             })
-
+                        pause
                         # Add child items
                         $Selection.AddRange([PSCustomObject[]]$NetworkPath.$Prop)
 
