@@ -4376,7 +4376,10 @@ function Initialize-Cache {
         [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # Output from Get-KnownSidHashTable
+        [hashtable]$WellKnownSIDCache = (Get-KnownSidHashTable)
 
     )
 
@@ -4410,6 +4413,7 @@ function Initialize-Cache {
         WhoAmI              = $WhoAmI
         LogBuffer           = $LogBuffer
         CimCache            = $CimCache
+        WellKnownSIDCache   = $WellKnownSIDCache
     }
 
     if ($ThreadCount -eq 1) {
@@ -4434,7 +4438,7 @@ function Initialize-Cache {
             InputParameter   = 'Fqdn'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogBuffer      = $LogBuffer
+            LogBuffer        = $LogBuffer
             Timeout          = 600
             Threads          = $ThreadCount
             ProgressParentId = $ProgressParentId
@@ -5723,6 +5727,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

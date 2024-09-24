@@ -67,7 +67,10 @@ function Initialize-Cache {
         [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
 
         # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # Output from Get-KnownSidHashTable
+        [hashtable]$WellKnownSIDCache = (Get-KnownSidHashTable)
 
     )
 
@@ -101,6 +104,7 @@ function Initialize-Cache {
         WhoAmI              = $WhoAmI
         LogBuffer           = $LogBuffer
         CimCache            = $CimCache
+        WellKnownSIDCache   = $WellKnownSIDCache
     }
 
     if ($ThreadCount -eq 1) {
@@ -125,7 +129,7 @@ function Initialize-Cache {
             InputParameter   = 'Fqdn'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogBuffer      = $LogBuffer
+            LogBuffer        = $LogBuffer
             Timeout          = 600
             Threads          = $ThreadCount
             ProgressParentId = $ProgressParentId
