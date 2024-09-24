@@ -4379,7 +4379,7 @@ function Initialize-Cache {
         [int]$ProgressParentId,
 
         # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSIDCache = (Get-KnownSidHashTable)
+        [hashtable]$WellKnownSIDBySID = (Get-KnownSidHashTable)
 
     )
 
@@ -4403,6 +4403,12 @@ function Initialize-Cache {
         WhoAmI       = $WhoAmI
     }
 
+    $WellKnownSIDByName = @{}
+    ForEach ($KnownSID in $KnownSIDs.Keys) {
+        $Known = $KnownSIDs[$KnownSID]
+        $WellKnownSIDByName[$Known['Name']] = $Known
+    }
+
     $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
@@ -4413,7 +4419,8 @@ function Initialize-Cache {
         WhoAmI              = $WhoAmI
         LogBuffer           = $LogBuffer
         CimCache            = $CimCache
-        WellKnownSIDCache   = $WellKnownSIDCache
+        WellKnownSIDBySID   = $WellKnownSIDBySID
+        WellKnownSIDByName  = $WellKnownSIDByName
     }
 
     if ($ThreadCount -eq 1) {
@@ -5727,6 +5734,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

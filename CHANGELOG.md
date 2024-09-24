@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.739] - 2024-09-23 - update param names
+
 ## [0.0.738] - 2024-09-23 - implement get-knownsidhashtable from adsi module
 
 ## [0.0.737] - 2024-09-23 - remove debug pause

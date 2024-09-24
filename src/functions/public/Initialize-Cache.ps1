@@ -70,7 +70,7 @@ function Initialize-Cache {
         [int]$ProgressParentId,
 
         # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSIDCache = (Get-KnownSidHashTable)
+        [hashtable]$WellKnownSIDBySID = (Get-KnownSidHashTable)
 
     )
 
@@ -94,6 +94,12 @@ function Initialize-Cache {
         WhoAmI       = $WhoAmI
     }
 
+    $WellKnownSIDByName = @{}
+    ForEach ($KnownSID in $KnownSIDs.Keys) {
+        $Known = $KnownSIDs[$KnownSID]
+        $WellKnownSIDByName[$Known['Name']] = $Known
+    }
+
     $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
@@ -104,7 +110,8 @@ function Initialize-Cache {
         WhoAmI              = $WhoAmI
         LogBuffer           = $LogBuffer
         CimCache            = $CimCache
-        WellKnownSIDCache   = $WellKnownSIDCache
+        WellKnownSIDBySID   = $WellKnownSIDBySID
+        WellKnownSIDByName  = $WellKnownSIDByName
     }
 
     if ($ThreadCount -eq 1) {

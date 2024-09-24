@@ -3135,9 +3135,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
-          <maml:name>WellKnownSIDCache</maml:name>
+          <maml:name>WellKnownSIDBySID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill WellKnownSIDCache Description }}</maml:para>
+            <maml:para>{{ Fill WellKnownSIDBySID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -3390,9 +3390,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="13" aliases="none">
-        <maml:name>WellKnownSIDCache</maml:name>
+        <maml:name>WellKnownSIDBySID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill WellKnownSIDCache Description }}</maml:para>
+          <maml:para>{{ Fill WellKnownSIDBySID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>

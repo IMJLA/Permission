@@ -17,7 +17,7 @@ Initialize-Cache [[-Fqdn] <String[]>] [[-DebugOutputStream] <String>] [[-ThreadC
  [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>]
  [[-DomainsBySid] <Hashtable>] [[-DomainsByFqdn] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>]
  [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>] [[-ProgressParentId] <Int32>]
- [[-WellKnownSIDCache] <Hashtable>]
+ [[-WellKnownSIDBySID] <Hashtable>]
 ```
 
 ## DESCRIPTION
@@ -215,8 +215,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -WellKnownSIDCache
-{{ Fill WellKnownSIDCache Description }}
+### -WellKnownSIDBySID
+{{ Fill WellKnownSIDBySID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable
