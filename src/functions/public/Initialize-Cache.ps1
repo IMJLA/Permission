@@ -95,8 +95,8 @@ function Initialize-Cache {
     }
 
     $WellKnownSIDByName = @{}
-    ForEach ($KnownSID in $KnownSIDs.Keys) {
-        $Known = $KnownSIDs[$KnownSID]
+    ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
+        $Known = $WellKnownSIDBySID[$KnownSID]
         $WellKnownSIDByName[$Known['Name']] = $Known
     }
 
