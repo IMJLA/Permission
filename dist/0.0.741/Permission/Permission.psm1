@@ -2602,8 +2602,10 @@ function Resolve-IdentityReferenceDomainDNS {
 
     param (
 
+        # An NTAccount caption string, or similarly-formatted SID from an item's ACL.
         [String]$IdentityReference,
 
+        # Network path of the item whose ACL the IdentityReference parameter value is from.
         [object]$ItemPath,
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
@@ -2633,7 +2635,10 @@ function Resolve-IdentityReferenceDomainDNS {
         [Hashtable]$LogBuffer = @{},
 
         # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = @{}
+        [Hashtable]$CimCache = @{},
+
+        # Output from Get-KnownSidHashTable
+        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable)
 
     )
 
@@ -2644,45 +2649,94 @@ function Resolve-IdentityReferenceDomainDNS {
         WhoAmI       = $WhoAmI
     }
 
+    if ($WellKnownSidBySid[$IdentityReference]) {
+
+        # IdentityReference is a well-known SID of a local account.
+        # For local accounts, the domain is the computer hosting the network resource.
+        # This can be extracted from the network path of the item whose ACL IdentityReference is from.
+        $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+        return $DomainDNS
+
+    }
+
     if ($IdentityReference.Substring(0, 4) -eq 'S-1-') {
-        # IdentityReference is a SID (Revision 1)
+
+        # IdentityReference should be a SID (Revision 1).
         $IndexOfLastHyphen = $IdentityReference.LastIndexOf("-")
         $DomainSid = $IdentityReference.Substring(0, $IndexOfLastHyphen)
+
         if ($DomainSid) {
+
+            # IdentityReference appears to be a properly-formatted SID. Its domain SID was able to be parsed.
             $DomainCacheResult = $DomainsBySID[$DomainSid]
+
             if ($DomainCacheResult) {
-                Write-LogMsg @Log -Text " # Domain SID cache hit for '$DomainSid' for '$IdentityReference'"
-                $DomainDNS = $DomainCacheResult.Dns
-            } else {
-                Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for '$IdentityReference'"
+
+                # IdentityReference belongs to a known domain.
+                # Write-LogMsg @Log -Text " # Domain SID cache hit for '$DomainSid' for IdentityReference '$IdentityReference'"
+                return $DomainCacheResult.Dns
+
             }
+
+            # IdentityReference belongs to an unknown domain.
+            $Log['Type'] = 'Warning'
+            Write-LogMsg @Log -Text " # Unknown domain (possibly offline). Unable to resolve a DNS FQDN due to Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
+            return $DomainSid
+
         }
-    } else {
-        $DomainNetBIOS = ($IdentityReference.Split('\'))[0]
+
+        # IdentityReference is not a properly-formatted SID.
+        $Log['Type'] = 'Error'
+        Write-LogMsg @Log -Text " # Bug before Resolve-IdentityReferenceDomainDNS. Unable to resolve a DNS FQDN due to malformed SID for IdentityReference '$IdentityReference'"
+        return $IdentityReference
+
+    }
+
+    # IdentityReference should be an NTAccount caption
+    $DomainNetBIOS = ($IdentityReference.Split('\'))[0]
+
+    if ($DomainNetBIOS) {
+
+        # IdentityReference appears to be a properly-formatted NTAccount caption. Its domain was able to be parsed.
 
         $KnownLocalDomains = @{
             'NT SERVICE'   = $true
             'BUILTIN'      = $true
             'NT AUTHORITY' = $true
         }
-        if (-not $KnownLocalDomains[$DomainNetBIOS]) {
-            if ($DomainNetBIOS) {
-                $DomainDNS = $DomainsByNetbios[$DomainNetBIOS].Dns #Doesn't work for BUILTIN, etc.
-            }
-            if (-not $DomainDNS) {
-                $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
-                $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
-            }
+
+        $DomainCacheResult = $KnownLocalDomains[$DomainNetBIOS]
+
+        if ($DomainCacheResult) {
+
+            # IdentityReference belongs to a well-known local domain.
+            # For local accounts, the domain is the computer hosting the network resource.
+            # This can be extracted from the network path of the item whose ACL IdentityReference is from.
+            $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+            return $DomainDNS
+
         }
+
+        $DomainCacheResult = $DomainsByNetbios[$DomainNetBIOS]
+
+        if ($DomainCacheResult) {
+
+            # IdentityReference belongs to a known domain.
+            return $DomainCacheResult.Dns
+
+        }
+
+        # IdentityReference belongs to an unnown domain.
+        # Attempt live translation to the domain's DistinguishedName then convert that to FQDN.
+        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
+        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
+        return $DomainDNS
+
     }
 
-    if (-not $DomainDNS) {
-        # TODO - Bug: I think this will report incorrectly for a remote domain not in the cache (trust broken or something)
-        Write-LogMsg @Log -Text "Find-ServerNameInPath -LiteralPath '$ItemPath' -ThisFqdn '$ThisFqdn'"
-        $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
-    }
-
-    return $DomainDNS
+    $Log['Type'] = 'Error'
+    Write-LogMsg @Log -Text " # Unexpectedly unable to resolve a DNS FQDN due to malformed NTAccount caption for IdentityReference '$IdentityReference'"
+    return $IdentityReference
 
 }
 function Resolve-SplitByParameter {
@@ -5734,6 +5788,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
