@@ -2214,22 +2214,13 @@ function Resolve-Ace {
     if ($FolderPath.Length -gt 255) {
         $FolderPath = "\\?\$FolderPath"
     }
-#>
+    #>
     [OutputType([void])]
     param (
 
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
-        [Parameter(
-            ValueFromPipeline
-        )]
         [object]$ACE,
 
-        # Cache of access control lists keyed by path
-        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
-
-        [Parameter(
-            ValueFromPipeline
-        )]
         [object]$ItemPath,
 
         # Cache of access control entries keyed by GUID generated in this function
@@ -2258,17 +2249,17 @@ function Resolve-Ace {
         [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
 
         <#
-    Hostname of the computer running this function.
+        Hostname of the computer running this function.
 
-    Can be provided as a string to avoid calls to HOSTNAME.EXE
-    #>
+        Can be provided as a string to avoid calls to HOSTNAME.EXE
+        #>
         [String]$ThisHostName = (HOSTNAME.EXE),
 
         <#
-    FQDN of the computer running this function.
+        FQDN of the computer running this function.
 
-    Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-    #>
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
         [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
@@ -2303,30 +2294,17 @@ function Resolve-Ace {
         WhoAmI       = $WhoAmI
     }
 
-    $LogSplat = @{
-        ThisHostname = $ThisHostname
-        LogBuffer    = $LogBuffer
-        WhoAmI       = $WhoAmI
-    }
+    $LogSplat = @{ ThisHostname = $ThisHostname ; LogBuffer = $LogBuffer ; WhoAmI = $WhoAmI }
+    $Cache1 = @{ DirectoryEntryCache = $DirectoryEntryCache ; DomainsByFqdn = $DomainsByFqdn }
+    $Cache2 = @{ DomainsByNetBIOS = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ; CimCache = $CimCache }
 
-    $Cache1 = @{
-        DirectoryEntryCache = $DirectoryEntryCache
-        DomainsByFqdn       = $DomainsByFqdn
-    }
-
-    $Cache2 = @{
-        DomainsByNetBIOS = $DomainsByNetbios
-        DomainsBySid     = $DomainsBySid
-        CimCache         = $CimCache
-    }
-
-    Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log"
+    #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log"
     $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @Log
 
-    Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn'"
+    #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn'"
     $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS -ThisFqdn $ThisFqdn @GetAdsiServerParams @Cache1 @Cache2 @LogSplat
 
-    Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
+    #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
     $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogSplat
 
     # TODO: add a param to offer DNS instead of or in addition to NetBIOS
@@ -2446,9 +2424,6 @@ function Resolve-Acl {
     param (
 
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
-        [Parameter(
-            ValueFromPipeline
-        )]
         [object]$ItemPath,
 
         # Cache of access control lists keyed by path
@@ -2521,16 +2496,24 @@ function Resolve-Acl {
         WhoAmI       = $WhoAmI
     }
 
+    $ResolveAceSplat = @{
+        ACEsByGUID = $ACEsByGUID ; AceGUIDsByResolvedID = $AceGUIDsByResolvedID ; AceGUIDsByPath = $AceGUIDsByPath ;
+        DirectoryEntryCache = $DirectoryEntryCache ; DomainsByNetbios = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ;
+        DomainsByFqdn = $DomainsByFqdn ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ;
+        WhoAmI = $WhoAmI ; LogBuffer = $LogBuffer ; CimCache = $CimCache ;
+        DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
+    }
+
     $ACL = $ACLsByPath[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
-        Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
-        Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @PSBoundParameters
+        #Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat"
+        Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @ResolveAceSplat
     }
 
     ForEach ($ACE in $ACL.Access) {
-        Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
-        Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @PSBoundParameters
+        #Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat"
+        Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @ResolveAceSplat
     }
 
 }
@@ -2682,9 +2665,11 @@ function Resolve-IdentityReferenceDomainDNS {
             $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
 
             if ($AppCapabilityResult['NTAccount'] -ne $AppCapabilityResult['SID']) {
+
                 # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
                 return $DomainDNS
+
             }
 
             # IdentityReference belongs to an unknown domain.
@@ -5797,6 +5782,9 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
+
 
 
 

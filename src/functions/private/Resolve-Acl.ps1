@@ -90,9 +90,6 @@ function Resolve-Acl {
     param (
 
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
-        [Parameter(
-            ValueFromPipeline
-        )]
         [object]$ItemPath,
 
         # Cache of access control lists keyed by path
@@ -165,16 +162,24 @@ function Resolve-Acl {
         WhoAmI       = $WhoAmI
     }
 
+    $ResolveAceSplat = @{
+        ACEsByGUID = $ACEsByGUID ; AceGUIDsByResolvedID = $AceGUIDsByResolvedID ; AceGUIDsByPath = $AceGUIDsByPath ;
+        DirectoryEntryCache = $DirectoryEntryCache ; DomainsByNetbios = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ;
+        DomainsByFqdn = $DomainsByFqdn ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ;
+        WhoAmI = $WhoAmI ; LogBuffer = $LogBuffer ; CimCache = $CimCache ;
+        DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
+    }
+
     $ACL = $ACLsByPath[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
-        Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
-        Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @PSBoundParameters
+        #Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat"
+        Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @ResolveAceSplat
     }
 
     ForEach ($ACE in $ACL.Access) {
-        Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @PSBoundParameters"
-        Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @PSBoundParameters
+        #Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat"
+        Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @ResolveAceSplat
     }
 
 }

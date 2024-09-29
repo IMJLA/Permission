@@ -82,9 +82,11 @@ function Resolve-IdentityReferenceDomainDNS {
             $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
 
             if ($AppCapabilityResult['NTAccount'] -ne $AppCapabilityResult['SID']) {
+
                 # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
                 return $DomainDNS
+
             }
 
             # IdentityReference belongs to an unknown domain.

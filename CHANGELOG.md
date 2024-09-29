@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.745] - 2024-09-28 - reduce debug log verbosity
+
+## [0.0.744] - 2024-09-28 - reduce debug log verbosity
+
+## [0.0.743] - 2024-09-28 - reduce debug log verbosity
+
 ## [0.0.742] - 2024-09-28 - bugfix resolve-IdentityReferencedomaindns for app capability sids
 
 ## [0.0.741] - 2024-09-28 - bugfix output domainsid for offline/unknown domains, write-error for other failures
