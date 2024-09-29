@@ -6,13 +6,15 @@ function Add-CacheItem {
 
     param (
 
+        [Parameter(Mandatory)]
         [Hashtable]$Cache,
 
+        [Parameter(Mandatory)]
         $Key,
 
         $Value,
 
-        [type]$Type
+        [type]$Type = [System.Object]
 
     )
 

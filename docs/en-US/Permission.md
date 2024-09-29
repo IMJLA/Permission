@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.745
+Help Version: 0.0.746
 Locale: en-US
 ---
 
@@ -13,7 +13,7 @@ Module for working with Access Control Lists
 ## Permission Cmdlets
 ### [Add-CacheItem](Add-CacheItem.md)
 
-Add-CacheItem [[-Cache] <hashtable>] [[-Key] <Object>] [[-Value] <Object>] [[-Type] <type>]
+Add-CacheItem [-Cache] <hashtable> [-Key] <Object> [[-Value] <Object>] [[-Type] <type>] [<CommonParameters>]
 
 
 ### [ConvertTo-ItemBlock](ConvertTo-ItemBlock.md)
