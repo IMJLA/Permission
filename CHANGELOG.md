@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.747] - 2024-09-29 - rename task in psakefile
+
 ## [0.0.746] - 2024-09-29 - bugfix missing itempath param when calling resolve-ace
 
 ## [0.0.745] - 2024-09-28 - reduce debug log verbosity
