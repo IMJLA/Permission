@@ -78,9 +78,18 @@ function Resolve-IdentityReferenceDomainDNS {
 
             }
 
+            Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
+            $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
+
+            if ($AppCapabilityResult['NTAccount'] -ne $AppCapabilityResult['SID']) {
+                # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
+                $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+                return $DomainDNS
+            }
+
             # IdentityReference belongs to an unknown domain.
             $Log['Type'] = 'Warning'
-            Write-LogMsg @Log -Text " # Unknown domain (possibly offline). Unable to resolve a DNS FQDN due to Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
+            Write-LogMsg @Log -Text " # Unknown domain (possibly offline). Unable to resolve domain FQDN for IdentityReference '$IdentityReference'"
             return $DomainSid
 
         }

@@ -205,7 +205,7 @@ function Resolve-Ace {
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
         AdsiProvider              = $AdsiServer.AdsiProvider
-        AdsiServer                = $AdsiServer.Dns
+        AdsiServer                = $DomainDNS
         IdentityReferenceSID      = $ResolvedIdentityReference.SIDString
         IdentityReferenceResolved = $ResolvedIdentityReference.IdentityReferenceNetBios
         Path                      = $ItemPath

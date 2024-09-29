@@ -2334,7 +2334,7 @@ function Resolve-Ace {
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
         AdsiProvider              = $AdsiServer.AdsiProvider
-        AdsiServer                = $AdsiServer.Dns
+        AdsiServer                = $DomainDNS
         IdentityReferenceSID      = $ResolvedIdentityReference.SIDString
         IdentityReferenceResolved = $ResolvedIdentityReference.IdentityReferenceNetBios
         Path                      = $ItemPath
@@ -2678,9 +2678,18 @@ function Resolve-IdentityReferenceDomainDNS {
 
             }
 
+            Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
+            $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
+
+            if ($AppCapabilityResult['NTAccount'] -ne $AppCapabilityResult['SID']) {
+                # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
+                $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+                return $DomainDNS
+            }
+
             # IdentityReference belongs to an unknown domain.
             $Log['Type'] = 'Warning'
-            Write-LogMsg @Log -Text " # Unknown domain (possibly offline). Unable to resolve a DNS FQDN due to Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
+            Write-LogMsg @Log -Text " # Unknown domain (possibly offline). Unable to resolve domain FQDN for IdentityReference '$IdentityReference'"
             return $DomainSid
 
         }
@@ -5788,6 +5797,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
