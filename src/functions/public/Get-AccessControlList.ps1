@@ -194,7 +194,7 @@ function Get-AccessControlList {
                 if ($IntervalCounter -eq $ProgressInterval -or $ChildIndex -eq 0) {
 
                     [int]$PercentComplete = $ChildIndex / $ChildCount * 100
-                    Write-Progress @GrandChildProgress -Status "$PercentComplete% (child $($ChildIndex + 1) of $ChildCount)) Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
+                    Write-Progress @GrandChildProgress -Status "$PercentComplete% (child $($ChildIndex + 1) of $ChildCount) Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
                     $IntervalCounter = 0
 
                 }

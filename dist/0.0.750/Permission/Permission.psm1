@@ -4021,7 +4021,7 @@ function Get-AccessControlList {
                 if ($IntervalCounter -eq $ProgressInterval -or $ChildIndex -eq 0) {
 
                     [int]$PercentComplete = $ChildIndex / $ChildCount * 100
-                    Write-Progress @GrandChildProgress -Status "$PercentComplete% (child $($ChildIndex + 1) of $ChildCount)) Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
+                    Write-Progress @GrandChildProgress -Status "$PercentComplete% (child $($ChildIndex + 1) of $ChildCount) Get-OwnerAce" -CurrentOperation $Child -PercentComplete $PercentComplete
                     $IntervalCounter = 0
 
                 }
@@ -5893,6 +5893,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
