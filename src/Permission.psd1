@@ -12,7 +12,7 @@
     RootModule        = 'Permission'
 
     # Version number of this module.
-    ModuleVersion     = '0.0.752'
+    ModuleVersion     = '0.0.753'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()

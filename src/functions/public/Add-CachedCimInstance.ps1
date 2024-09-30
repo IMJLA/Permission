@@ -90,7 +90,7 @@ function Add-CachedCimInstance {
             ForEach ($Instance in $InputObject) {
 
                 $InstancePropertyValue = $Instance.$Prop
-                #Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
+                Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
                 $InstanceCache[$InstancePropertyValue] = $Instance
 
             }
