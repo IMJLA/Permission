@@ -132,7 +132,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
+            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -156,7 +156,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @Log -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
+        Write-LogMsg @Log -Text 'Split-Thread' -Expand $SplitThreadParams
         Split-Thread @SplitThreadParams
 
     }

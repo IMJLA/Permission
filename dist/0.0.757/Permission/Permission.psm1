@@ -4463,7 +4463,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'"
+            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -4487,7 +4487,7 @@ function Get-PermissionPrincipal {
             AddParam             = $ADSIConversionParams
         }
 
-        Write-LogMsg @Log -Text "Split-Thread -Command 'ConvertFrom-IdentityReferenceResolved' -InputParameter 'IdentityReference' -InputObject `$IDs"
+        Write-LogMsg @Log -Text 'Split-Thread' -Expand $SplitThreadParams
         Split-Thread @SplitThreadParams
 
     }
@@ -5933,6 +5933,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
