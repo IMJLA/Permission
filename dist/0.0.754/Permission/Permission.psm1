@@ -3519,6 +3519,45 @@ function Expand-PermissionTarget {
     return $Output
 
 }
+function Find-CachedCimInstance {
+    param (
+        [string]$ComputerName,
+        [string]$Key,
+        [hashtable]$CimCache,
+        [hashtable]$Log
+    )
+
+    $CimServer = $CimCache[$ComputerName]
+
+    if ($CimServer) {
+
+        ForEach ($Cache in $CimServer.Keys) {
+
+            $InstanceCache = $CimServer[$Cache]
+
+            if ($InstanceCache) {
+
+                $CachedCimInstance = $InstanceCache[$Key]
+
+                if ($CachedCimInstance) {
+
+                    return $CachedCimInstance
+
+                } else {
+                    Write-LogMsg @Log -Text " # CIM '$Cache' instance cache miss for '$Key' on '$ComputerName'"
+                }
+
+            } else {
+                Write-LogMsg @Log -Text " # CIM Instance Type cache miss for '$Cache' on '$ComputerName'"
+            }
+
+        }
+
+    } else {
+        Write-LogMsg @Log -Text " # CIM Server cache miss for '$ComputerName'"
+    }
+
+}
 function Find-ResolvedIDsWithAccess {
 
     param (
@@ -5892,7 +5931,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
