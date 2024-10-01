@@ -165,6 +165,12 @@ function Resolve-Ace {
         WhoAmI       = $WhoAmI
     }
 
+    $GetAdsiServerParams = @{
+        ThisFqdn           = $ThisFqdn
+        WellKnownSIDBySID  = $WellKnownSIDBySID
+        WellKnownSIDByName = $WellKnownSIDByName
+    }
+
     $LogSplat = @{ ThisHostname = $ThisHostname ; LogBuffer = $LogBuffer ; WhoAmI = $WhoAmI }
     $Cache1 = @{ DirectoryEntryCache = $DirectoryEntryCache ; DomainsByFqdn = $DomainsByFqdn }
     $Cache2 = @{ DomainsByNetBIOS = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ; CimCache = $CimCache }
