@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Find-CachedCimInstance [[-ComputerName] <String>] [[-Key] <String>] [[-CimCache] <Hashtable>]
- [[-Log] <Hashtable>]
+ [[-Log] <Hashtable>] [[-CacheToSearch] <String[]>]
 ```
 
 ## DESCRIPTION
@@ -30,6 +30,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -CacheToSearch
+{{ Fill CacheToSearch Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -CimCache
 {{ Fill CimCache Description }}

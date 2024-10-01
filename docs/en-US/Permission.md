@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.755
+Help Version: 0.0.756
 Locale: en-US
 ---
 
@@ -38,7 +38,7 @@ Expand-PermissionTarget [[-RecurseDepth] <int>] [[-ThreadCount] <ushort>] [[-Deb
 
 ### [Find-CachedCimInstance](Find-CachedCimInstance.md)
 
-Find-CachedCimInstance [[-ComputerName] <string>] [[-Key] <string>] [[-CimCache] <hashtable>] [[-Log] <hashtable>]
+Find-CachedCimInstance [[-ComputerName] <string>] [[-Key] <string>] [[-CimCache] <hashtable>] [[-Log] <hashtable>] [[-CacheToSearch] <string[]>]
 
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)

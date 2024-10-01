@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.756] - 2024-09-30 - implement cachetosearch param
+
 ## [0.0.755] - 2024-09-30 - update debug verbiage
 
 ## [0.0.754] - 2024-09-30 - implement find-cachedciminstance

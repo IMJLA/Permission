@@ -3,14 +3,15 @@ function Find-CachedCimInstance {
         [string]$ComputerName,
         [string]$Key,
         [hashtable]$CimCache,
-        [hashtable]$Log
+        [hashtable]$Log,
+        [string[]]$CacheToSearch = ($CimServer.Keys | Sort-Object -Descending)
     )
 
     $CimServer = $CimCache[$ComputerName]
 
     if ($CimServer) {
 
-        ForEach ($Cache in $CimServer.Keys) {
+        ForEach ($Cache in $CacheToSearch) {
 
             $InstanceCache = $CimServer[$Cache]
 

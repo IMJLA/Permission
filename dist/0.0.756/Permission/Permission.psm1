@@ -3524,14 +3524,15 @@ function Find-CachedCimInstance {
         [string]$ComputerName,
         [string]$Key,
         [hashtable]$CimCache,
-        [hashtable]$Log
+        [hashtable]$Log,
+        [string[]]$CacheToSearch = ($CimServer.Keys | Sort-Object -Descending)
     )
 
     $CimServer = $CimCache[$ComputerName]
 
     if ($CimServer) {
 
-        ForEach ($Cache in $CimServer.Keys) {
+        ForEach ($Cache in $CacheToSearch) {
 
             $InstanceCache = $CimServer[$Cache]
 
@@ -3544,7 +3545,7 @@ function Find-CachedCimInstance {
                     return $CachedCimInstance
 
                 } else {
-                    Write-LogMsg @Log -Text " # CIM instance cache miss for '$Key' in the '$Cache' cache on '$ComputerName'"
+                    Write-LogMsg @Log -Text " # CIM Instance cache miss for '$Key' in the '$Cache' cache on '$ComputerName'"
                 }
 
             } else {
@@ -5932,6 +5933,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
