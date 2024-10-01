@@ -23,11 +23,11 @@ function Find-CachedCimInstance {
                     return $CachedCimInstance
 
                 } else {
-                    Write-LogMsg @Log -Text " # CIM '$Cache' instance cache miss for '$Key' on '$ComputerName'"
+                    Write-LogMsg @Log -Text " # CIM Instance cache miss for '$Key' in the '$Cache' cache on '$ComputerName'"
                 }
 
             } else {
-                Write-LogMsg @Log -Text " # CIM Instance Type cache miss for '$Cache' on '$ComputerName'"
+                Write-LogMsg @Log -Text " # CIM Class/Query cache miss for '$Cache' on '$ComputerName'"
             }
 
         }
