@@ -104,9 +104,9 @@ function Get-CachedCimInstance {
 
         if ($CimInstance) {
 
-            $InstanceCache = [Hashtable]::Synchronized(@{})
-
             ForEach ($Prop in $CacheByProperty) {
+
+                $InstanceCache = [Hashtable]::Synchronized(@{})
 
                 if ($PSBoundParameters.ContainsKey('ClassName')) {
                     $InstanceCacheKey = "$ClassName`By$Prop"
