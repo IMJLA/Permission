@@ -1064,14 +1064,29 @@ function Expand-ItemPermissionAccountAccessReference {
         [Hashtable]$AceByGUID
     )
 
+    $ACEProps = $AceByGUID[@(@($Reference)[0].AceGUIDs)[0]].PSObject.Properties.GetEnumerator().Name
+
     ForEach ($PermissionRef in $Reference) {
 
+        $Account = $PrincipalByResolvedID[$PermissionRef.Account]
+
         [PSCustomObject]@{
-            Account     = $PrincipalByResolvedID[$PermissionRef.Account]
+            Account     = $Account
             AccountName = $PermissionRef.Account
             Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
+
                 ForEach ($Guid in $GuidList) {
-                    $AceByGUID[$Guid]
+
+                    $OutputProperties = @{
+                        Account = $Account
+                    }
+
+                    ForEach ($Prop in $ACEProps) {
+                        $OutputProperties[$Prop] = $ACE.$Prop
+                    }
+
+                    [pscustomobject]$OutputProperties
+
                 }
             }
             PSTypeName  = 'Permission.ItemPermissionAccountAccess'
@@ -5941,6 +5956,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
