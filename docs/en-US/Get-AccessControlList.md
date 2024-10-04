@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
- [[-TodaysHostname] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
+ [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
  [[-ProgressParentId] <Int32>] [[-Output] <Hashtable>] [[-WarningCache] <Hashtable>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
@@ -139,6 +139,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ThisHostname
+{{ Fill ThisHostname Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -ThreadCount
 {{ Fill ThreadCount Description }}
 
@@ -149,21 +164,6 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TodaysHostname
-{{ Fill TodaysHostname Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

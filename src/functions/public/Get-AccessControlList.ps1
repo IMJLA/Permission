@@ -18,7 +18,7 @@ function Get-AccessControlList {
         [String]$DebugOutputStream = 'Debug',
 
         # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$TodaysHostname = (HOSTNAME.EXE),
+        [String]$ThisHostname = (HOSTNAME.EXE),
 
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
@@ -41,7 +41,7 @@ function Get-AccessControlList {
     )
 
     $LogParams = @{
-        ThisHostname = $TodaysHostname
+        ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
@@ -72,7 +72,7 @@ function Get-AccessControlList {
 
     $GetDirectorySecurity = @{
         LogBuffer         = $LogBuffer
-        ThisHostname      = $TodaysHostname
+        ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
         OwnerCache        = $OwnerCache
@@ -136,7 +136,7 @@ function Get-AccessControlList {
                 InputObject       = $Children
                 InputParameter    = 'LiteralPath'
                 DebugOutputStream = $DebugOutputStream
-                TodaysHostname    = $TodaysHostname
+                ThisHostname      = $ThisHostname
                 WhoAmI            = $WhoAmI
                 LogBuffer         = $LogBuffer
                 Threads           = $ThreadCount
@@ -227,7 +227,7 @@ function Get-AccessControlList {
                 InputObject       = $Children
                 InputParameter    = 'Item'
                 DebugOutputStream = $DebugOutputStream
-                TodaysHostname    = $TodaysHostname
+                ThisHostname      = $ThisHostname
                 WhoAmI            = $WhoAmI
                 LogBuffer         = $LogBuffer
                 Threads           = $ThreadCount
