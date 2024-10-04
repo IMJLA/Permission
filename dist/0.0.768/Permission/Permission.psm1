@@ -3896,6 +3896,8 @@ function Get-AccessControlList {
     # Returns an object representing each effective permission on a folder
     # This includes each Access Control Entry in the Discretionary Access List, as well as the folder's Owner
 
+    [CmdletBinding()]
+
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
@@ -4133,7 +4135,7 @@ function Get-AccessControlList {
 
     Write-Progress @Progress -Completed
 
-    if ($ACLsByPath.Keys.Count -eq 0) {
+    if ($Output.Keys.Count -eq 0) {
 
         $LogParams['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
         Write-LogMsg @LogParams -Text " # 0 access control lists could be retrieved.  Exiting script."
@@ -5965,6 +5967,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

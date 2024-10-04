@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.767
+Help Version: 0.0.768
 Locale: en-US
 ---
 
@@ -63,7 +63,7 @@ Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
 
 ### [Get-AccessControlList](Get-AccessControlList.md)
 
-Get-AccessControlList [[-TargetPath] <hashtable>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogBuffer] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-Output] <hashtable>] [[-WarningCache] <hashtable>]
+Get-AccessControlList [[-TargetPath] <hashtable>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-TodaysHostname] <string>] [[-WhoAmI] <string>] [[-LogBuffer] <hashtable>] [[-OwnerCache] <ConcurrentDictionary[string,psobject]>] [[-ProgressParentId] <int>] [[-Output] <hashtable>] [[-WarningCache] <hashtable>] [<CommonParameters>]
 
 
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
