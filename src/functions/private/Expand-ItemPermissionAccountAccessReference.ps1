@@ -8,12 +8,14 @@ function Expand-ItemPermissionAccountAccessReference {
 
     ForEach ($PermissionRef in $Reference) {
 
+        $Account = $PrincipalByResolvedID[$PermissionRef.Account]
+
         [PSCustomObject]@{
-            Account     = $PrincipalByResolvedID[$PermissionRef.Account]
+            Account     = $Account
             AccountName = $PermissionRef.Account
             Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
                 ForEach ($Guid in $GuidList) {
-                    $AceByGUID[$Guid]
+                    Merge-AceAndPrincipal -ACE $AceByGUID[$Guid] -Principal $Account -PrincipalByResolvedID $PrincipalByResolvedID
                 }
             }
             PSTypeName  = 'Permission.ItemPermissionAccountAccess'

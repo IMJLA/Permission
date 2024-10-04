@@ -118,10 +118,12 @@ function Select-PermissionTableProperty {
 
                             if ($ACE.IdentityReferenceResolved -eq $AccountName) {
 
-                                # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                                # In this case the ACE's account is directly referenced in the DACL
                                 $GroupString = ''
 
                             } else {
+
+                                # In this case the account is merely a member of a group from the DACL
 
                                 # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
                                 # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter

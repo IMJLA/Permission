@@ -1066,12 +1066,14 @@ function Expand-ItemPermissionAccountAccessReference {
 
     ForEach ($PermissionRef in $Reference) {
 
+        $Account = $PrincipalByResolvedID[$PermissionRef.Account]
+
         [PSCustomObject]@{
-            Account     = $PrincipalByResolvedID[$PermissionRef.Account]
+            Account     = $Account
             AccountName = $PermissionRef.Account
             Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
                 ForEach ($Guid in $GuidList) {
-                    $AceByGUID[$Guid]
+                    Merge-AceAndPrincipal -ACE $AceByGUID[$Guid] -Principal $Account -PrincipalByResolvedID $PrincipalByResolvedID
                 }
             }
             PSTypeName  = 'Permission.ItemPermissionAccountAccess'
@@ -2971,10 +2973,12 @@ function Select-PermissionTableProperty {
 
                             if ($ACE.IdentityReferenceResolved -eq $AccountName) {
 
-                                # In this case the ACE's account is directly referenced in the DACL; it is merely a member of a group from the DACL
+                                # In this case the ACE's account is directly referenced in the DACL
                                 $GroupString = ''
 
                             } else {
+
+                                # In this case the account is merely a member of a group from the DACL
 
                                 # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
                                 # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
@@ -5939,6 +5943,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
