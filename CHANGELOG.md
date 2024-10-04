@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.762] - 2024-10-03 - revert unnecessary change; this is being accomplished by select-permissiontableproperty
+
 ## [0.0.761] - 2024-10-03 - bugfix was dropping property names (although now the output obj has redundant data in the Account property...will need to cleanup later)
 
 ## [0.0.760] - 2024-10-03 - bugfix instancecache is unique per cachebyproperty
