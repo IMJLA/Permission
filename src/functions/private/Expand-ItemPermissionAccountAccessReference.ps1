@@ -8,7 +8,7 @@ function Expand-ItemPermissionAccountAccessReference {
 
     $FirstRef = @($Reference)[0]
     $FirstAce = @($FirstRef.AceGUIDs)[0]
-    pause
+    if (-not $FirstAce) { pause }
     $ACEProps = $AceByGUID[$FirstAce].PSObject.Properties.GetEnumerator().Name
 
     ForEach ($PermissionRef in $Reference) {

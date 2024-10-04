@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.765] - 2024-10-03 - make debug pause conditional because it doesn't always trigger the exception
+
 ## [0.0.764] - 2024-10-03 - bugfix null guid
 
 ## [0.0.763] - 2024-10-03 - bugfix was dropping the Account property
