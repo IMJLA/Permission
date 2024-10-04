@@ -75,7 +75,6 @@ function Get-AccessControlList {
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
-        OwnerCache        = $OwnerCache
         ACLsByPath        = $Output
         WarningCache      = $WarningCache
     }
