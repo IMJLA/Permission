@@ -49,6 +49,8 @@ function Expand-ItemPermissionAccountAccessReference {
 
                 ForEach ($Guid in $GuidList) {
 
+                    $ACE = $AceByGUID[$Guid]
+
                     $OutputProperties = @{
                         Account = $Account
                     }
