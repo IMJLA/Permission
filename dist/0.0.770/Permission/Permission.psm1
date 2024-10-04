@@ -1065,7 +1065,35 @@ function Expand-ItemPermissionAccountAccessReference {
     )
 
     if ($Reference) {
-        $ACEProps = $AceByGUID[@(@($Reference)[0].AceGUIDs)[0]].PSObject.Properties.GetEnumerator().Name
+
+        if ($Reference -is [System.Collections.IEnumerable]) {
+            $FirstRef = $Reference[0]
+        } else {
+            $FirstRef = $Reference
+        }
+
+        if ($FirstRef) {
+
+            if ($FirstRef.AceGUIDs -is [System.Collections.IEnumerable]) {
+                $FirstACEGuid = $FirstRef.AceGUIDs[0]
+            } else {
+                $FirstACEGuid = $FirstRef.AceGUIDs
+            }
+
+        }
+
+        if ($FirstACEGuid) {
+            $ACEList = $AceByGUID[$FirstACEGuid]
+        }
+
+        if ($ACEList -is [System.Collections.IEnumerable]) {
+            $FirstACE = $ACEList[0]
+        } else {
+            $FirstACE = $ACEList
+        }
+
+        $ACEProps = $FirstACE.PSObject.Properties.GetEnumerator().Name
+
     }
 
     ForEach ($PermissionRef in $Reference) {
@@ -5967,6 +5995,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

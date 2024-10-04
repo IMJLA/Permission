@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.770] - 2024-10-03 - bugfix property extraction
+
 ## [0.0.769] - 2024-10-03 - rename param to match rest of module
 
 ## [0.0.768] - 2024-10-03 - bugfix wrong output var name but also add cmdletbinding

@@ -7,7 +7,35 @@ function Expand-ItemPermissionAccountAccessReference {
     )
 
     if ($Reference) {
-        $ACEProps = $AceByGUID[@(@($Reference)[0].AceGUIDs)[0]].PSObject.Properties.GetEnumerator().Name
+
+        if ($Reference -is [System.Collections.IEnumerable]) {
+            $FirstRef = $Reference[0]
+        } else {
+            $FirstRef = $Reference
+        }
+
+        if ($FirstRef) {
+
+            if ($FirstRef.AceGUIDs -is [System.Collections.IEnumerable]) {
+                $FirstACEGuid = $FirstRef.AceGUIDs[0]
+            } else {
+                $FirstACEGuid = $FirstRef.AceGUIDs
+            }
+
+        }
+
+        if ($FirstACEGuid) {
+            $ACEList = $AceByGUID[$FirstACEGuid]
+        }
+
+        if ($ACEList -is [System.Collections.IEnumerable]) {
+            $FirstACE = $ACEList[0]
+        } else {
+            $FirstACE = $ACEList
+        }
+
+        $ACEProps = $FirstACE.PSObject.Properties.GetEnumerator().Name
+
     }
 
     ForEach ($PermissionRef in $Reference) {
