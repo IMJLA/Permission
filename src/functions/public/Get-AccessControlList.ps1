@@ -241,4 +241,11 @@ function Get-AccessControlList {
 
     Write-Progress @Progress -Completed
 
+    if ($ACLsByPath.Keys.Count -eq 0) {
+
+        $LogParams['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        Write-LogMsg @LogParams -Text " # 0 access control lists could be retrieved.  Exiting script."
+
+    }
+
 }
