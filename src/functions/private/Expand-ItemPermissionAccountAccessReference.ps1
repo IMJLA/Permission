@@ -6,10 +6,9 @@ function Expand-ItemPermissionAccountAccessReference {
         [Hashtable]$AceByGUID
     )
 
-    $FirstRef = @($Reference)[0]
-    $FirstAce = @($FirstRef.AceGUIDs)[0]
-    if (-not $FirstAce) { pause }
-    $ACEProps = $AceByGUID[$FirstAce].PSObject.Properties.GetEnumerator().Name
+    if ($Reference) {
+        $ACEProps = $AceByGUID[@(@($Reference)[0].AceGUIDs)[0]].PSObject.Properties.GetEnumerator().Name
+    }
 
     ForEach ($PermissionRef in $Reference) {
 

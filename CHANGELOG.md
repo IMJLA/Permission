@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.766] - 2024-10-03 - bugfix handle null reference (happens when access denied and acl cannot be retrieved, probably upstream bug but need resilience here)
+
 ## [0.0.765] - 2024-10-03 - make debug pause conditional because it doesn't always trigger the exception
 
 ## [0.0.764] - 2024-10-03 - bugfix null guid
