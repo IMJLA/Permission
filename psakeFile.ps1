@@ -522,8 +522,13 @@ task WaitForRepoToUpdate -depends Publish {
 
 task Uninstall -depends WaitForRepoToUpdate {
 
-    Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
-    Uninstall-Module -Name $env:BHProjectName -AllVersions
+    Write-Host "`Get-Module -Name '$env:BHProjectName' -ListAvailable"
+
+    if (Get-Module -Name $env:BHProjectName -ListAvailable) {
+        Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
+        Uninstall-Module -Name $env:BHProjectName -AllVersions
+    }
+
 } -description 'Uninstall all versions of the module'
 
 task Reinstall -depends Uninstall {
