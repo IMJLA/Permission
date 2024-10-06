@@ -174,13 +174,17 @@ function Resolve-Acl {
     $ACL = $ACLsByPath[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
+
         Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACL.Owner -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For Owner IdentityReference '$($ACL.Owner.IdentityReference)' # For ItemPath '$ItemPath'"
         Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @ResolveAceSplat
+
     }
 
     ForEach ($ACE in $ACL.Access) {
+
         Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
         Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @ResolveAceSplat
+
     }
 
 }

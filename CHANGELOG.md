@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.777] - 2024-10-06 - max debug verbosity
+
+## [0.0.776] - 2024-10-06 - max debug log verbosity
+
 ## [0.0.775] - 2024-10-06 - update debug logging
 
 ## [0.0.774] - 2024-10-06 - replace get-member to improve performance

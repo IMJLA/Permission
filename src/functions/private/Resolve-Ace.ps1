@@ -85,6 +85,8 @@ function Resolve-Ace {
     if ($FolderPath.Length -gt 255) {
         $FolderPath = "\\?\$FolderPath"
     }
+
+    TODO: add a param to offer DNS instead of or in addition to NetBIOS
     #>
     [OutputType([void])]
     param (
@@ -160,32 +162,25 @@ function Resolve-Ace {
     )
 
     $Log = @{
+        Buffer       = $LogBuffer
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        Buffer       = $LogBuffer
         WhoAmI       = $WhoAmI
     }
 
-    $GetAdsiServerParams = @{
-        ThisFqdn           = $ThisFqdn
-        WellKnownSIDBySID  = $WellKnownSIDBySID
-        WellKnownSIDByName = $WellKnownSIDByName
-    }
-
-    $LogSplat = @{ ThisHostname = $ThisHostname ; LogBuffer = $LogBuffer ; WhoAmI = $WhoAmI }
     $Cache1 = @{ DirectoryEntryCache = $DirectoryEntryCache ; DomainsByFqdn = $DomainsByFqdn }
     $Cache2 = @{ DomainsByNetBIOS = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ; CimCache = $CimCache }
+    $GetAdsiServerParams = @{ ThisFqdn = $ThisFqdn ; WellKnownSIDBySID = $WellKnownSIDBySID ; WellKnownSIDByName = $WellKnownSIDByName }
+    $LogSplat = @{ ThisHostname = $ThisHostname ; LogBuffer = $LogBuffer ; WhoAmI = $WhoAmI }
 
-    #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+    Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @Log
 
-    #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+    Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @GetAdsiServerParams @Cache1 @Cache2 @LogSplat
 
-    #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+    Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogSplat
-
-    # TODO: add a param to offer DNS instead of or in addition to NetBIOS
 
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
