@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.779] - 2024-10-06 - update psakefile
+
 ## [0.0.778] - 2024-10-06 - reduce debug log verbosity
 
 ## [0.0.777] - 2024-10-06 - max debug verbosity

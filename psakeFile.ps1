@@ -461,13 +461,18 @@ task UnitTests -depends Lint -precondition $pesterPreReqs {
 } -description 'Execute Pester tests'
 
 task SourceControl -depends UnitTests {
-    # Commit to Git
+
+    Write-Host "`tgit add ."
     git add .
+    Write-Host "`tgit commit -m $CommitMessage"
     git commit -m $CommitMessage
+    Write-Host "`tgit push origin main"
     git push origin main
+
 } -description 'git add, commit, and push'
 
 task Publish -depends SourceControl {
+
     Assert -conditionToCheck ($PublishPSRepositoryApiKey -or $PublishPSRepositoryCredential) -failureMessage "API key or credential not defined to authenticate with [$PublishPSRepository)] with."
 
     $publishParams = @{
@@ -475,6 +480,7 @@ task Publish -depends SourceControl {
         Repository = $PublishPSRepository
         Verbose    = $VerbosePreference
     }
+
     if ($PublishPSRepositoryApiKey) {
         $publishParams.NuGetApiKey = $PublishPSRepositoryApiKey
     }
@@ -484,33 +490,47 @@ task Publish -depends SourceControl {
     }
 
     # Publish to PSGallery
+    Write-Host "`Publish-Module -Repository '$PublishPSRepository' -Path '$env:BHBuildOutput' ..."
     Publish-Module @publishParams
+
 } -description 'Publish module to the defined PowerShell repository'
 
 task WaitForRepoToUpdate -depends Publish {
 
     $timer = 0
     $timer = 30
+
     do {
+
         Start-Sleep -Seconds 1
         $timer++
+        Write-Host "`tFind-Module -Name '$env:BHProjectName' -Repository '$PublishPSRepository'"
         $VersionInGallery = Find-Module -Name $env:BHProjectName -Repository $PublishPSRepository
+
     } while (
+
         $VersionInGallery.Version -lt $NewModuleVersion -and
         $timer -lt $timeout
+
     )
 
     if ($timer -eq $timeout) {
         Write-Warning "Cannot retrieve version '$NewModuleVersion' of module '$env:BHProjectName' from repo '$PublishPSRepository'"
     }
+
 } -description 'Await the new version in the defined PowerShell repository'
 
 task Uninstall -depends WaitForRepoToUpdate {
+
+    Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
     Uninstall-Module -Name $env:BHProjectName -AllVersions
 } -description 'Uninstall all versions of the module'
 
 task Reinstall -depends Uninstall {
+
+    Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force"
     Install-Module -Name $env:BHProjectName -Force
+
 } -description 'Reinstall the latest version of the module from the defined PowerShell repository'
 
 task RemoveScriptScopedVariables -depends Reinstall {
