@@ -94,8 +94,6 @@ FormatTaskName {
 
 task Default -depends RemoveScriptScopedVariables
 
-#Task Init -FromModule PowerShellBuild -minimumVersion 0.6.1
-
 task InitializeEnvironmentVariables {
 
     # Should I be running Git before this? I haven't run Git yet, so BuildHelpers finds the previous commit msg and I have to use the line below to update it
