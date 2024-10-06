@@ -88,7 +88,7 @@ properties {
 
 FormatTaskName {
     param($taskName)
-    Write-Host 'Task: ' -ForegroundColor Cyan -NoNewline
+    Write-Host "$NewLine`Task: " -ForegroundColor Cyan -NoNewline
     Write-Host $taskName -ForegroundColor Blue
 }
 
@@ -114,7 +114,7 @@ task UpdateModuleVersion -depends InitializeEnvironmentVariables -Action {
         "`tThis is a new build"
         $NewModuleVersion = "$($CurrentVersion.Major).$($CurrentVersion.Minor).$($CurrentVersion.Build + 1)"
     }
-    "`tNew Version: $NewModuleVersion$NewLine"
+    "`tNew Version: $NewModuleVersion"
 
     Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $NewModuleVersion -ErrorAction Stop
 } -description 'Increment the module version and update the module manifest accordingly'
@@ -155,7 +155,7 @@ task InitializePowershellBuild -depends UpdateModuleVersion {
     $buildModuleName = $MyInvocation.MyCommand.Module.Name
     $buildModuleVersion = $MyInvocation.MyCommand.Module.Version
     "`tBuild Module:       $buildModuleName`:$buildModuleVersion"
-    "`tPowerShell Version: $psVersion$NewLine"
+    "`tPowerShell Version: $psVersion"
 
 } -description 'Initialize environment variables from the PowerShellBuild module'
 
@@ -186,7 +186,7 @@ TODO
 #>
     $ChangeLog = "$env:BHProjectPath\CHANGELOG.md"
     $NewModuleVersion = (Import-PowerShellDataFile -Path $env:BHPSModuleManifest).ModuleVersion
-    $NewChanges = "## [$NewModuleVersion] - $(Get-Date -format 'yyyy-MM-dd') - $CommitMessage$NewLine"
+    $NewChanges = "## [$NewModuleVersion] - $(Get-Date -format 'yyyy-MM-dd') - $CommitMessage"
     "`tChange Log:  $ChangeLog"
     "`tNew Changes: $NewChanges"
     [string[]]$ChangeLogContents = Get-Content -Path $ChangeLog
@@ -211,7 +211,7 @@ task ExportPublicFunctions -depends UpdateChangeLog -Action {
 
     # Export public functions in the module
     $publicFunctions = $PublicScriptFiles.BaseName
-    "`t$($publicFunctions -join "$NewLine`t")$NewLine"
+    "`t$($publicFunctions -join "$NewLine`t")"
     $PublicFunctionsJoined = $publicFunctions -join "','"
     $ModuleFilePath = "$env:BHProjectPath\src\$env:BHProjectName.psm1"
     $ModuleContent = Get-Content -Path $ModuleFilePath -Raw
@@ -297,7 +297,7 @@ task BuildMarkdownHelp -depends DeleteMarkdownHelp {
             }
         }
 
-        Write-Host "New-MarkdownHelp -AlphabeticParamsOrder -Locale '$HelpDefaultLocale' -HelpVersion $($moduleInfo.Version) -Module $env:BHProjectName -OutputFolder '$([IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale))' -UseFullTypeName `$true -WithModulePage `$true -ErrorAction Stop -VerbosePreference Continue -DebugPreference Continue$NewLine"
+        Write-Host "New-MarkdownHelp -AlphabeticParamsOrder -Locale '$HelpDefaultLocale' -HelpVersion $($moduleInfo.Version) -Module $env:BHProjectName -OutputFolder '$([IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale))' -UseFullTypeName `$true -WithModulePage `$true -ErrorAction Stop -VerbosePreference Continue -DebugPreference Continue"
         $newMDParams = @{
             AlphabeticParamsOrder = $true
             Locale                = $HelpDefaultLocale
@@ -329,7 +329,7 @@ task FixMarkdownHelp -depends BuildMarkdownHelp {
 
     #-Update the module description
     $RegEx = "(?ms)\#\#\ Description\s*[^\r\n]*\s*"
-    $NewString = "## Description$NewLine$($moduleInfo.Description)$NewLine$NewLine"
+    $NewString = "## Description$NewLine$($moduleInfo.Description)$NewLine"
     $ModuleHelp = $ModuleHelp -replace $RegEx, $NewString
 
     Write-Host "`t'`$ModuleHelp' -replace '$RegEx', '$NewString'"
@@ -338,7 +338,7 @@ task FixMarkdownHelp -depends BuildMarkdownHelp {
     ForEach ($ThisFunction in $ManifestInfo.ExportedCommands.Keys) {
         $Synopsis = (Get-Help -Name $ThisFunction).Synopsis
         $RegEx = "(?ms)\#\#\#\ \[$ThisFunction]\($ThisFunction\.md\)\s*[^\r\n]*\s*"
-        $NewString = "### [$ThisFunction]($ThisFunction.md)$NewLine$Synopsis$NewLine$NewLine"
+        $NewString = "### [$ThisFunction]($ThisFunction.md)$NewLine$Synopsis$NewLine"
         $ModuleHelp = $ModuleHelp -replace $RegEx, $NewString
     }
 
@@ -425,7 +425,7 @@ task Lint -depends BuildUpdatableHelp -precondition $analyzePreReqs {
         SettingsPath      = $TestLintSettingsPath
     }
 
-    Write-Host "`tTest-PSBuildScriptAnalysis -Path '$env:BHBuildOutput' -SeverityThreshold '$TestLintFailBuildOnSeverityLevel' -SettingsPath '$TestLintSettingsPath'$NewLine"
+    Write-Host "`tTest-PSBuildScriptAnalysis -Path '$env:BHBuildOutput' -SeverityThreshold '$TestLintFailBuildOnSeverityLevel' -SettingsPath '$TestLintSettingsPath'"
     Test-PSBuildScriptAnalysis @analyzeParams
 } -description 'Execute PSScriptAnalyzer tests'
 
@@ -448,7 +448,7 @@ $pesterPreReqs = {
 
 task UnitTests -depends Lint -precondition $pesterPreReqs {
 
-    Write-Host "`tInvoke-Pester -Configuration `$PesterConfiguration$NewLine"
+    Write-Host "`tInvoke-Pester -Configuration `$PesterConfiguration"
 
     $pesterParams = @{
         Path                         = $TestRootDir
@@ -472,7 +472,7 @@ task SourceControl -depends UnitTests {
     git add .
     Write-Host "`tgit commit -m $CommitMessage"
     git commit -m $CommitMessage
-    Write-Host "`tgit push origin main$NewLine"
+    Write-Host "`tgit push origin main"
     git push origin main
 
 } -description 'git add, commit, and push'
@@ -496,7 +496,7 @@ task Publish -depends SourceControl {
     }
 
     # Publish to PSGallery
-    Write-Host "`tPublish-Module -Repository '$PublishPSRepository' -Path '$env:BHBuildOutput'$NewLine"
+    Write-Host "`tPublish-Module -Repository '$PublishPSRepository' -Path '$env:BHBuildOutput'"
     Publish-Module @publishParams
 
 } -description 'Publish module to the defined PowerShell repository'
@@ -510,7 +510,7 @@ task WaitForRepoToUpdate -depends Publish {
 
         Start-Sleep -Seconds 1
         $timer++
-        Write-Host "`tFind-Module -Name '$env:BHProjectName' -Repository '$PublishPSRepository'$NewLine"
+        Write-Host "`tFind-Module -Name '$env:BHProjectName' -Repository '$PublishPSRepository'"
         $VersionInGallery = Find-Module -Name $env:BHProjectName -Repository $PublishPSRepository
 
     } while (
@@ -531,7 +531,7 @@ task Uninstall -depends WaitForRepoToUpdate {
     Write-Host "`tGet-Module -Name '$env:BHProjectName' -ListAvailable"
 
     if (Get-Module -Name $env:BHProjectName -ListAvailable) {
-        Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions$NewLine"
+        Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
         Uninstall-Module -Name $env:BHProjectName -AllVersions
     } else {
         Write-Host ""
@@ -541,7 +541,7 @@ task Uninstall -depends WaitForRepoToUpdate {
 
 task Reinstall -depends Uninstall {
 
-    Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force$NewLine"
+    Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force"
     Install-Module -Name $env:BHProjectName -Force
 
 } -description 'Reinstall the latest version of the module from the defined PowerShell repository'
@@ -549,7 +549,7 @@ task Reinstall -depends Uninstall {
 task RemoveScriptScopedVariables -depends Reinstall {
 
     # Remove script-scoped variables to avoid their accidental re-use
-    Write-Host "`tRemove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue$NewLine"
+    Write-Host "`tRemove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue"
     Remove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
 
 }
