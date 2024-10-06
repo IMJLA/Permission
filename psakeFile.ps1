@@ -297,7 +297,7 @@ task BuildMarkdownHelp -depends DeleteMarkdownHelp {
             }
         }
 
-        Write-Host "New-MarkdownHelp -AlphabeticParamsOrder -Locale '$HelpDefaultLocale' -HelpVersion $($moduleInfo.Version) -Module $env:BHProjectName -OutputFolder '$([IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale))' -UseFullTypeName `$true -WithModulePage `$true -ErrorAction Stop -VerbosePreference Continue -DebugPreference Continue"
+        Write-Host "New-MarkdownHelp -AlphabeticParamsOrder -Locale '$HelpDefaultLocale' -HelpVersion $($moduleInfo.Version) -Module $env:BHProjectName -OutputFolder '$([IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale))' -UseFullTypeName `$true -WithModulePage `$true -ErrorAction Stop -VerbosePreference Continue -DebugPreference Continue$NewLine"
         $newMDParams = @{
             AlphabeticParamsOrder = $true
             Locale                = $HelpDefaultLocale
@@ -418,11 +418,14 @@ $analyzePreReqs = {
 }
 
 task Lint -depends BuildUpdatableHelp -precondition $analyzePreReqs {
+
     $analyzeParams = @{
         Path              = $env:BHBuildOutput
         SeverityThreshold = $TestLintFailBuildOnSeverityLevel
         SettingsPath      = $TestLintSettingsPath
     }
+
+    Write-Host "`tTest-PSBuildScriptAnalysis -Path '$env:BHBuildOutput' -SeverityThreshold '$TestLintFailBuildOnSeverityLevel' -SettingsPath '$TestLintSettingsPath'$NewLine"
     Test-PSBuildScriptAnalysis @analyzeParams
 } -description 'Execute PSScriptAnalyzer tests'
 
@@ -444,6 +447,9 @@ $pesterPreReqs = {
 }
 
 task UnitTests -depends Lint -precondition $pesterPreReqs {
+
+    Write-Host "`tInvoke-Pester -Configuration `$PesterConfiguration$NewLine"
+
     $pesterParams = @{
         Path                         = $TestRootDir
         ModuleName                   = $env:BHProjectName
@@ -466,7 +472,7 @@ task SourceControl -depends UnitTests {
     git add .
     Write-Host "`tgit commit -m $CommitMessage"
     git commit -m $CommitMessage
-    Write-Host "`tgit push origin main"
+    Write-Host "`tgit push origin main$NewLine"
     git push origin main
 
 } -description 'git add, commit, and push'
@@ -490,7 +496,7 @@ task Publish -depends SourceControl {
     }
 
     # Publish to PSGallery
-    Write-Host "`Publish-Module -Repository '$PublishPSRepository' -Path '$env:BHBuildOutput' ..."
+    Write-Host "`tPublish-Module -Repository '$PublishPSRepository' -Path '$env:BHBuildOutput'$NewLine"
     Publish-Module @publishParams
 
 } -description 'Publish module to the defined PowerShell repository'
@@ -504,7 +510,7 @@ task WaitForRepoToUpdate -depends Publish {
 
         Start-Sleep -Seconds 1
         $timer++
-        Write-Host "`tFind-Module -Name '$env:BHProjectName' -Repository '$PublishPSRepository'"
+        Write-Host "`tFind-Module -Name '$env:BHProjectName' -Repository '$PublishPSRepository'$NewLine"
         $VersionInGallery = Find-Module -Name $env:BHProjectName -Repository $PublishPSRepository
 
     } while (
@@ -522,18 +528,20 @@ task WaitForRepoToUpdate -depends Publish {
 
 task Uninstall -depends WaitForRepoToUpdate {
 
-    Write-Host "`Get-Module -Name '$env:BHProjectName' -ListAvailable"
+    Write-Host "`tGet-Module -Name '$env:BHProjectName' -ListAvailable"
 
     if (Get-Module -Name $env:BHProjectName -ListAvailable) {
-        Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
+        Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions$NewLine"
         Uninstall-Module -Name $env:BHProjectName -AllVersions
+    } else {
+        Write-Host ""
     }
 
 } -description 'Uninstall all versions of the module'
 
 task Reinstall -depends Uninstall {
 
-    Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force"
+    Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force$NewLine"
     Install-Module -Name $env:BHProjectName -Force
 
 } -description 'Reinstall the latest version of the module from the defined PowerShell repository'
@@ -541,6 +549,7 @@ task Reinstall -depends Uninstall {
 task RemoveScriptScopedVariables -depends Reinstall {
 
     # Remove script-scoped variables to avoid their accidental re-use
+    Write-Host "`tRemove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue$NewLine"
     Remove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
 
 }
