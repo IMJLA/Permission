@@ -2364,13 +2364,13 @@ function Resolve-Ace {
     $Cache1 = @{ DirectoryEntryCache = $DirectoryEntryCache ; DomainsByFqdn = $DomainsByFqdn }
     $Cache2 = @{ DomainsByNetBIOS = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ; CimCache = $CimCache }
 
-    #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log"
+    #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @Log
 
-    #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn'"
+    #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @GetAdsiServerParams @Cache1 @Cache2 @LogSplat
 
-    #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)'"
+    #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogSplat
 
     # TODO: add a param to offer DNS instead of or in addition to NetBIOS
@@ -2574,12 +2574,12 @@ function Resolve-Acl {
     $ACL = $ACLsByPath[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
-        #Write-LogMsg @Log -Text "Resolve-Ace -ACE $($ACL.Owner) -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat"
+        Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACL.Owner -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For Owner IdentityReference '$($ACL.Owner.IdentityReference)' # For ItemPath '$ItemPath'"
         Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @ResolveAceSplat
     }
 
     ForEach ($ACE in $ACL.Access) {
-        #Write-LogMsg @Log -Text "Resolve-Ace -ACE $ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat"
+        Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
         Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @ResolveAceSplat
     }
 
@@ -6011,6 +6011,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
