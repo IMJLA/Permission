@@ -146,7 +146,8 @@ function Resolve-Ace {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        [string[]]$ACEPropertyName = (Get-Member -InputObject $ACE -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
+        #[string[]]$ACEPropertyName = (Get-Member -InputObject $ACE -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
+        [string[]]$ACEPropertyName = $ACE.PSObject.Properties.GetEnumerator().Name,
 
         # Will be set as the Source property of the output object.
         # Intended to reflect permissions resulting from Ownership rather than Discretionary Access Lists

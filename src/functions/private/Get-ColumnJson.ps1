@@ -12,7 +12,17 @@ function Get-ColumnJson {
     )
 
     if (-not $PSBoundParameters.ContainsKey('PropNames')) {
-        $PropNames = (@($InputObject)[0] | Get-Member -MemberType noteproperty).Name
+
+        #$PropNames = (@($InputObject)[0] | Get-Member -MemberType noteproperty).Name
+
+        if ($InputObject -is [System.Collections.IEnumerable]) {
+            $FirstInputObject = $InputObject[0]
+        } else {
+            $FirstInputObject = $InputObject
+        }
+
+        $PropNames = $FirstInputObject.PSObject.Properties.GetEnumerator().Name
+
     }
 
     $Columns = ForEach ($Prop in $PropNames) {

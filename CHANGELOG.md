@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.774] - 2024-10-06 - replace get-member to improve performance
+
 ## [0.0.773] - 2024-10-06 - update psakefile
 
 ## [0.0.772] - 2024-10-04 - remove unused OwnerCache param from Get-DirectorySecurity

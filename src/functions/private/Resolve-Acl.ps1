@@ -147,7 +147,8 @@ function Resolve-Acl {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        [string[]]$ACEPropertyName = (Get-Member -InputObject $ItemPath -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
+        #[string[]]$ACEPropertyName = (Get-Member -InputObject $ItemPath -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
+        [string[]]$ACEPropertyName = $ItemPath.PSObject.Properties.GetEnumerator().Name,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug

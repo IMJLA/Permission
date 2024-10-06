@@ -93,7 +93,8 @@ function Resolve-AccessControlList {
         WhoAmI       = $WhoAmI
     }
 
-    $ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
+    #$ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
+    $ACEPropertyName = $ACLsByPath.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
         DirectoryEntryCache     = $DirectoryEntryCache
