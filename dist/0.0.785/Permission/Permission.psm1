@@ -3771,9 +3771,24 @@ function Format-Permission {
 
         [Hashtable]$ExcludeClassFilterContents = @{},
 
-        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{})
+        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{}),
+
+        # ID of the parent progress bar under which to show progress
+        [int]$ProgressParentId
 
     )
+
+    $Progress = @{
+        Activity = 'Format-Permission'
+    }
+    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+        $Progress['ParentId'] = $ProgressParentId
+        $ProgressId = $ProgressParentId + 1
+    } else {
+        $ProgressId = 0
+    }
+
+    $Progress['Id'] = $ProgressId
 
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
@@ -3781,7 +3796,15 @@ function Format-Permission {
 
     if ($Permission.SplitBy['account']) {
 
+        $i = 0
+        $Count = $Permission.AccountPermissions.Count
+
         $FormattedResults['SplitByAccount'] = ForEach ($Account in $Permission.AccountPermissions) {
+
+            [int]$Percent = $i / $Count * 100
+            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+
 
             $Selection = $Account
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
@@ -3811,7 +3834,14 @@ function Format-Permission {
 
     if ($Permission.SplitBy['item']) {
 
+        $i = 0
+        $Count = $Permission.ItemPermissions.Count
+
         $FormattedResults['SplitByItem'] = ForEach ($Item in $Permission.ItemPermissions) {
+
+            [int]$Percent = $i / $Count * 100
+            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Item.Path -PercentComplete $Percent @Progress
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
             $Selection = $Item.Access
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
@@ -3841,7 +3871,14 @@ function Format-Permission {
 
     if ($Permission.SplitBy['target']) {
 
+        $i = 0
+        $Count = $Permission.TargetPermissions.Count
+
         $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
+
+            [int]$Percent = $i / $Count * 100
+            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
             [PSCustomObject]@{
                 PSTypeName   = 'Permission.TargetPermission'
@@ -6003,6 +6040,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

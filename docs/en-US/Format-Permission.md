@@ -16,7 +16,7 @@ schema: 2.0.0
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
  [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>]
  [[-ShortNameByID] <Hashtable>] [[-ExcludeClassFilterContents] <Hashtable>]
- [[-IncludeFilterContents] <Hashtable>]
+ [[-IncludeFilterContents] <Hashtable>] [[-ProgressParentId] <Int32>]
 ```
 
 ## DESCRIPTION
@@ -151,6 +151,21 @@ Aliases:
 
 Required: False
 Position: 0
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 9
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
