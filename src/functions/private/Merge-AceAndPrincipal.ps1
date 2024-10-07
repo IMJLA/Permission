@@ -19,12 +19,10 @@ function Merge-AceAndPrincipal {
         AccountName = $Principal.ResolvedAccountName
     }
 
-    #ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
     ForEach ($Prop in $ACE.PSObject.Properties.GetEnumerator().Name) {
         $OutputProperties[$Prop] = $ACE.$Prop
     }
 
-    #ForEach ($Prop in ($Principal | Get-Member -View All -MemberType Property, NoteProperty).Name) {
     ForEach ($Prop in $Principal.PSObject.Properties.GetEnumerator().Name) {
         $OutputProperties[$Prop] = $Principal.$Prop
     }

@@ -1289,8 +1289,6 @@ function Get-ColumnJson {
 
     if (-not $PSBoundParameters.ContainsKey('PropNames')) {
 
-        #$PropNames = (@($InputObject)[0] | Get-Member -MemberType noteproperty).Name
-
         if ($InputObject -is [System.Collections.IEnumerable]) {
             $FirstInputObject = $InputObject[0]
         } else {
@@ -2118,12 +2116,10 @@ function Merge-AceAndPrincipal {
         AccountName = $Principal.ResolvedAccountName
     }
 
-    #ForEach ($Prop in ($ACE | Get-Member -View All -MemberType Property, NoteProperty).Name) {
     ForEach ($Prop in $ACE.PSObject.Properties.GetEnumerator().Name) {
         $OutputProperties[$Prop] = $ACE.$Prop
     }
 
-    #ForEach ($Prop in ($Principal | Get-Member -View All -MemberType Property, NoteProperty).Name) {
     ForEach ($Prop in $Principal.PSObject.Properties.GetEnumerator().Name) {
         $OutputProperties[$Prop] = $Principal.$Prop
     }
@@ -2336,7 +2332,6 @@ function Resolve-Ace {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        #[string[]]$ACEPropertyName = (Get-Member -InputObject $ACE -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
         [string[]]$ACEPropertyName = $ACE.PSObject.Properties.GetEnumerator().Name,
 
         # Will be set as the Source property of the output object.
@@ -2542,7 +2537,6 @@ function Resolve-Acl {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        #[string[]]$ACEPropertyName = (Get-Member -InputObject $ItemPath -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name,
         [string[]]$ACEPropertyName = $ItemPath.PSObject.Properties.GetEnumerator().Name,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
@@ -5628,7 +5622,6 @@ function Resolve-AccessControlList {
         WhoAmI       = $WhoAmI
     }
 
-    #$ACEPropertyName = (Get-Member -InputObject $ACLsByPath.Values.Access[0] -MemberType Property, CodeProperty, ScriptProperty, NoteProperty).Name
     $ACEPropertyName = $ACLsByPath.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
@@ -6010,6 +6003,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
