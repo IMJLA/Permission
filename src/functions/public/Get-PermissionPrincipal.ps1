@@ -131,6 +131,8 @@ function Get-PermissionPrincipal {
 
             }
 
+            if ($ThisID -eq 'JLA-LoftHTPC\pla') { pause }
+
             $i++
             Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
