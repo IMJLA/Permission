@@ -2344,26 +2344,32 @@ function Resolve-Ace {
 
     )
 
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
+    #$Log = @{
+    #    Buffer       = $LogBuffer
+    #    ThisHostname = $ThisHostname
+    #    Type         = $DebugOutputStream
+    #    WhoAmI       = $WhoAmI
+    #}
+
+    $LogThis = @{
+        LogBuffer         = $LogBuffer
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
     }
 
     $Cache1 = @{ DirectoryEntryCache = $DirectoryEntryCache ; DomainsByFqdn = $DomainsByFqdn }
     $Cache2 = @{ DomainsByNetBIOS = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ; CimCache = $CimCache }
     $GetAdsiServerParams = @{ ThisFqdn = $ThisFqdn ; WellKnownSIDBySID = $WellKnownSIDBySID ; WellKnownSIDByName = $WellKnownSIDByName }
-    $LogSplat = @{ ThisHostname = $ThisHostname ; LogBuffer = $LogBuffer ; WhoAmI = $WhoAmI }
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @Log
+    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @LogThis
 
     #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @GetAdsiServerParams @Cache1 @Cache2 @LogSplat
+    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @GetAdsiServerParams @Cache1 @Cache2 @LogThis
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogSplat
+    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogThis
 
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
@@ -2681,7 +2687,11 @@ function Resolve-IdentityReferenceDomainDNS {
         [Hashtable]$CimCache = @{},
 
         # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable)
+        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable),
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [String]$DebugOutputStream = 'Debug'
 
     )
 
@@ -2724,7 +2734,7 @@ function Resolve-IdentityReferenceDomainDNS {
             Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
             $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
 
-            if ($AppCapabilityResult['NTAccount'] -ne $AppCapabilityResult['SID']) {
+            if ($AppCapabilityResult.NTAccount -ne $AppCapabilityResult.SID) {
 
                 # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
@@ -6041,6 +6051,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

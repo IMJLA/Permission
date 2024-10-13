@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.789] - 2024-10-13 - bugfixes with buffer vs logbuffer param, and moving to psobjects instead of hashtables for easier/more consistent property referencing
 ## [0.0.788] - 2024-10-13 - improve level of detail in debug output
 ## [0.0.787] - 2024-10-12 - remove debug pause
 ## [0.0.786] - 2024-10-12 - add debug pause

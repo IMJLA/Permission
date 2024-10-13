@@ -38,7 +38,11 @@ function Resolve-IdentityReferenceDomainDNS {
         [Hashtable]$CimCache = @{},
 
         # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable)
+        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable),
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [String]$DebugOutputStream = 'Debug'
 
     )
 
@@ -81,7 +85,7 @@ function Resolve-IdentityReferenceDomainDNS {
             Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
             $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
 
-            if ($AppCapabilityResult['NTAccount'] -ne $AppCapabilityResult['SID']) {
+            if ($AppCapabilityResult.NTAccount -ne $AppCapabilityResult.SID) {
 
                 # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
