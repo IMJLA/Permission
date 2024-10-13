@@ -97,7 +97,7 @@ function Initialize-Cache {
     $WellKnownSIDByName = @{}
     ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
         $Known = $WellKnownSIDBySID[$KnownSID]
-        $WellKnownSIDByName[$Known['Name']] = $Known
+        $WellKnownSIDByName[$Known.Name] = $Known
     }
 
     $GetAdsiServer = @{
