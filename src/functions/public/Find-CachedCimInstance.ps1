@@ -1,10 +1,11 @@
 function Find-CachedCimInstance {
+
     param (
         [string]$ComputerName,
         [string]$Key,
         [hashtable]$CimCache,
         [hashtable]$Log,
-        [string[]]$CacheToSearch = ($CimServer.Keys | Sort-Object -Descending)
+        [string[]]$CacheToSearch = ($CimCache[$ComputerName].Keys | Sort-Object -Descending)
     )
 
     $CimServer = $CimCache[$ComputerName]
@@ -24,17 +25,17 @@ function Find-CachedCimInstance {
                     return $CachedCimInstance
 
                 } else {
-                    Write-LogMsg @Log -Text " # CIM Instance cache miss for '$Key' in the '$Cache' cache on '$ComputerName'"
+                    Write-LogMsg @Log -Text " # CIM Instance cache miss in the '$Cache' cache on '$ComputerName' for '$Key'"
                 }
 
             } else {
-                Write-LogMsg @Log -Text " # CIM Class/Query cache miss for '$Cache' on '$ComputerName'"
+                Write-LogMsg @Log -Text " # CIM Class/Query cache miss for '$Cache' on '$ComputerName' # for '$Key'"
             }
 
         }
 
     } else {
-        Write-LogMsg @Log -Text " # CIM Server cache miss for '$ComputerName'"
+        Write-LogMsg @Log -Text " # CIM Server cache miss for '$ComputerName' # for '$Key'"
     }
 
 }
