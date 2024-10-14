@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.792] - 2024-10-14 - reduce log verbosity
 ## [0.0.791] - 2024-10-13 - bugfix around get-knownsid
 ## [0.0.790] - 2024-10-13 - bugfix now using objects instead of dicts
 ## [0.0.789] - 2024-10-13 - bugfixes with buffer vs logbuffer param, and moving to psobjects instead of hashtables for easier/more consistent property referencing

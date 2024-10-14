@@ -2726,17 +2726,17 @@ function Resolve-IdentityReferenceDomainDNS {
             if ($DomainCacheResult) {
 
                 # IdentityReference belongs to a known domain.
-                Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # cache hit"
+                #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache hit"
                 return $DomainCacheResult.Dns
 
             }
 
-            Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # cache miss"
+            #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache miss"
             $KnownSid = Get-KnownSid -SID $IdentityReference
 
             if ($KnownSid) {
 
-                Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # Known SID pattern match"
+                #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Known SID pattern match"
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
                 return $DomainDNS
 
@@ -2744,7 +2744,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
             # IdentityReference belongs to an unknown domain.
             $Log['Type'] = 'Warning'
-            Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # Unknown domain (possibly offline). Unable to resolve domain FQDN"
+            Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Unknown domain (possibly offline). Unable to resolve domain FQDN"
             return $DomainSid
 
         }
@@ -6051,6 +6051,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
