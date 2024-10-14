@@ -2726,17 +2726,17 @@ function Resolve-IdentityReferenceDomainDNS {
             if ($DomainCacheResult) {
 
                 # IdentityReference belongs to a known domain.
-                # Write-LogMsg @Log -Text " # Domain SID cache hit for '$DomainSid' for IdentityReference '$IdentityReference'"
+                Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # cache hit"
                 return $DomainCacheResult.Dns
 
             }
 
-            Write-LogMsg @Log -Text " # Domain SID cache miss for '$DomainSid' for IdentityReference '$IdentityReference'"
-            $AppCapabilityResult = Get-KnownSid -SID $IdentityReference
+            Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # cache miss"
+            $KnownSid = Get-KnownSid -SID $IdentityReference
 
-            if ($AppCapabilityResult.NTAccount -ne $AppCapabilityResult.SID) {
+            if ($KnownSid) {
 
-                # Write-LogMsg @Log -Text " # App Capability SID regular expression match for IdentityReference '$IdentityReference'"
+                Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # Known SID pattern match"
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
                 return $DomainDNS
 
@@ -2744,14 +2744,14 @@ function Resolve-IdentityReferenceDomainDNS {
 
             # IdentityReference belongs to an unknown domain.
             $Log['Type'] = 'Warning'
-            Write-LogMsg @Log -Text " # Unknown domain (possibly offline). Unable to resolve domain FQDN for IdentityReference '$IdentityReference'"
+            Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # DomainSID '$DomainSid' # Unknown domain (possibly offline). Unable to resolve domain FQDN"
             return $DomainSid
 
         }
 
         # IdentityReference is not a properly-formatted SID.
         $Log['Type'] = 'Error'
-        Write-LogMsg @Log -Text " # Bug before Resolve-IdentityReferenceDomainDNS. Unable to resolve a DNS FQDN due to malformed SID for IdentityReference '$IdentityReference'"
+        Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Bug before Resolve-IdentityReferenceDomainDNS. Unable to resolve a DNS FQDN due to malformed SID"
         return $IdentityReference
 
     }
@@ -2799,7 +2799,7 @@ function Resolve-IdentityReferenceDomainDNS {
     }
 
     $Log['Type'] = 'Error'
-    Write-LogMsg @Log -Text " # Unexpectedly unable to resolve a DNS FQDN due to malformed NTAccount caption for IdentityReference '$IdentityReference'"
+    Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Bug before Resolve-IdentityReferenceDomainDNS. Unexpectedly unable to resolve a DNS FQDN due to malformed NTAccount caption"
     return $IdentityReference
 
 }
@@ -6051,6 +6051,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
