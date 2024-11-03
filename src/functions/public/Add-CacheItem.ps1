@@ -18,9 +18,7 @@ function Add-CacheItem {
 
     )
 
-    <#
     # Older, less efficient method
-
     $CacheResult = $Cache[$Key]
 
     if ($CacheResult) {
@@ -32,7 +30,9 @@ function Add-CacheItem {
 
     $List.Add($Value)
     $Cache[$Key] = $List
-    #>
+
+    <#
+    # More efficient method requires switch to ConcurrentDictionary instead of SynchronizedHashtable
 
     $List = $null
 
@@ -43,5 +43,6 @@ function Add-CacheItem {
     }
 
     $List.Add($Value)
+    #>
 
 }

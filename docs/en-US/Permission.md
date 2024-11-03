@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.793
+Help Version: 0.0.798
 Locale: en-US
 ---
 
@@ -81,6 +81,10 @@ Invoke-PermissionAnalyzer [[-AclByPath] <hashtable>] [[-AllowDisabledInheritance
 ### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)
 
 Invoke-PermissionCommand [[-Command] <string>]
+
+### [New-PermissionCache](New-PermissionCache.md)
+
+New-PermissionCache [[-Key] <type>] [[-Value] <type>]
 
 ### [Out-Permission](Out-Permission.md)
 

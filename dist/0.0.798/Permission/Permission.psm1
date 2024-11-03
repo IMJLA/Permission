@@ -3297,9 +3297,7 @@ function Add-CacheItem {
 
     )
 
-    <#
     # Older, less efficient method
-
     $CacheResult = $Cache[$Key]
 
     if ($CacheResult) {
@@ -3311,7 +3309,9 @@ function Add-CacheItem {
 
     $List.Add($Value)
     $Cache[$Key] = $List
-    #>
+
+    <#
+    # More efficient method requires switch to ConcurrentDictionary instead of SynchronizedHashtable
 
     $List = $null
 
@@ -3322,6 +3322,7 @@ function Add-CacheItem {
     }
 
     $List.Add($Value)
+    #>
 
 }
 function ConvertTo-ItemBlock {
@@ -4938,6 +4939,23 @@ function Invoke-PermissionCommand {
     Invoke-Command -ScriptBlock $ScriptBlock
 
 }
+function New-PermissionCache {
+
+    param (
+
+        # Type of the keys
+        [type]$Key = [System.String],
+
+        # Type of the values
+        [type]$Value = [System.Collections.Generic.List[System.Object]]
+
+    )
+
+    $genericTypeDefinition = [System.Collections.Concurrent.ConcurrentDictionary`2]
+    $genericType = $genericTypeDefinition.MakeGenericType($Key, $Value)
+    return [Activator]::CreateInstance($genericType)
+
+}
 function Out-Permission {
 
     param (
@@ -6064,7 +6082,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
