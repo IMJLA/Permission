@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.793] - 2024-11-02 - increase efficiency of add-cacheitem
 ## [0.0.792] - 2024-10-14 - reduce log verbosity
 ## [0.0.791] - 2024-10-13 - bugfix around get-knownsid
 ## [0.0.790] - 2024-10-13 - bugfix now using objects instead of dicts

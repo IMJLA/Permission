@@ -18,6 +18,9 @@ function Add-CacheItem {
 
     )
 
+    <#
+    # Older, less efficient method
+
     $CacheResult = $Cache[$Key]
 
     if ($CacheResult) {
@@ -29,5 +32,16 @@ function Add-CacheItem {
 
     $List.Add($Value)
     $Cache[$Key] = $List
+    #>
+
+    $List = $null
+
+    if ( -not $Cache.TryGetValue( $Key, [ref]$List ) ) {
+        $Command = "`$List = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
+        Invoke-Expression $Command
+        $Cache.Add($Key, $List)
+    }
+
+    $List.Add($Value)
 
 }
