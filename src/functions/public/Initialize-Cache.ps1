@@ -99,11 +99,11 @@ function Initialize-Cache {
         $Known = $WellKnownSIDBySID[$KnownSID]
         $WellKnownSIDByName[$Known.Name] = $Known
     }
-
+    Pause
     $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
-        DomainsByNetbios    = [ref]$DomainsByNetbios
+        DomainsByNetbios    = $DomainsByNetbios
         DomainsBySid        = $DomainsBySid
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn

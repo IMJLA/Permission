@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.801] - 2024-11-03 - add debug pause
 ## [0.0.800] - 2024-11-03 - troubleshoot bug
 ## [0.0.799] - 2024-11-03 - implement add-permissioncacheitem and change directoryentrycache to a reference var
 ## [0.0.798] - 2024-11-02 - implement new-permissioncache
