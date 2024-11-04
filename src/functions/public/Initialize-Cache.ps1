@@ -103,7 +103,7 @@ function Initialize-Cache {
     $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
-        DomainsByNetbios    = [ref]$DomainsByNetbios
+        DomainsByNetbios    = $DomainsByNetbios
         DomainsBySid        = $DomainsBySid
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
