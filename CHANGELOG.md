@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.799] - 2024-11-03 - implement add-permissioncacheitem and change directoryentrycache to a reference var
 ## [0.0.798] - 2024-11-02 - implement new-permissioncache
 ## [0.0.793] - 2024-11-02 - increase efficiency of add-cacheitem
 ## [0.0.792] - 2024-10-14 - reduce log verbosity

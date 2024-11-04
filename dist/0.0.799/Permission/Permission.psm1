@@ -2292,9 +2292,9 @@ function Resolve-Ace {
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
-        Defaults to an empty thread-safe hashtable
+        Defaults to a thread-safe dictionary with string keys and object values
         #>
-        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
+        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
@@ -2503,9 +2503,9 @@ function Resolve-Acl {
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
-        Defaults to an empty thread-safe hashtable
+        Defaults to a thread-safe dictionary with string keys and object values
         #>
-        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
+        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
@@ -3323,6 +3323,41 @@ function Add-CacheItem {
 
     $List.Add($Value)
     #>
+
+}
+function Add-PermissionCacheItem {
+
+    # Use a key to get a generic list from a hashtable
+    # If it does not exist, create an empty list
+    # Add the new item
+
+    param (
+
+        # Must be a Dictionary or ConcurrentDictionary
+        [Parameter(Mandatory)]
+        [ref]$Cache,
+
+        [Parameter(Mandatory)]
+        $Key,
+
+        $Value,
+
+        [type]$Type = [System.Object]
+
+    )
+
+    $List = $null
+
+    if ( -not $Cache.TryGetValue( $Key, [ref]$List ) ) {
+
+        $genericTypeDefinition = [System.Collections.Generic.List`1]
+        $genericType = $genericTypeDefinition.MakeGenericType($Type)
+        $List = [Activator]::CreateInstance($genericType)
+        $Cache.Add($Key, $List)
+
+    }
+
+    $List.Add($Value)
 
 }
 function ConvertTo-ItemBlock {
@@ -4485,9 +4520,9 @@ function Get-PermissionPrincipal {
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
-        Defaults to an empty thread-safe hashtable
+        Defaults to a thread-safe dictionary with string keys and object values
         #>
-        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
+        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
@@ -4674,9 +4709,9 @@ function Initialize-Cache {
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
-        Defaults to an empty thread-safe hashtable
+        Defaults to a thread-safe dictionary with string keys and object values
         #>
-        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
+        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
         [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
@@ -5639,9 +5674,9 @@ function Resolve-AccessControlList {
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
-        Defaults to an empty thread-safe hashtable
+        Defaults to a thread-safe dictionary with string keys and object values
         #>
-        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
+        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
         [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
@@ -6082,7 +6117,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

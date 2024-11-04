@@ -30,9 +30,9 @@ function Resolve-AccessControlList {
         <#
         Dictionary to cache directory entries to avoid redundant lookups
 
-        Defaults to an empty thread-safe hashtable
+        Defaults to a thread-safe dictionary with string keys and object values
         #>
-        [Hashtable]$DirectoryEntryCache = ([Hashtable]::Synchronized(@{})),
+        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
         [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),

@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-PrincipalByID] <Hashtable>]
- [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>]
+ [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>]
  [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
  [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
  [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
@@ -99,7 +99,7 @@ Accept wildcard characters: False
 {{ Fill DirectoryEntryCache Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 

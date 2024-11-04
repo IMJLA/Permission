@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Initialize-Cache [[-Fqdn] <String[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByNetbios] <Hashtable>]
+ [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>] [[-DomainsByNetbios] <Hashtable>]
  [[-DomainsBySid] <Hashtable>] [[-DomainsByFqdn] <Hashtable>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>]
  [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>] [[-ProgressParentId] <Int32>]
  [[-WellKnownSIDBySID] <Hashtable>]
@@ -69,7 +69,7 @@ Accept wildcard characters: False
 {{ Fill DirectoryEntryCache Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 

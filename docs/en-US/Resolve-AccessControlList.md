@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Resolve-AccessControlList [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-ACEsByGUID] <Hashtable>] [[-AceGUIDsByResolvedID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>]
- [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <Hashtable>] [[-DomainsByFqdn] <Hashtable>]
+ [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>] [[-DomainsByFqdn] <Hashtable>]
  [[-DomainsByNetbios] <Hashtable>] [[-DomainsBySid] <Hashtable>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>] [[-ProgressParentId] <Int32>]
  [[-InheritanceFlagResolved] <String[]>]
@@ -130,7 +130,7 @@ Accept wildcard characters: False
 {{ Fill DirectoryEntryCache Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
