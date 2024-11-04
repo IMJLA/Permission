@@ -9,10 +9,10 @@ function Resolve-IdentityReferenceDomainDNS {
         [object]$ItemPath,
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -66,7 +66,7 @@ function Resolve-IdentityReferenceDomainDNS {
     if ($IdentityReference.Substring(0, 4) -eq 'S-1-') {
 
         # IdentityReference should be a SID (Revision 1).
-        $IndexOfLastHyphen = $IdentityReference.LastIndexOf("-")
+        $IndexOfLastHyphen = $IdentityReference.LastIndexOf('-')
         $DomainSid = $IdentityReference.Substring(0, $IndexOfLastHyphen)
 
         if ($DomainSid) {

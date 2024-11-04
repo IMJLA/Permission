@@ -2297,13 +2297,13 @@ function Resolve-Ace {
         [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -2508,13 +2508,13 @@ function Resolve-Acl {
         [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -2658,10 +2658,10 @@ function Resolve-IdentityReferenceDomainDNS {
         [object]$ItemPath,
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -2715,7 +2715,7 @@ function Resolve-IdentityReferenceDomainDNS {
     if ($IdentityReference.Substring(0, 4) -eq 'S-1-') {
 
         # IdentityReference should be a SID (Revision 1).
-        $IndexOfLastHyphen = $IdentityReference.LastIndexOf("-")
+        $IndexOfLastHyphen = $IdentityReference.LastIndexOf('-')
         $DomainSid = $IdentityReference.Substring(0, $IndexOfLastHyphen)
 
         if ($DomainSid) {
@@ -4525,13 +4525,13 @@ function Get-PermissionPrincipal {
         [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         FQDN of the computer running this function.
@@ -4714,13 +4714,13 @@ function Initialize-Cache {
         [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -4779,7 +4779,7 @@ function Initialize-Cache {
     $GetAdsiServer = @{
         DirectoryEntryCache = $DirectoryEntryCache
         DomainsByFqdn       = $DomainsByFqdn
-        DomainsByNetbios    = $DomainsByNetbios
+        DomainsByNetbios    = [ref]$DomainsByNetbios
         DomainsBySid        = $DomainsBySid
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
@@ -5679,13 +5679,13 @@ function Resolve-AccessControlList {
         [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [Hashtable]$DomainsByFqdn = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsByNetbios = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [Hashtable]$DomainsBySid = ([Hashtable]::Synchronized(@{})),
+        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -6118,6 +6118,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

@@ -3411,9 +3411,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3423,9 +3423,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3435,9 +3435,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3533,9 +3533,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -3545,9 +3545,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -3557,9 +3557,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -3941,9 +3941,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3953,9 +3953,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -3965,9 +3965,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -4040,9 +4040,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4052,9 +4052,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4064,9 +4064,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -5549,9 +5549,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -5705,9 +5705,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -5717,9 +5717,9 @@
           <maml:description>
             <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
           <dev:type>
-            <maml:name>System.Collections.Hashtable</maml:name>
+            <maml:name>System.Management.Automation.PSReference</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -5816,9 +5816,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsByFqdn Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -5828,9 +5828,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsByNetbios Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -5840,9 +5840,9 @@
         <maml:description>
           <maml:para>{{ Fill DomainsBySid Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
-          <maml:name>System.Collections.Hashtable</maml:name>
+          <maml:name>System.Management.Automation.PSReference</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
