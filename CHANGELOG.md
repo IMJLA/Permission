@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.811] - 2024-11-05 - bugfix DomainsByNetbios is now a ref var
 ## [0.0.810] - 2024-11-05 - bugfix DomainsBySid is now a ref var
 ## [0.0.809] - 2024-11-05 - convert logbuffer to ref var
 ## [0.0.808] - 2024-11-05 - toggle splat name to see if it changes anything even though it should not

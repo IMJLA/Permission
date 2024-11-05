@@ -2660,10 +2660,14 @@ function Resolve-IdentityReferenceDomainDNS {
         [object]$ItemPath,
 
         # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
+        # [System.Collections.Concurrent.ConcurrentDictionary[string, object]]
+        [Parameter(Mandatory)]
+        [ref]$DomainsByNetbios,
 
         # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
+        # Should be a reference to a [System.Collections.Concurrent.ConcurrentDictionary[string, object]]
+        [Parameter(Mandatory)]
+        [ref]$DomainsBySid,
 
         <#
         Hostname of the computer running this function.
@@ -2784,9 +2788,9 @@ function Resolve-IdentityReferenceDomainDNS {
 
         }
 
-        $DomainCacheResult = $DomainsByNetbios[$DomainNetBIOS]
+        $DomainCacheResult = $null
 
-        if ($DomainCacheResult) {
+        if ($DomainsByNetbios.Value.TryGetValue( $DomainNetBIOS, [ref]$DomainCacheResult )) {
 
             # IdentityReference belongs to a known domain.
             return $DomainCacheResult.Dns
@@ -6144,6 +6148,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
