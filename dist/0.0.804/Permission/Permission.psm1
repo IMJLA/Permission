@@ -2534,7 +2534,8 @@ function Resolve-Acl {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
@@ -3203,7 +3204,8 @@ function Add-CachedCimInstance {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Properties by which to key the cache
         [string[]]$CacheByProperty
@@ -3554,7 +3556,8 @@ function Expand-PermissionTarget {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
@@ -4051,7 +4054,8 @@ function Get-AccessControlList {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
@@ -4318,7 +4322,8 @@ function Get-CachedCimInstance {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         [Parameter(Mandatory)]
         [String]$KeyProperty,
@@ -4442,7 +4447,8 @@ function Get-CachedCimSession {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{}))
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer
     )
 
     $Log = @{
@@ -4551,7 +4557,8 @@ function Get-PermissionPrincipal {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         <#
         Do not get group members (only report the groups themselves)
@@ -4740,7 +4747,8 @@ function Initialize-Cache {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
@@ -5705,7 +5713,8 @@ function Resolve-AccessControlList {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
@@ -5834,7 +5843,8 @@ function Resolve-Folder {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{}))
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer
     )
 
     $Log = @{
@@ -5953,7 +5963,8 @@ function Resolve-PermissionTarget {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
 
@@ -6118,6 +6129,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

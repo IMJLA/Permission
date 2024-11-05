@@ -52,7 +52,8 @@ function Get-PermissionPrincipal {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         <#
         Do not get group members (only report the groups themselves)

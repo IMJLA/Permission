@@ -24,7 +24,8 @@ function Get-AccessControlList {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),

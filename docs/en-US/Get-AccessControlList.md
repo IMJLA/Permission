@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
- [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
+ [[-ThisHostname] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference>
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
  [[-ProgressParentId] <Int32>] [[-Output] <Hashtable>] [[-WarningCache] <Hashtable>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
@@ -53,11 +53,11 @@ Accept wildcard characters: False
 {{ Fill LogBuffer Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 5
 Default value: None
 Accept pipeline input: False

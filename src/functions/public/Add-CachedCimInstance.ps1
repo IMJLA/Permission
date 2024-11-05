@@ -33,7 +33,8 @@ function Add-CachedCimInstance {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Properties by which to key the cache
         [string[]]$CacheByProperty

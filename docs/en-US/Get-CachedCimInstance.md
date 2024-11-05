@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Get-CachedCimInstance [[-ComputerName] <String>] [[-ClassName] <String>] [[-Namespace] <String>]
  [[-Query] <String>] [[-CimCache] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThisHostName] <String>]
- [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>] [-KeyProperty] <String>
+ [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference> [-KeyProperty] <String>
  [[-CacheByProperty] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -128,11 +128,11 @@ Accept wildcard characters: False
 {{ Fill LogBuffer Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 9
 Default value: None
 Accept pipeline input: False

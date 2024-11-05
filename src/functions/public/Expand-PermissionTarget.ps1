@@ -28,7 +28,8 @@ function Expand-PermissionTarget {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = ([Hashtable]::Synchronized(@{})),
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
