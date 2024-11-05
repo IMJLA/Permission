@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.805] - 2024-11-04 - bugfix resolve-permissiontarget
 ## [0.0.804] - 2024-11-04 - convert logbuffer to a reference var
 ## [0.0.803] - 2024-11-03 - troubleshoot bug
 ## [0.0.802] - 2024-11-03 - troubleshoot bug
