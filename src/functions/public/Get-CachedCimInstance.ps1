@@ -80,7 +80,16 @@ function Get-CachedCimInstance {
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
     }
 
-    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -CimCache $CimCache -ThisFqdn $ThisFqdn @Log
+    $GetCimSessionParams = @{
+        LogBuffer         = $LogBuffer
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+        CimCache          = $CimCache
+        ThisFqdn          = $ThisFqdn
+    }
+
+    $CimSession = Get-CachedCimSession -ComputerName $ComputerName @GetCimSessionParams
 
     if ($CimSession) {
 
