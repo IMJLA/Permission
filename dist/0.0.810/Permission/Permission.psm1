@@ -2724,9 +2724,9 @@ function Resolve-IdentityReferenceDomainDNS {
         if ($DomainSid) {
 
             # IdentityReference appears to be a properly-formatted SID. Its domain SID was able to be parsed.
-            $DomainCacheResult = $DomainsBySID[$DomainSid]
+            $DomainCacheResult = $null
 
-            if ($DomainCacheResult) {
+            if ($DomainsBySID.Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
 
                 # IdentityReference belongs to a known domain.
                 #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache hit"
@@ -6144,6 +6144,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

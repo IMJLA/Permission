@@ -73,9 +73,9 @@ function Resolve-IdentityReferenceDomainDNS {
         if ($DomainSid) {
 
             # IdentityReference appears to be a properly-formatted SID. Its domain SID was able to be parsed.
-            $DomainCacheResult = $DomainsBySID[$DomainSid]
+            $DomainCacheResult = $null
 
-            if ($DomainCacheResult) {
+            if ($DomainsBySID.Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
 
                 # IdentityReference belongs to a known domain.
                 #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache hit"
