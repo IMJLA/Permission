@@ -2323,7 +2323,8 @@ function Resolve-Ace {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = @{},
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = @{},
@@ -2682,7 +2683,8 @@ function Resolve-IdentityReferenceDomainDNS {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = @{},
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = @{},
@@ -3423,7 +3425,8 @@ function Expand-Permission {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = @{},
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -3443,7 +3446,7 @@ function Expand-Permission {
     } else {
         $Progress['Id'] = 0
     }
-    Write-Progress @Progress -Status "0% : Group permission references, then expand them into objects" -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
+    Write-Progress @Progress -Status '0% : Group permission references, then expand them into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
 
     $Log = @{
         Buffer       = $LogBuffer
@@ -6141,6 +6144,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

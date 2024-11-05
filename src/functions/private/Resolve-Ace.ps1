@@ -139,7 +139,8 @@ function Resolve-Ace {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = @{},
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = @{},

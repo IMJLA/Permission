@@ -24,7 +24,8 @@ function Expand-Permission {
         [String]$WhoAmI = (whoami.EXE),
 
         # Log messages which have not yet been written to disk
-        [Hashtable]$LogBuffer = @{},
+        [Parameter(Mandatory)]
+        [ref]$LogBuffer,
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -44,7 +45,7 @@ function Expand-Permission {
     } else {
         $Progress['Id'] = 0
     }
-    Write-Progress @Progress -Status "0% : Group permission references, then expand them into objects" -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
+    Write-Progress @Progress -Status '0% : Group permission references, then expand them into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
 
     $Log = @{
         Buffer       = $LogBuffer
