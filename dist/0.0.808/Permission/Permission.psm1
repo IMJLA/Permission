@@ -4071,7 +4071,7 @@ function Get-AccessControlList {
 
     )
 
-    $LogParams = @{
+    $Log = @{
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         Buffer       = $LogBuffer
@@ -4120,7 +4120,7 @@ function Get-AccessControlList {
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
             Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
-            Write-Progress @GrandChildProgress -Status "0% (parent) Get-DirectorySecurity -IncludeInherited" -CurrentOperation $Parent -PercentComplete 0
+            Write-Progress @GrandChildProgress -Status '0% (parent) Get-DirectorySecurity -IncludeInherited' -CurrentOperation $Parent -PercentComplete 0
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
             $Children = $TargetPath[$Parent]
             $ChildCount = $Children.Count
@@ -4184,8 +4184,8 @@ function Get-AccessControlList {
 
     if ($WarningCache.Keys.Count -ge 1) {
 
-        $LogParams['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
-        Write-LogMsg @LogParams -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists.  See verbose log for details."
+        $Log['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        Write-LogMsg @Log -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists.  See verbose log for details."
 
     }
 
@@ -4211,7 +4211,7 @@ function Get-AccessControlList {
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
             Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Find non-inherited ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
-            Write-Progress @GrandChildProgress -Status "0% (parent) Get-OwnerAce" -CurrentOperation $Parent -PercentComplete $PercentComplete
+            Write-Progress @GrandChildProgress -Status '0% (parent) Get-OwnerAce' -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
             $Children = $TargetPath[$Parent]
             $ChildCount = $Children.Count
@@ -4275,8 +4275,8 @@ function Get-AccessControlList {
 
     if ($Output.Keys.Count -eq 0) {
 
-        $LogParams['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
-        Write-LogMsg @LogParams -Text " # 0 access control lists could be retrieved.  Exiting script."
+        $Log['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        Write-LogMsg @Log -Text ' # 0 access control lists could be retrieved.  Exiting script.'
 
     }
 
@@ -6141,6 +6141,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
