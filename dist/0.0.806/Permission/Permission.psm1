@@ -5980,23 +5980,19 @@ function Resolve-PermissionTarget {
         WhoAmI       = $WhoAmI
     }
 
-    $LogThis = @{
+    $ResolveFolderSplat = @{
+        CimCache          = $CimCache
+        ThisFqdn          = $ThisFqdn
         LogBuffer         = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
     }
 
-    $ResolveFolderSplat = @{
-        DebugOutputStream = $DebugOutputStream
-        CimCache          = $CimCache
-        ThisFqdn          = $ThisFqdn
-    }
-
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @LogThis @ResolveFolderSplat
+        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
 
@@ -6136,6 +6132,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

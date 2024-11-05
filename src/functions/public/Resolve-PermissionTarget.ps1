@@ -47,23 +47,19 @@ function Resolve-PermissionTarget {
         WhoAmI       = $WhoAmI
     }
 
-    $LogThis = @{
+    $ResolveFolderSplat = @{
+        CimCache          = $CimCache
+        ThisFqdn          = $ThisFqdn
         LogBuffer         = $LogBuffer
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
     }
 
-    $ResolveFolderSplat = @{
-        DebugOutputStream = $DebugOutputStream
-        CimCache          = $CimCache
-        ThisFqdn          = $ThisFqdn
-    }
-
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @LogThis @ResolveFolderSplat
+        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
 
