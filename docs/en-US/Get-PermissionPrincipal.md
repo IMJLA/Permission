@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-PrincipalByID] <Hashtable>]
- [[-ACEsByResolvedID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>]
+ [[-AceGuidByID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>]
  [[-DomainsByNetbios] <PSReference>] [[-DomainsBySid] <PSReference>] [[-DomainsByFqdn] <PSReference>]
  [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference>
  [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
@@ -35,8 +35,8 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ACEsByResolvedID
-{{ Fill ACEsByResolvedID Description }}
+### -AceGuidByID
+{{ Fill AceGuidByID Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

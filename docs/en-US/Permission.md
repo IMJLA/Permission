@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.811
+Help Version: 0.0.812
 Locale: en-US
 ---
 
@@ -68,7 +68,7 @@ Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-Deb
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
-Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-PrincipalByID] <hashtable>] [[-ACEsByResolvedID] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-DomainsByFqdn] <ref>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-CurrentDomain] <string>] [-NoGroupMembers] [<CommonParameters>]
+Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-PrincipalByID] <hashtable>] [[-AceGuidByID] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-DomainsByFqdn] <ref>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-CurrentDomain] <string>] [-NoGroupMembers] [<CommonParameters>]
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 

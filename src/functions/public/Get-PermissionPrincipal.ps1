@@ -13,7 +13,7 @@ function Get-PermissionPrincipal {
         [Hashtable]$PrincipalByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entries keyed by their resolved identities. STARTING STATE
-        [Hashtable]$ACEsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of CIM sessions and instances to reduce connections and queries
         [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
@@ -83,7 +83,7 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    [string[]]$IDs = $ACEsByResolvedID.Keys
+    [string[]]$IDs = $AceGuidByID.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
 
@@ -106,7 +106,7 @@ function Get-PermissionPrincipal {
         CimCache            = $CimCache
         DebugOutputStream   = $DebugOutputStream
         PrincipalByID       = $PrincipalByID # end state
-        ACEsByResolvedID    = $ACEsByResolvedID # start state
+        AceGuidByID         = $AceGuidByID # start state
         CurrentDomain       = $CurrentDomain
     }
 
