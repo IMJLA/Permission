@@ -19,7 +19,7 @@ function Resolve-AccessControlList {
         [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
         [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
@@ -108,7 +108,7 @@ function Resolve-AccessControlList {
         CimCache                = $CimCache
         ACEsByGuid              = $ACEsByGUID
         AceGUIDsByPath          = $AceGUIDsByPath
-        AceGUIDsByResolvedID    = $AceGUIDsByResolvedID
+        AceGuidByID             = $AceGuidByID
         ACLsByPath              = $ACLsByPath
         ACEPropertyName         = $ACEPropertyName
         InheritanceFlagResolved = $InheritanceFlagResolved

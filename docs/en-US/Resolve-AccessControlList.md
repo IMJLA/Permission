@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Resolve-AccessControlList [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-ACEsByGUID] <Hashtable>] [[-AceGUIDsByResolvedID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>]
+ [[-ACEsByGUID] <Hashtable>] [[-AceGuidByID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>]
  [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>] [[-DomainsByFqdn] <PSReference>]
  [[-DomainsByNetbios] <PSReference>] [[-DomainsBySid] <PSReference>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference> [[-ProgressParentId] <Int32>]
@@ -35,6 +35,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -AceGuidByID
+{{ Fill AceGuidByID Description }}
+
+```yaml
+Type: System.Collections.Hashtable
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -AceGUIDsByPath
 {{ Fill AceGUIDsByPath Description }}
 
@@ -45,21 +60,6 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AceGUIDsByResolvedID
-{{ Fill AceGUIDsByResolvedID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

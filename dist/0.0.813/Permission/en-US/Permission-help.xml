@@ -5773,9 +5773,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-          <maml:name>AceGUIDsByResolvedID</maml:name>
+          <maml:name>AceGuidByID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill AceGUIDsByResolvedID Description }}</maml:para>
+            <maml:para>{{ Fill AceGuidByID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -5859,10 +5859,10 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
-        <maml:name>AceGUIDsByPath</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
+        <maml:name>AceGuidByID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AceGUIDsByPath Description }}</maml:para>
+          <maml:para>{{ Fill AceGuidByID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -5871,10 +5871,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="4" aliases="none">
-        <maml:name>AceGUIDsByResolvedID</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="5" aliases="none">
+        <maml:name>AceGUIDsByPath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AceGUIDsByResolvedID Description }}</maml:para>
+          <maml:para>{{ Fill AceGUIDsByPath Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>

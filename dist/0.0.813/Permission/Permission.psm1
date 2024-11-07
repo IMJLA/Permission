@@ -5687,7 +5687,7 @@ function Resolve-AccessControlList {
         [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
         [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
@@ -5776,7 +5776,7 @@ function Resolve-AccessControlList {
         CimCache                = $CimCache
         ACEsByGuid              = $ACEsByGUID
         AceGUIDsByPath          = $AceGUIDsByPath
-        AceGUIDsByResolvedID    = $AceGUIDsByResolvedID
+        AceGuidByID             = $AceGuidByID
         ACLsByPath              = $ACLsByPath
         ACEPropertyName         = $ACEPropertyName
         InheritanceFlagResolved = $InheritanceFlagResolved
@@ -6148,6 +6148,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

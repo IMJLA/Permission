@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.812
+Help Version: 0.0.813
 Locale: en-US
 ---
 
@@ -104,7 +104,7 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 
 ### [Resolve-AccessControlList](Resolve-AccessControlList.md)
 
-Resolve-AccessControlList [[-ACLsByPath] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEsByGUID] <hashtable>] [[-AceGUIDsByResolvedID] <hashtable>] [[-AceGUIDsByPath] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByFqdn] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>] [<CommonParameters>]
+Resolve-AccessControlList [[-ACLsByPath] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEsByGUID] <hashtable>] [[-AceGuidByID] <hashtable>] [[-AceGUIDsByPath] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByFqdn] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>] [<CommonParameters>]
 
 ### [Resolve-Folder](Resolve-Folder.md)
 
