@@ -18,6 +18,8 @@ function Add-CacheItem {
 
     )
 
+    if ($key.Count -gt 1) { Pause }
+
     # Older, less efficient method
     $CacheResult = $Cache[$Key]
 

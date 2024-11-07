@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.815] - 2024-11-06 - add debug pause
 ## [0.0.814] - 2024-11-06 - rename ACEsByResolvedID
 ## [0.0.813] - 2024-11-06 - rename ACEsByResolvedID
 ## [0.0.812] - 2024-11-06 - rename ACEsByResolvedID
