@@ -99,7 +99,7 @@ function Resolve-Acl {
         [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
         [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
@@ -164,7 +164,7 @@ function Resolve-Acl {
     #}
 
     $ResolveAceSplat = @{
-        ACEsByGUID = $ACEsByGUID ; AceGUIDsByResolvedID = $AceGUIDsByResolvedID ; AceGUIDsByPath = $AceGUIDsByPath ;
+        ACEsByGUID = $ACEsByGUID ; AceGuidByID = $AceGuidByID ; AceGUIDsByPath = $AceGUIDsByPath ;
         DirectoryEntryCache = $DirectoryEntryCache ; DomainsByNetbios = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ;
         DomainsByFqdn = $DomainsByFqdn ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ;
         WhoAmI = $WhoAmI ; LogBuffer = $LogBuffer ; CimCache = $CimCache ; ItemPath = $ItemPath ;

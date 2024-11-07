@@ -100,7 +100,7 @@ function Resolve-Ace {
         [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
         [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
@@ -207,7 +207,7 @@ function Resolve-Ace {
     $Guid = [guid]::NewGuid()
     Add-CacheItem -Cache $ACEsByGUID -Key $Guid -Value $OutputObject -Type ([object])
     $Type = [guid]
-    Add-CacheItem -Cache $AceGUIDsByResolvedID -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
+    Add-CacheItem -Cache $AceGuidByID -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
     Add-CacheItem -Cache $AceGUIDsByPath -Key $OutputObject.Path -Value $Guid -Type $Type
 
 }

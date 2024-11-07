@@ -2284,7 +2284,7 @@ function Resolve-Ace {
         [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
         [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
@@ -2391,7 +2391,7 @@ function Resolve-Ace {
     $Guid = [guid]::NewGuid()
     Add-CacheItem -Cache $ACEsByGUID -Key $Guid -Value $OutputObject -Type ([object])
     $Type = [guid]
-    Add-CacheItem -Cache $AceGUIDsByResolvedID -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
+    Add-CacheItem -Cache $AceGuidByID -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
     Add-CacheItem -Cache $AceGUIDsByPath -Key $OutputObject.Path -Value $Guid -Type $Type
 
 }
@@ -2496,7 +2496,7 @@ function Resolve-Acl {
         [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGUIDsByResolvedID = ([Hashtable]::Synchronized(@{})),
+        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
 
         # Cache of access control entry GUIDs keyed by their paths
         [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
@@ -2561,7 +2561,7 @@ function Resolve-Acl {
     #}
 
     $ResolveAceSplat = @{
-        ACEsByGUID = $ACEsByGUID ; AceGUIDsByResolvedID = $AceGUIDsByResolvedID ; AceGUIDsByPath = $AceGUIDsByPath ;
+        ACEsByGUID = $ACEsByGUID ; AceGuidByID = $AceGuidByID ; AceGUIDsByPath = $AceGUIDsByPath ;
         DirectoryEntryCache = $DirectoryEntryCache ; DomainsByNetbios = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ;
         DomainsByFqdn = $DomainsByFqdn ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ;
         WhoAmI = $WhoAmI ; LogBuffer = $LogBuffer ; CimCache = $CimCache ; ItemPath = $ItemPath ;
@@ -6148,6 +6148,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
