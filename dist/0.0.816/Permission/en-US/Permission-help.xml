@@ -874,9 +874,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>AceGUIDsByResolvedID</maml:name>
+          <maml:name>AceGuidByID</maml:name>
           <maml:description>
-            <maml:para>{{ Fill AceGUIDsByResolvedID Description }}</maml:para>
+            <maml:para>{{ Fill AceGuidByID Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
           <dev:type>
@@ -972,10 +972,10 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>AceGuidByPath</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>AceGuidByID</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AceGuidByPath Description }}</maml:para>
+          <maml:para>{{ Fill AceGuidByID Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
@@ -984,10 +984,10 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>AceGUIDsByResolvedID</maml:name>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <maml:name>AceGuidByPath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill AceGUIDsByResolvedID Description }}</maml:para>
+          <maml:para>{{ Fill AceGuidByPath Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>

@@ -6,7 +6,7 @@ function Expand-Permission {
         $SplitBy,
         $GroupBy,
         $AceGuidByPath,
-        $AceGUIDsByResolvedID,
+        $AceGuidByID,
         $ACEsByGUID,
         $PrincipalsByResolvedID,
         $ACLsByPath,
@@ -70,8 +70,8 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the name of their associated account.
-        Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID'
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGUIDsByResolvedID -AceByGuid $ACEsByGUID
+        Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID'
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams'
@@ -108,8 +108,8 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by their associated TargetPath.
-        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams'
-        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGUIDsByResolvedID $AceGUIDsByResolvedID @CommonParams
+        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams'
+        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg @Log -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'

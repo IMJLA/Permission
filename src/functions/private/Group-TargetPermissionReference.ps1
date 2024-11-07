@@ -7,7 +7,7 @@ function Group-TargetPermissionReference {
         [Hashtable]$TargetPath,
         [Hashtable]$Children,
         $PrincipalsByResolvedID,
-        $AceGUIDsByResolvedID,
+        $AceGuidByID,
         $ACEsByGUID,
         $AceGUIDsByPath,
         $ACLsByPath,
@@ -70,7 +70,7 @@ function Group-TargetPermissionReference {
 
                         $GuidsForThisIDAndNetworkPath = [System.Collections.Generic.List[guid]]::new()
 
-                        ForEach ($Guid in $AceGUIDsByResolvedID[$ID]) {
+                        ForEach ($Guid in $AceGuidByID[$ID]) {
 
                             $AceContainsThisID = $AceGuidsForThisNetworkPath[$Guid]
 

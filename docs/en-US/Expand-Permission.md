@@ -14,7 +14,7 @@ schema: 2.0.0
 
 ```
 Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] <Object>]
- [[-AceGUIDsByResolvedID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
+ [[-AceGuidByID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
  [[-ACLsByPath] <Object>] [[-TargetPath] <Hashtable>] [[-Children] <Hashtable>] [[-ThisHostName] <String>]
  [[-WhoAmI] <String>] [-LogBuffer] <PSReference> [[-DebugOutputStream] <String>] [[-ProgressParentId] <Int32>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
@@ -34,6 +34,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -AceGuidByID
+{{ Fill AceGuidByID Description }}
+
+```yaml
+Type: System.Object
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -AceGuidByPath
 {{ Fill AceGuidByPath Description }}
 
@@ -44,21 +59,6 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AceGUIDsByResolvedID
-{{ Fill AceGUIDsByResolvedID Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
