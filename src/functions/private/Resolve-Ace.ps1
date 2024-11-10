@@ -139,7 +139,7 @@ function Resolve-Ace {
     )
 
     $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
-    $Splat = @{ ThisHostname = $ThisHostname ; Cache = $Cache ; WhoAmI = $WhoAmI ; DebugOutputStream = $DebugOutputStream ; $ThisFqdn = $ThisFqdn }
+    $Splat = @{ ThisHostname = $ThisHostname ; Cache = $Cache ; WhoAmI = $WhoAmI ; DebugOutputStream = $DebugOutputStream ; ThisFqdn = $ThisFqdn }
     $GetAdsiServerParams = @{ WellKnownSIDBySID = $WellKnownSIDBySID ; WellKnownSIDByName = $WellKnownSIDByName }
 
     Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath'" -Expand $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
