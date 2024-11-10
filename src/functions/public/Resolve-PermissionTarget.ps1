@@ -47,10 +47,12 @@ function Resolve-PermissionTarget {
         WhoAmI            = $WhoAmI
     }
 
+    $Parents = $Cache['Parents']
+
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'" -Expand $ResolveFolderSplat
-        $Cache['Parents'][$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
+        $Parents[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
 
