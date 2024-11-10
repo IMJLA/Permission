@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.849] - 2024-11-10 - update unified in-process cache
 ## [0.0.848] - 2024-11-10 - update unified in-process cache
 ## [0.0.847] - 2024-11-10 - update unified cache
 ## [0.0.846] - 2024-11-09 - update initialize-cache to use the in-process cache

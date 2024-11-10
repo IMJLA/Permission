@@ -71,14 +71,7 @@ function Initialize-Cache {
     $Progress['Id'] = $ProgressId
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
+    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
     $WellKnownSIDByName = @{}
 
     ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
@@ -89,17 +82,13 @@ function Initialize-Cache {
     }
 
     $GetAdsiServer = @{
-        DirectoryEntryCache = $Cache.Value['DirectoryEntryByPath']
-        DomainsByFqdn       = $Cache.Value['DomainByFqdn']
-        DomainsByNetbios    = $Cache.Value['DomainByNetbios']
-        DomainsBySid        = $Cache.Value['DomainBySid']
-        LogBuffer           = $LogBuffer
-        CimCache            = $Cache.Value['CimCache']
-        ThisHostName        = $ThisHostName
-        ThisFqdn            = $ThisFqdn
-        WhoAmI              = $WhoAmI
-        WellKnownSIDBySID   = $WellKnownSIDBySID
-        WellKnownSIDByName  = $WellKnownSIDByName
+        Cache              = $Cache
+        DebugOutputStream  = $DebugOutputStream
+        ThisHostName       = $ThisHostName
+        ThisFqdn           = $ThisFqdn
+        WhoAmI             = $WhoAmI
+        WellKnownSIDBySID  = $WellKnownSIDBySID
+        WellKnownSIDByName = $WellKnownSIDByName
     }
 
     if ($ThreadCount -eq 1) {

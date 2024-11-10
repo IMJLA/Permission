@@ -4925,14 +4925,7 @@ function Initialize-Cache {
     $Progress['Id'] = $ProgressId
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
+    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
     $WellKnownSIDByName = @{}
 
     ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
@@ -4943,17 +4936,13 @@ function Initialize-Cache {
     }
 
     $GetAdsiServer = @{
-        DirectoryEntryCache = $Cache.Value['DirectoryEntryByPath']
-        DomainsByFqdn       = $Cache.Value['DomainByFqdn']
-        DomainsByNetbios    = $Cache.Value['DomainByNetbios']
-        DomainsBySid        = $Cache.Value['DomainBySid']
-        LogBuffer           = $LogBuffer
-        CimCache            = $Cache.Value['CimCache']
-        ThisHostName        = $ThisHostName
-        ThisFqdn            = $ThisFqdn
-        WhoAmI              = $WhoAmI
-        WellKnownSIDBySID   = $WellKnownSIDBySID
-        WellKnownSIDByName  = $WellKnownSIDByName
+        Cache              = $Cache
+        DebugOutputStream  = $DebugOutputStream
+        ThisHostName       = $ThisHostName
+        ThisFqdn           = $ThisFqdn
+        WhoAmI             = $WhoAmI
+        WellKnownSIDBySID  = $WellKnownSIDBySID
+        WellKnownSIDByName = $WellKnownSIDByName
     }
 
     if ($ThreadCount -eq 1) {
@@ -6188,6 +6177,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
