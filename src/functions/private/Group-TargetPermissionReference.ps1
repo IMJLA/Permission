@@ -4,7 +4,7 @@ function Group-TargetPermissionReference {
 
     param (
 
-        [Hashtable]$TargetPath,
+        [ref]$TargetPath,
         [Hashtable]$Children,
         [ref]$PrincipalsByResolvedID,
         [ref]$AceGuidByID,
@@ -28,13 +28,13 @@ function Group-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
 
                 $TargetProperties = @{
                     Path = $Target
                 }
 
-                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -100,13 +100,13 @@ function Group-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
 
                 $TargetProperties = @{
                     Path = $Target
                 }
 
-                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -128,13 +128,13 @@ function Group-TargetPermissionReference {
         # 'none' and 'target' behave the same
         default {
 
-            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
 
                 $TargetProperties = @{
                     Path = $Target
                 }
 
-                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 

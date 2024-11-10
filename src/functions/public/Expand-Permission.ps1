@@ -5,7 +5,6 @@ function Expand-Permission {
     param (
         $SplitBy,
         $GroupBy,
-        [Hashtable]$TargetPath,
         [Hashtable]$Children,
 
         <#
@@ -53,6 +52,7 @@ function Expand-Permission {
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
     $ACLsByPath = $Cache.Value['AclByPath']
+    $TargetPath = $Cache.Value['ParentByTargetPath']
 
     $CommonParams = @{
         ACEsByGUID             = $ACEsByGUID

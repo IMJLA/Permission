@@ -13,9 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-TargetPath] <Hashtable>]
- [[-Children] <Hashtable>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>]
- [[-ProgressParentId] <Int32>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-Children] <Hashtable>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>] [[-ProgressParentId] <Int32>]
+ [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 8
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -56,7 +56,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -72,7 +72,7 @@ Aliases:
 Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
 
 Required: False
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -117,7 +117,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -138,21 +138,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -TargetPath
-{{ Fill TargetPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ThisHostName
 {{ Fill ThisHostName Description }}
 
@@ -162,7 +147,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -177,7 +162,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

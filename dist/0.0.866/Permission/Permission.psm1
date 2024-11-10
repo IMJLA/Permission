@@ -1865,7 +1865,7 @@ function Group-TargetPermissionReference {
 
     param (
 
-        [Hashtable]$TargetPath,
+        [ref]$TargetPath,
         [Hashtable]$Children,
         [ref]$PrincipalsByResolvedID,
         [ref]$AceGuidByID,
@@ -1889,13 +1889,13 @@ function Group-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
 
                 $TargetProperties = @{
                     Path = $Target
                 }
 
-                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -1961,13 +1961,13 @@ function Group-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
 
                 $TargetProperties = @{
                     Path = $Target
                 }
 
-                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -1989,13 +1989,13 @@ function Group-TargetPermissionReference {
         # 'none' and 'target' behave the same
         default {
 
-            ForEach ($Target in ($TargetPath.Keys | Sort-Object)) {
+            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
 
                 $TargetProperties = @{
                     Path = $Target
                 }
 
-                $NetworkPaths = $TargetPath[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
 
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -3485,7 +3485,6 @@ function Expand-Permission {
     param (
         $SplitBy,
         $GroupBy,
-        [Hashtable]$TargetPath,
         [Hashtable]$Children,
 
         <#
@@ -3533,6 +3532,7 @@ function Expand-Permission {
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
     $ACLsByPath = $Cache.Value['AclByPath']
+    $TargetPath = $Cache.Value['ParentByTargetPath']
 
     $CommonParams = @{
         ACEsByGUID             = $ACEsByGUID
@@ -6075,6 +6075,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
