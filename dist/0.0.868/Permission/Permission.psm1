@@ -5944,9 +5944,6 @@ function Select-PermissionPrincipal {
 
     param (
 
-        # Cache of security principals keyed by resolved identity reference
-        [Hashtable]$PrincipalByID = @{},
-
         # Regular expressions matching names of Users or Groups to exclude from the Html report
         [string[]]$ExcludeAccount,
 
@@ -5986,7 +5983,8 @@ function Select-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    $IDs = $PrincipalByID.Keys
+    $PrincipalByID = $Cache.Value['PrincipalByID']
+    $IDs = $PrincipalByID.Value.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (principal 0 of $Count) Select principals as specified in parameters" -CurrentOperation 'Ignore domains, and include/exclude principals based on name or class' -PercentComplete 0
 
@@ -6000,7 +5998,7 @@ function Select-PermissionPrincipal {
             [bool]$(
                 ForEach ($ClassToExclude in $ExcludeClass) {
 
-                    $Principal = $PrincipalByID[$ThisID]
+                    $Principal = $PrincipalByID.Value[$ThisID]
 
                     if ($Principal.SchemaClassName -eq $ClassToExclude) {
                         $Cache.Value['ExcludeClassFilterContents'].Value[$ThisID] = $true
@@ -6065,6 +6063,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
