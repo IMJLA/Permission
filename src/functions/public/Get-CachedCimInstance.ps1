@@ -119,7 +119,7 @@ function Get-CachedCimInstance {
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
-        Pause
+
         if ($CimInstance) {
 
             $CimInstanceType = [type]'CimInstance'
@@ -134,7 +134,7 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
-                Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
+                #Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
                 $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
 
                 ForEach ($Instance in $CimInstance) {
@@ -150,11 +150,11 @@ function Get-CachedCimInstance {
             return $CimInstance
 
         } else {
-            Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
+            #Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
         }
 
     } else {
-        Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
+        #Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
     }
 
 }

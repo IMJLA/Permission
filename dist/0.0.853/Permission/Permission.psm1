@@ -4502,7 +4502,7 @@ function Get-CachedCimInstance {
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
-        Pause
+
         if ($CimInstance) {
 
             $CimInstanceType = [type]'CimInstance'
@@ -4517,7 +4517,7 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
-                Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
+                #Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
                 $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
 
                 ForEach ($Instance in $CimInstance) {
@@ -4533,11 +4533,11 @@ function Get-CachedCimInstance {
             return $CimInstance
 
         } else {
-            Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
+            #Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
         }
 
     } else {
-        Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
+        #Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
     }
 
 }
@@ -6178,6 +6178,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
