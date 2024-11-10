@@ -2,8 +2,8 @@ function Expand-ItemPermissionAccountAccessReference {
 
     param (
         $Reference,
-        [Hashtable]$PrincipalByResolvedID,
-        [Hashtable]$AceByGUID
+        [ref]$PrincipalByResolvedID,
+        [ref]$AceByGUID
     )
 
     if ($Reference) {
@@ -25,7 +25,7 @@ function Expand-ItemPermissionAccountAccessReference {
         }
 
         if ($FirstACEGuid) {
-            $ACEList = $AceByGUID[$FirstACEGuid]
+            $ACEList = $AceByGUID.Value[$FirstACEGuid]
         }
 
         if ($ACEList -is [System.Collections.IEnumerable]) {
@@ -40,7 +40,7 @@ function Expand-ItemPermissionAccountAccessReference {
 
     ForEach ($PermissionRef in $Reference) {
 
-        $Account = $PrincipalByResolvedID[$PermissionRef.Account]
+        $Account = $PrincipalByResolvedID.Value[$PermissionRef.Account]
 
         [PSCustomObject]@{
             Account     = $Account
@@ -49,7 +49,7 @@ function Expand-ItemPermissionAccountAccessReference {
 
                 ForEach ($Guid in $GuidList) {
 
-                    $ACE = $AceByGUID[$Guid]
+                    $ACE = $AceByGUID.Value[$Guid]
 
                     $OutputProperties = @{
                         Account = $Account

@@ -3,8 +3,8 @@ function Expand-AccountPermissionReference {
     param (
 
         $Reference,
-        $PrincipalsByResolvedID,
-        $ACEsByGUID
+        [ref]$PrincipalsByResolvedID,
+        [ref]$ACEsByGUID
 
     )
 
@@ -16,7 +16,7 @@ function Expand-AccountPermissionReference {
                 Path       = $PermissionRef.Path
                 PSTypeName = 'Permission.AccountPermissionItemAccess'
                 # Enumerate the list because the returned dictionary value is a list
-                Access     = ForEach ($ACE in $ACEsByGUID[$PermissionRef.AceGUIDs]) {
+                Access     = ForEach ($ACE in $ACEsByGUID.Value[$PermissionRef.AceGUIDs]) {
                     $ACE
                 }
             }
@@ -24,7 +24,7 @@ function Expand-AccountPermissionReference {
         }
 
         [PSCustomObject]@{
-            Account     = $PrincipalsByResolvedID[$Account.Account]
+            Account     = $PrincipalsByResolvedID.Value[$Account.Account]
             AccountName = $Account.Account
             Access      = $Access
             PSTypeName  = 'Permission.AccountPermission'

@@ -5,11 +5,6 @@ function Expand-Permission {
     param (
         $SplitBy,
         $GroupBy,
-        $AceGuidByPath,
-        $AceGuidByID,
-        $ACEsByGUID,
-        $PrincipalsByResolvedID,
-        $ACLsByPath,
         [Hashtable]$TargetPath,
         [Hashtable]$Children,
 
@@ -23,18 +18,20 @@ function Expand-Permission {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
         # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # In-process cache to reduce calls to other processes or to disk
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
+
+    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
 
     $Progress = @{
         Activity = 'Expand-Permission'
@@ -45,20 +42,17 @@ function Expand-Permission {
     } else {
         $Progress['Id'] = 0
     }
+
     Write-Progress @Progress -Status '0% : Group permission references, then expand them into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
     Write-LogMsg @Log -Text "Resolve-SplitByParameter -SplitBy $SplitBy"
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
-
     Write-LogMsg @Log -Text "`$SortedPaths = `$AceGuidByPath.Keys | Sort-Object"
-    $SortedPaths = $AceGuidByPath.Keys | Sort-Object
+    $SortedPaths = $Cache.Value['AceGuidByPath'].Value.Keys | Sort-Object
+    $AceGuidByPath = $Cache.Value['AceGuidByPath']
+    $AceGuidByID = $Cache.Value['AceGuidByID']
+    $ACEsByGUID = $Cache.Value['AceByGUID']
+    $PrincipalsByResolvedID = $Cache.Value['PrincipalByResolvedID']
+    $ACLsByPath = $Cache.Value['AclByPath']
 
     $CommonParams = @{
         ACEsByGUID             = $ACEsByGUID
@@ -71,7 +65,7 @@ function Expand-Permission {
 
         # Group reference GUIDs by the name of their associated account.
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID'
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences @CommonParams'

@@ -5,10 +5,10 @@ function Expand-TargetPermissionReference {
     param (
 
         $Reference,
-        $PrincipalsByResolvedID,
-        $ACEsByGUID,
-        $ACLsByPath,
-        [Hashtable]$AceGuidByPath,
+        [ref]$PrincipalsByResolvedID,
+        [ref]$ACEsByGUID,
+        [ref]$ACLsByPath,
+        [ref]$AceGuidByPath,
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
         [String]$GroupBy = 'item'
@@ -30,7 +30,7 @@ function Expand-TargetPermissionReference {
                 $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
                     [pscustomobject]@{
-                        Item       = $AclsByPath[$NetworkPath.Path]
+                        Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
                         Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
                     }
@@ -57,7 +57,7 @@ function Expand-TargetPermissionReference {
 
                     [pscustomobject]@{
                         Access = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
-                        Item   = $AclsByPath[$NetworkPath.Path]
+                        Item   = $AclsByPath.Value[$NetworkPath.Path]
                         Items  = ForEach ($TargetChild in $NetworkPath.Items) {
 
                             $Access = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
@@ -66,7 +66,7 @@ function Expand-TargetPermissionReference {
 
                                 [pscustomobject]@{
                                     Access     = $Access
-                                    Item       = $AclsByPath[$TargetChild.Path]
+                                    Item       = $AclsByPath.Value[$TargetChild.Path]
                                     PSTypeName = 'Permission.ChildItemPermission'
                                 }
 

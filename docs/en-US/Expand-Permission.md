@@ -13,11 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] <Object>]
- [[-AceGuidByID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>]
- [[-ACLsByPath] <Object>] [[-TargetPath] <Hashtable>] [[-Children] <Hashtable>] [[-ThisHostName] <String>]
- [[-WhoAmI] <String>] [-LogBuffer] <PSReference> [[-DebugOutputStream] <String>] [[-ProgressParentId] <Int32>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-TargetPath] <Hashtable>]
+ [[-Children] <Hashtable>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>]
+ [[-ProgressParentId] <Int32>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -34,61 +32,16 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AceGuidByID
-{{ Fill AceGuidByID Description }}
+### -Cache
+{{ Fill Cache Description }}
 
 ```yaml
-Type: System.Object
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AceGuidByPath
-{{ Fill AceGuidByPath Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ACEsByGUID
-{{ Fill ACEsByGUID Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ACLsByPath
-{{ Fill ACLsByPath Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
+Required: True
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -103,7 +56,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -119,7 +72,7 @@ Aliases:
 Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
 
 Required: False
-Position: 12
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -135,36 +88,6 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogBuffer
-{{ Fill LogBuffer Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 11
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PrincipalsByResolvedID
-{{ Fill PrincipalsByResolvedID Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -194,7 +117,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -224,7 +147,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -239,7 +162,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -254,7 +177,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

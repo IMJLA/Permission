@@ -2,17 +2,19 @@ function Group-AccountPermissionReference {
 
     param (
         [string[]]$ID,
-        [Hashtable]$AceGuidByID,
-        [Hashtable]$AceByGuid
+        [ref]$AceGuidByID,
+        [ref]$AceByGuid
     )
+
+    $GuidType = [guid]
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
         $ItemPaths = @{}
 
-        ForEach ($Guid in $AceGuidByID[$Identity]) {
+        ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
 
-            Add-CacheItem -Cache $ItemPaths -Key $AceByGuid[$Guid].Path -Value $Guid -Type ([guid])
+            Add-CacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
 
         }
 

@@ -6,11 +6,11 @@ function Group-TargetPermissionReference {
 
         [Hashtable]$TargetPath,
         [Hashtable]$Children,
-        $PrincipalsByResolvedID,
-        $AceGuidByID,
-        $ACEsByGUID,
-        $AceGUIDsByPath,
-        $ACLsByPath,
+        [ref]$PrincipalsByResolvedID,
+        [ref]$AceGuidByID,
+        [ref]$ACEsByGUID,
+        [ref]$AceGUIDsByPath,
+        [ref]$ACLsByPath,
 
         # How to group the permissions in the output stream and within each exported file
         [ValidateSet('account', 'item', 'none', 'target')]
@@ -41,13 +41,13 @@ function Group-TargetPermissionReference {
                     $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
                     $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
-                    $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
+                    $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath @CommonParams
 
                     # Prepare a dictionary for quick lookup of ACE GUIDs for this target
                     $AceGuidsForThisNetworkPath = @{}
 
                     # Enumerate the collection of ACE GUIDs for this target
-                    ForEach ($Guid in $AceGUIDsByPath[$ItemsForThisNetworkPath]) {
+                    ForEach ($Guid in $AceGUIDsByPath.Value[$ItemsForThisNetworkPath]) {
 
                         # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
                         if ($Guid) {
@@ -70,7 +70,7 @@ function Group-TargetPermissionReference {
 
                         $GuidsForThisIDAndNetworkPath = [System.Collections.Generic.List[guid]]::new()
 
-                        ForEach ($Guid in $AceGuidByID[$ID]) {
+                        ForEach ($Guid in $AceGuidByID.Value[$ID]) {
 
                             $AceContainsThisID = $AceGuidsForThisNetworkPath[$Guid]
 
@@ -86,7 +86,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID $AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID [ref]$AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
                     }
 
                 }

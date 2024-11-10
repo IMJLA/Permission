@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.862
+Help Version: 0.0.864
 Locale: en-US
 ---
 
@@ -32,7 +32,7 @@ ConvertTo-PermissionFqdn [[-ComputerName] <string>] [[-ThisHostname] <string>] [
 
 ### [Expand-Permission](Expand-Permission.md)
 
-Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-AceGuidByPath] <Object>] [[-AceGuidByID] <Object>] [[-ACEsByGUID] <Object>] [[-PrincipalsByResolvedID] <Object>] [[-ACLsByPath] <Object>] [[-TargetPath] <hashtable>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>] [<CommonParameters>]
+Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-TargetPath] <hashtable>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
@@ -44,7 +44,7 @@ Find-CachedCimInstance [[-ComputerName] <string>] [[-Key] <string>] [[-CimCache]
 
 ### [Find-ResolvedIDsWithAccess](Find-ResolvedIDsWithAccess.md)
 
-Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <hashtable>] [[-ACEsByGUID] <hashtable>] [[-PrincipalsByResolvedID] <hashtable>]
+Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <ref>] [[-ACEsByGUID] <ref>] [[-PrincipalsByResolvedID] <ref>]
 
 ### [Find-ServerFqdn](Find-ServerFqdn.md)
 
