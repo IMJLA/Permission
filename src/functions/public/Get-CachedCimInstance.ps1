@@ -148,6 +148,8 @@ function Get-CachedCimInstance {
 
             return $CimInstance
 
+        } else {
+            Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
         }
 
     }
