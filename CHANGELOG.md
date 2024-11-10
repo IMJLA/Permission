@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.862] - 2024-11-10 - implement unified in-process cache
 ## [0.0.861] - 2024-11-10 - reduce debug verbosity
 ## [0.0.860] - 2024-11-10 - bugfix splat
 ## [0.0.859] - 2024-11-10 - bugfix need to access value of psreference

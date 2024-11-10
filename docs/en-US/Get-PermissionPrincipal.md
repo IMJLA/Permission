@@ -13,12 +13,9 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-PrincipalByID] <Hashtable>]
- [[-AceGuidByID] <Hashtable>] [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>]
- [[-DomainsByNetbios] <PSReference>] [[-DomainsBySid] <PSReference>] [[-DomainsByFqdn] <PSReference>]
- [[-ThisFqdn] <String>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference>
- [-NoGroupMembers] [[-ProgressParentId] <Int32>] [[-CurrentDomain] <String>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-ThisFqdn] <String>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [-NoGroupMembers] [[-ProgressParentId] <Int32>]
+ [-Cache] <PSReference> [[-CurrentDomain] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -35,31 +32,16 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AceGuidByID
-{{ Fill AceGuidByID Description }}
+### -Cache
+{{ Fill Cache Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -CimCache
-{{ Fill CimCache Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
+Required: True
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -74,7 +56,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -96,81 +78,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DirectoryEntryCache
-{{ Fill DirectoryEntryCache Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DomainsByFqdn
-{{ Fill DomainsByFqdn Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DomainsByNetbios
-{{ Fill DomainsByNetbios Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DomainsBySid
-{{ Fill DomainsBySid Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogBuffer
-{{ Fill LogBuffer Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 12
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -NoGroupMembers
 {{ Fill NoGroupMembers Description }}
 
@@ -181,21 +88,6 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PrincipalByID
-{{ Fill PrincipalByID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -225,7 +117,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -240,7 +132,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +147,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -285,7 +177,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.861
+Help Version: 0.0.862
 Locale: en-US
 ---
 
@@ -72,7 +72,7 @@ Get-CachedCimSession [[-ComputerName] <string>] [[-DebugOutputStream] <string>] 
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
-Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-PrincipalByID] <hashtable>] [[-AceGuidByID] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-DomainsByFqdn] <ref>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-CurrentDomain] <string>] [-NoGroupMembers] [<CommonParameters>]
+Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [[-CurrentDomain] <string>] [-NoGroupMembers] [<CommonParameters>]
 
 ### [Get-PermissionTrustedDomain](Get-PermissionTrustedDomain.md)
 

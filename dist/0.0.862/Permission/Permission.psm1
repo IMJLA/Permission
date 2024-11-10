@@ -4640,31 +4640,6 @@ function Get-PermissionPrincipal {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of security principals keyed by resolved identity reference. END STATE
-        [Hashtable]$PrincipalByID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entries keyed by their resolved identities. STARTING STATE
-        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to a thread-safe dictionary with string keys and object values
-        #>
-        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
         <#
         FQDN of the computer running this function.
 
@@ -4682,10 +4657,6 @@ function Get-PermissionPrincipal {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         <#
         Do not get group members (only report the groups themselves)
 
@@ -4698,9 +4669,13 @@ function Get-PermissionPrincipal {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
+        # In-process cache to reduce calls to other processes or to disk
+        [Parameter(Mandatory)]
+        [ref]$Cache,
+
         # The current domain
         # Can be passed as a parameter to reduce calls to Get-CurrentDomain
-        [String]$CurrentDomain = (Get-CurrentDomain)
+        [string]$CurrentDomain = (Get-CurrentDomain -Cache $Cache)
 
     )
 
@@ -4714,31 +4689,19 @@ function Get-PermissionPrincipal {
         $Progress['Id'] = 0
     }
 
-    [string[]]$IDs = $AceGuidByID.Keys
+    [string[]]$IDs = $Cache.Value['AceGuidByID'].Value.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
+    $LogBuffer = $Cache.Value['LogBuffer']
+    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
 
     $ADSIConversionParams = @{
-        DirectoryEntryCache = $DirectoryEntryCache
-        DomainsBySID        = $DomainsBySID
-        DomainsByNetbios    = $DomainsByNetbios
-        DomainsByFqdn       = $DomainsByFqdn
-        ThisHostName        = $ThisHostName
-        ThisFqdn            = $ThisFqdn
-        WhoAmI              = $WhoAmI
-        LogBuffer           = $LogBuffer
-        CimCache            = $CimCache
-        DebugOutputStream   = $DebugOutputStream
-        PrincipalByID       = $PrincipalByID # end state
-        AceGuidByID         = $AceGuidByID # start state
-        CurrentDomain       = $CurrentDomain
+        ThisHostName      = $ThisHostName
+        ThisFqdn          = $ThisFqdn
+        WhoAmI            = $WhoAmI
+        DebugOutputStream = $DebugOutputStream
+        CurrentDomain     = $CurrentDomain
+        Cache             = $Cache
     }
 
     if ($ThreadCount -eq 1) {
@@ -6121,6 +6084,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
