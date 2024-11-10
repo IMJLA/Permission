@@ -14,10 +14,8 @@ schema: 2.0.0
 
 ```
 Select-PermissionPrincipal [[-PrincipalByID] <Hashtable>] [[-ExcludeAccount] <String[]>]
- [[-IncludeAccount] <String[]>] [[-IgnoreDomain] <String[]>] [[-IdByShortName] <Hashtable>]
- [[-ShortNameByID] <Hashtable>] [[-ExcludeClassFilterContents] <Hashtable>]
- [[-ExcludeFilterContents] <Hashtable>] [[-IncludeFilterContents] <Hashtable>] [[-ProgressParentId] <Int32>]
- [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-LogBuffer] <Hashtable>]
+ [[-IncludeAccount] <String[]>] [[-IgnoreDomain] <String[]>] [[-ProgressParentId] <Int32>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -34,41 +32,11 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -ExcludeAccount
-{{ Fill ExcludeAccount Description }}
+### -Cache
+{{ Fill Cache Description }}
 
 ```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExcludeClassFilterContents
-{{ Fill ExcludeClassFilterContents Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExcludeFilterContents
-{{ Fill ExcludeFilterContents Description }}
-
-```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
@@ -79,16 +47,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -IdByShortName
-{{ Fill IdByShortName Description }}
+### -ExcludeAccount
+{{ Fill ExcludeAccount Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -124,36 +92,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -IncludeFilterContents
-{{ Fill IncludeFilterContents Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogBuffer
-{{ Fill LogBuffer Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 12
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -PrincipalByID
 {{ Fill PrincipalByID Description }}
 
@@ -178,22 +116,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ShortNameByID
-{{ Fill ShortNameByID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -208,7 +131,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 10
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -223,7 +146,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

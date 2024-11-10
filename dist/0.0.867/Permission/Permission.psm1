@@ -5962,16 +5962,6 @@ function Select-PermissionPrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        [Hashtable]$IdByShortName = @{},
-
-        [Hashtable]$ShortNameByID = @{},
-
-        [Hashtable]$ExcludeClassFilterContents = @{},
-
-        [Hashtable]$ExcludeFilterContents = @{},
-
-        [Hashtable]$IncludeFilterContents = @{},
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
@@ -5981,8 +5971,8 @@ function Select-PermissionPrincipal {
         # Unused parameter
         [String]$WhoAmI,
 
-        # Unused parameter
-        [Hashtable]$LogBuffer
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
@@ -6013,7 +6003,7 @@ function Select-PermissionPrincipal {
                     $Principal = $PrincipalByID[$ThisID]
 
                     if ($Principal.SchemaClassName -eq $ClassToExclude) {
-                        $ExcludeClassFilterContents[$ThisID] = $true
+                        $Cache.Value['ExcludeClassFilterContents'].Value[$ThisID] = $true
                         $true
                     }
                 }
@@ -6023,7 +6013,7 @@ function Select-PermissionPrincipal {
             [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        $ExcludeFilterContents[$ThisID] = $true
+                        $Cache.Value['ExcludeFilterContents'].Value[$ThisID] = $true
                         $true
                     }
                 }
@@ -6045,7 +6035,7 @@ function Select-PermissionPrincipal {
                             # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
                             $true
                         } else {
-                            $IncludeFilterContents[$ThisID] = $true
+                            $Cache.Value['IncludeFilterContents'].Value[$ThisID] = $true
                         }
                     }
                 }
@@ -6059,8 +6049,8 @@ function Select-PermissionPrincipal {
             $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
         }
 
-        Add-CacheItem -Cache $IdByShortName -Key $ShortName -Value $ThisID -Type $Type
-        $ShortNameByID[$ThisID] = $ShortName
+        Add-CacheItem -Cache $Cache.Value['IdByShortName'] -Key $ShortName -Value $ThisID -Type $Type
+        $Cache.Value['ShortNameByID'].Value[$ThisID] = $ShortName
 
     }
 
@@ -6075,6 +6065,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
