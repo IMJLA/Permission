@@ -3927,9 +3927,12 @@ function Find-ServerFqdn {
     $Progress = @{
         Activity = 'Find-ServerFqdn'
     }
+
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
+
     } else {
         $ProgressId = 0
     }
@@ -3967,6 +3970,7 @@ function Find-ServerFqdn {
 
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
         $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
+
     }
 
     Write-Progress @Progress -Completed
@@ -6258,6 +6262,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

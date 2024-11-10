@@ -26,9 +26,12 @@ function Find-ServerFqdn {
     $Progress = @{
         Activity = 'Find-ServerFqdn'
     }
+
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
+
     } else {
         $ProgressId = 0
     }
@@ -66,6 +69,7 @@ function Find-ServerFqdn {
 
         $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
         $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
+
     }
 
     Write-Progress @Progress -Completed
