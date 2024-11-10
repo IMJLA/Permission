@@ -68,7 +68,7 @@ function Select-PermissionPrincipal {
             [bool]$(
                 ForEach ($RegEx in $ExcludeAccount) {
                     if ($ThisID -match $RegEx) {
-                        $Cache.Value['ExcludeFilterContents'].Value[$ThisID] = $true
+                        $Cache.Value['ExcludeAccountFilterContents'].Value[$ThisID] = $true
                         $true
                     }
                 }
