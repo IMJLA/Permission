@@ -5,12 +5,7 @@ function Resolve-PermissionTarget {
     param (
 
         # Path to the NTFS folder whose permissions to export
-        [Parameter(ValueFromPipeline)]
-        [ValidateScript({ Test-Path $_ })]
         [System.IO.DirectoryInfo[]]$TargetPath,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -29,11 +24,8 @@ function Resolve-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache,
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
@@ -41,16 +33,15 @@ function Resolve-PermissionTarget {
     )
 
     $Log = @{
-        Buffer       = $LogBuffer
+        Buffer       = $Cache['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
     $ResolveFolderSplat = @{
-        CimCache          = $CimCache
         ThisFqdn          = $ThisFqdn
-        LogBuffer         = $LogBuffer
+        Cache             = $Cache
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -58,8 +49,8 @@ function Resolve-PermissionTarget {
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
-        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
+        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'" -Expand $ResolveFolderSplat
+        $Cache['Parents'][$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
 

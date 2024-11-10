@@ -2127,6 +2127,23 @@ function Merge-AceAndPrincipal {
     return [pscustomobject]$OutputProperties
 
 }
+function New-PermissionCache {
+
+    param (
+
+        # Type of the keys
+        [type]$Key = [System.String],
+
+        # Type of the values
+        [type]$Value = [System.Collections.Generic.List[System.Object]]
+
+    )
+
+    $genericTypeDefinition = [System.Collections.Concurrent.ConcurrentDictionary`2]
+    $genericType = $genericTypeDefinition.MakeGenericType($Key, $Value)
+    return [Activator]::CreateInstance($genericType)
+
+}
 function Out-PermissionDetailReport {
 
     param (
@@ -2581,6 +2598,129 @@ function Resolve-Acl {
 
         #Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
         Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @ResolveAceSplat
+
+    }
+
+}
+function Resolve-Folder {
+
+    # Resolve the provided FolderPath to all of its associated UNC paths, including all DFS folder targets
+
+    param (
+
+        # Path of the folder(s) to resolve to all their associated UNC paths
+        [String]$TargetPath,
+
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [String]$DebugOutputStream = 'Debug',
+
+        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$ThisHostname = (HOSTNAME.EXE),
+
+        <#
+        FQDN of the computer running this function.
+
+        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
+        #>
+        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$WhoAmI = (whoami.EXE),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
+
+    )
+
+    $LogBuffer = $Cache['LogBuffer']
+
+    $Log = @{
+        Buffer       = $LogBuffer
+        ThisHostname = $ThisHostname
+        Type         = $DebugOutputstream
+        WhoAmI       = $WhoAmI
+    }
+
+    $LogThis = @{
+        ThisHostname      = $ThisHostname
+        DebugOutputStream = $DebugOutputStream
+        WhoAmI            = $WhoAmI
+    }
+
+    $RegEx = '^(?<DriveLetter>\w):'
+
+    if ($TargetPath -match $RegEx) {
+
+        $GetCimInstanceParams = @{
+            Cache       = $Cache
+            ClassName   = 'Win32_MappedLogicalDisk'
+            KeyProperty = 'DeviceID'
+            ThisFqdn    = $ThisFqdn
+        }
+
+        Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams @LogThis
+
+        $MatchingNetworkDrive = $MappedNetworkDrives |
+        Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
+
+        if ($MatchingNetworkDrive) {
+            # Resolve mapped network drives to their UNC path
+            $UNC = $MatchingNetworkDrive.ProviderName
+        } else {
+            # Resolve local drive letters to their UNC paths using administrative shares
+            $UNC = $TargetPath -replace $RegEx, "\\$(hostname)\$($Matches.DriveLetter)$"
+        }
+
+        if ($UNC) {
+            # Replace hostname with FQDN in the path
+            $Server = $UNC.split('\')[2]
+            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server @Cache @LogThis
+            $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
+        }
+
+    } else {
+
+        ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
+        ## https://github.com/IMJLA/Export-Permission/issues/46
+        ## https://github.com/IMJLA/PsNtfs/issues/1
+        Write-LogMsg @Log -Text "Get-NetDfsEnum -FolderPath '$TargetPath'"
+        $AllDfs = Get-NetDfsEnum -FolderPath $TargetPath -ErrorAction SilentlyContinue
+
+        if ($AllDfs) {
+
+            $MatchingDfsEntryPaths = $AllDfs |
+            Group-Object -Property DfsEntryPath |
+            Where-Object -FilterScript {
+                $TargetPath -match [regex]::Escape($_.Name)
+            }
+
+            # Filter out the DFS Namespace
+            # TODO: I know this is an inefficient n2 algorithm, but my brain is fried...plez...halp...leeloo dallas multipass
+            $RemainingDfsEntryPaths = $MatchingDfsEntryPaths |
+            Where-Object -FilterScript {
+                -not [bool]$(
+                    ForEach ($ThisEntryPath in $MatchingDfsEntryPaths) {
+                        if ($ThisEntryPath.Name -match "$([regex]::Escape("$($_.Name)")).+") { $true }
+                    }
+                )
+            } |
+            Sort-Object -Property Name
+
+            $RemainingDfsEntryPaths |
+            Select-Object -Last 1 -ExpandProperty Group |
+            ForEach-Object {
+                $_.FullOriginalQueryPath -replace [regex]::Escape($_.DfsEntryPath), $_.DfsTarget
+            }
+
+        } else {
+
+            $Server = $TargetPath.split('\')[2]
+            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server @Cache @LogThis
+            $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
+
+        }
 
     }
 
@@ -3403,6 +3543,26 @@ function ConvertTo-ItemBlock {
         JsonData    = $JsonData
         JsonColumns = $JsonColumns
     }
+
+}
+function ConvertTo-PermissionFqdn {
+
+    param (
+
+        [string]$ComputerName,
+
+        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$ThisHostname = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$WhoAmI = (whoami.EXE),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
+
+    )
+
+    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
 
 }
 function Expand-Permission {
@@ -4306,9 +4466,6 @@ function Get-CachedCimInstance {
         # CIM query to run. Overrides ClassName if used (but not efficiently, so don't use both)
         [String]$Query,
 
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -4330,19 +4487,18 @@ function Get-CachedCimInstance {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         [Parameter(Mandatory)]
         [String]$KeyProperty,
 
-        [string[]]$CacheByProperty = $KeyProperty
+        [string[]]$CacheByProperty = $KeyProperty,
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
     $Log = @{
-        Buffer       = $LogBuffer
+        Buffer       = $Cache['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -4354,31 +4510,38 @@ function Get-CachedCimInstance {
         $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
-    $CimCacheResult = $CimCache[$ComputerName]
+    $InstanceCacheByComputer = $null
+    $AddOrUpdateScriptblock = { param($key, $val) $val }
+    $CimCache = $Cache['CimCache']
 
-    if ($CimCacheResult) {
+    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCacheResult[$InstanceCacheKey]
+        $InstanceCache = $null
 
-        if ($CimCacheSubresult) {
+        if ( $InstanceCacheByComputer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
+
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
-            return $CimCacheSubresult.Values
+            return $InstanceCache.Values
+
         } else {
             Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
         }
 
     } else {
+
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
+        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value [type]'ref'
+        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
+
     }
 
     $GetCimSessionParams = @{
-        LogBuffer         = $LogBuffer
-        ThisHostname      = $ThisHostname
+        Cache             = $Cache
         DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
-        CimCache          = $CimCache
+        ThisHostname      = $ThisHostname
         ThisFqdn          = $ThisFqdn
+        WhoAmI            = $WhoAmI
     }
 
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName @GetCimSessionParams
@@ -4406,9 +4569,11 @@ function Get-CachedCimInstance {
 
         if ($CimInstance) {
 
+            $CimInstanceType = [type]'CimInstance'
+
             ForEach ($Prop in $CacheByProperty) {
 
-                $InstanceCache = [Hashtable]::Synchronized(@{})
+                $InstanceCache = New-PermissionCacheRef -Key $String -Value $CimInstanceType
 
                 if ($PSBoundParameters.ContainsKey('ClassName')) {
                     $InstanceCacheKey = "$ClassName`By$Prop"
@@ -4416,13 +4581,15 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
+                $null = $InstanceCacheByComputer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
+
                 ForEach ($Instance in $CimInstance) {
+
                     $InstancePropertyValue = $Instance.$Prop
                     Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
-                    $InstanceCache[$InstancePropertyValue] = $Instance
-                }
+                    $null = $InstanceCache.Value.AddOrUpdate( $InstancePropertyValue , $Instance , $AddOrUpdateScriptblock  )
 
-                $CimCache[$ComputerName][$InstanceCacheKey] = $InstanceCache
+                }
 
             }
 
@@ -4439,9 +4606,6 @@ function Get-CachedCimSession {
 
         # Name of the computer to query via CIM
         [String]$ComputerName,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -4464,28 +4628,29 @@ function Get-CachedCimSession {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
+
     )
 
     $Log = @{
-        Buffer       = $LogBuffer
+        Buffer       = $Cache['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
 
-    $CimCacheResult = $CimCache[$ComputerName]
+    $InstanceCacheByComputer = $null
+    $CimCache = $Cache['CimCache']
 
-    if ($CimCacheResult) {
+    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 
         Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $CimCacheSubresult = $CimCacheResult['CimSession']
+        $SessionCache = $null
 
-        if ($CimCacheSubresult) {
+        if ( $InstanceCacheByComputer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
             Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
-            return $CimCacheSubresult
+            return $SessionCache
         } else {
             Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
         }
@@ -4493,7 +4658,8 @@ function Get-CachedCimSession {
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $CimCache[$ComputerName] = [Hashtable]::Synchronized(@{})
+        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value [type]'ref'
+        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
 
     }
 
@@ -4506,18 +4672,24 @@ function Get-CachedCimSession {
         $ComputerName -eq '127.0.0.1' -or
         [String]::IsNullOrEmpty($ComputerName)
     ) {
+
         Write-LogMsg @Log -Text '$CimSession = New-CimSession'
         $CimSession = New-CimSession
+
     } else {
+
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
         Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
         $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue
+
     }
 
     if ($CimSession) {
-        $CimCache[$ComputerName]['CimSession'] = $CimSession
+
+        $null = $InstanceCacheByComputer.Value.AddOrUpdate( 'CimSession' , $CimSession , { param($key, $val) $val } )
         return $CimSession
+
     }
 
 }
@@ -4686,6 +4858,39 @@ function Get-PermissionPrincipal {
     }
 
     Write-Progress @Progress -Completed
+
+}
+function Get-PermissionTrustedDomain {
+
+    param (
+
+        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$ThisHostname = (HOSTNAME.EXE),
+
+        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$WhoAmI = (whoami.EXE),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
+
+    )
+
+    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
+
+}
+function Get-PermissionWhoAmI {
+
+    param (
+
+        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
+        [String]$ThisHostname = (HOSTNAME.EXE),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
+
+    )
+
+    Get-CurrentWhoAmI -ThisHostName $ThisHostname -LogBuffer $Cache.Value['LogBuffer']
 
 }
 function Get-TimeZoneName {
@@ -5002,19 +5207,42 @@ function Invoke-PermissionCommand {
 }
 function New-PermissionCache {
 
-    param (
+    $Boolean = [type]'String'
+    $String = [type]'String'
+    $GuidList = [type]'System.Collections.Generic.List[Guid]'
+    $StringArray = [type]'String[]'
+    $StringList = [type]'System.Collections.Generic.List[String]'
+    $Object = [type]'Object'
+    $PSCustomObject = [type]'PSCustomObject'
+    $DirectoryInfo = [type]'DirectoryInfo'
+    $PSReference = [type]'ref'
 
-        # Type of the keys
-        [type]$Key = [System.String],
-
-        # Type of the values
-        [type]$Value = [System.Collections.Generic.List[System.Object]]
-
-    )
-
-    $genericTypeDefinition = [System.Collections.Concurrent.ConcurrentDictionary`2]
-    $genericType = $genericTypeDefinition.MakeGenericType($Key, $Value)
-    return [Activator]::CreateInstance($genericType)
+    <#
+    $CimCache
+        Key is a String
+        Value is a dict
+            Key is a String
+            Value varies (CimSession or dict)
+#>
+    return [hashtable]::Synchronized(@{
+            AceByGUID                    = New-PermissionCacheRef -Key $String -Value $Object #hashtable Initialize a cache of access control entries keyed by GUID generated in Resolve-ACE.
+            AceGuidByID                  = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their resolved NTAccount captions.
+            AceGuidByPath                = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their paths.
+            AclByPath                    = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of access control lists keyed by their paths.
+            CimCache                     = New-PermissionCacheRef -Key $String -Value $PSReference #hashtable Initialize a cache of CIM sessions, instances, and query results.
+            DirectoryEntryByPath         = New-PermissionCacheRef -Key $String -Value $Object #DirectoryEntryCache Initialize a cache of ADSI directory entry keyed by their Path to minimize ADSI queries.
+            DomainBySID                  = New-PermissionCacheRef -Key $String -Value $Object #DomainsBySID Initialize a cache of directory domains keyed by domain SID to minimize CIM and ADSI queries.
+            DomainByNetbios              = New-PermissionCacheRef -Key $String -Value $Object #DomainsByNetbios Initialize a cache of directory domains keyed by domain NetBIOS to minimize CIM and ADSI queries.
+            DomainByFqdn                 = New-PermissionCacheRef -Key $String -Value $Object #DomainsByFqdn Initialize a cache of directory domains keyed by domain DNS FQDN to minimize CIM and ADSI queries.
+            ExcludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeAccount parameter.
+            ExcludeClassFilterContents   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
+            IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
+            IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
+            LogBuffer                    = New-PermissionCacheRef -Key $String -Value $Object # Initialize a cache of log messages in memory to minimize random disk access.
+            ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
+            PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
+            ShortNameByID                = New-PermissionCacheRef -Key $String -Value $StringArray  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+        })
 
 }
 function Out-Permission {
@@ -5831,124 +6059,6 @@ function Resolve-AccessControlList {
     Write-Progress @Progress -Completed
 
 }
-function Resolve-Folder {
-
-    # Resolve the provided FolderPath to all of its associated UNC paths, including all DFS folder targets
-
-    param (
-
-        # Path of the folder(s) to resolve to all their associated UNC paths
-        [String]$TargetPath,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$ThisHostname = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer
-    )
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputstream
-        WhoAmI       = $WhoAmI
-    }
-
-    $LogSplat = @{
-        LogBuffer         = $LogBuffer
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
-    }
-
-    $RegEx = '^(?<DriveLetter>\w):'
-
-    if ($TargetPath -match $RegEx) {
-
-        Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LogSplat
-
-        $MatchingNetworkDrive = $MappedNetworkDrives |
-        Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
-
-        if ($MatchingNetworkDrive) {
-            # Resolve mapped network drives to their UNC path
-            $UNC = $MatchingNetworkDrive.ProviderName
-        } else {
-            # Resolve local drive letters to their UNC paths using administrative shares
-            $UNC = $TargetPath -replace $RegEx, "\\$(hostname)\$($Matches.DriveLetter)$"
-        }
-
-        if ($UNC) {
-            # Replace hostname with FQDN in the path
-            $Server = $UNC.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
-            $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
-        }
-
-    } else {
-
-        ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
-        ## https://github.com/IMJLA/Export-Permission/issues/46
-        ## https://github.com/IMJLA/PsNtfs/issues/1
-        Write-LogMsg @Log -Text "Get-NetDfsEnum -FolderPath '$TargetPath'"
-        $AllDfs = Get-NetDfsEnum -FolderPath $TargetPath -ErrorAction SilentlyContinue
-
-        if ($AllDfs) {
-
-            $MatchingDfsEntryPaths = $AllDfs |
-            Group-Object -Property DfsEntryPath |
-            Where-Object -FilterScript {
-                $TargetPath -match [regex]::Escape($_.Name)
-            }
-
-            # Filter out the DFS Namespace
-            # TODO: I know this is an inefficient n2 algorithm, but my brain is fried...plez...halp...leeloo dallas multipass
-            $RemainingDfsEntryPaths = $MatchingDfsEntryPaths |
-            Where-Object -FilterScript {
-                -not [bool]$(
-                    ForEach ($ThisEntryPath in $MatchingDfsEntryPaths) {
-                        if ($ThisEntryPath.Name -match "$([regex]::Escape("$($_.Name)")).+") { $true }
-                    }
-                )
-            } |
-            Sort-Object -Property Name
-
-            $RemainingDfsEntryPaths |
-            Select-Object -Last 1 -ExpandProperty Group |
-            ForEach-Object {
-                $_.FullOriginalQueryPath -replace [regex]::Escape($_.DfsEntryPath), $_.DfsTarget
-            }
-
-        } else {
-
-            $Server = $TargetPath.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
-            $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
-
-        }
-
-    }
-
-}
 function Resolve-PermissionTarget {
 
     # Resolve each target path to all of its associated UNC paths (including all DFS folder targets)
@@ -5956,12 +6066,7 @@ function Resolve-PermissionTarget {
     param (
 
         # Path to the NTFS folder whose permissions to export
-        [Parameter(ValueFromPipeline)]
-        [ValidateScript({ Test-Path $_ })]
         [System.IO.DirectoryInfo[]]$TargetPath,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
@@ -5980,11 +6085,8 @@ function Resolve-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        [Hashtable]$Output = [Hashtable]::Synchronized(@{}),
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache,
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId
@@ -5992,16 +6094,15 @@ function Resolve-PermissionTarget {
     )
 
     $Log = @{
-        Buffer       = $LogBuffer
+        Buffer       = $Cache['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
     }
 
     $ResolveFolderSplat = @{
-        CimCache          = $CimCache
         ThisFqdn          = $ThisFqdn
-        LogBuffer         = $LogBuffer
+        Cache             = $Cache
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -6009,8 +6110,8 @@ function Resolve-PermissionTarget {
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
-        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'"
-        $Output[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
+        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'" -Expand $ResolveFolderSplat
+        $Cache['Parents'][$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
 
@@ -6149,7 +6250,9 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-Folder','Resolve-PermissionTarget','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

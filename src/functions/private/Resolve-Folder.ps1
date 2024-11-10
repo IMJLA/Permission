@@ -7,9 +7,6 @@ function Resolve-Folder {
         # Path of the folder(s) to resolve to all their associated UNC paths
         [String]$TargetPath,
 
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -27,10 +24,12 @@ function Resolve-Folder {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
+
     )
+
+    $LogBuffer = $Cache['LogBuffer']
 
     $Log = @{
         Buffer       = $LogBuffer
@@ -39,8 +38,7 @@ function Resolve-Folder {
         WhoAmI       = $WhoAmI
     }
 
-    $LogSplat = @{
-        LogBuffer         = $LogBuffer
+    $LogThis = @{
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
@@ -50,8 +48,15 @@ function Resolve-Folder {
 
     if ($TargetPath -match $RegEx) {
 
+        $GetCimInstanceParams = @{
+            Cache       = $Cache
+            ClassName   = 'Win32_MappedLogicalDisk'
+            KeyProperty = 'DeviceID'
+            ThisFqdn    = $ThisFqdn
+        }
+
         Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk -KeyProperty DeviceID -CimCache $CimCache -ThisFqdn $ThisFqdn @LogSplat
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams @LogThis
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -67,7 +72,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
+            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server @Cache @LogThis
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
 
@@ -108,7 +113,7 @@ function Resolve-Folder {
         } else {
 
             $Server = $TargetPath.split('\')[2]
-            $FQDN = ConvertTo-DnsFqdn -ComputerName $Server @LogSplat
+            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server @Cache @LogThis
             $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
 
         }

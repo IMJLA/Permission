@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.818] - 2024-11-09 - changing to a single reference variable for the entire in-process cache
+## [0.0.817] - 2024-11-09 - moving to a single reference variable for the entire in-process cache
 ## [0.0.816] - 2024-11-07 - rename ACEsByResolvedID
 ## [0.0.815] - 2024-11-06 - add debug pause
 ## [0.0.814] - 2024-11-06 - rename ACEsByResolvedID

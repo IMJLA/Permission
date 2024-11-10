@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Get-CachedCimSession
+# ConvertTo-PermissionFqdn
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-CachedCimSession [[-ComputerName] <String>] [[-DebugOutputStream] <String>] [[-ThisHostName] <String>]
- [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-Cache] <PSReference>]
+ConvertTo-PermissionFqdn [[-ComputerName] <String>] [[-ThisHostname] <String>] [[-WhoAmI] <String>]
+ [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -61,47 +61,16 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -DebugOutputStream
-{{ Fill DebugOutputStream Description }}
+### -ThisHostname
+{{ Fill ThisHostname Description }}
 
 ```yaml
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
 
 Required: False
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ThisFqdn
-{{ Fill ThisFqdn Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ThisHostName
-{{ Fill ThisHostName Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -116,7 +85,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

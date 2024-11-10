@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.816
+Help Version: 0.0.818
 Locale: en-US
 ---
 
@@ -25,6 +25,10 @@ Add-PermissionCacheItem [-Cache] <ref> [-Key] <Object> [[-Value] <Object>] [[-Ty
 ### [ConvertTo-ItemBlock](ConvertTo-ItemBlock.md)
 
 ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
+
+### [ConvertTo-PermissionFqdn](ConvertTo-PermissionFqdn.md)
+
+ConvertTo-PermissionFqdn [[-ComputerName] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-Cache] <ref>]
 
 ### [Expand-Permission](Expand-Permission.md)
 
@@ -60,15 +64,23 @@ Get-AccessControlList [[-TargetPath] <hashtable>] [[-ThreadCount] <ushort>] [[-D
 
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
 
-Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Namespace] <string>] [[-Query] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [<CommonParameters>]
+Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Namespace] <string>] [[-Query] <string>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [[-Cache] <ref>] [<CommonParameters>]
 
 ### [Get-CachedCimSession](Get-CachedCimSession.md)
 
-Get-CachedCimSession [[-ComputerName] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [<CommonParameters>]
+Get-CachedCimSession [[-ComputerName] <string>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-Cache] <ref>]
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
 Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-PrincipalByID] <hashtable>] [[-AceGuidByID] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-DomainsByFqdn] <ref>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-CurrentDomain] <string>] [-NoGroupMembers] [<CommonParameters>]
+
+### [Get-PermissionTrustedDomain](Get-PermissionTrustedDomain.md)
+
+Get-PermissionTrustedDomain [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-Cache] <ref>]
+
+### [Get-PermissionWhoAmI](Get-PermissionWhoAmI.md)
+
+Get-PermissionWhoAmI [[-ThisHostname] <string>] [[-Cache] <ref>]
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
@@ -88,7 +100,7 @@ Invoke-PermissionCommand [[-Command] <string>]
 
 ### [New-PermissionCache](New-PermissionCache.md)
 
-New-PermissionCache [[-Key] <type>] [[-Value] <type>]
+New-PermissionCache 
 
 ### [Out-Permission](Out-Permission.md)
 
@@ -106,13 +118,9 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 
 Resolve-AccessControlList [[-ACLsByPath] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEsByGUID] <hashtable>] [[-AceGuidByID] <hashtable>] [[-AceGUIDsByPath] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByFqdn] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>] [<CommonParameters>]
 
-### [Resolve-Folder](Resolve-Folder.md)
-
-Resolve-Folder [[-TargetPath] <string>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [<CommonParameters>]
-
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-CimCache] <hashtable>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-Output] <hashtable>] [[-ProgressParentId] <int>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-Cache] <ref>] [[-ProgressParentId] <int>]
 
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 
