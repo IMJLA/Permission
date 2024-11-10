@@ -71,7 +71,7 @@ function Get-CachedCimInstance {
         if ( $CimServer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
 
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
-            return $InstanceCache.Values
+            return $InstanceCache.Value.Values
 
         } else {
             Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"

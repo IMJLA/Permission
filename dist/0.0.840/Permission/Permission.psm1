@@ -4525,7 +4525,7 @@ function Get-CachedCimInstance {
         if ( $CimServer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
 
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
-            return $InstanceCache.Values
+            return $InstanceCache.Value.Values
 
         } else {
             Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
@@ -4656,7 +4656,7 @@ function Get-CachedCimSession {
         if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
 
             Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
-            return $SessionCache
+            return $SessionCache.Value
 
         } else {
 
@@ -4667,7 +4667,7 @@ function Get-CachedCimSession {
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'ref')
+        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
         $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
@@ -6262,6 +6262,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

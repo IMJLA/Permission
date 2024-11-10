@@ -51,7 +51,7 @@ function Get-CachedCimSession {
         if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
 
             Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
-            return $SessionCache
+            return $SessionCache.Value
 
         } else {
 
@@ -62,7 +62,7 @@ function Get-CachedCimSession {
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'ref')
+        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
         $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
