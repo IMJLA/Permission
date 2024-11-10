@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.853
+Help Version: 0.0.854
 Locale: en-US
 ---
 
@@ -116,7 +116,7 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 
 ### [Resolve-AccessControlList](Resolve-AccessControlList.md)
 
-Resolve-AccessControlList [[-ACLsByPath] <hashtable>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ACEsByGUID] <hashtable>] [[-AceGuidByID] <hashtable>] [[-AceGUIDsByPath] <hashtable>] [[-CimCache] <hashtable>] [[-DirectoryEntryCache] <ref>] [[-DomainsByFqdn] <ref>] [[-DomainsByNetbios] <ref>] [[-DomainsBySid] <ref>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-LogBuffer] <ref> [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>] [<CommonParameters>]
+Resolve-AccessControlList [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 

@@ -13,12 +13,10 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Resolve-AccessControlList [[-ACLsByPath] <Hashtable>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
- [[-ACEsByGUID] <Hashtable>] [[-AceGuidByID] <Hashtable>] [[-AceGUIDsByPath] <Hashtable>]
- [[-CimCache] <Hashtable>] [[-DirectoryEntryCache] <PSReference>] [[-DomainsByFqdn] <PSReference>]
- [[-DomainsByNetbios] <PSReference>] [[-DomainsBySid] <PSReference>] [[-ThisHostName] <String>]
- [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference> [[-ProgressParentId] <Int32>]
- [[-InheritanceFlagResolved] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Resolve-AccessControlList [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-ThisHostName] <String>]
+ [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-ProgressParentId] <Int32>]
+ [[-InheritanceFlagResolved] <String[]>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -35,76 +33,16 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AceGuidByID
-{{ Fill AceGuidByID Description }}
+### -Cache
+{{ Fill Cache Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
-Position: 4
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AceGUIDsByPath
-{{ Fill AceGUIDsByPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ACEsByGUID
-{{ Fill ACEsByGUID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ACLsByPath
-{{ Fill ACLsByPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -CimCache
-{{ Fill CimCache Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
+Required: True
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -120,67 +58,7 @@ Aliases:
 Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
 
 Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DirectoryEntryCache
-{{ Fill DirectoryEntryCache Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DomainsByFqdn
-{{ Fill DomainsByFqdn Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DomainsByNetbios
-{{ Fill DomainsByNetbios Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 9
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DomainsBySid
-{{ Fill DomainsBySid Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 10
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -195,22 +73,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogBuffer
-{{ Fill LogBuffer Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 14
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -240,7 +103,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -255,7 +118,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -270,7 +133,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 11
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -285,7 +148,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -300,7 +163,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

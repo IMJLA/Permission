@@ -5828,43 +5828,12 @@ function Resolve-AccessControlList {
 
     param (
 
-        # Cache of access control lists keyed by path
-        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        # Cache of access control entries keyed by GUID generated in this function
-        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their paths
-        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to a thread-safe dictionary with string keys and object values
-        #>
-        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -5883,18 +5852,20 @@ function Resolve-AccessControlList {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
+        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
+
+    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
 
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
@@ -5906,35 +5877,19 @@ function Resolve-AccessControlList {
         $Progress['Id'] = 0
     }
 
-    $Paths = $ACLsByPath.Keys
+    $ACLsByPath = $Cache.Value['AclByPath']
+    $Paths = $ACLsByPath.Value.Keys
     $Count = $Paths.Count
     Write-Progress @Progress -Status "0% (ACL 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
-    $ACEPropertyName = $ACLsByPath.Values.Access[0].PSObject.Properties.GetEnumerator().Name
+    $ACEPropertyName = $ACLsByPath.Value.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
-        DirectoryEntryCache     = $DirectoryEntryCache
-        DomainsBySID            = $DomainsBySID
-        DomainsByNetbios        = $DomainsByNetbios
-        DomainsByFqdn           = $DomainsByFqdn
+        ACEPropertyName         = $ACEPropertyName
+        Cache                   = $Cache
+        InheritanceFlagResolved = $InheritanceFlagResolved
         ThisHostName            = $ThisHostName
         ThisFqdn                = $ThisFqdn
         WhoAmI                  = $WhoAmI
-        LogBuffer               = $LogBuffer
-        CimCache                = $CimCache
-        ACEsByGuid              = $ACEsByGUID
-        AceGUIDsByPath          = $AceGUIDsByPath
-        AceGuidByID             = $AceGuidByID
-        ACLsByPath              = $ACLsByPath
-        ACEPropertyName         = $ACEPropertyName
-        InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
     if ($ThreadCount -eq 1) {
@@ -5969,14 +5924,14 @@ function Resolve-AccessControlList {
             InputParameter   = 'ItemPath'
             TodaysHostname   = $ThisHostname
             WhoAmI           = $WhoAmI
-            LogBuffer        = $LogBuffer
+            LogBuffer        = $Cache.Value['LogBuffer']
             Threads          = $ThreadCount
             ProgressParentId = $Progress['Id']
             AddParam         = $ResolveAclParams
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @Log -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
+        Write-LogMsg @Log -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Value.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
         Split-Thread @SplitThreadParams
 
     }
@@ -6178,6 +6133,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
