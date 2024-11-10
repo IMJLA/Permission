@@ -7,7 +7,7 @@ function New-PermissionCache {
     $StringList = [type]'System.Collections.Generic.List[String]'
     $Object = [type]'Object'
     $PSCustomObject = [type]'PSCustomObject'
-    $DirectoryInfo = [type]'DirectoryInfo'
+    $DirectoryInfo = [type]'System.IO.DirectoryInfo'
     $PSReference = [type]'ref'
 
     <#

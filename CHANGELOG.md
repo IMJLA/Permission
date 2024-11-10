@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.820] - 2024-11-09 - bugfix need fully-qualified name for directoryinfo
 ## [0.0.819] - 2024-11-09 - ensure key lookup in parent cache only takes place once to retrieve the parents 
 ## [0.0.818] - 2024-11-09 - changing to a single reference variable for the entire in-process cache
 ## [0.0.817] - 2024-11-09 - moving to a single reference variable for the entire in-process cache

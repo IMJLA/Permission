@@ -52,7 +52,7 @@ function Resolve-PermissionTarget {
     ForEach ($ThisTargetPath in $TargetPath) {
 
         Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'" -Expand $ResolveFolderSplat
-        $Parents[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
+        $Parents.Value[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
 
