@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Expand-PermissionTarget [[-RecurseDepth] <Int32>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
  [[-ThisHostname] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference> [[-ProgressParentId] <Int32>]
- [[-TargetPath] <Hashtable>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-TargetPath] <Hashtable>] [[-Cache] <PSReference>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,6 +31,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -Cache
+{{ Fill Cache Description }}
+
+```yaml
+Type: System.Management.Automation.PSReference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -DebugOutputStream
 {{ Fill DebugOutputStream Description }}

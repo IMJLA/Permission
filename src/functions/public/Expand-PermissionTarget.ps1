@@ -34,7 +34,10 @@ function Expand-PermissionTarget {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        [Hashtable]$TargetPath
+        [Hashtable]$TargetPath,
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
@@ -47,10 +50,10 @@ function Expand-PermissionTarget {
     } else {
         $Progress['Id'] = 0
     }
-
+    Pause
     $Targets = $TargetPath.Values | ForEach-Object { $_ }
     $TargetCount = $Targets.Count
-    Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation "Initializing..." -PercentComplete 0
+    Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation 'Initializing...' -PercentComplete 0
 
     $Log = @{
         Buffer       = $LogBuffer
@@ -102,7 +105,7 @@ function Expand-PermissionTarget {
             DebugOutputStream = $DebugOutputStream
             TodaysHostname    = $ThisHostname
             WhoAmI            = $WhoAmI
-            LogBuffer       = $LogBuffer
+            LogBuffer         = $LogBuffer
             Threads           = $ThreadCount
             ProgressParentId  = $Progress['Id']
             AddParam          = $GetSubfolderParams
