@@ -1,4 +1,4 @@
-function New-PermissionCache {
+function New-PermissionCacheRef {
 
     param (
 
