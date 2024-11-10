@@ -69,7 +69,6 @@ function Find-ServerFqdn {
     }
 
     Write-Progress @Progress -Completed
-
     return $UniqueValues.Keys
 
 }

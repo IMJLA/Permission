@@ -3970,7 +3970,6 @@ function Find-ServerFqdn {
     }
 
     Write-Progress @Progress -Completed
-
     return $UniqueValues.Keys
 
 }
@@ -4641,6 +4640,7 @@ function Get-CachedCimSession {
 
     $InstanceCacheByComputer = $null
     $CimCache = $Cache.Value['CimCache']
+    $AddOrUpdateScriptblock = { param($key, $val) $val }
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 
@@ -4648,10 +4648,16 @@ function Get-CachedCimSession {
         $SessionCache = $null
 
         if ( $InstanceCacheByComputer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
+
             Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $SessionCache
+
         } else {
+
             Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
+            $SessionCache = New-PermissionCacheRef -Key $String -Value [type]'CimSession'
+            $null = $InstanceCacheByComputer.Value.AddOrUpdate( 'CimSession' , $SessionCache , $AddOrUpdateScriptblock )
+
         }
 
     } else {
@@ -4686,7 +4692,7 @@ function Get-CachedCimSession {
 
     if ($CimSession) {
 
-        $null = $InstanceCacheByComputer.Value.AddOrUpdate( 'CimSession' , $CimSession , { param($key, $val) $val } )
+        $null = $SessionCache.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
         return $CimSession
 
     }
@@ -6252,6 +6258,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
