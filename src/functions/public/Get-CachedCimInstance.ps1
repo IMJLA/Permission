@@ -134,6 +134,7 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
+                Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
                 $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
 
                 ForEach ($Instance in $CimInstance) {
