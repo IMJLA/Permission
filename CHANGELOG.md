@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.846] - 2024-11-09 - update initialize-cache to use the in-process cache
 ## [0.0.845] - 2024-11-09 - reduce debug verbosity
 ## [0.0.844] - 2024-11-09 - debug output
 ## [0.0.843] - 2024-11-09 - debug output

@@ -27,25 +27,6 @@ function Initialize-Cache {
         # Maximum number of concurrent threads to allow
         [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
 
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to a thread-safe dictionary with string keys and object values
-        #>
-        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName,AdsiProvider,Win32Accounts properties as values
-        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
         <#
         Hostname of the computer running this function.
 
@@ -63,30 +44,33 @@ function Initialize-Cache {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
         # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSIDBySID = (Get-KnownSidHashTable)
+        [hashtable]$WellKnownSIDBySID = (Get-KnownSidHashTable),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
     $Progress = @{
         Activity = 'Initialize-Cache'
     }
+
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
+
     } else {
         $ProgressId = 0
     }
 
     $Progress['Id'] = $ProgressId
     $Count = $Fqdn.Count
+    $LogBuffer = $Cache.Value['LogBuffer']
 
     $Log = @{
         Buffer       = $LogBuffer
@@ -96,21 +80,24 @@ function Initialize-Cache {
     }
 
     $WellKnownSIDByName = @{}
+
     ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
+
         $Known = $WellKnownSIDBySID[$KnownSID]
         $WellKnownSIDByName[$Known.Name] = $Known
+
     }
 
     $GetAdsiServer = @{
-        DirectoryEntryCache = $DirectoryEntryCache
-        DomainsByFqdn       = $DomainsByFqdn
-        DomainsByNetbios    = $DomainsByNetbios
-        DomainsBySid        = $DomainsBySid
+        DirectoryEntryCache = $Cache.Value['DirectoryEntryByPath']
+        DomainsByFqdn       = $Cache.Value['DomainByFqdn']
+        DomainsByNetbios    = $Cache.Value['DomainByNetbios']
+        DomainsBySid        = $Cache.Value['DomainBySid']
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
         LogBuffer           = $LogBuffer
-        CimCache            = $CimCache
+        CimCache            = $Cache.Value['CimCache']
         WellKnownSIDBySID   = $WellKnownSIDBySID
         WellKnownSIDByName  = $WellKnownSIDByName
     }
