@@ -23,9 +23,6 @@ function Get-AccessControlList {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Thread-safe cache of items and their owners
-        [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
@@ -163,8 +160,7 @@ function Get-AccessControlList {
     $GrandChildProgress['Activity'] = 'Get ACL owners'
 
     $GetOwnerAce = @{
-        OwnerCache = $OwnerCache
-        AclByPath  = $AclByPath
+        AclByPath = $AclByPath
     }
 
     $ParentIndex = 0
