@@ -12,6 +12,6 @@ function New-PermissionCacheRef {
 
     $genericTypeDefinition = [System.Collections.Concurrent.ConcurrentDictionary`2]
     $genericType = $genericTypeDefinition.MakeGenericType($Key, $Value)
-    return [Activator]::CreateInstance($genericType)
+    return [ref][Activator]::CreateInstance($genericType)
 
 }
