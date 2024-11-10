@@ -47,7 +47,7 @@ function Resolve-PermissionTarget {
         WhoAmI            = $WhoAmI
     }
 
-    $Parents = $Cache.Value['Parents']
+    $Parents = $Cache.Value['ParentByTargetPath']
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
