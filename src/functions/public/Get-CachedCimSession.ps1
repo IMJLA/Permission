@@ -41,6 +41,7 @@ function Get-CachedCimSession {
     $InstanceCacheByComputer = $null
     $CimCache = $Cache.Value['CimCache']
     $AddOrUpdateScriptblock = { param($key, $val) $val }
+    $String = [type]'String'
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 
