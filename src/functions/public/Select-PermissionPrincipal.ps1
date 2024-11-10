@@ -90,7 +90,7 @@ function Select-PermissionPrincipal {
                             # Resulting in the 'continue' statement not being reached, therefore this principal not being filtered out
                             $true
                         } else {
-                            $Cache.Value['IncludeFilterContents'].Value[$ThisID] = $true
+                            $Cache.Value['IncludeAccountFilterContents'].Value[$ThisID] = $true
                         }
                     }
                 }

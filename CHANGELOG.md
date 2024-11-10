@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.869] - 2024-11-10 - bugfix key name
 ## [0.0.868] - 2024-11-10 - bugfix now should be using ref var
 ## [0.0.867] - 2024-11-10 - implement unified in-process cache
 ## [0.0.866] - 2024-11-10 - build
