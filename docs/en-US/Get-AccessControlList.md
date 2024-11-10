@@ -14,9 +14,9 @@ schema: 2.0.0
 
 ```
 Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
- [[-ThisHostname] <String>] [[-WhoAmI] <String>] [-LogBuffer] <PSReference>
+ [[-ThisHostname] <String>] [[-WhoAmI] <String>]
  [[-OwnerCache] <System.Collections.Concurrent.ConcurrentDictionary`2[System.String,System.Management.Automation.PSObject]>]
- [[-ProgressParentId] <Int32>] [[-Output] <Hashtable>] [[-WarningCache] <Hashtable>]
+ [[-ProgressParentId] <Int32>] [[-WarningCache] <Hashtable>] [[-Cache] <PSReference>]
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -34,6 +34,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -Cache
+{{ Fill Cache Description }}
+
+```yaml
+Type: System.Management.Automation.PSReference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -DebugOutputStream
 {{ Fill DebugOutputStream Description }}
 
@@ -49,36 +64,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -LogBuffer
-{{ Fill LogBuffer Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: True
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Output
-{{ Fill Output Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -OwnerCache
 {{ Fill OwnerCache Description }}
 
@@ -88,7 +73,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -118,7 +103,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -178,7 +163,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 9
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

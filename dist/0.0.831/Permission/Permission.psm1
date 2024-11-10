@@ -4226,23 +4226,22 @@ function Get-AccessControlList {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         # Thread-safe cache of items and their owners
         [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]$OwnerCache = [System.Collections.Concurrent.ConcurrentDictionary[String, PSCustomObject]]::new(),
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # Cache of access control lists keyed by path
-        [hashtable]$Output = [Hashtable]::Synchronized(@{}),
-
         # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
-        [hashtable]$WarningCache = [Hashtable]::Synchronized(@{})
+        [hashtable]$WarningCache = [Hashtable]::Synchronized(@{}),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
+
+    $LogBuffer = $Cache.Value['LogBuffer']
+    $Output = $Cache.Value['AclByPath']
 
     $Log = @{
         ThisHostname = $ThisHostname
@@ -6257,6 +6256,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
