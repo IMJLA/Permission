@@ -132,7 +132,7 @@ function Resolve-Acl {
         DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
-    $ACL = $Cache.Value['AclByPath'][$ItemPath]
+    $ACL = $Cache.Value['AclByPath'].Value[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
 
