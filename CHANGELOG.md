@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.826] - 2024-11-09 - bugfix ref type
 ## [0.0.825] - 2024-11-09 - bugfix how to access ref variables
 ## [0.0.824] - 2024-11-09 - another level of reference var
 ## [0.0.823] - 2024-11-09 - bugfix $Cache is a synchashtable not a concurrentdictionary
