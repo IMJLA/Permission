@@ -149,11 +149,11 @@ function Get-CachedCimInstance {
             return $CimInstance
 
         } else {
-            #Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
+            Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
         }
 
     } else {
-        #Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
+        Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
     }
 
 }
