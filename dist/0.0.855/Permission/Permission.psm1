@@ -5897,6 +5897,7 @@ function Resolve-AccessControlList {
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
+        Write-LogMsg @Log -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Expand $ResolveAclParams -Suffix ' }'
 
         ForEach ($ThisPath in $Paths) {
 
@@ -5911,7 +5912,7 @@ function Resolve-AccessControlList {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            #Write-LogMsg @Log -Text "Resolve-Acl -InputObject '$ThisPath' -ACLsByPath `$ACLsByPath -ACEsByGUID `$ACEsByGUID"
+            #Write-LogMsg @Log -Text "Resolve-Acl -ItemPath '$ThisPath'" -Expand $ResolveAclParams
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -5931,7 +5932,7 @@ function Resolve-AccessControlList {
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @Log -Text "Split-Thread -Command 'Resolve-Acl' -InputParameter InputObject -InputObject @('$($ACLsByPath.Value.Keys -join "','")') -AddParam @{ACLsByPath=`$ACLsByPath;ACEsByGUID=`$ACEsByGUID}"
+        Write-LogMsg @Log -Text 'Split-Thread' -Expand $SplitThreadParams
         Split-Thread @SplitThreadParams
 
     }
@@ -6133,6 +6134,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
