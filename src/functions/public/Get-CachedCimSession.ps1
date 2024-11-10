@@ -32,14 +32,14 @@ function Get-CachedCimSession {
     )
 
     $Log = @{
-        Buffer       = $Cache['LogBuffer']
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
 
     $InstanceCacheByComputer = $null
-    $CimCache = $Cache['CimCache']
+    $CimCache = $Cache.Value['CimCache']
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 

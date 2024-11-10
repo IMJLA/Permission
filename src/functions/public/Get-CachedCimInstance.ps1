@@ -46,7 +46,7 @@ function Get-CachedCimInstance {
     )
 
     $Log = @{
-        Buffer       = $Cache['LogBuffer']
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -60,7 +60,7 @@ function Get-CachedCimInstance {
 
     $InstanceCacheByComputer = $null
     $AddOrUpdateScriptblock = { param($key, $val) $val }
-    $CimCache = $Cache['CimCache']
+    $CimCache = $Cache.Value['CimCache']
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 

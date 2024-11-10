@@ -33,7 +33,7 @@ function Resolve-PermissionTarget {
     )
 
     $Log = @{
-        Buffer       = $Cache['LogBuffer']
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
@@ -47,7 +47,7 @@ function Resolve-PermissionTarget {
         WhoAmI            = $WhoAmI
     }
 
-    $Parents = $Cache['Parents']
+    $Parents = $Cache.Value['Parents']
 
     ForEach ($ThisTargetPath in $TargetPath) {
 

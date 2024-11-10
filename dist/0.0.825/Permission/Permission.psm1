@@ -2633,7 +2633,7 @@ function Resolve-Folder {
 
     )
 
-    $LogBuffer = $Cache['LogBuffer']
+    $LogBuffer = $Cache.Value['LogBuffer']
 
     $Log = @{
         Buffer       = $LogBuffer
@@ -3562,7 +3562,7 @@ function ConvertTo-PermissionFqdn {
 
     )
 
-    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache['LogBuffer']
+    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
 
 }
 function Expand-Permission {
@@ -4498,7 +4498,7 @@ function Get-CachedCimInstance {
     )
 
     $Log = @{
-        Buffer       = $Cache['LogBuffer']
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
@@ -4512,7 +4512,7 @@ function Get-CachedCimInstance {
 
     $InstanceCacheByComputer = $null
     $AddOrUpdateScriptblock = { param($key, $val) $val }
-    $CimCache = $Cache['CimCache']
+    $CimCache = $Cache.Value['CimCache']
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 
@@ -4634,14 +4634,14 @@ function Get-CachedCimSession {
     )
 
     $Log = @{
-        Buffer       = $Cache['LogBuffer']
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
     }
 
     $InstanceCacheByComputer = $null
-    $CimCache = $Cache['CimCache']
+    $CimCache = $Cache.Value['CimCache']
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
 
@@ -4875,7 +4875,7 @@ function Get-PermissionTrustedDomain {
 
     )
 
-    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache['LogBuffer']
+    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
 
 }
 function Get-PermissionWhoAmI {
@@ -4890,7 +4890,7 @@ function Get-PermissionWhoAmI {
 
     )
 
-    Get-CurrentWhoAmI -ThisHostName $ThisHostname -LogBuffer $Cache['LogBuffer']
+    Get-CurrentWhoAmI -ThisHostName $ThisHostname -LogBuffer $Cache.Value['LogBuffer']
 
 }
 function Get-TimeZoneName {
@@ -6094,7 +6094,7 @@ function Resolve-PermissionTarget {
     )
 
     $Log = @{
-        Buffer       = $Cache['LogBuffer']
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputstream
         WhoAmI       = $WhoAmI
@@ -6108,7 +6108,7 @@ function Resolve-PermissionTarget {
         WhoAmI            = $WhoAmI
     }
 
-    $Parents = $Cache['Parents']
+    $Parents = $Cache.Value['Parents']
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
@@ -6253,6 +6253,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

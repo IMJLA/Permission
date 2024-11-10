@@ -15,6 +15,6 @@ function ConvertTo-PermissionFqdn {
 
     )
 
-    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache['LogBuffer']
+    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
 
 }

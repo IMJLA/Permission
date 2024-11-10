@@ -29,7 +29,7 @@ function Resolve-Folder {
 
     )
 
-    $LogBuffer = $Cache['LogBuffer']
+    $LogBuffer = $Cache.Value['LogBuffer']
 
     $Log = @{
         Buffer       = $LogBuffer

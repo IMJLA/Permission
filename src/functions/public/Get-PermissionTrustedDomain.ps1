@@ -13,6 +13,6 @@ function Get-PermissionTrustedDomain {
 
     )
 
-    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache['LogBuffer']
+    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
 
 }
