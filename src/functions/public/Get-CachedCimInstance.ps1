@@ -58,17 +58,17 @@ function Get-CachedCimInstance {
         $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
-    $InstanceCacheByComputer = $null
+    $CimServer = $null
     $AddOrUpdateScriptblock = { param($key, $val) $val }
     $CimCache = $Cache.Value['CimCache']
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
+    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
         $InstanceCache = $null
 
-        if ( $InstanceCacheByComputer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
+        if ( $CimServer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
 
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $InstanceCache.Values
@@ -80,8 +80,8 @@ function Get-CachedCimInstance {
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
+        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
+        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
 
@@ -130,7 +130,7 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
-                $null = $InstanceCacheByComputer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
+                $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
 
                 ForEach ($Instance in $CimInstance) {
 

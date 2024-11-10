@@ -4512,17 +4512,17 @@ function Get-CachedCimInstance {
         $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
-    $InstanceCacheByComputer = $null
+    $CimServer = $null
     $AddOrUpdateScriptblock = { param($key, $val) $val }
     $CimCache = $Cache.Value['CimCache']
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
+    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
         $InstanceCache = $null
 
-        if ( $InstanceCacheByComputer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
+        if ( $CimServer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
 
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $InstanceCache.Values
@@ -4534,8 +4534,8 @@ function Get-CachedCimInstance {
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
+        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
+        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
 
@@ -4584,7 +4584,7 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
-                $null = $InstanceCacheByComputer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
+                $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
 
                 ForEach ($Instance in $CimInstance) {
 
@@ -4643,17 +4643,17 @@ function Get-CachedCimSession {
         WhoAmI       = $WhoAmI
     }
 
-    $InstanceCacheByComputer = $null
+    $CimServer = $null
     $CimCache = $Cache.Value['CimCache']
     $AddOrUpdateScriptblock = { param($key, $val) $val }
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
+    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
 
         Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
         $SessionCache = $null
 
-        if ( $InstanceCacheByComputer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
+        if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
 
             Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $SessionCache
@@ -4661,16 +4661,14 @@ function Get-CachedCimSession {
         } else {
 
             Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
-            $SessionCache = New-PermissionCacheRef -Key $String -Value ([type]'CimSession')
-            $null = $InstanceCacheByComputer.Value.AddOrUpdate( 'CimSession' , $SessionCache , $AddOrUpdateScriptblock )
 
         }
 
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value ([type]'ref')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
+        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'ref')
+        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
 
@@ -4698,7 +4696,7 @@ function Get-CachedCimSession {
 
     if ($CimSession) {
 
-        $null = $SessionCache.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
+        $null = $CimServer.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
         return $CimSession
 
     }
@@ -6264,6 +6262,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

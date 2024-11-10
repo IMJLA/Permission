@@ -38,17 +38,17 @@ function Get-CachedCimSession {
         WhoAmI       = $WhoAmI
     }
 
-    $InstanceCacheByComputer = $null
+    $CimServer = $null
     $CimCache = $Cache.Value['CimCache']
     $AddOrUpdateScriptblock = { param($key, $val) $val }
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$InstanceCacheByComputer ) ) {
+    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
 
         Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
         $SessionCache = $null
 
-        if ( $InstanceCacheByComputer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
+        if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$SessionCache ) ) {
 
             Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $SessionCache
@@ -56,16 +56,14 @@ function Get-CachedCimSession {
         } else {
 
             Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
-            $SessionCache = New-PermissionCacheRef -Key $String -Value ([type]'CimSession')
-            $null = $InstanceCacheByComputer.Value.AddOrUpdate( 'CimSession' , $SessionCache , $AddOrUpdateScriptblock )
 
         }
 
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value ([type]'ref')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
+        $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'ref')
+        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
 
@@ -93,7 +91,7 @@ function Get-CachedCimSession {
 
     if ($CimSession) {
 
-        $null = $SessionCache.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
+        $null = $CimServer.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
         return $CimSession
 
     }
