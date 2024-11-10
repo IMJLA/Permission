@@ -95,7 +95,7 @@ function Get-CachedCimSession {
         return $CimSession
 
     } else {
-        Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
+        #Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
     }
 
 }
