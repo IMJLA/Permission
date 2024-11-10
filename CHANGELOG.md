@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.823] - 2024-11-09 - bugfix $Cache is a synchashtable not a concurrentdictionary
 ## [0.0.822] - 2024-11-09 - bugfix $Cache is a synchashtable not a concurrentdictionary
 ## [0.0.821] - 2024-11-09 - bugfix func name
 ## [0.0.820] - 2024-11-09 - bugfix need fully-qualified name for directoryinfo

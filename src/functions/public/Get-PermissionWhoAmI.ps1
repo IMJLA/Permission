@@ -10,6 +10,6 @@ function Get-PermissionWhoAmI {
 
     )
 
-    Get-CurrentWhoAmI -ThisHostName $ThisHostname -LogBuffer $Cache.Value['LogBuffer']
+    Get-CurrentWhoAmI -ThisHostName $ThisHostname -LogBuffer $Cache['LogBuffer']
 
 }
