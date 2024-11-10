@@ -20,13 +20,14 @@ function Add-PermissionCacheItem {
     )
 
     $List = $null
+    $AddOrUpdateScriptblock = { param($key, $val) $val }
 
-    if ( -not $Cache.TryGetValue( $Key, [ref]$List ) ) {
+    if ( -not $Cache.Value.TryGetValue( $Key, [ref]$List ) ) {
 
         $genericTypeDefinition = [System.Collections.Generic.List`1]
         $genericType = $genericTypeDefinition.MakeGenericType($Type)
         $List = [Activator]::CreateInstance($genericType)
-        $Cache.Add($Key, $List)
+        $null = $Cache.Value.AddOrUpdate($Key, $List, $AddOrUpdateScriptblock)
 
     }
 

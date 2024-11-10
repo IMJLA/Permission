@@ -93,11 +93,11 @@ function Initialize-Cache {
         DomainsByFqdn       = $Cache.Value['DomainByFqdn']
         DomainsByNetbios    = $Cache.Value['DomainByNetbios']
         DomainsBySid        = $Cache.Value['DomainBySid']
+        LogBuffer           = $LogBuffer
+        CimCache            = $Cache.Value['CimCache']
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
-        LogBuffer           = $LogBuffer
-        CimCache            = $Cache.Value['CimCache']
         WellKnownSIDBySID   = $WellKnownSIDBySID
         WellKnownSIDByName  = $WellKnownSIDByName
     }

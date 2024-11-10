@@ -92,34 +92,6 @@ function Resolve-Acl {
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
         [object]$ItemPath,
 
-        # Cache of access control lists keyed by path
-        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
-
-        # Cache of access control entries keyed by GUID generated in this function
-        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their paths
-        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to a thread-safe dictionary with string keys and object values
-        #>
-        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
         <#
         Hostname of the computer running this function.
 
@@ -137,13 +109,6 @@ function Resolve-Acl {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -157,21 +122,18 @@ function Resolve-Acl {
     )
 
     #$Log = @{
+    #    Buffer       = $Cache.Value['LogBuffer']
     #    ThisHostname = $ThisHostname
     #    Type         = $DebugOutputStream
-    #    Buffer       = $LogBuffer
     #    WhoAmI       = $WhoAmI
     #}
 
     $ResolveAceSplat = @{
-        ACEsByGUID = $ACEsByGUID ; AceGuidByID = $AceGuidByID ; AceGUIDsByPath = $AceGUIDsByPath ;
-        DirectoryEntryCache = $DirectoryEntryCache ; DomainsByNetbios = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ;
-        DomainsByFqdn = $DomainsByFqdn ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ;
-        WhoAmI = $WhoAmI ; LogBuffer = $LogBuffer ; CimCache = $CimCache ; ItemPath = $ItemPath ;
+        Cache = $Cache ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ; Type = [guid] ; WhoAmI = $WhoAmI ; ItemPath = $ItemPath ;
         DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
-    $ACL = $ACLsByPath[$ItemPath]
+    $ACL = $Cache.Value['AclByPath'][$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
 

@@ -8,16 +8,6 @@ function Resolve-IdentityReferenceDomainDNS {
         # Network path of the item whose ACL the IdentityReference parameter value is from.
         [object]$ItemPath,
 
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        # [System.Collections.Concurrent.ConcurrentDictionary[string, object]]
-        [Parameter(Mandatory)]
-        [ref]$DomainsByNetbios,
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        # Should be a reference to a [System.Collections.Concurrent.ConcurrentDictionary[string, object]]
-        [Parameter(Mandatory)]
-        [ref]$DomainsBySid,
-
         <#
         Hostname of the computer running this function.
 
@@ -35,26 +25,28 @@ function Resolve-IdentityReferenceDomainDNS {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = @{},
-
         # Output from Get-KnownSidHashTable
         [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug'
+        [String]$DebugOutputStream = 'Debug',
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
     $Log = @{
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        Buffer       = $LogBuffer
+        WhoAmI       = $WhoAmI
+    }
+
+    $LogThis = @{
+        Cache        = $Cache
+        ThisHostname = $ThisHostname
         WhoAmI       = $WhoAmI
     }
 
@@ -79,7 +71,7 @@ function Resolve-IdentityReferenceDomainDNS {
             # IdentityReference appears to be a properly-formatted SID. Its domain SID was able to be parsed.
             $DomainCacheResult = $null
 
-            if ($DomainsBySID.Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
+            if ($Cache.Value['DomainBySid'].Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
 
                 # IdentityReference belongs to a known domain.
                 #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache hit"
@@ -139,7 +131,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
         $DomainCacheResult = $null
 
-        if ($DomainsByNetbios.Value.TryGetValue( $DomainNetBIOS, [ref]$DomainCacheResult )) {
+        if ($Cache.Value['DomainByNetbios'].Value.TryGetValue( $DomainNetBIOS, [ref]$DomainCacheResult )) {
 
             # IdentityReference belongs to a known domain.
             return $DomainCacheResult.Dns
@@ -148,8 +140,8 @@ function Resolve-IdentityReferenceDomainDNS {
 
         # IdentityReference belongs to an unnown domain.
         # Attempt live translation to the domain's DistinguishedName then convert that to FQDN.
-        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
-        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
+        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -ThisFqdn $ThisFqdn @LogThis
+        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn @LogThis
         return $DomainDNS
 
     }

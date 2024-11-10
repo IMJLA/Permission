@@ -2200,6 +2200,7 @@ function Out-PermissionDetailReport {
 
 }
 function Resolve-Ace {
+
     <#
     .SYNOPSIS
     Use ADSI to lookup info about IdentityReferences from Authorization Rule Collections that came from Discretionary Access Control Lists
@@ -2289,38 +2290,15 @@ function Resolve-Ace {
 
     TODO: add a param to offer DNS instead of or in addition to NetBIOS
     #>
+
     [OutputType([void])]
+
     param (
 
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
         [object]$ACE,
 
         [object]$ItemPath,
-
-        # Cache of access control entries keyed by GUID generated in this function
-        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their paths
-        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to a thread-safe dictionary with string keys and object values
-        #>
-        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
 
         <#
         Hostname of the computer running this function.
@@ -2339,13 +2317,6 @@ function Resolve-Ace {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = @{},
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -2358,36 +2329,40 @@ function Resolve-Ace {
 
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
+        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache,
+
+        # GUID type (can be provided to avoid repetitive instantiation)
+        [type]$Type = [guid]
 
     )
 
     #$Log = @{
-    #    Buffer       = $LogBuffer
+    #    Buffer       = $Cache.Value['LogBuffer']
     #    ThisHostname = $ThisHostname
     #    Type         = $DebugOutputStream
     #    WhoAmI       = $WhoAmI
     #}
 
     $LogThis = @{
-        LogBuffer         = $LogBuffer
-        ThisHostname      = $ThisHostname
+        Cache             = $Cache
         DebugOutputStream = $DebugOutputStream
+        ThisHostname      = $ThisHostname
         WhoAmI            = $WhoAmI
     }
 
-    $Cache1 = @{ DirectoryEntryCache = $DirectoryEntryCache ; DomainsByFqdn = $DomainsByFqdn }
-    $Cache2 = @{ DomainsByNetBIOS = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ; CimCache = $CimCache }
-    $GetAdsiServerParams = @{ ThisFqdn = $ThisFqdn ; WellKnownSIDBySID = $WellKnownSIDBySID ; WellKnownSIDByName = $WellKnownSIDByName }
+    $GetAdsiServerParams = @{ WellKnownSIDBySID = $WellKnownSIDBySID ; WellKnownSIDByName = $WellKnownSIDByName }
 
-    #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Cache2 @Log # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @Cache2 @LogThis
+    #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -ThisFqdn '$ThisFqdn' @Log # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -ThisFqdn $ThisFqdn @LogThis
 
     #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS' -ThisFqdn '$ThisFqdn' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @GetAdsiServerParams @Cache1 @Cache2 @LogThis
+    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS -ThisFqdn $ThisFqdn @GetAdsiServerParams @LogThis
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -ThisFqdn '$ThisFqdn' # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @Cache1 @Cache2 @LogThis
+    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -ThisFqdn $ThisFqdn @LogThis
 
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
@@ -2406,10 +2381,9 @@ function Resolve-Ace {
 
     $OutputObject = [PSCustomObject]$ObjectProperties
     $Guid = [guid]::NewGuid()
-    Add-CacheItem -Cache $ACEsByGUID -Key $Guid -Value $OutputObject -Type ([object])
-    $Type = [guid]
-    Add-CacheItem -Cache $AceGuidByID -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
-    Add-CacheItem -Cache $AceGUIDsByPath -Key $OutputObject.Path -Value $Guid -Type $Type
+    Add-PermissionCacheItem -Cache $Cache.Value['AceByGuid'] -Key $Guid -Value $OutputObject -Type ([object])
+    Add-PermissionCacheItem -Cache $Cache.Value['AceGuidById'] -Key $OutputObject.IdentityReferenceResolved -Value $Guid -Type $Type
+    Add-PermissionCacheItem -Cache $Cache.Value['AceGuidByPath'] -Key $OutputObject.Path -Value $Guid -Type $Type
 
 }
 function Resolve-Acl {
@@ -2506,34 +2480,6 @@ function Resolve-Acl {
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
         [object]$ItemPath,
 
-        # Cache of access control lists keyed by path
-        [Hashtable]$ACLsByPath = [Hashtable]::Synchronized(@{}),
-
-        # Cache of access control entries keyed by GUID generated in this function
-        [Hashtable]$ACEsByGUID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their resolved identities
-        [Hashtable]$AceGuidByID = ([Hashtable]::Synchronized(@{})),
-
-        # Cache of access control entry GUIDs keyed by their paths
-        [Hashtable]$AceGUIDsByPath = ([Hashtable]::Synchronized(@{})),
-
-        <#
-        Dictionary to cache directory entries to avoid redundant lookups
-
-        Defaults to a thread-safe dictionary with string keys and object values
-        #>
-        [ref]$DirectoryEntryCache = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByNetbios = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsBySid = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
-        # Hashtable with known domain DNS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        [ref]$DomainsByFqdn = ([System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()),
-
         <#
         Hostname of the computer running this function.
 
@@ -2551,13 +2497,6 @@ function Resolve-Acl {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = ([Hashtable]::Synchronized(@{})),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -2571,21 +2510,18 @@ function Resolve-Acl {
     )
 
     #$Log = @{
+    #    Buffer       = $Cache.Value['LogBuffer']
     #    ThisHostname = $ThisHostname
     #    Type         = $DebugOutputStream
-    #    Buffer       = $LogBuffer
     #    WhoAmI       = $WhoAmI
     #}
 
     $ResolveAceSplat = @{
-        ACEsByGUID = $ACEsByGUID ; AceGuidByID = $AceGuidByID ; AceGUIDsByPath = $AceGUIDsByPath ;
-        DirectoryEntryCache = $DirectoryEntryCache ; DomainsByNetbios = $DomainsByNetbios ; DomainsBySid = $DomainsBySid ;
-        DomainsByFqdn = $DomainsByFqdn ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ;
-        WhoAmI = $WhoAmI ; LogBuffer = $LogBuffer ; CimCache = $CimCache ; ItemPath = $ItemPath ;
+        Cache = $Cache ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ; Type = [guid] ; WhoAmI = $WhoAmI ; ItemPath = $ItemPath ;
         DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
-    $ACL = $ACLsByPath[$ItemPath]
+    $ACL = $Cache.Value['AclByPath'][$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
 
@@ -2799,16 +2735,6 @@ function Resolve-IdentityReferenceDomainDNS {
         # Network path of the item whose ACL the IdentityReference parameter value is from.
         [object]$ItemPath,
 
-        # Hashtable with known domain NetBIOS names as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        # [System.Collections.Concurrent.ConcurrentDictionary[string, object]]
-        [Parameter(Mandatory)]
-        [ref]$DomainsByNetbios,
-
-        # Hashtable with known domain SIDs as keys and objects with Dns,NetBIOS,SID,DistinguishedName properties as values
-        # Should be a reference to a [System.Collections.Concurrent.ConcurrentDictionary[string, object]]
-        [Parameter(Mandatory)]
-        [ref]$DomainsBySid,
-
         <#
         Hostname of the computer running this function.
 
@@ -2826,26 +2752,28 @@ function Resolve-IdentityReferenceDomainDNS {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
-        # Cache of CIM sessions and instances to reduce connections and queries
-        [Hashtable]$CimCache = @{},
-
         # Output from Get-KnownSidHashTable
         [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable),
 
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug'
+        [String]$DebugOutputStream = 'Debug',
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
     $Log = @{
+        Buffer       = $Cache.Value['LogBuffer']
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
-        Buffer       = $LogBuffer
+        WhoAmI       = $WhoAmI
+    }
+
+    $LogThis = @{
+        Cache        = $Cache
+        ThisHostname = $ThisHostname
         WhoAmI       = $WhoAmI
     }
 
@@ -2870,7 +2798,7 @@ function Resolve-IdentityReferenceDomainDNS {
             # IdentityReference appears to be a properly-formatted SID. Its domain SID was able to be parsed.
             $DomainCacheResult = $null
 
-            if ($DomainsBySID.Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
+            if ($Cache.Value['DomainBySid'].Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
 
                 # IdentityReference belongs to a known domain.
                 #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache hit"
@@ -2930,7 +2858,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
         $DomainCacheResult = $null
 
-        if ($DomainsByNetbios.Value.TryGetValue( $DomainNetBIOS, [ref]$DomainCacheResult )) {
+        if ($Cache.Value['DomainByNetbios'].Value.TryGetValue( $DomainNetBIOS, [ref]$DomainCacheResult )) {
 
             # IdentityReference belongs to a known domain.
             return $DomainCacheResult.Dns
@@ -2939,8 +2867,8 @@ function Resolve-IdentityReferenceDomainDNS {
 
         # IdentityReference belongs to an unnown domain.
         # Attempt live translation to the domain's DistinguishedName then convert that to FQDN.
-        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -DomainsByNetbios $DomainsByNetbios @LoggingParams
-        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn -CimCache $CimCache @LoggingParams
+        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -ThisFqdn $ThisFqdn @LogThis
+        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn @LogThis
         return $DomainDNS
 
     }
@@ -3497,13 +3425,14 @@ function Add-PermissionCacheItem {
     )
 
     $List = $null
+    $AddOrUpdateScriptblock = { param($key, $val) $val }
 
-    if ( -not $Cache.TryGetValue( $Key, [ref]$List ) ) {
+    if ( -not $Cache.Value.TryGetValue( $Key, [ref]$List ) ) {
 
         $genericTypeDefinition = [System.Collections.Generic.List`1]
         $genericType = $genericTypeDefinition.MakeGenericType($Type)
         $List = [Activator]::CreateInstance($genericType)
-        $Cache.Add($Key, $List)
+        $null = $Cache.Value.AddOrUpdate($Key, $List, $AddOrUpdateScriptblock)
 
     }
 
@@ -5018,11 +4947,11 @@ function Initialize-Cache {
         DomainsByFqdn       = $Cache.Value['DomainByFqdn']
         DomainsByNetbios    = $Cache.Value['DomainByNetbios']
         DomainsBySid        = $Cache.Value['DomainBySid']
+        LogBuffer           = $LogBuffer
+        CimCache            = $Cache.Value['CimCache']
         ThisHostName        = $ThisHostName
         ThisFqdn            = $ThisFqdn
         WhoAmI              = $WhoAmI
-        LogBuffer           = $LogBuffer
-        CimCache            = $Cache.Value['CimCache']
         WellKnownSIDBySID   = $WellKnownSIDBySID
         WellKnownSIDByName  = $WellKnownSIDByName
     }
@@ -6259,6 +6188,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 
