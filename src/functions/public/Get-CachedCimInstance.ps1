@@ -107,13 +107,17 @@ function Get-CachedCimInstance {
         }
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
+
             Write-LogMsg @Log -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
+
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
+
             Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
+
         }
 
         if ($CimInstance) {
