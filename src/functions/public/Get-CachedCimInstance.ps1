@@ -119,7 +119,7 @@ function Get-CachedCimInstance {
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
-
+        Pause
         if ($CimInstance) {
 
             $CimInstanceType = [type]'CimInstance'
