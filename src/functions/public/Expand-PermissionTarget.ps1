@@ -27,14 +27,8 @@ function Expand-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Log messages which have not yet been written to disk
-        [Parameter(Mandatory)]
-        [ref]$LogBuffer,
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
-
-        [Hashtable]$TargetPath,
 
         # In-process cache to reduce calls to other processes or to disk
         [ref]$Cache
@@ -44,16 +38,23 @@ function Expand-PermissionTarget {
     $Progress = @{
         Activity = 'Expand-PermissionTarget'
     }
+
     if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
+
     } else {
         $Progress['Id'] = 0
     }
-    Pause
-    $Targets = $TargetPath.Values | ForEach-Object { $_ }
+
+    $Targets = ForEach ($Target in $Cache.Value['ParentByTargetPath'].Value.Values ) {
+        $Target
+    }
+
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation 'Initializing...' -PercentComplete 0
+    $LogBuffer = $Cache.Value['LogBuffer']
 
     $Log = @{
         Buffer       = $LogBuffer
