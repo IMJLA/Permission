@@ -79,8 +79,7 @@ function Get-CachedCimInstance {
     } else {
 
         Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
-        $PSReference = [type]'ref'
-        $InstanceCacheByComputer = New-PermissionCacheRef -Key $String -Value $PSReference
+        $InstanceCacheByComputer = New-PermissionCacheRef -Key ([type]'String') -Value ([type]'System.Management.Automation.PSReference')
         $null = $CimCache.Value.AddOrUpdate( $ComputerName , $InstanceCacheByComputer, $AddOrUpdateScriptblock )
 
     }
