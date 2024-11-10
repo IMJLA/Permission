@@ -4241,7 +4241,7 @@ function Get-AccessControlList {
     )
 
     $LogBuffer = $Cache.Value['LogBuffer']
-    $Output = $Cache.Value['AclByPath']
+    $AclByPath = $Cache.Value['AclByPath']
 
     $Log = @{
         ThisHostname = $ThisHostname
@@ -4278,7 +4278,7 @@ function Get-AccessControlList {
         ThisHostname      = $ThisHostname
         DebugOutputStream = $DebugOutputStream
         WhoAmI            = $WhoAmI
-        ACLsByPath        = $Output
+        AclByPath         = $AclByPath
         WarningCache      = $WarningCache
     }
 
@@ -4367,7 +4367,7 @@ function Get-AccessControlList {
 
     $GetOwnerAce = @{
         OwnerCache = $OwnerCache
-        ACLsByPath = $Output
+        AclByPath  = $AclByPath
     }
 
     $ParentIndex = 0
@@ -4445,7 +4445,7 @@ function Get-AccessControlList {
 
     Write-Progress @Progress -Completed
 
-    if ($Output.Value.Keys.Count -eq 0) {
+    if ($AclByPath.Value.Keys.Count -eq 0) {
 
         $Log['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
         Write-LogMsg @Log -Text ' # 0 access control lists could be retrieved.  Exiting script.'
@@ -6256,6 +6256,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

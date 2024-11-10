@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.833] - 2024-11-09 - begin using ref var
 ## [0.0.832] - 2024-11-09 - bugfix need to reference value property of reference variable in order to count contents
 ## [0.0.831] - 2024-11-09 - implement in-process memory cache
 ## [0.0.830] - 2024-11-09 - implement the in-process cache
