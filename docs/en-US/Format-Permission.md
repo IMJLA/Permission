@@ -14,9 +14,8 @@ schema: 2.0.0
 
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>]
- [[-ShortNameByID] <Hashtable>] [[-ExcludeClassFilterContents] <Hashtable>]
- [[-IncludeFilterContents] <Hashtable>] [[-ProgressParentId] <Int32>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>] [[-ProgressParentId] <Int32>]
+ [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -33,6 +32,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -Cache
+{{ Fill Cache Description }}
+
+```yaml
+Type: System.Management.Automation.PSReference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Culture
 {{ Fill Culture Description }}
 
@@ -43,21 +57,6 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ExcludeClassFilterContents
-{{ Fill ExcludeClassFilterContents Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -110,21 +109,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -IncludeFilterContents
-{{ Fill IncludeFilterContents Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 8
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -OutputFormat
 {{ Fill OutputFormat Description }}
 
@@ -161,21 +145,6 @@ Accept wildcard characters: False
 
 ```yaml
 Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 9
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ShortNameByID
-{{ Fill ShortNameByID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
 Parameter Sets: (All)
 Aliases:
 

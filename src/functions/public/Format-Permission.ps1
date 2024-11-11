@@ -28,14 +28,11 @@ function Format-Permission {
 
         [cultureinfo]$Culture = (Get-Culture),
 
-        [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
-
-        [Hashtable]$ExcludeClassFilterContents = @{},
-
-        [Hashtable]$IncludeFilterContents = [Hashtable]::Synchronized(@{}),
-
         # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
@@ -50,10 +47,12 @@ function Format-Permission {
     }
 
     $Progress['Id'] = $ProgressId
-
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
     $Grouping = Resolve-GroupByParameter -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
+    $ShortNameByID = $Cache.Value['ShortNameByID']
+    $ExcludeClassFilterContents = $Cache.Value['ExcludeClassFilterContents']
+    $IncludeFilterContents = $Cache.Value['IncludeAccountFilterContents']
 
     if ($Permission.SplitBy['account']) {
 
@@ -65,8 +64,6 @@ function Format-Permission {
             [int]$Percent = $i / $Count * 100
             Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-
-
             $Selection = $Account
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
