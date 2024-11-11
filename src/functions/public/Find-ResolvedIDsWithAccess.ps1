@@ -8,7 +8,7 @@ function Find-ResolvedIDsWithAccess {
     )
 
     $GuidType = [guid]
-    $IDsWithAccess = New-PermissionCacheRef -Key ([string]) -Value $GuidType
+    $IDsWithAccess = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
 
     ForEach ($Item in $ItemPath) {
 
