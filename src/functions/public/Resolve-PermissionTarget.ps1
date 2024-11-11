@@ -51,7 +51,7 @@ function Resolve-PermissionTarget {
 
     ForEach ($ThisTargetPath in $TargetPath) {
 
-        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'" -Expand $ResolveFolderSplat
+        Write-LogMsg @Log -Text "Resolve-Folder -TargetPath '$ThisTargetPath'" -Expand $ResolveFolderSplat -ExpandKeyMap @{ Cache = '$Cache' }
         $Parents.Value[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath @ResolveFolderSplat
 
     }
