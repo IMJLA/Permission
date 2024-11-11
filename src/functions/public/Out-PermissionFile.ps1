@@ -47,19 +47,15 @@ function Out-PermissionFile {
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
-        [Hashtable]$AceByGUID,
-        [Hashtable]$AclByPath,
-        [Hashtable]$PrincipalByID,
-        [Hashtable]$Parent,
 
         <#
         Level of detail to export to file
             0   Item paths                                                                                  $TargetPath
             1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents
-            2   Expanded resolved item paths (parent paths expanded into children)                          $ACLsByPath.Keys
-            3   Access rules                                                                                $ACLsByPath.Values
+            2   Expanded resolved item paths (parent paths expanded into children)                          $AclByPath.Keys
+            3   Access rules                                                                                $AclByPath.Values
             4   Resolved access rules (server names resolved, inheritance flags resolved)                   $AceByGUID.Values | %{$_} | Sort Path,IdentityReferenceResolved
-            5   Accounts with access                                                                        $PrincipalsByResolvedID.Values | %{$_} | Sort ResolvedAccountName
+            5   Accounts with access                                                                        $PrincipalByID.Values | %{$_} | Sort ResolvedAccountName
             6   Expanded resolved access rules (expanded with account info)                                 $Permissions
             7   Formatted permissions                                                                       $FormattedPermissions
             8   Best Practice issues                                                                        $BestPracticeEval
@@ -113,9 +109,17 @@ function Out-PermissionFile {
         [ValidateSet('none', 'all', 'target', 'item', 'account')]
         [string[]]$SplitBy = 'target',
 
-        [PSCustomObject]$BestPracticeEval
+        [PSCustomObject]$BestPracticeEval,
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
+
+    $AceByGUID = $Cache.Value['AceByGUID']
+    $AclByPath = $Cache.Value['AclByPath']
+    $PrincipalByID = $Cache.Value['PrincipalByID']
+    $Parent = $Cache.Value['ParentByTargetPath']
 
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
@@ -141,17 +145,17 @@ function Out-PermissionFile {
 
     $DetailScripts = @(
         { $TargetPath },
-        { ForEach ($Key in $Parent.Keys) {
+        { ForEach ($Key in $Parent.Value.Keys) {
                 [PSCustomObject]@{
                     OriginalTargetPath  = $Key
-                    ResolvedNetworkPath = $Parent[$Key]
+                    ResolvedNetworkPath = $Parent.Value[$Key]
                 }
             }
         },
-        { $ACLsByPath.Keys },
-        { $ACLsByPath.Values },
-        { ForEach ($val in $AceByGUID.Values) { $val } },
-        { ForEach ($val in $PrincipalsByResolvedID.Values) { $val } },
+        { $AclByPath.Value.Keys },
+        { $AclByPath.Value.Values },
+        { ForEach ($val in $AceByGUID.Value.Values) { $val } },
+        { ForEach ($val in $PrincipalByID.Value.Values) { $val } },
         {
 
             switch ($SplitBy) {
@@ -268,7 +272,7 @@ function Out-PermissionFile {
                             # Apply the report template to the generated HTML report body and description
                             $ReportParameters = $HtmlElements.ReportParameters
 
-                            Write-LogMsg @LogParams -Text "New-BootstrapReport @ReportParameters"
+                            Write-LogMsg @LogParams -Text 'New-BootstrapReport @ReportParameters'
                             New-BootstrapReport -Body $Body @ReportParameters
 
                         } else {

@@ -17,9 +17,8 @@ Out-PermissionFile [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [
  [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <String>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
- [[-AceByGUID] <Hashtable>] [[-AclByPath] <Hashtable>] [[-PrincipalByID] <Hashtable>] [[-Parent] <Hashtable>]
  [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>] [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
- [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-BestPracticeEval] <PSObject>]
+ [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-BestPracticeEval] <PSObject>] [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -36,36 +35,6 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
-### -AceByGUID
-{{ Fill AceByGUID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 15
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AclByPath
-{{ Fill AclByPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 16
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -BestPracticeEval
 {{ Fill BestPracticeEval Description }}
 
@@ -75,7 +44,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 25
+Position: 21
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Cache
+{{ Fill Cache Description }}
+
+```yaml
+Type: System.Management.Automation.PSReference
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 22
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -90,7 +74,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 20
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -105,7 +89,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 19
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -151,7 +135,7 @@ Aliases:
 Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 21
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -182,7 +166,7 @@ Aliases:
 Accepted values: account, item, none, target
 
 Required: False
-Position: 23
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -273,21 +257,6 @@ Aliases:
 Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 22
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Parent
-{{ Fill Parent Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: 18
 Default value: None
 Accept pipeline input: False
@@ -304,21 +273,6 @@ Aliases:
 
 Required: False
 Position: 9
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PrincipalByID
-{{ Fill PrincipalByID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -364,7 +318,7 @@ Aliases:
 Accepted values: none, all, target, item, account
 
 Required: False
-Position: 24
+Position: 20
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
