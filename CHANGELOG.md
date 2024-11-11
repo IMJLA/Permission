@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.879] - 2024-11-10 - bugfix cache
 ## [0.0.878] - 2024-11-10 - improve debug output
 ## [0.0.877] - 2024-11-10 - implement cache
 ## [0.0.876] - 2024-11-10 - bugfix cache value type should be a list

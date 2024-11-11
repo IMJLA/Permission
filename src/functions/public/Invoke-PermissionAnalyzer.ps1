@@ -55,6 +55,8 @@ function Invoke-PermissionAnalyzer {
                         This ensures the new access will not propagate to any subfolders of folder 1, without disrupting ACL inheritance.
     #>
     $AclByPath = $Cache.Value['AclByPath']
+    $AceByGUID = $Cache.Value['AceByGUID']
+    $AceByGUID = $Cache.Value['AceByGUID']
     $PrincipalByID = $Cache.Value['PrincipalByID']
     $ItemsWithBrokenInheritance = $AclByPath.Value.Keys |
     Where-Object -FilterScript {
@@ -69,17 +71,17 @@ function Invoke-PermissionAnalyzer {
     Where-Object -FilterScript { $_.SchemaClassName -eq 'Group' } |
     Where-Object -FilterScript $ViolatesAccountConvention
     if ($NonCompliantAccounts) {
-        $AceGUIDsWithNonCompliantAccounts = $AceGuidByID[$NonCompliantAccounts]
+        $AceGUIDsWithNonCompliantAccounts = $Cache.Value['AceGuidByID'].Value[$NonCompliantAccounts]
     }
     if ($AceGUIDsWithNonCompliantAccounts) {
-        $ACEsWithNonCompliantAccounts = $AceByGUID[$AceGUIDsWithNonCompliantAccounts]
+        $ACEsWithNonCompliantAccounts = $AceByGUID.Value[$AceGUIDsWithNonCompliantAccounts]
     }
 
     $ACEsWithUsers = [System.Collections.Generic.List[PSCustomObject]]::new()
     $ACEsWithUnresolvedSIDs = [System.Collections.Generic.List[PSCustomObject]]::new()
     $ACEsWithCreatorOwner = [System.Collections.Generic.List[PSCustomObject]]::new()
 
-    ForEach ($ACE in $AceByGUID.Values) {
+    ForEach ($ACE in $AceByGUID.Value.Values) {
 
         # ACEs for users (recommend replacing with group-based access on any folder that is not a home folder)
         if (
