@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.874] - 2024-11-10 - use ref var instead of hashtable
+## [0.0.873] - 2024-11-10 - bugfix find-resolveidswithaccess now returns a ref var
 ## [0.0.872] - 2024-11-10 - use add-permissioncacheitem
 ## [0.0.871] - 2024-11-10 - use add-permissioncacheitem
 ## [0.0.870] - 2024-11-10 - bugfix key name

@@ -13,10 +13,10 @@ function Group-ItemPermissionReference {
         $Property['Path'] = $ItemPath
         $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-        $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Keys | Sort-Object)) {
+        $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Value.Keys | Sort-Object)) {
             [PSCustomObject]@{
                 Account  = $ID
-                AceGUIDs = $IDsWithAccess[$ID]
+                AceGUIDs = $IDsWithAccess.Value[$ID]
             }
         }
 

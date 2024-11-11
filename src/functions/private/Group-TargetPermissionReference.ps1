@@ -66,7 +66,7 @@ function Group-TargetPermissionReference {
 
                     $AceGuidByIDForThisNetworkPath = @{}
 
-                    ForEach ($ID in $IDsWithAccess.Keys) {
+                    ForEach ($ID in $IDsWithAccess.Value.Keys) {
 
                         $GuidsForThisIDAndNetworkPath = [System.Collections.Generic.List[guid]]::new()
 
@@ -86,7 +86,7 @@ function Group-TargetPermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Keys -AceGuidByID [ref]$AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID [ref]$AceGuidByIDForThisNetworkPath -AceByGuid $ACEsByGUID
                     }
 
                 }
