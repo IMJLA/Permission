@@ -2985,19 +2985,19 @@ function Select-PermissionTableProperty {
 
         # Dictionary of shortened account IDs keyed by full resolved account IDs
         # Populated by Select-PermissionPrincipal
-        [Hashtable]$ShortNameByID = @{},
+        [ref]$ShortNameByID = @{},
 
-        [Hashtable]$OutputHash = @{},
+        [hashtable]$OutputHash = @{},
 
-        [Hashtable]$ExcludeClassFilterContents = @{},
+        [ref]$ExcludeClassFilterContents = @{},
 
-        [Hashtable]$IncludeFilterContents = @{}
+        [ref]$IncludeAccountFilterContents = @{}
 
     )
 
     $Type = [PSCustomObject]
 
-    $IncludeFilterCount = $IncludeFilterContents.Keys.Count
+    $IncludeFilterCount = $IncludeAccountFilterContents.Value.Keys.Count
 
     switch ($GroupBy) {
 
@@ -3006,7 +3006,7 @@ function Select-PermissionTableProperty {
             ForEach ($Object in $InputObject) {
 
                 # Determine whether the account should be included according to inclusion/exclusion parameters
-                $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
+                $AccountName = $ShortNameByID.Value[$Object.Account.ResolvedAccountName]
 
                 if ($AccountName) {
 
@@ -3022,15 +3022,15 @@ function Select-PermissionTableProperty {
                             } else {
 
                                 # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                                $GroupString = $ShortNameByID.Value[$ACE.IdentityReferenceResolved]
 
                                 if ( -not $GroupString ) {
 
                                     if (
-                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                        $ExcludeClassFilterContents.Value[$ACE.IdentityReferenceResolved] -or
                                         (
                                             $IncludeFilterCount -gt 0 -and -not
-                                            $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                            $IncludeAccountFilterContents.Value[$Object.Account.ResolvedAccountName]
                                         )
                                     ) {
                                         $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -3074,7 +3074,7 @@ function Select-PermissionTableProperty {
                 # Apply the -IgnoreDomain parameter
                 ForEach ($AceList in $Object.Access) {
 
-                    $AccountName = $ShortNameByID[$AceList.Account.ResolvedAccountName]
+                    $AccountName = $ShortNameByID.Value[$AceList.Account.ResolvedAccountName]
 
                     if ($AccountName) {
 
@@ -3106,15 +3106,15 @@ function Select-PermissionTableProperty {
                                 # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
 
                                 # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                                $GroupString = $ShortNameByID.Value[$ACE.IdentityReferenceResolved]
 
                                 if ( -not $GroupString ) {
 
                                     if (
-                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                        $ExcludeClassFilterContents.Value[$ACE.IdentityReferenceResolved] -or
                                         (
                                             $IncludeFilterCount -gt 0 -and -not
-                                            $IncludeFilterContents[$AccountName]
+                                            $IncludeAccountFilterContents.Value[$AccountName]
                                         )
                                     ) {
                                         $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -3162,7 +3162,7 @@ function Select-PermissionTableProperty {
 
                 $OutputHash[$i] = ForEach ($ACE in $Object) {
 
-                    $AccountName = $ShortNameByID[$ACE.ResolvedAccountName]
+                    $AccountName = $ShortNameByID.Value[$ACE.ResolvedAccountName]
 
                     # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
                     # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
@@ -3174,15 +3174,15 @@ function Select-PermissionTableProperty {
                         } else {
 
                             # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                            $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                            $GroupString = $ShortNameByID.Value[$ACE.IdentityReferenceResolved]
 
                             if ( -not $GroupString ) {
 
                                 if (
-                                    $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                    $ExcludeClassFilterContents.Value[$ACE.IdentityReferenceResolved] -or
                                     (
                                         $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$ACE.ResolvedAccountName]
+                                        $IncludeAccountFilterContents.Value[$ACE.ResolvedAccountName]
                                     )
                                 ) {
                                     $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -3939,7 +3939,7 @@ function Format-Permission {
     $Grouping = Resolve-GroupByParameter -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
     $ShortNameByID = $Cache.Value['ShortNameByID']
     $ExcludeClassFilterContents = $Cache.Value['ExcludeClassFilterContents']
-    $IncludeFilterContents = $Cache.Value['IncludeAccountFilterContents']
+    $IncludeAccountFilterContents = $Cache.Value['IncludeAccountFilterContents']
 
     if ($Permission.SplitBy['account']) {
 
@@ -3952,8 +3952,8 @@ function Format-Permission {
             Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             $Selection = $Account
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
                 Account      = $Account.Account
@@ -3989,8 +3989,8 @@ function Format-Permission {
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
 
             $Selection = $Item.Access
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
                 Item         = $Item.Item
@@ -4053,8 +4053,8 @@ function Format-Permission {
                         $Selection = $NetworkPath.$Prop
                     }
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeFilterContents, $ExcludeClassFilterContents
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeFilterContents $IncludeFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeAccountFilterContents, $ExcludeClassFilterContents
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
                         PSTypeName = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
@@ -6065,6 +6065,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

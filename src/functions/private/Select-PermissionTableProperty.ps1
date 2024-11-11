@@ -9,19 +9,19 @@ function Select-PermissionTableProperty {
 
         # Dictionary of shortened account IDs keyed by full resolved account IDs
         # Populated by Select-PermissionPrincipal
-        [Hashtable]$ShortNameByID = @{},
+        [ref]$ShortNameByID = @{},
 
-        [Hashtable]$OutputHash = @{},
+        [hashtable]$OutputHash = @{},
 
-        [Hashtable]$ExcludeClassFilterContents = @{},
+        [ref]$ExcludeClassFilterContents = @{},
 
-        [Hashtable]$IncludeFilterContents = @{}
+        [ref]$IncludeAccountFilterContents = @{}
 
     )
 
     $Type = [PSCustomObject]
 
-    $IncludeFilterCount = $IncludeFilterContents.Keys.Count
+    $IncludeFilterCount = $IncludeAccountFilterContents.Value.Keys.Count
 
     switch ($GroupBy) {
 
@@ -30,7 +30,7 @@ function Select-PermissionTableProperty {
             ForEach ($Object in $InputObject) {
 
                 # Determine whether the account should be included according to inclusion/exclusion parameters
-                $AccountName = $ShortNameByID[$Object.Account.ResolvedAccountName]
+                $AccountName = $ShortNameByID.Value[$Object.Account.ResolvedAccountName]
 
                 if ($AccountName) {
 
@@ -46,15 +46,15 @@ function Select-PermissionTableProperty {
                             } else {
 
                                 # In this case the ACE contains the original IdentityReference representing the group the virtual ACE's account is a member of
-                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                                $GroupString = $ShortNameByID.Value[$ACE.IdentityReferenceResolved]
 
                                 if ( -not $GroupString ) {
 
                                     if (
-                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                        $ExcludeClassFilterContents.Value[$ACE.IdentityReferenceResolved] -or
                                         (
                                             $IncludeFilterCount -gt 0 -and -not
-                                            $IncludeFilterContents[$Object.Account.ResolvedAccountName]
+                                            $IncludeAccountFilterContents.Value[$Object.Account.ResolvedAccountName]
                                         )
                                     ) {
                                         $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -98,7 +98,7 @@ function Select-PermissionTableProperty {
                 # Apply the -IgnoreDomain parameter
                 ForEach ($AceList in $Object.Access) {
 
-                    $AccountName = $ShortNameByID[$AceList.Account.ResolvedAccountName]
+                    $AccountName = $ShortNameByID.Value[$AceList.Account.ResolvedAccountName]
 
                     if ($AccountName) {
 
@@ -130,15 +130,15 @@ function Select-PermissionTableProperty {
                                 # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
 
                                 # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                                $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                                $GroupString = $ShortNameByID.Value[$ACE.IdentityReferenceResolved]
 
                                 if ( -not $GroupString ) {
 
                                     if (
-                                        $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                        $ExcludeClassFilterContents.Value[$ACE.IdentityReferenceResolved] -or
                                         (
                                             $IncludeFilterCount -gt 0 -and -not
-                                            $IncludeFilterContents[$AccountName]
+                                            $IncludeAccountFilterContents.Value[$AccountName]
                                         )
                                     ) {
                                         $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
@@ -186,7 +186,7 @@ function Select-PermissionTableProperty {
 
                 $OutputHash[$i] = ForEach ($ACE in $Object) {
 
-                    $AccountName = $ShortNameByID[$ACE.ResolvedAccountName]
+                    $AccountName = $ShortNameByID.Value[$ACE.ResolvedAccountName]
 
                     # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
                     # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
@@ -198,15 +198,15 @@ function Select-PermissionTableProperty {
                         } else {
 
                             # Each ACE contains the original IdentityReference representing the group the Object is a member of
-                            $GroupString = $ShortNameByID[$ACE.IdentityReferenceResolved]
+                            $GroupString = $ShortNameByID.Value[$ACE.IdentityReferenceResolved]
 
                             if ( -not $GroupString ) {
 
                                 if (
-                                    $ExcludeClassFilterContents[$ACE.IdentityReferenceResolved] -or
+                                    $ExcludeClassFilterContents.Value[$ACE.IdentityReferenceResolved] -or
                                     (
                                         $IncludeFilterCount -gt 0 -and -not
-                                        $IncludeFilterContents[$ACE.ResolvedAccountName]
+                                        $IncludeAccountFilterContents.Value[$ACE.ResolvedAccountName]
                                     )
                                 ) {
                                     $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
