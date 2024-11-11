@@ -46,8 +46,8 @@ function Expand-Permission {
     Write-LogMsg @Log -Text "Resolve-SplitByParameter -SplitBy $SplitBy"
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
     Write-LogMsg @Log -Text "`$SortedPaths = `$AceGuidByPath.Keys | Sort-Object"
-    $SortedPaths = $Cache.Value['AceGuidByPath'].Value.Keys | Sort-Object
     $AceGuidByPath = $Cache.Value['AceGuidByPath']
+    $SortedPaths = $AceGuidByPath.Value.Keys | Sort-Object
     $AceGuidByID = $Cache.Value['AceGuidByID']
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
