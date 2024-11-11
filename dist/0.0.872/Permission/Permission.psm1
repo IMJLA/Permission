@@ -1808,11 +1808,11 @@ function Group-AccountPermissionReference {
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
-        $ItemPaths = @{}
+        $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value $GuidType
 
         ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
 
-            Add-CacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
+            Add-PermissionCacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
 
         }
 
@@ -3774,7 +3774,8 @@ function Find-ResolvedIDsWithAccess {
         [ref]$PrincipalsByResolvedID
     )
 
-    $IDsWithAccess = @{}
+    $GuidType = [guid]
+    $IDsWithAccess = New-PermissionCacheRef -Key ([string]) -Value $GuidType
 
     ForEach ($Item in $ItemPath) {
 
@@ -3787,11 +3788,11 @@ function Find-ResolvedIDsWithAccess {
 
                 ForEach ($Ace in $ACEsByGUID.Value[$Guid]) {
 
-                    Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+                    Add-PermissionCacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type $GuidType
 
                     ForEach ($Member in $PrincipalsByResolvedID.Value[$Ace.IdentityReferenceResolved].Members) {
 
-                        Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+                        Add-PermissionCacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type $GuidType
 
                     }
 
@@ -6046,7 +6047,7 @@ function Select-PermissionPrincipal {
             $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
         }
 
-        Add-CacheItem -Cache $Cache.Value['IdByShortName'] -Key $ShortName -Value $ThisID -Type $Type
+        Add-PermissionCacheItem -Cache $Cache.Value['IdByShortName'] -Key $ShortName -Value $ThisID -Type $Type
         $Cache.Value['ShortNameByID'].Value[$ThisID] = $ShortName
 
     }
@@ -6062,6 +6063,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

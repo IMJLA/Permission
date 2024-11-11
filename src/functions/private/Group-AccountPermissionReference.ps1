@@ -10,11 +10,11 @@ function Group-AccountPermissionReference {
 
     ForEach ($Identity in ($ID | Sort-Object)) {
 
-        $ItemPaths = @{}
+        $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value $GuidType
 
         ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
 
-            Add-CacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
+            Add-PermissionCacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
 
         }
 

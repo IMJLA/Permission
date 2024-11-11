@@ -7,7 +7,8 @@ function Find-ResolvedIDsWithAccess {
         [ref]$PrincipalsByResolvedID
     )
 
-    $IDsWithAccess = @{}
+    $GuidType = [guid]
+    $IDsWithAccess = New-PermissionCacheRef -Key ([string]) -Value $GuidType
 
     ForEach ($Item in $ItemPath) {
 
@@ -20,11 +21,11 @@ function Find-ResolvedIDsWithAccess {
 
                 ForEach ($Ace in $ACEsByGUID.Value[$Guid]) {
 
-                    Add-CacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type ([guid])
+                    Add-PermissionCacheItem -Cache $IDsWithAccess -Key $Ace.IdentityReferenceResolved -Value $Guid -Type $GuidType
 
                     ForEach ($Member in $PrincipalsByResolvedID.Value[$Ace.IdentityReferenceResolved].Members) {
 
-                        Add-CacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type ([guid])
+                        Add-PermissionCacheItem -Cache $IDsWithAccess -Key $Member -Value $Guid -Type $GuidType
 
                     }
 

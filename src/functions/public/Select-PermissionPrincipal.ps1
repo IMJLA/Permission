@@ -104,7 +104,7 @@ function Select-PermissionPrincipal {
             $ShortName = $ShortName -replace "^$IgnoreThisDomain\\", ''
         }
 
-        Add-CacheItem -Cache $Cache.Value['IdByShortName'] -Key $ShortName -Value $ThisID -Type $Type
+        Add-PermissionCacheItem -Cache $Cache.Value['IdByShortName'] -Key $ShortName -Value $ThisID -Type $Type
         $Cache.Value['ShortNameByID'].Value[$ThisID] = $ShortName
 
     }
