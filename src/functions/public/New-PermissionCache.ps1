@@ -34,7 +34,7 @@ function New-PermissionCache {
             LogBuffer                    = New-PermissionCacheRef -Key $String -Value $Object # Initialize a cache of log messages in memory to minimize random disk access.
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
-            ShortNameByID                = New-PermissionCacheRef -Key $String -Value $StringArray  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+            ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
         })
 
 }
