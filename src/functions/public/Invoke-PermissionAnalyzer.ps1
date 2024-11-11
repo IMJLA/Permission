@@ -2,14 +2,8 @@ function Invoke-PermissionAnalyzer {
 
     param (
 
-        # Each key is a path, each value is an ACL object.
-        [hashtable]$AclByPath,
-
         # Each key is a string representing the path of an item allowed to have permissions inheritance disabled.  Values are irrelevant.
         [hashtable]$AllowDisabledInheritance,
-
-        # Each key is an NTAccount caption, each value is an account object.
-        [hashtable]$PrincipalByID,
 
         <#
         Valid accounts that are allowed to appear in ACEs
@@ -30,7 +24,10 @@ function Invoke-PermissionAnalyzer {
             and
             Group1 is the samAccountName of the account
         #>
-        [scriptblock]$AccountConvention = { $true }
+        [scriptblock]$AccountConvention = { $true },
+
+        # In-process cache to reduce calls to other processes or to disk
+        [ref]$Cache
 
     )
 
@@ -57,16 +54,18 @@ function Invoke-PermissionAnalyzer {
 
                         This ensures the new access will not propagate to any subfolders of folder 1, without disrupting ACL inheritance.
     #>
-    $ItemsWithBrokenInheritance = $AclByPath.Keys |
+    $AclByPath = $Cache.Value['AclByPath']
+    $PrincipalByID = $Cache.Value['PrincipalByID']
+    $ItemsWithBrokenInheritance = $AclByPath.Value.Keys |
     Where-Object -FilterScript {
-        $AclByPath[$_].AreAccessRulesProtected -and
+        $AclByPath.Value[$_].AreAccessRulesProtected -and
         -not $AllowDisabledInheritance[$_]
     }
 
     # Groups that were used in ACEs but do not match the specified naming convention
     # Invert the naming convention scriptblock (because we actually want to identify groups that do NOT follow the convention)
     $ViolatesAccountConvention = [scriptblock]::Create("!($AccountConvention)")
-    $NonCompliantAccounts = $PrincipalByID.Values |
+    $NonCompliantAccounts = $PrincipalByID.Value.Values |
     Where-Object -FilterScript { $_.SchemaClassName -eq 'Group' } |
     Where-Object -FilterScript $ViolatesAccountConvention
     if ($NonCompliantAccounts) {
@@ -84,7 +83,7 @@ function Invoke-PermissionAnalyzer {
 
         # ACEs for users (recommend replacing with group-based access on any folder that is not a home folder)
         if (
-            $PrincipalByID[$ACE.IdentityReferenceResolved].SchemaClassName -eq 'User' -and
+            $PrincipalByID.Value[$ACE.IdentityReferenceResolved].SchemaClassName -eq 'User' -and
             $_.IdentityReferenceSID -ne 'S-1-5-18' -and # The 'NT AUTHORITY\SYSTEM' account is part of default Windows file permissions and is out of scope
             $_.SourceOfAccess -ne 'Ownership' # Currently Ownership is out of scope.  Should it be?
         ) {

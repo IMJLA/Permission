@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Invoke-PermissionAnalyzer [[-AclByPath] <Hashtable>] [[-AllowDisabledInheritance] <Hashtable>]
- [[-PrincipalByID] <Hashtable>] [[-AccountConvention] <ScriptBlock>]
+Invoke-PermissionAnalyzer [[-AllowDisabledInheritance] <Hashtable>] [[-AccountConvention] <ScriptBlock>]
+ [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -40,22 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -AclByPath
-{{ Fill AclByPath Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -70,17 +55,17 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -PrincipalByID
-{{ Fill PrincipalByID Description }}
+### -Cache
+{{ Fill Cache Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 

@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.876
+Help Version: 0.0.877
 Locale: en-US
 ---
 
@@ -92,7 +92,7 @@ Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadC
 
 ### [Invoke-PermissionAnalyzer](Invoke-PermissionAnalyzer.md)
 
-Invoke-PermissionAnalyzer [[-AclByPath] <hashtable>] [[-AllowDisabledInheritance] <hashtable>] [[-PrincipalByID] <hashtable>] [[-AccountConvention] <scriptblock>]
+Invoke-PermissionAnalyzer [[-AllowDisabledInheritance] <hashtable>] [[-AccountConvention] <scriptblock>] [[-Cache] <ref>]
 
 ### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)
 
