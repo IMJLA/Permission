@@ -62,8 +62,8 @@ function Format-Permission {
         $FormattedResults['SplitByAccount'] = ForEach ($Account in $Permission.AccountPermissions) {
 
             [int]$Percent = $i / $Count * 100
-            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $Selection = $Account
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
@@ -98,8 +98,8 @@ function Format-Permission {
         $FormattedResults['SplitByItem'] = ForEach ($Item in $Permission.ItemPermissions) {
 
             [int]$Percent = $i / $Count * 100
-            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Item.Path -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Item.Path -PercentComplete $Percent @Progress
 
             $Selection = $Item.Access
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
@@ -135,8 +135,8 @@ function Format-Permission {
         $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
 
             [int]$Percent = $i / $Count * 100
-            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
 
             [PSCustomObject]@{
                 PSTypeName   = 'Permission.TargetPermission'

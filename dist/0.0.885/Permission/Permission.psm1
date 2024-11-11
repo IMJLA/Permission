@@ -3949,8 +3949,8 @@ function Format-Permission {
         $FormattedResults['SplitByAccount'] = ForEach ($Account in $Permission.AccountPermissions) {
 
             [int]$Percent = $i / $Count * 100
-            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $Selection = $Account
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
@@ -3985,8 +3985,8 @@ function Format-Permission {
         $FormattedResults['SplitByItem'] = ForEach ($Item in $Permission.ItemPermissions) {
 
             [int]$Percent = $i / $Count * 100
-            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Item.Path -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Item.Path -PercentComplete $Percent @Progress
 
             $Selection = $Item.Access
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
@@ -4022,8 +4022,8 @@ function Format-Permission {
         $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
 
             [int]$Percent = $i / $Count * 100
-            Write-Progress -Status "$Percent% (Account $($i + 1) of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
 
             [PSCustomObject]@{
                 PSTypeName   = 'Permission.TargetPermission'
@@ -4892,8 +4892,8 @@ function Initialize-Cache {
         ForEach ($ThisServerName in $Fqdn) {
 
             [int]$PercentComplete = $i / $Count * 100
-            Write-Progress -Status "$PercentComplete% (FQDN $($i + 1) of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            Write-Progress -Status "$PercentComplete% (FQDN $i of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
             Write-LogMsg @Log -Text "Get-AdsiServer -Fqdn '$ThisServerName'"
             $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
@@ -6065,6 +6065,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
