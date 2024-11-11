@@ -122,7 +122,7 @@ function Get-CachedCimInstance {
 
         if ($CimInstance) {
 
-            $CimInstanceType = [type]'CimInstance'
+            $CimInstanceType = [System.Collections.Generic.List[CimInstance]]
 
             ForEach ($Prop in $CacheByProperty) {
 
