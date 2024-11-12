@@ -43,88 +43,90 @@ function Get-HtmlReportFooter {
 
     if ($TotalBytes) {
         $TiB = $TotalBytes / 1TB
-        $Size = " ($TiB TiB"
+        $Size = " ($TiB TiB)"
     }
 
+    $AllUnits = @('day', 'hour', 'minute', 'second', 'millisecond')
     $CompletionTime = @(
         @{
             'Name'              = 'Target paths'
             'Count'             = $TargetCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Parent paths'
             'Count'             = $ParentCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Child paths'
             'Count'             = $ChildCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ChildCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ChildCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Item paths (parents and children)'
             'Count'             = $ItemCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ItemCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ItemCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Item servers'
             'Count'             = $FqdnCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FqdnCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FqdnCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'ACLs'
             'Count'             = $AclCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AclCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AclCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'ACEs'
             'Count'             = $AceCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AceCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AceCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'IDs'
             'Count'             = $IdCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $IdCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $IdCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Security Principals'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Grouped and Expanded Permissions'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $AllUnits
         },
         @{
             'Name'              = 'Formatted Permissions'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $AllUnits
         },
-        @{
-            'Name'              = 'Data Size'
-            'Count'             = $TiB
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TiB ) ) -UnitsToResolve $UnitsToResolve
-        },
+        #@{
+        #    'Name'              = 'Data Size'
+        #    'Count'             = $TiB
+        #    'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TiB ) ) -UnitsToResolve $AllUnits
+        #},
         @{
             'Name'              = 'TOTAL'
             'Count'             = 1
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds ) ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds ) ) -UnitsToResolve $AllUnits
         }
     )
 
     $Heading = New-HtmlHeading 'Performance' -Level 6
-    $Html = $CompletionTime | ConvertTo-Html -Fragment
+    $Html = $CompletionTime | Select-Object -Property Name, Count, 'Average Time Each' | ConvertTo-Html -Fragment
     $Table = $Html | New-BootstrapTable
-    New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+    $Div = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
 
     $Text = @"
 Report generated by $WhoAmI on $ThisFQDN starting at $StartTime and ending at $FinishTime $TimeZoneName (elapsed: $Duration)<br />
 Report instance: $ReportInstanceId
 "@
 
-    New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' small'
+    $Alert = New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' small'
+    "$Div<br />$Alert"
 
 }
 <#
