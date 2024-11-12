@@ -94,7 +94,7 @@ function Get-HtmlReportFooter {
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $AllUnits
         },
         @{
-            'Name'              = 'Unique Permissions (non-inherited)'
+            'Name'              = 'Unique Permissions for those security principals (non-inherited)'
             'Count'             = $PermissionCount
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $AllUnits
         },
