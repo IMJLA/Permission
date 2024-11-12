@@ -200,7 +200,11 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
         ItemCount                = $ItemCount
-        FormattedPermissionCount = $FormattedPermission.Count
+        FormattedPermissionCount = (
+            @('csv', 'html', 'js', 'json', 'prtgxml', 'xml') |
+            ForEach-Object { $FormattedPermissions.Values.NetworkPaths.$_.Count } |
+            Measure-Object -Sum
+        ).Sum
         PermissionCount          = (
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account

@@ -1617,7 +1617,11 @@ function Get-HtmlReportElements {
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
         ItemCount                = $ItemCount
-        FormattedPermissionCount = $FormattedPermission.Count
+        FormattedPermissionCount = (
+            @('csv', 'html', 'js', 'json', 'prtgxml', 'xml') |
+            ForEach-Object { $FormattedPermissions.Values.NetworkPaths.$_.Count } |
+            Measure-Object -Sum
+        ).Sum
         PermissionCount          = (
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
@@ -1758,7 +1762,7 @@ function Get-HtmlReportFooter {
         },
         @{
             'Name'              = 'Formatted Permissions (according to report parameters)'
-            'Count'             = $PrincipalCount
+            'Count'             = $FormattedPermissionCount
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $AllUnits
         },
         #@{
@@ -2003,16 +2007,20 @@ function Group-TargetPermissionReference {
                     $AceGuidsForThisNetworkPath = @{}
 
                     # Enumerate the collection of ACE GUIDs for this target
-                    ForEach ($Guid in $AceGUIDsByPath.Value[$ItemsForThisNetworkPath]) {
+                    ForEach ($Item in $ItemsForThisNetworkPath) {
 
-                        # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
-                        if ($Guid) {
+                        ForEach ($Guid in $AceGUIDsByPath.Value[$Item]) {
 
-                            # The returned dictionary value is a lists of guids, so we need to enumerate the list
-                            ForEach ($ListItem in $Guid) {
+                            # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
+                            if ($Guid) {
 
-                                # Add each GUID to the dictionary for quick lookups
-                                $AceGuidsForThisNetworkPath[$ListItem] = $true
+                                # The returned dictionary value is a lists of guids, so we need to enumerate the list
+                                ForEach ($ListItem in $Guid) {
+
+                                    # Add each GUID to the dictionary for quick lookups
+                                    $AceGuidsForThisNetworkPath[$ListItem] = $true
+
+                                }
 
                             }
 
@@ -6170,6 +6178,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

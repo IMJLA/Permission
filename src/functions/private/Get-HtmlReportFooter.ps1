@@ -100,7 +100,7 @@ function Get-HtmlReportFooter {
         },
         @{
             'Name'              = 'Formatted Permissions (according to report parameters)'
-            'Count'             = $PrincipalCount
+            'Count'             = $FormattedPermissionCount
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $AllUnits
         },
         #@{
