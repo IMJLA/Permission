@@ -74,7 +74,7 @@ function Get-HtmlReportFooter {
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FqdnCount ) ) -UnitsToResolve $AllUnits
         },
         @{
-            'Name'              = 'ACLs (on items)'
+            'Name'              = 'ACLs (found on items)'
             'Count'             = $AclCount
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AclCount ) ) -UnitsToResolve $AllUnits
         },
@@ -94,8 +94,8 @@ function Get-HtmlReportFooter {
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $AllUnits
         },
         @{
-            'Name'              = 'Grouped and Expanded Permissions (according to report parameters)'
-            'Count'             = $PrincipalCount
+            'Name'              = 'Unique Permissions (non-inherited)'
+            'Count'             = $PermissionCount
             'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $AllUnits
         },
         @{

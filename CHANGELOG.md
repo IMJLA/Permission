@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.903] - 2024-11-11 - update verbiage
+## [0.0.902] - 2024-11-11 - update verbiage
 ## [0.0.901] - 2024-11-11 - bugfix need values property, memory efficiency with $null instead of $true, and cpu efficiency with iteration instead of conditional
 ## [0.0.900] - 2024-11-11 - need paren to ensure passed as ref var
 ## [0.0.899] - 2024-11-11 - bugfix don't rely on implicit behavior of hashtable to iterate array contents and match each one when using concurrentdictionary
