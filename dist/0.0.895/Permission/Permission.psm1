@@ -1708,67 +1708,67 @@ function Get-HtmlReportFooter {
         @{
             'Name'              = 'Target paths'
             'Count'             = $TargetCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $TargetCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Parent paths'
             'Count'             = $ParentCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $ParentCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Child paths'
             'Count'             = $ChildCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $ChildCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ChildCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Item paths (parents and children)'
             'Count'             = $ItemCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $ItemCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ItemCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Item servers'
             'Count'             = $FqdnCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $FqdnCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FqdnCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'ACLs'
             'Count'             = $AclCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $AclCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AclCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'ACEs'
             'Count'             = $AceCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $AceCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AceCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'IDs'
             'Count'             = $IdCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $IdCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $IdCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Security Principals'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $PrincipalCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Grouped and Expanded Permissions'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $PermissionCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Formatted Permissions'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $FormattedPermissionCount ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'Data Size'
             'Count'             = $TiB
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed / $TiB ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TiB ) ) -UnitsToResolve $UnitsToResolve
         },
         @{
             'Name'              = 'TOTAL'
             'Count'             = 1
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( $StopWatch.Elapsed ) -UnitsToResolve $UnitsToResolve
+            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds ) ) -UnitsToResolve $UnitsToResolve
         }
     )
 
@@ -6168,6 +6168,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

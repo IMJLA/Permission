@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.895] - 2024-11-11 - bugfix timespans or make them worse
+## [0.0.894] - 2024-11-11 - bugfix timespans or making it worse
 ## [0.0.893] - 2024-11-11 - use timespan instead of string for math
 ## [0.0.892] - 2024-11-11 - bugfix need to use timespan not string for math
 ## [0.0.891] - 2024-11-11 - add performance table to html/js report
