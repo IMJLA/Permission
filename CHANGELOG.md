@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.889] - 2024-11-11 - hashtable is more lightweight and still works with csv conversion/export
 ## [0.0.888] - 2024-11-10 - minor cleanup
 ## [0.0.887] - 2024-11-10 - debug log cleanup
 ## [0.0.886] - 2024-11-10 - use ConcurrentQueue instead of ConcurrentDictionary for improved efficiency

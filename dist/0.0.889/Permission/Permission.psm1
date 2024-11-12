@@ -5103,7 +5103,7 @@ function New-PermissionCache {
             ExcludeClassFilterContents   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
             IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
-            LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[PSCustomObject]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
+            LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[hashtable]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
@@ -6065,6 +6065,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
