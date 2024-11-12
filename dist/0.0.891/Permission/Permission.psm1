@@ -1527,6 +1527,16 @@ function Get-HtmlReportElements {
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [string[]]$FileFormat,
 
+        [uint64]$TargetCount,
+        [uint64]$ParentCount,
+        [uint64]$ChildCount,
+        [uint64]$ItemCount,
+        [uint64]$FqdnCount,
+        [uint64]$AclCount,
+        [uint64]$AceCount,
+        [uint64]$IdCount,
+        [UInt64]$PrincipalCount,
+
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$OutputFormat
 
@@ -1601,13 +1611,14 @@ function Get-HtmlReportElements {
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
-    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
+    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
-        ItemCount        = $AclByPath.Keys.Count
-        PermissionCount  = (
+        ItemCount                = $ItemCount
+        FormattedPermissionCount = $FormattedPermission.Count
+        PermissionCount          = (
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
@@ -1618,13 +1629,18 @@ function Get-HtmlReportElements {
             ) |
             Measure-Object -Maximum
         ).Maximum
-        PrincipalCount   = $PrincipalByID.Keys.Count
-        ReportInstanceId = $ReportInstanceId
-        StopWatch        = $StopWatch
-        ThisFqdn         = $ThisFqdn
-        WhoAmI           = $WhoAmI
-        AceByGUID        = $AceByGUID
-        AclByPath        = $AclByPath
+        ReportInstanceId         = $ReportInstanceId
+        StopWatch                = $StopWatch
+        ThisFqdn                 = $ThisFqdn
+        WhoAmI                   = $WhoAmI
+        TargetCount              = $TargetCount
+        ParentCount              = $ParentCount
+        ChildCount               = $ChildCount
+        FqdnCount                = $FqdnCount
+        AclCount                 = $AclCount
+        AceCount                 = $AceCount
+        PrincipalCount           = $PrincipalCount
+        IdCount                  = $IdCount
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
@@ -1641,6 +1657,7 @@ function Get-HtmlReportElements {
 
 }
 function Get-HtmlReportFooter {
+
     param (
 
         # Stopwatch that was started when report generation began
@@ -1656,7 +1673,16 @@ function Get-HtmlReportFooter {
         #>
         [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
+        [uint64]$TargetCount,
+        [uint64]$ParentCount,
+        [uint64]$ChildCount,
         [uint64]$ItemCount,
+        [uint64]$FqdnCount,
+        [uint64]$AclCount,
+        [uint64]$AceCount,
+        [uint64]$IdCount,
+        [UInt64]$PrincipalCount,
+        [uint64]$FormattedPermissionCount,
 
         [uint64]$TotalBytes,
 
@@ -1664,13 +1690,8 @@ function Get-HtmlReportFooter {
 
         [UInt64]$PermissionCount,
 
-        [UInt64]$PrincipalCount,
+        [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second')
 
-        [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second'),
-
-        [Hashtable]$AceByGUID,
-
-        [Hashtable]$AclByPath
     )
 
     $null = $StopWatch.Stop()
@@ -1680,12 +1701,85 @@ function Get-HtmlReportFooter {
     $Duration = Format-TimeSpan -TimeSpan $StopWatch.Elapsed -UnitsToResolve $UnitsToResolve
 
     if ($TotalBytes) {
-        $Size = " ($($TotalBytes / 1TB) TiB"
+        $TiB = $TotalBytes / 1TB
+        $Size = " ($TiB TiB"
     }
 
+    $CompletionTime = @(
+        @{
+            'Name'              = 'Target paths'
+            'Count'             = $TargetCount
+            'Average Time Each' = $Duration / $TargetCount
+        },
+        @{
+            'Name'              = 'Parent paths'
+            'Count'             = $ParentCount
+            'Average Time Each' = $Duration / $ParentCount
+        },
+        @{
+            'Name'              = 'Child paths'
+            'Count'             = $ChildCount
+            'Average Time Each' = $Duration / $ChildCount
+        },
+        @{
+            'Name'              = 'Item paths (parents and children)'
+            'Count'             = $ItemCount
+            'Average Time Each' = $Duration / $ItemCount
+        },
+        @{
+            'Name'              = 'Item servers'
+            'Count'             = $FqdnCount
+            'Average Time Each' = $Duration / $FqdnCount
+        },
+        @{
+            'Name'              = 'ACLs'
+            'Count'             = $AclCount
+            'Average Time Each' = $Duration / $AclCount
+        },
+        @{
+            'Name'              = 'ACEs'
+            'Count'             = $AceCount
+            'Average Time Each' = $Duration / $AceCount
+        },
+        @{
+            'Name'              = 'IDs'
+            'Count'             = $IdCount
+            'Average Time Each' = $Duration / $IdCount
+        },
+        @{
+            'Name'              = 'Security Principals'
+            'Count'             = $PrincipalCount
+            'Average Time Each' = $Duration / $PrincipalCount
+        },
+        @{
+            'Name'              = 'Grouped and Expanded Permissions'
+            'Count'             = $PrincipalCount
+            'Average Time Each' = $Duration / $PermissionCount
+        },
+        @{
+            'Name'              = 'Formatted Permissions'
+            'Count'             = $PrincipalCount
+            'Average Time Each' = $Duration / $FormattedPermissionCount
+        },
+        @{
+            'Name'              = 'Data Size'
+            'Count'             = $TiB
+            'Average Time Each' = $Duration / $TiB
+        },
+        @{
+            'Name'              = 'TOTAL'
+            'Count'             = 1
+            'Average Time Each' = $Duration
+        }
+    )
+
+    $Heading = New-HtmlHeading 'Performance' -Level 6
+    $Html = $CompletionTime | ConvertTo-Html -Fragment
+    $Table = $Html | New-BootstrapTable
+    New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+
     $Text = @"
-Report generated by $WhoAmI on $ThisFQDN starting at $StartTime and ending at $FinishTime $TimeZoneName<br />
-Processed $($AceByGUID.Keys.Count) ACEs with $PermissionCount permissions for $PrincipalCount accounts on $ItemCount items$Size in $Duration<br />
+Report generated by $WhoAmI on $ThisFQDN starting at $StartTime and ending at $FinishTime $TimeZoneName (elapsed: $Duration)<br />
 Report instance: $ReportInstanceId
 "@
 
@@ -5351,6 +5445,16 @@ function Out-PermissionFile {
 
         [PSCustomObject]$BestPracticeEval,
 
+        [uint64]$TargetCount,
+        [uint64]$ParentCount,
+        [uint64]$ChildCount,
+        [uint64]$ItemCount,
+        [uint64]$FqdnCount,
+        [uint64]$AclCount,
+        [uint64]$AceCount,
+        [uint64]$IdCount,
+        [UInt64]$PrincipalCount,
+
         # In-process cache to reduce calls to other processes or to disk
         [ref]$Cache
 
@@ -6065,6 +6169,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

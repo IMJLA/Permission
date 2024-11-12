@@ -18,7 +18,10 @@ Out-PermissionFile [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
  [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
  [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>] [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
- [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-BestPracticeEval] <PSObject>] [[-Cache] <PSReference>]
+ [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-BestPracticeEval] <PSObject>] [[-TargetCount] <UInt64>]
+ [[-ParentCount] <UInt64>] [[-ChildCount] <UInt64>] [[-ItemCount] <UInt64>] [[-FqdnCount] <UInt64>]
+ [[-AclCount] <UInt64>] [[-AceCount] <UInt64>] [[-IdCount] <UInt64>] [[-PrincipalCount] <UInt64>]
+ [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -34,6 +37,36 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -AceCount
+{{ Fill AceCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 28
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -AclCount
+{{ Fill AclCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 27
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -BestPracticeEval
 {{ Fill BestPracticeEval Description }}
@@ -59,7 +92,22 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 22
+Position: 31
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ChildCount
+{{ Fill ChildCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 24
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -156,6 +204,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -FqdnCount
+{{ Fill FqdnCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 26
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -GroupBy
 {{ Fill GroupBy Description }}
 
@@ -172,6 +235,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -IdCount
+{{ Fill IdCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 29
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -IgnoreDomain
 {{ Fill IgnoreDomain Description }}
 
@@ -182,6 +260,21 @@ Aliases:
 
 Required: False
 Position: 2
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ItemCount
+{{ Fill ItemCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 25
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -263,6 +356,21 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -ParentCount
+{{ Fill ParentCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 23
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Permission
 {{ Fill Permission Description }}
 
@@ -273,6 +381,21 @@ Aliases:
 
 Required: False
 Position: 9
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -PrincipalCount
+{{ Fill PrincipalCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 30
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -334,6 +457,21 @@ Aliases:
 
 Required: False
 Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -TargetCount
+{{ Fill TargetCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 22
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.889
+Help Version: 0.0.891
 Locale: en-US
 ---
 
@@ -108,7 +108,7 @@ Out-Permission [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-FormattedPerm
 
 ### [Out-PermissionFile](Out-PermissionFile.md)
 
-Out-PermissionFile [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <string>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Detail] <int[]>] [[-Culture] <cultureinfo>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-SplitBy] <string[]>] [[-BestPracticeEval] <psobject>] [[-Cache] <ref>] [-NoMembers]
+Out-PermissionFile [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-WhoAmI] <string>] [[-ThisFqdn] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Detail] <int[]>] [[-Culture] <cultureinfo>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-SplitBy] <string[]>] [[-BestPracticeEval] <psobject>] [[-TargetCount] <ulong>] [[-ParentCount] <ulong>] [[-ChildCount] <ulong>] [[-ItemCount] <ulong>] [[-FqdnCount] <ulong>] [[-AclCount] <ulong>] [[-AceCount] <ulong>] [[-IdCount] <ulong>] [[-PrincipalCount] <ulong>] [[-Cache] <ref>] [-NoMembers]
 
 ### [Remove-CachedCimSession](Remove-CachedCimSession.md)
 

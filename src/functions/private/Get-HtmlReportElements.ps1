@@ -110,6 +110,16 @@ function Get-HtmlReportElements {
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [string[]]$FileFormat,
 
+        [uint64]$TargetCount,
+        [uint64]$ParentCount,
+        [uint64]$ChildCount,
+        [uint64]$ItemCount,
+        [uint64]$FqdnCount,
+        [uint64]$AclCount,
+        [uint64]$AceCount,
+        [uint64]$IdCount,
+        [UInt64]$PrincipalCount,
+
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$OutputFormat
 
@@ -184,13 +194,14 @@ function Get-HtmlReportElements {
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
     Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
-    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText "Output Folder:" -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
+    $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
-        ItemCount        = $AclByPath.Keys.Count
-        PermissionCount  = (
+        ItemCount                = $ItemCount
+        FormattedPermissionCount = $FormattedPermission.Count
+        PermissionCount          = (
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
@@ -201,13 +212,18 @@ function Get-HtmlReportElements {
             ) |
             Measure-Object -Maximum
         ).Maximum
-        PrincipalCount   = $PrincipalByID.Keys.Count
-        ReportInstanceId = $ReportInstanceId
-        StopWatch        = $StopWatch
-        ThisFqdn         = $ThisFqdn
-        WhoAmI           = $WhoAmI
-        AceByGUID        = $AceByGUID
-        AclByPath        = $AclByPath
+        ReportInstanceId         = $ReportInstanceId
+        StopWatch                = $StopWatch
+        ThisFqdn                 = $ThisFqdn
+        WhoAmI                   = $WhoAmI
+        TargetCount              = $TargetCount
+        ParentCount              = $ParentCount
+        ChildCount               = $ChildCount
+        FqdnCount                = $FqdnCount
+        AclCount                 = $AclCount
+        AceCount                 = $AceCount
+        PrincipalCount           = $PrincipalCount
+        IdCount                  = $IdCount
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 

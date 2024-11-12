@@ -111,6 +111,16 @@ function Out-PermissionFile {
 
         [PSCustomObject]$BestPracticeEval,
 
+        [uint64]$TargetCount,
+        [uint64]$ParentCount,
+        [uint64]$ChildCount,
+        [uint64]$ItemCount,
+        [uint64]$FqdnCount,
+        [uint64]$AclCount,
+        [uint64]$AceCount,
+        [uint64]$IdCount,
+        [UInt64]$PrincipalCount,
+
         # In-process cache to reduce calls to other processes or to disk
         [ref]$Cache
 
