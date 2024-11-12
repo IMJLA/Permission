@@ -20,11 +20,11 @@ function Group-AccountPermissionReference {
 
         [PSCustomObject]@{
             Account = $Identity
-            Access  = ForEach ($Item in ($ItemPaths.Keys | Sort-Object)) {
+            Access  = ForEach ($Item in ($ItemPaths.Value.Keys | Sort-Object)) {
 
                 [PSCustomObject]@{
                     Path     = $Item
-                    AceGUIDs = $ItemPaths[$Item]
+                    AceGUIDs = $ItemPaths.Value[$Item]
                 }
 
             }

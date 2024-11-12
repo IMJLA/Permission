@@ -51,16 +51,11 @@ function Group-TargetPermissionReference {
 
                         ForEach ($Guid in $AceGUIDsByPath.Value[$Item]) {
 
-                            # Check for null (because we send a list into the dictionary for lookup, we receive a null result for paths that do not exist as a key in the dict)
-                            if ($Guid) {
+                            # The returned dictionary value is a lists of guids, so we need to enumerate the list
+                            ForEach ($ListItem in $Guid) {
 
-                                # The returned dictionary value is a lists of guids, so we need to enumerate the list
-                                ForEach ($ListItem in $Guid) {
-
-                                    # Add each GUID to the dictionary for quick lookups
-                                    $AceGuidsForThisNetworkPath[$ListItem] = $true
-
-                                }
+                                # Add each GUID to the dictionary for quick lookups
+                                $AceGuidsForThisNetworkPath[$ListItem] = $null
 
                             }
 
@@ -76,9 +71,7 @@ function Group-TargetPermissionReference {
 
                         ForEach ($Guid in $AceGuidByID.Value[$ID]) {
 
-                            $AceContainsThisID = $AceGuidsForThisNetworkPath[$Guid]
-
-                            if ($AceContainsThisID) {
+                            if ($AceGuidsForThisNetworkPath.ContainsKey($Guid)) {
                                 $GuidsForThisIDAndNetworkPath.Add($Guid)
                             }
 
