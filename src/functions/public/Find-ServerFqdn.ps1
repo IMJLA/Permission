@@ -8,9 +8,6 @@ function Find-ServerFqdn {
         # Known server FQDNs to include in the output
         [string[]]$Known,
 
-        # File paths whose server FQDNs to include in the output
-        [Hashtable]$TargetPath,
-
         <#
         FQDN of the computer running this function.
 
@@ -19,7 +16,13 @@ function Find-ServerFqdn {
         [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId
+        [int]$ProgressParentId,
+
+        [uint64]$ParentCount,
+
+        # In-process cache to reduce calls to other processes or to disk
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -37,8 +40,7 @@ function Find-ServerFqdn {
     }
 
     $Progress['Id'] = $ProgressId
-    $Count = $TargetPath.Keys.Count
-    Write-Progress @Progress -Status "0% (path 0 of $Count)" -CurrentOperation 'Initializing' -PercentComplete 0
+    Write-Progress @Progress -Status "0% (path 0 of $ParentCount)" -CurrentOperation 'Initializing' -PercentComplete 0
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -55,15 +57,15 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($ThisPath in $TargetPath.Keys) {
+    ForEach ($ThisPath in $Cache['ParentByTargetPath'].Value.Values) {
 
         $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 
         if ($NewRemainder -lt $LastRemainder) {
 
             $LastRemainder = $NewRemainder
-            [int]$PercentComplete = $i / $Count * 100
-            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $Count)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            [int]$PercentComplete = $i / $ParentCount * 100
+            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $ParentCount)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
 
         }
 

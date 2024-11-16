@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Find-ServerFqdn [[-Known] <String[]>] [[-TargetPath] <Hashtable>] [[-ThisFqdn] <String>]
- [[-ProgressParentId] <Int32>]
+Find-ServerFqdn [[-Known] <String[]>] [[-ThisFqdn] <String>] [[-ProgressParentId] <Int32>]
+ [[-ParentCount] <UInt64>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -31,6 +31,21 @@ PS C:\> {{ Add example code here }}
 
 ## PARAMETERS
 
+### -Cache
+{{ Fill Cache Description }}
+
+```yaml
+Type: System.Management.Automation.PSReference
+Parameter Sets: (All)
+Aliases:
+
+Required: True
+Position: 4
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -Known
 {{ Fill Known Description }}
 
@@ -46,11 +61,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
+### -ParentCount
+{{ Fill ParentCount Description }}
 
 ```yaml
-Type: System.Int32
+Type: System.UInt64
 Parameter Sets: (All)
 Aliases:
 
@@ -61,16 +76,31 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -TargetPath
-{{ Fill TargetPath Description }}
+### -ProgressAction
+{{ Fill ProgressAction Description }}
 
 ```yaml
-Type: System.Collections.Hashtable
+Type: System.Management.Automation.ActionPreference
+Parameter Sets: (All)
+Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ProgressParentId
+{{ Fill ProgressParentId Description }}
+
+```yaml
+Type: System.Int32
 Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -85,11 +115,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
+
+### CommonParameters
+This cmdlet supports the common parameters: -Debug, -ErrorAction, -ErrorVariable, -InformationAction, -InformationVariable, -OutVariable, -OutBuffer, -PipelineVariable, -Verbose, -WarningAction, and -WarningVariable. For more information, see [about_CommonParameters](http://go.microsoft.com/fwlink/?LinkID=113216).
 
 ## INPUTS
 
