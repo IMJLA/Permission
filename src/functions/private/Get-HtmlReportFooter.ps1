@@ -61,7 +61,7 @@ function Get-HtmlReportFooter {
         @{
             'Name'              = 'Children (found beneath parent paths)'
             'Count'             = $ChildCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ChildCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($ChildCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ChildCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Items (parents and children)'
