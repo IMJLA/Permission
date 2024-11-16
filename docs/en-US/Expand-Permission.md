@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-Children] <Hashtable>]
+Expand-Permission [[-SplitBy] <String[]>] [[-GroupBy] <String>] [[-Children] <Hashtable>]
  [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>] [[-ProgressParentId] <Int32>]
  [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -82,9 +82,10 @@ Accept wildcard characters: False
 {{ Fill GroupBy Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String
 Parameter Sets: (All)
 Aliases:
+Accepted values: account, item, none, target
 
 Required: False
 Position: 1
@@ -127,9 +128,10 @@ Accept wildcard characters: False
 {{ Fill SplitBy Description }}
 
 ```yaml
-Type: System.Object
+Type: System.String[]
 Parameter Sets: (All)
 Aliases:
+Accepted values: account, item, none, target
 
 Required: False
 Position: 0

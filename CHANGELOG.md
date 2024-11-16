@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.907] - 2024-11-15 - add progress and simplify whoami
+## [0.0.906] - 2024-11-15 - add progress and simplify whoami
 ## [0.0.905] - 2024-11-11 - verbiage
 ## [0.0.904] - 2024-11-11 - update verbiage
 ## [0.0.903] - 2024-11-11 - update verbiage

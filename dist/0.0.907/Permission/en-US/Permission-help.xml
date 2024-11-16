@@ -932,9 +932,15 @@
           <maml:description>
             <maml:para>{{ Fill SplitBy Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">account</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">item</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">none</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">target</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
-            <maml:name>System.Object</maml:name>
+            <maml:name>System.String[]</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -944,9 +950,15 @@
           <maml:description>
             <maml:para>{{ Fill GroupBy Description }}</maml:para>
           </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+          <command:parameterValueGroup>
+            <command:parameterValue required="false" command:variableLength="false">account</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">item</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">none</command:parameterValue>
+            <command:parameterValue required="false" command:variableLength="false">target</command:parameterValue>
+          </command:parameterValueGroup>
+          <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
           <dev:type>
-            <maml:name>System.Object</maml:name>
+            <maml:name>System.String</maml:name>
             <maml:uri />
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
@@ -1092,9 +1104,9 @@
         <maml:description>
           <maml:para>{{ Fill GroupBy Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.String</command:parameterValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>System.String</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -1128,9 +1140,9 @@
         <maml:description>
           <maml:para>{{ Fill SplitBy Description }}</maml:para>
         </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
         <dev:type>
-          <maml:name>System.Object</maml:name>
+          <maml:name>System.String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -3570,33 +3582,9 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>Cache</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Cache Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Management.Automation.PSReference</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>Cache</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Cache Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Management.Automation.PSReference</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>ThisHostname</maml:name>
         <maml:description>

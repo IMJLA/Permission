@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-PermissionWhoAmI [[-ThisHostname] <String>] [[-Cache] <PSReference>]
+Get-PermissionWhoAmI [[-ThisHostname] <String>]
 ```
 
 ## DESCRIPTION
@@ -29,21 +29,6 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
-
-### -Cache
-{{ Fill Cache Description }}
-
-```yaml
-Type: System.Management.Automation.PSReference
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
 
 ### -ThisHostname
 {{ Fill ThisHostname Description }}

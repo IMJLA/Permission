@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.905
+Help Version: 0.0.907
 Locale: en-US
 ---
 
@@ -32,7 +32,7 @@ ConvertTo-PermissionFqdn [[-ComputerName] <string>] [[-ThisHostname] <string>] [
 
 ### [Expand-Permission](Expand-Permission.md)
 
-Expand-Permission [[-SplitBy] <Object>] [[-GroupBy] <Object>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [<CommonParameters>]
+Expand-Permission [[-SplitBy] <string[]>] [[-GroupBy] <string>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
@@ -80,7 +80,7 @@ Get-PermissionTrustedDomain [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-C
 
 ### [Get-PermissionWhoAmI](Get-PermissionWhoAmI.md)
 
-Get-PermissionWhoAmI [[-ThisHostname] <string>] [[-Cache] <ref>]
+Get-PermissionWhoAmI [[-ThisHostname] <string>]
 
 ### [Get-TimeZoneName](Get-TimeZoneName.md)
 
