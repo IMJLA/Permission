@@ -155,7 +155,7 @@ function Get-CachedCimInstance {
 
     } else {
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection failure # for $ComputerName"
+        Write-LogMsg @Log -Text " # CIM connection failure # for '$ComputerName'"
     }
 
 }

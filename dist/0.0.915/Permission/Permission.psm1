@@ -4657,7 +4657,7 @@ function Get-CachedCimInstance {
 
     } else {
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection failure # for $ComputerName"
+        Write-LogMsg @Log -Text " # CIM connection failure # for '$ComputerName'"
     }
 
 }
@@ -4749,22 +4749,28 @@ function Get-CachedCimSession {
     ) {
 
         Write-LogMsg @Log -Text '$CimSession = New-CimSession'
-        $CimSession = New-CimSession -ErrorVariable CimErrors
+        $CimSession = New-CimSession -ErrorVariable CimErrors -ErrorAction SilentlyContinue
 
     } else {
 
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
         Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
-        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorVariable CimErrors
+        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorVariable CimErrors -ErrorAction SilentlyContinue
 
     }
 
     if ($null -ne $CimErrors) {
+
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection error: $CimErrors # for $ComputerName"
+
+        ForEach ($thisErr in $CimErrors) {
+            Write-LogMsg @Log -Text " # CIM connection error: $($thisErr.Exception.Message) # for '$ComputerName'"
+        }
+
         $null = $CimServer.Value.AddOrUpdate( 'CimFailure' , $CimErrors , $AddOrUpdateScriptblock )
         return
+
     }
 
     if ($CimSession) {
@@ -4774,7 +4780,7 @@ function Get-CachedCimSession {
 
     } else {
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection failure without error message # for $ComputerName"
+        Write-LogMsg @Log -Text " # CIM connection failure without error message # for '$ComputerName'"
     }
 
 }
@@ -6232,6 +6238,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

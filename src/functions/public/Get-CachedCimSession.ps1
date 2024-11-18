@@ -86,22 +86,28 @@ function Get-CachedCimSession {
     ) {
 
         Write-LogMsg @Log -Text '$CimSession = New-CimSession'
-        $CimSession = New-CimSession -ErrorVariable CimErrors
+        $CimSession = New-CimSession -ErrorVariable CimErrors -ErrorAction SilentlyContinue
 
     } else {
 
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
         Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
-        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorVariable CimErrors
+        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorVariable CimErrors -ErrorAction SilentlyContinue
 
     }
 
     if ($null -ne $CimErrors) {
+
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection error: $CimErrors # for $ComputerName"
+
+        ForEach ($thisErr in $CimErrors) {
+            Write-LogMsg @Log -Text " # CIM connection error: $($thisErr.Exception.Message) # for '$ComputerName'"
+        }
+
         $null = $CimServer.Value.AddOrUpdate( 'CimFailure' , $CimErrors , $AddOrUpdateScriptblock )
         return
+
     }
 
     if ($CimSession) {
@@ -111,7 +117,7 @@ function Get-CachedCimSession {
 
     } else {
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection failure without error message # for $ComputerName"
+        Write-LogMsg @Log -Text " # CIM connection failure without error message # for '$ComputerName'"
     }
 
 }
