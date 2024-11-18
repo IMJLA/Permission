@@ -4749,14 +4749,14 @@ function Get-CachedCimSession {
     ) {
 
         Write-LogMsg @Log -Text '$CimSession = New-CimSession'
-        $CimSession = New-CimSession -ErrorAction SilentlyContinue -ErrorVariable $CimErrors
+        $CimSession = New-CimSession -ErrorVariable $CimErrors
 
     } else {
 
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
         Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
-        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue -ErrorVariable $CimErrors
+        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorVariable $CimErrors
 
     }
 
@@ -6232,6 +6232,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

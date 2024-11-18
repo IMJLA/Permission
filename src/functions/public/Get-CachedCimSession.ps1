@@ -86,14 +86,14 @@ function Get-CachedCimSession {
     ) {
 
         Write-LogMsg @Log -Text '$CimSession = New-CimSession'
-        $CimSession = New-CimSession -ErrorAction SilentlyContinue -ErrorVariable $CimErrors
+        $CimSession = New-CimSession -ErrorVariable $CimErrors
 
     } else {
 
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
         Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
-        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue -ErrorVariable $CimErrors
+        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorVariable $CimErrors
 
     }
 

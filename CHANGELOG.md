@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.912] - 2024-11-17 - bugfix error handling
 ## [0.0.911] - 2024-11-17 - improve error handling for cim connection failures
 ## [0.0.910] - 2024-11-16 - implement cache
 ## [0.0.909] - 2024-11-15 - bugfix for disabled recursion
