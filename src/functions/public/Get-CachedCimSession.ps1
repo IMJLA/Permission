@@ -56,6 +56,12 @@ function Get-CachedCimSession {
         } else {
 
             Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
+            $PastFailures = $null
+
+            if ( $CimServer.Value.TryGetValue( 'CimFailure' , [ref]$PastFailures ) ) {
+                Write-LogMsg @Log -Text " # CIM failure cache hit for '$ComputerName'.  Skipping connection attempt."
+                return
+            }
 
         }
 
@@ -66,6 +72,8 @@ function Get-CachedCimSession {
         $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
     }
+
+    $CimErrors = $null
 
     if (
         $ComputerName -eq $ThisHostname -or
@@ -78,15 +86,22 @@ function Get-CachedCimSession {
     ) {
 
         Write-LogMsg @Log -Text '$CimSession = New-CimSession'
-        $CimSession = New-CimSession
+        $CimSession = New-CimSession -ErrorAction SilentlyContinue -ErrorVariable $CimErrors
 
     } else {
 
         # If an Active Directory domain is targeted there are no local accounts and CIM connectivity is not expected
         # Suppress errors and return nothing in that case
         Write-LogMsg @Log -Text "`$CimSession = New-CimSession -ComputerName $ComputerName"
-        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue
+        $CimSession = New-CimSession -ComputerName $ComputerName -ErrorAction SilentlyContinue -ErrorVariable $CimErrors
 
+    }
+
+    if ($null -ne $CimErrors) {
+        $Log['Type'] = 'Warning'
+        Write-LogMsg @Log -Text " # CIM connection error: $($CimErrors.Exception.Message) # for $ComputerName"
+        $null = $CimServer.Value.AddOrUpdate( 'CimFailure' , $CimErrors , $AddOrUpdateScriptblock )
+        return
     }
 
     if ($CimSession) {
@@ -95,7 +110,8 @@ function Get-CachedCimSession {
         return $CimSession
 
     } else {
-        #Write-LogMsg @Log -Text " # No CIM session returned # for $ComputerName"
+        $Log['Type'] = 'Warning'
+        Write-LogMsg @Log -Text " # CIM connection failure without error message # for $ComputerName"
     }
 
 }
