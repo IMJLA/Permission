@@ -97,9 +97,8 @@ function Get-CachedCimSession {
 
     }
 
-    if ($null -ne $CimErrors) {
+    if ($CimErrors.Count -gt 0) {
 
-        Write-LogMsg @Log -Text " # CIM connection error # for '$ComputerName'"
         $Log['Type'] = 'Warning'
 
         ForEach ($thisErr in $CimErrors) {
