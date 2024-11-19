@@ -99,10 +99,8 @@ function Get-CachedCimSession {
 
     if ($CimErrors.Count -gt 0) {
 
-        $Log['Type'] = 'Warning'
-
         ForEach ($thisErr in $CimErrors) {
-            Write-LogMsg @Log -Text " # CIM connection error: $($thisErr.Exception.Message) # for '$ComputerName'"
+            Write-LogMsg @Log -Text " # CIM connection error: $($thisErr.Exception.Message -replace  '\s', '' )) # for '$ComputerName'"
         }
 
         $null = $CimServer.Value.AddOrUpdate( 'CimFailure' , $CimErrors , $AddOrUpdateScriptblock )
