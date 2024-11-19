@@ -57,8 +57,9 @@ function Get-CachedCimSession {
 
             Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
             $PastFailures = $null
+            $null = $CimServer.Value.TryGetValue( 'CimFailure' , [ref]$PastFailures )
 
-            if ( $CimServer.Value.TryGetValue( 'CimFailure' , [ref]$PastFailures ) ) {
+            if ( $PastFailures ) {
                 Write-LogMsg @Log -Text " # CIM failure cache hit for '$ComputerName'.  Skipping connection attempt."
                 return
             }
