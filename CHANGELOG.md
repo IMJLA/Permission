@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.917] - 2024-11-18 - bugfix cimfailure detection
 ## [0.0.916] - 2024-11-18 - bugfix cimfailure detection
 ## [0.0.915] - 2024-11-17 - bugfix error handling
 ## [0.0.914] - 2024-11-17 - bugfix error message
