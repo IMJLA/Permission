@@ -3996,7 +3996,7 @@ function Find-ServerFqdn {
         $ThisFqdn = $null
     }
 
-    ForEach ($Value in $Known) {
+    ForEach ($Value in $Cache['DomainByFqdn'].Value.Keys) {
         $UniqueValues[$Value] = $null
     }
 
@@ -4922,12 +4922,16 @@ function Get-PermissionTrustedDomain {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
+        # Output stream to send the log messages to
+        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
+        [string]$DebugOutputStream = 'Debug',
+
         # In-process cache to reduce calls to other processes or to disk
         [ref]$Cache
 
     )
 
-    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
+    Get-TrustedDomain -ThisHostname $ThisHostname -WhoAmI $WhoAmI -DebugOutputStream $DebugOutputStream -Cache $Cache
 
 }
 function Get-PermissionWhoAmI {
@@ -6236,6 +6240,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

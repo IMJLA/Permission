@@ -13,7 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-PermissionTrustedDomain [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-Cache] <PSReference>]
+Get-PermissionTrustedDomain [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>]
+ [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -37,6 +38,22 @@ PS C:\> {{ Add example code here }}
 Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -DebugOutputStream
+{{ Fill DebugOutputStream Description }}
+
+```yaml
+Type: System.String
+Parameter Sets: (All)
+Aliases:
+Accepted values: Silent, Quiet, Success, Debug, Verbose, Output, Host, Warning, Error, Information, 
 
 Required: False
 Position: 2

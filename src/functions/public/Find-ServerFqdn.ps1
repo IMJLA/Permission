@@ -46,7 +46,7 @@ function Find-ServerFqdn {
         $ThisFqdn = $null
     }
 
-    ForEach ($Value in $Known) {
+    ForEach ($Value in $Cache['DomainByFqdn'].Value.Keys) {
         $UniqueValues[$Value] = $null
     }
 
