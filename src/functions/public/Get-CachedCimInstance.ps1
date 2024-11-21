@@ -100,6 +100,7 @@ function Get-CachedCimInstance {
         $GetCimInstanceParams = @{
             CimSession  = $CimSession
             ErrorAction = 'SilentlyContinue'
+            Debug       = $false
         }
 
         if ($Namespace) {
