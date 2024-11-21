@@ -2228,12 +2228,17 @@ function New-PermissionCacheRef {
         [type]$Key = [System.String],
 
         # Type of the values
-        [type]$Value = [System.Collections.Generic.List[System.Object]]
+        [type]$Value = [System.Collections.Generic.List[System.Object]],
+
+        [StringComparer]$Comparer = [StringComparer]::OrdinalIgnoreCase
 
     )
 
     $genericTypeDefinition = [System.Collections.Concurrent.ConcurrentDictionary`2]
     $genericType = $genericTypeDefinition.MakeGenericType($Key, $Value)
+    if ($Key -eq [System.String]) {
+        return [ref][Activator]::CreateInstance($genericType, $Comparer)
+    }
     return [ref][Activator]::CreateInstance($genericType)
 
 }
@@ -6230,6 +6235,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
