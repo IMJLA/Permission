@@ -47,9 +47,6 @@ function Initialize-Cache {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSIDBySID = (Get-KnownSidHashTable),
-
         # In-process cache to reduce calls to other processes or to disk
         [ref]$Cache
 
@@ -72,23 +69,13 @@ function Initialize-Cache {
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
     $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
-    $WellKnownSIDByName = @{}
-
-    ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
-
-        $Known = $WellKnownSIDBySID[$KnownSID]
-        $WellKnownSIDByName[$Known.Name] = $Known
-
-    }
 
     $GetAdsiServer = @{
-        Cache              = $Cache
-        DebugOutputStream  = $DebugOutputStream
-        ThisHostName       = $ThisHostName
-        ThisFqdn           = $ThisFqdn
-        WhoAmI             = $WhoAmI
-        WellKnownSIDBySID  = $WellKnownSIDBySID
-        WellKnownSIDByName = $WellKnownSIDByName
+        Cache             = $Cache
+        DebugOutputStream = $DebugOutputStream
+        ThisHostName      = $ThisHostName
+        ThisFqdn          = $ThisFqdn
+        WhoAmI            = $WhoAmI
     }
 
     if ($ThreadCount -eq 1) {

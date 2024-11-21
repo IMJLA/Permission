@@ -9,6 +9,8 @@ function New-PermissionCache {
     $PSCustomObject = [type]'PSCustomObject'
     $DirectoryInfo = [type]'System.IO.DirectoryInfo'
     $PSReference = [type]'ref'
+    $WellKnownSidBySid = Get-KnownSidHashTable
+    $WellKnownSidByName = Get-KnownSidByName -WellKnownSidBySid $WellKnownSidBySid
 
     <#
     $CimCache
@@ -17,6 +19,8 @@ function New-PermissionCache {
             Key is a String
             Value varies (CimSession or dict)
 #>
+
+
     return [hashtable]::Synchronized(@{
             AceByGUID                    = New-PermissionCacheRef -Key $String -Value $Object #hashtable Initialize a cache of access control entries keyed by GUID generated in Resolve-ACE.
             AceGuidByID                  = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their resolved NTAccount captions.
@@ -35,6 +39,8 @@ function New-PermissionCache {
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+            WellKnownSidBySid            = [ref]$WellKnownSidBySid
+            WellKnownSidByName           = [ref]$WellKnownSidByName
         })
 
 }

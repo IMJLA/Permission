@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.924
+Help Version: 0.0.925
 Locale: en-US
 ---
 
@@ -88,7 +88,7 @@ Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
 ### [Initialize-Cache](Initialize-Cache.md)
 
-Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-ProgressParentId] <int>] [[-WellKnownSIDBySID] <hashtable>] [[-Cache] <ref>]
+Initialize-Cache [[-Fqdn] <string[]>] [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [[-ProgressParentId] <int>] [[-Cache] <ref>]
 
 ### [Invoke-PermissionAnalyzer](Invoke-PermissionAnalyzer.md)
 

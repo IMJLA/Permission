@@ -2434,13 +2434,12 @@ function Resolve-Ace {
 
     #$Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
     $Splat = @{ ThisHostname = $ThisHostname ; Cache = $Cache ; WhoAmI = $WhoAmI ; DebugOutputStream = $DebugOutputStream ; ThisFqdn = $ThisFqdn }
-    $GetAdsiServerParams = @{ WellKnownSIDBySID = $WellKnownSIDBySID ; WellKnownSIDByName = $WellKnownSIDByName }
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath'" -Expand $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath @Splat
 
-    #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS'" -Expand $GetAdsiServerParams, $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @GetAdsiServerParams @Splat
+    #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS'" -Expand $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @Splat
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer" -Expand $Splat -Suffix " # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer @Splat
@@ -2832,9 +2831,6 @@ function Resolve-IdentityReferenceDomainDNS {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -2857,7 +2853,7 @@ function Resolve-IdentityReferenceDomainDNS {
         WhoAmI       = $WhoAmI
     }
 
-    if ($WellKnownSidBySid[$IdentityReference]) {
+    if ($Cache.Value['WellKnownSidBySid'].Value[$IdentityReference]) {
 
         # IdentityReference is a well-known SID of a local account.
         # For local accounts, the domain is the computer hosting the network resource.
@@ -5006,9 +5002,6 @@ function Initialize-Cache {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSIDBySID = (Get-KnownSidHashTable),
-
         # In-process cache to reduce calls to other processes or to disk
         [ref]$Cache
 
@@ -5031,23 +5024,13 @@ function Initialize-Cache {
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
     $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
-    $WellKnownSIDByName = @{}
-
-    ForEach ($KnownSID in $WellKnownSIDBySID.Keys) {
-
-        $Known = $WellKnownSIDBySID[$KnownSID]
-        $WellKnownSIDByName[$Known.Name] = $Known
-
-    }
 
     $GetAdsiServer = @{
-        Cache              = $Cache
-        DebugOutputStream  = $DebugOutputStream
-        ThisHostName       = $ThisHostName
-        ThisFqdn           = $ThisFqdn
-        WhoAmI             = $WhoAmI
-        WellKnownSIDBySID  = $WellKnownSIDBySID
-        WellKnownSIDByName = $WellKnownSIDByName
+        Cache             = $Cache
+        DebugOutputStream = $DebugOutputStream
+        ThisHostName      = $ThisHostName
+        ThisFqdn          = $ThisFqdn
+        WhoAmI            = $WhoAmI
     }
 
     if ($ThreadCount -eq 1) {
@@ -5246,6 +5229,8 @@ function New-PermissionCache {
     $PSCustomObject = [type]'PSCustomObject'
     $DirectoryInfo = [type]'System.IO.DirectoryInfo'
     $PSReference = [type]'ref'
+    $WellKnownSidBySid = Get-KnownSidHashTable
+    $WellKnownSidByName = Get-KnownSidByName -WellKnownSidBySid $WellKnownSidBySid
 
     <#
     $CimCache
@@ -5254,6 +5239,8 @@ function New-PermissionCache {
             Key is a String
             Value varies (CimSession or dict)
 #>
+
+
     return [hashtable]::Synchronized(@{
             AceByGUID                    = New-PermissionCacheRef -Key $String -Value $Object #hashtable Initialize a cache of access control entries keyed by GUID generated in Resolve-ACE.
             AceGuidByID                  = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their resolved NTAccount captions.
@@ -5272,6 +5259,8 @@ function New-PermissionCache {
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+            WellKnownSidBySid            = [ref]$WellKnownSidBySid
+            WellKnownSidByName           = [ref]$WellKnownSidByName
         })
 
 }
@@ -6240,6 +6229,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

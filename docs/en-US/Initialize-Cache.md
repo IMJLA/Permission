@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Initialize-Cache [[-Fqdn] <String[]>] [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>]
  [[-ThisHostName] <String>] [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-ProgressParentId] <Int32>]
- [[-WellKnownSIDBySID] <Hashtable>] [[-Cache] <PSReference>]
+ [[-Cache] <PSReference>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -133,21 +133,6 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -WellKnownSIDBySID
-{{ Fill WellKnownSIDBySID Description }}
-
-```yaml
-Type: System.Collections.Hashtable
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

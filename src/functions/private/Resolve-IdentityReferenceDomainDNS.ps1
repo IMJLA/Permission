@@ -25,9 +25,6 @@ function Resolve-IdentityReferenceDomainDNS {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # Output from Get-KnownSidHashTable
-        [hashtable]$WellKnownSidBySid = (Get-KnownSidHashTable),
-
         # Output stream to send the log messages to
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
@@ -50,7 +47,7 @@ function Resolve-IdentityReferenceDomainDNS {
         WhoAmI       = $WhoAmI
     }
 
-    if ($WellKnownSidBySid[$IdentityReference]) {
+    if ($Cache.Value['WellKnownSidBySid'].Value[$IdentityReference]) {
 
         # IdentityReference is a well-known SID of a local account.
         # For local accounts, the domain is the computer hosting the network resource.

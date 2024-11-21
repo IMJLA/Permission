@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.925] - 2024-11-20 - move WellKnownSidByName and WellKnownSidBySid to the PermissionCache
 ## [0.0.924] - 2024-11-20 - bugfix cache usage
 ## [0.0.923] - 2024-11-19 - expand usage of the domain cache
 ## [0.0.922] - 2024-11-18 - space instead of empty string to replace whitespace
