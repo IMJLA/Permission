@@ -21,7 +21,10 @@ function ConvertTo-PermissionList {
 
         [Hashtable]$HowToSplit,
 
-        [PSCustomObject]$Analysis
+        [PSCustomObject]$Analysis,
+
+        # Properties of each Account to display on the report (left out: managedby)
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -215,25 +218,31 @@ function ConvertTo-PermissionList {
 
                 # Remove spaces from property titles
                 $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                    [PSCustomObject]@{
+
+                    $Props = [ordered]@{
                         Item              = $Obj.Item
                         Account           = $Obj.Account
                         Access            = $Obj.Access
                         DuetoMembershipIn = $Obj.'Due to Membership In'
                         SourceofAccess    = $Obj.'Source of Access'
                         Name              = $Obj.Name
-                        Department        = $Obj.Department
-                        Title             = $Obj.Title
                     }
+
+                    ForEach ($PropName in $AccountProperty) {
+                        $Props[$PropName] = $Obj.$PropName
+                    }
+
+                    [PSCustomObject]$Props
 
                 }
 
                 $TableId = 'Perms'
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
+                [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                 [PSCustomObject]@{
                     PSTypeName = 'Permission.PermissionList'
-                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                     Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                     Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                     PassThru   = $ObjectsForJsonData
@@ -295,23 +304,30 @@ function ConvertTo-PermissionList {
 
                                 # Remove spaces from property titles
                                 $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                                    [PSCustomObject]@{
+
+                                    $Props = [ordered]@{
                                         Account           = $Obj.Account
                                         Access            = $Obj.Access
                                         DuetoMembershipIn = $Obj.'Due to Membership In'
                                         SourceofAccess    = $Obj.'Source of Access'
                                         Name              = $Obj.Name
-                                        Department        = $Obj.Department
-                                        Title             = $Obj.Title
                                     }
+
+                                    ForEach ($PropName in $AccountProperty) {
+                                        $Props[$PropName] = $Obj.$PropName
+                                    }
+
+                                    [PSCustomObject]$Props
+
                                 }
 
                                 $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
                                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+                                [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                                 [PSCustomObject]@{
                                     PSTypeName = 'Permission.ItemPermissionList'
-                                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                                     Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                     Div        = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                     Grouping   = $GroupID
@@ -336,28 +352,31 @@ function ConvertTo-PermissionList {
 
                             # Remove spaces from property titles
                             $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-                                [PSCustomObject]@{
-                                    #Path                 = $Obj.Item.Path
-                                    #Access               = ($Obj.Access.Access.Access | Sort-Object -Unique) -join ' ; '
-                                    #SourceofAccess = ($Obj.Access.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
 
+                                $Props = [ordered]@{
                                     Item              = $Obj.Item
                                     Account           = $Obj.Account
                                     Access            = $Obj.Access
                                     DuetoMembershipIn = $Obj.'Due to Membership In'
                                     SourceofAccess    = $Obj.'Source of Access'
                                     Name              = $Obj.Name
-                                    Department        = $Obj.Department
-                                    Title             = $Obj.Title
                                 }
+
+                                ForEach ($PropName in $AccountProperty) {
+                                    $Props[$PropName] = $Obj.$PropName
+                                }
+
+                                [PSCustomObject]$Props
+
                             }
 
                             $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
+                            [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                             [PSCustomObject]@{
                                 PSTypeName = 'Permission.TargetPermissionList'
-                                Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Item, Account, Access, 'Due to Membership In', 'Source of Access', Name, Department, Title
+                                Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                                 Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                 Grouping   = $GroupID

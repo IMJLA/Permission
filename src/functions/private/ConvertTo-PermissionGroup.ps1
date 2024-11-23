@@ -13,7 +13,8 @@ function ConvertTo-PermissionGroup {
         [ValidateSet('account', 'item', 'none', 'target')]
         [String]$GroupBy = 'item',
 
-        [string[]]$AccountProperty = @('Account', 'Name', 'DisplayName', 'Description', 'Department', 'Title'),
+        # Properties of each Account to display on the report (left out: managedby)
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description'),
 
         [string[]]$ItemProperty = @('Folder', 'Inheritance'),
 
@@ -57,7 +58,7 @@ function ConvertTo-PermissionGroup {
             switch ($GroupBy) {
 
                 'account' {
-                    $OrderedProperties = $AccountProperty
+                    [string[]]$OrderedProperties = @('Account', 'Name') + $AccountProperty
                     $JavaScriptTable['SearchableColumn'] = $OrderedProperties
                     break
                 }

@@ -15,7 +15,10 @@ function Select-PermissionTableProperty {
 
         [ref]$ExcludeClassFilterContents = @{},
 
-        [ref]$IncludeAccountFilterContents = @{}
+        [ref]$IncludeAccountFilterContents = @{},
+
+        # Properties of each Account to display on the report (left out: managedby)
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -154,14 +157,16 @@ function Select-PermissionTableProperty {
                             # Use '$null -ne' to avoid treating an empty string '' as $null
                             if ($null -ne $GroupString) {
 
-                                [pscustomobject]@{
+                                $Props = [ordered]@{
                                     'Account'              = $AccountName
                                     'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
                                     'Due to Membership In' = $GroupString
                                     'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
                                     'Name'                 = $AceList.Account.Name
-                                    'Department'           = $AceList.Account.Department
-                                    'Title'                = $AceList.Account.Title
+                                }
+
+                                ForEach ($PropName in $AccountProperty) {
+                                    $Props[$PropName] = $AceList.Account.$PropName
                                 }
 
                             }
@@ -222,15 +227,17 @@ function Select-PermissionTableProperty {
                         # Use '$null -ne' to avoid treating an empty string '' as $null
                         if ($null -ne $GroupString) {
 
-                            [pscustomobject]@{
+                            $Props = [ordered]@{
                                 'Item'                 = $Object.ItemPath
                                 'Account'              = $AccountName
                                 'Access'               = $ACE.Access
                                 'Due to Membership In' = $GroupString
                                 'Source of Access'     = $ACE.SourceOfAccess
                                 'Name'                 = $ACE.Name
-                                'Department'           = $ACE.Department
-                                'Title'                = $ACE.Title
+                            }
+
+                            ForEach ($PropName in $AccountProperty) {
+                                $Props[$PropName] = $ACE.$PropName
                             }
 
                         }

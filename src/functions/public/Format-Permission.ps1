@@ -32,7 +32,10 @@ function Format-Permission {
         [int]$ProgressParentId,
 
         # In-process cache to reduce calls to other processes or to disk
-        [ref]$Cache
+        [ref]$Cache,
+
+        # Properties of each Account to display on the report (left out: managedby)
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -53,6 +56,7 @@ function Format-Permission {
     $ShortNameByID = $Cache.Value['ShortNameByID']
     $ExcludeClassFilterContents = $Cache.Value['ExcludeClassFilterContents']
     $IncludeAccountFilterContents = $Cache.Value['IncludeAccountFilterContents']
+    $ConvertSplat = @{Format = $Format ; AccountProperty = $AccountProperty ; GroupBy = $GroupBy }
 
     if ($Permission.SplitBy['account']) {
 
@@ -66,7 +70,7 @@ function Format-Permission {
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $Selection = $Account
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
                 Account      = $Account.Account
@@ -79,8 +83,8 @@ function Format-Permission {
 
             ForEach ($Format in $Formats) {
 
-                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy
-                $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
+                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties @ConvertSplat
+                $OutputProperties[$Format] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy @ConvertSplat
 
             }
 
@@ -103,7 +107,7 @@ function Format-Permission {
 
             $Selection = $Item.Access
             $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $IgnoreDomain, $IncludeAccountFilterContents, $ExcludeClassFilterContents
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
                 Item         = $Item.Item
@@ -116,8 +120,8 @@ function Format-Permission {
 
             ForEach ($Format in $Formats) {
 
-                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy
-                $OutputProperties[$Format] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
+                $OutputProperties["$Format`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties @ConvertSplat
+                $OutputProperties[$Format] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy @ConvertSplat
 
             }
 
@@ -167,7 +171,7 @@ function Format-Permission {
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameByID, $IncludeAccountFilterContents, $ExcludeClassFilterContents
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
                         PSTypeName = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
@@ -181,8 +185,8 @@ function Format-Permission {
                             $FormatString = 'json'
                         }
 
-                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Format $Format -Permission $PermissionGroupingsWithChosenProperties -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
-                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Format $Format -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -GroupBy $GroupBy -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path -Analysis $Analysis
+                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -HowToSplit $Permission.SplitBy @ConvertSplat
+                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path -Analysis $Analysis @ConvertSplat
 
                     }
 
