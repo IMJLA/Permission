@@ -58,17 +58,16 @@ function Get-CachedCimInstance {
         $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
-    $CimServer = $null
-    $AddOrUpdateScriptblock = { param($key, $val) $val }
+    $CimServer = $CimCache.Value[$ComputerName]
     $CimCache = $Cache.Value['CimCache']
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
+    if ($CimServer) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $InstanceCache = $null
+        $InstanceCache = $CimServer.Value[$InstanceCacheKey]
 
-        if ( $CimServer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
+        if ($InstanceCache) {
 
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $InstanceCache.Value.Values
@@ -81,7 +80,7 @@ function Get-CachedCimInstance {
 
         #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
+        $CimCache.Value[$ComputerName] = $CimServer
 
     }
 
@@ -136,13 +135,13 @@ function Get-CachedCimInstance {
                 }
 
                 #Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
-                $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
+                $CimServer.Value[$InstanceCacheKey] = $InstanceCache
 
                 ForEach ($Instance in $CimInstance) {
 
                     $InstancePropertyValue = $Instance.$Prop
                     Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
-                    $null = $InstanceCache.Value.AddOrUpdate( $InstancePropertyValue , $Instance , $AddOrUpdateScriptblock  )
+                    $InstanceCache.Value[$InstancePropertyValue] = $Instance
 
                 }
 

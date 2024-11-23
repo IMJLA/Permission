@@ -38,17 +38,16 @@ function Get-CachedCimSession {
         WhoAmI       = $WhoAmI
     }
 
-    $AddOrUpdateScriptblock = { param($key, $val) $val }
     $CimCache = $Cache.Value['CimCache']
-    $CimServer = $null
+    $CimServer = $CimCache.Value[$ComputerName]
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
+    if ( $CimServer ) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $CimSession = $null
+        $CimSession = $CimServer.Value[$CimSession]
 
-        if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$CimSession ) ) {
+        if ( $CimSession ) {
 
             #Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $CimSession.Value
@@ -56,9 +55,9 @@ function Get-CachedCimSession {
         } else {
 
             #Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
-            $PastFailures = $null
+            $PastFailures = $CimServer.Value['CimFailure']
 
-            if ( $CimServer.Value.TryGetValue( 'CimFailure' , [ref]$PastFailures ) ) {
+            if ( $PastFailures ) {
                 #Write-LogMsg @Log -Text " # CIM failure cache hit for '$ComputerName'.  Skipping connection attempt."
                 return
             }
@@ -69,7 +68,7 @@ function Get-CachedCimSession {
 
         #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
+        $CimCache.Value[$ComputerName] = $CimServer
 
     }
 
@@ -103,14 +102,14 @@ function Get-CachedCimSession {
             Write-LogMsg @Log -Text " # CIM connection error: $($thisErr.Exception.Message -replace  '\s', ' ' )) # for '$ComputerName'"
         }
 
-        $null = $CimServer.Value.AddOrUpdate( 'CimFailure' , $CimErrors , $AddOrUpdateScriptblock )
+        $CimServer.Value['CimFailure'] = $CimErrors
         return
 
     }
 
     if ($CimSession) {
 
-        $null = $CimServer.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
+        $CimServer.Value['CimSession'] = $CimSession
         return $CimSession
 
     } else {

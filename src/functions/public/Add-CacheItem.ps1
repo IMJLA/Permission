@@ -33,18 +33,4 @@ function Add-CacheItem {
     $List.Add($Value)
     $Cache[$Key] = $List
 
-    <#
-    # More efficient method requires switch to ConcurrentDictionary instead of SynchronizedHashtable
-
-    $List = $null
-
-    if ( -not $Cache.TryGetValue( $Key, [ref]$List ) ) {
-        $Command = "`$List = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
-        Invoke-Expression $Command
-        $Cache.Add($Key, $List)
-    }
-
-    $List.Add($Value)
-    #>
-
 }

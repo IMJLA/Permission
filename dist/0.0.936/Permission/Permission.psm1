@@ -2877,9 +2877,9 @@ function Resolve-IdentityReferenceDomainDNS {
         if ($DomainSid) {
 
             # IdentityReference appears to be a properly-formatted SID. Its domain SID was able to be parsed.
-            $DomainCacheResult = $null
+            $DomainCacheResult = $Cache.Value['DomainBySid'].Value[$DomainSid]
 
-            if ($Cache.Value['DomainBySid'].Value.TryGetValue( $DomainSid, [ref]$DomainCacheResult )) {
+            if ($DomainCacheResult) {
 
                 # IdentityReference belongs to a known domain.
                 #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Domain SID cache hit"
@@ -2937,9 +2937,9 @@ function Resolve-IdentityReferenceDomainDNS {
 
         }
 
-        $DomainCacheResult = $null
+        $DomainCacheResult = $Cache.Value['DomainByNetbios'].Value[$DomainNetBIOS]
 
-        if ($Cache.Value['DomainByNetbios'].Value.TryGetValue( $DomainNetBIOS, [ref]$DomainCacheResult )) {
+        if ($CDomainCacheResult) {
 
             # IdentityReference belongs to a known domain.
             return $DomainCacheResult.Dns
@@ -3469,20 +3469,6 @@ function Add-CacheItem {
     $List.Add($Value)
     $Cache[$Key] = $List
 
-    <#
-    # More efficient method requires switch to ConcurrentDictionary instead of SynchronizedHashtable
-
-    $List = $null
-
-    if ( -not $Cache.TryGetValue( $Key, [ref]$List ) ) {
-        $Command = "`$List = [System.Collections.Generic.List[$($Type.ToString())]]::new()"
-        Invoke-Expression $Command
-        $Cache.Add($Key, $List)
-    }
-
-    $List.Add($Value)
-    #>
-
 }
 function Add-PermissionCacheItem {
 
@@ -3505,15 +3491,14 @@ function Add-PermissionCacheItem {
 
     )
 
-    $List = $null
-    $AddOrUpdateScriptblock = { param($key, $val) $val }
+    $List = $Cache.Value[$Key]
 
-    if ( -not $Cache.Value.TryGetValue( $Key, [ref]$List ) ) {
+    if ( -not $List ) {
 
         $genericTypeDefinition = [System.Collections.Generic.List`1]
         $genericType = $genericTypeDefinition.MakeGenericType($Type)
         $List = [Activator]::CreateInstance($genericType)
-        $null = $Cache.Value.AddOrUpdate($Key, $List, $AddOrUpdateScriptblock)
+        $Cache.Value[$Key] = $List
 
     }
 
@@ -4561,17 +4546,16 @@ function Get-CachedCimInstance {
         $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
-    $CimServer = $null
-    $AddOrUpdateScriptblock = { param($key, $val) $val }
+    $CimServer = $CimCache.Value[$ComputerName]
     $CimCache = $Cache.Value['CimCache']
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
+    if ($CimServer) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $InstanceCache = $null
+        $InstanceCache = $CimServer.Value[$InstanceCacheKey]
 
-        if ( $CimServer.Value.TryGetValue( $InstanceCacheKey , [ref]$InstanceCache ) ) {
+        if ($InstanceCache) {
 
             #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
             return $InstanceCache.Value.Values
@@ -4584,7 +4568,7 @@ function Get-CachedCimInstance {
 
         #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
+        $CimCache.Value[$ComputerName] = $CimServer
 
     }
 
@@ -4639,13 +4623,13 @@ function Get-CachedCimInstance {
                 }
 
                 #Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
-                $null = $CimServer.Value.AddOrUpdate( $InstanceCacheKey , $InstanceCache, $AddOrUpdateScriptblock  )
+                $CimServer.Value[$InstanceCacheKey] = $InstanceCache
 
                 ForEach ($Instance in $CimInstance) {
 
                     $InstancePropertyValue = $Instance.$Prop
                     Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
-                    $null = $InstanceCache.Value.AddOrUpdate( $InstancePropertyValue , $Instance , $AddOrUpdateScriptblock  )
+                    $InstanceCache.Value[$InstancePropertyValue] = $Instance
 
                 }
 
@@ -4703,17 +4687,16 @@ function Get-CachedCimSession {
         WhoAmI       = $WhoAmI
     }
 
-    $AddOrUpdateScriptblock = { param($key, $val) $val }
     $CimCache = $Cache.Value['CimCache']
-    $CimServer = $null
+    $CimServer = $CimCache.Value[$ComputerName]
     $String = [type]'String'
 
-    if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
+    if ( $CimServer ) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $CimSession = $null
+        $CimSession = $CimServer.Value[$CimSession]
 
-        if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$CimSession ) ) {
+        if ( $CimSession ) {
 
             #Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $CimSession.Value
@@ -4721,9 +4704,9 @@ function Get-CachedCimSession {
         } else {
 
             #Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
-            $PastFailures = $null
+            $PastFailures = $CimServer.Value['CimFailure']
 
-            if ( $CimServer.Value.TryGetValue( 'CimFailure' , [ref]$PastFailures ) ) {
+            if ( $PastFailures ) {
                 #Write-LogMsg @Log -Text " # CIM failure cache hit for '$ComputerName'.  Skipping connection attempt."
                 return
             }
@@ -4734,7 +4717,7 @@ function Get-CachedCimSession {
 
         #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
-        $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
+        $CimCache.Value[$ComputerName] = $CimServer
 
     }
 
@@ -4768,14 +4751,14 @@ function Get-CachedCimSession {
             Write-LogMsg @Log -Text " # CIM connection error: $($thisErr.Exception.Message -replace  '\s', ' ' )) # for '$ComputerName'"
         }
 
-        $null = $CimServer.Value.AddOrUpdate( 'CimFailure' , $CimErrors , $AddOrUpdateScriptblock )
+        $CimServer.Value['CimFailure'] = $CimErrors
         return
 
     }
 
     if ($CimSession) {
 
-        $null = $CimServer.Value.AddOrUpdate( 'CimSession' , $CimSession , $AddOrUpdateScriptblock )
+        $CimServer.Value['CimSession'] = $CimSession
         return $CimSession
 
     } else {
@@ -6239,6 +6222,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 
