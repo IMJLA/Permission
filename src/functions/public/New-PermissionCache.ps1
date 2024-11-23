@@ -10,7 +10,7 @@ function New-PermissionCache {
     $DirectoryInfo = [type]'System.IO.DirectoryInfo'
     $PSReference = [type]'ref'
     $WellKnownSidBySid = Get-KnownSidHashTable
-    $WellKnownSidByName = Get-KnownSidByName -WellKnownSidBySid $WellKnownSidBySid
+    $WellKnownSidByName = Get-KnownSidByName -WellKnownSIDBySID $WellKnownSidBySid
 
     <#
     $CimCache
@@ -35,7 +35,7 @@ function New-PermissionCache {
             ExcludeClassFilterContents   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
             IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
-            LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[hashtable]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
+            LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
