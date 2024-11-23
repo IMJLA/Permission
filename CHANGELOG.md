@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.934] - 2024-11-23 - implement AccountProperty
 ## [0.0.933] - 2024-11-23 - bugfix the count
 ## [0.0.932] - 2024-11-23 - bugfix var name
 ## [0.0.931] - 2024-11-23 - handle zero-counts

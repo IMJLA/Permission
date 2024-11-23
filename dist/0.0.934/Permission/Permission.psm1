@@ -4830,7 +4830,10 @@ function Get-PermissionPrincipal {
 
         # The current domain
         # Can be passed as a parameter to reduce calls to Get-CurrentDomain
-        [PSCustomObject]$CurrentDomain = (Get-CurrentDomain -Cache $Cache)
+        [PSCustomObject]$CurrentDomain = (Get-CurrentDomain -Cache $Cache),
+
+        # Properties of each Account to display on the report
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -4851,12 +4854,13 @@ function Get-PermissionPrincipal {
     $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
 
     $ADSIConversionParams = @{
-        ThisHostName      = $ThisHostName
-        ThisFqdn          = $ThisFqdn
-        WhoAmI            = $WhoAmI
-        DebugOutputStream = $DebugOutputStream
-        CurrentDomain     = $CurrentDomain
+        AccountProperty   = $AccountProperty
         Cache             = $Cache
+        CurrentDomain     = $CurrentDomain
+        DebugOutputStream = $DebugOutputStream
+        ThisFqdn          = $ThisFqdn
+        ThisHostName      = $ThisHostName
+        WhoAmI            = $WhoAmI
     }
 
     if ($ThreadCount -eq 1) {
@@ -6235,6 +6239,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
