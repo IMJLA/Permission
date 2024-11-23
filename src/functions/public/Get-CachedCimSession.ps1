@@ -45,7 +45,7 @@ function Get-CachedCimSession {
     if ( $CimServer ) {
 
         #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
-        $CimSession = $CimServer.Value[$CimSession]
+        $CimSession = $CimServer.Value['CimSession']
 
         if ( $CimSession ) {
 
