@@ -1619,7 +1619,7 @@ function Get-HtmlReportElements {
         ItemCount                = $ItemCount
         FormattedPermissionCount = (
             @('csv', 'html', 'js', 'json', 'prtgxml', 'xml') |
-            ForEach-Object { $FormattedPermission.Values.NetworkPaths.$_.Count } |
+            ForEach-Object { $FormattedPermission.Values.NetworkPaths.$_.PassThru.Count } |
             Measure-Object -Sum
         ).Sum
         PermissionCount          = (
@@ -6235,6 +6235,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
