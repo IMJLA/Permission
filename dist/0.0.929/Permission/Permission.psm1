@@ -4577,12 +4577,12 @@ function Get-CachedCimInstance {
             return $InstanceCache.Value.Values
 
         } else {
-            Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
+            #Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
         }
 
     } else {
 
-        Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
+        #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
         $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
@@ -4710,21 +4710,21 @@ function Get-CachedCimSession {
 
     if ( $CimCache.Value.TryGetValue( $ComputerName , [ref]$CimServer ) ) {
 
-        Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
+        #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
         $CimSession = $null
 
         if ( $CimServer.Value.TryGetValue( 'CimSession' , [ref]$CimSession ) ) {
 
-            Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
+            #Write-LogMsg @Log -Text " # CIM session cache hit for '$ComputerName'"
             return $CimSession.Value
 
         } else {
 
-            Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
+            #Write-LogMsg @Log -Text " # CIM session cache miss for '$ComputerName'"
             $PastFailures = $null
 
             if ( $CimServer.Value.TryGetValue( 'CimFailure' , [ref]$PastFailures ) ) {
-                Write-LogMsg @Log -Text " # CIM failure cache hit for '$ComputerName'.  Skipping connection attempt."
+                #Write-LogMsg @Log -Text " # CIM failure cache hit for '$ComputerName'.  Skipping connection attempt."
                 return
             }
 
@@ -4732,7 +4732,7 @@ function Get-CachedCimSession {
 
     } else {
 
-        Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
+        #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
         $null = $CimCache.Value.AddOrUpdate( $ComputerName , $CimServer, $AddOrUpdateScriptblock )
 
@@ -6235,6 +6235,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
