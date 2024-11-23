@@ -169,6 +169,8 @@ function Select-PermissionTableProperty {
                                     $Props[$PropName] = $AceList.Account.$PropName
                                 }
 
+                                [PSCustomObject]$Props
+
                             }
 
                         }
@@ -239,6 +241,8 @@ function Select-PermissionTableProperty {
                             ForEach ($PropName in $AccountProperty) {
                                 $Props[$PropName] = $ACE.$PropName
                             }
+
+                            [PSCustomObject]$Props
 
                         }
 
