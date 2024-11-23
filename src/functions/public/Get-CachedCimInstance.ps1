@@ -58,8 +58,8 @@ function Get-CachedCimInstance {
         $InstanceCacheKey = "$Query`By$KeyProperty"
     }
 
-    $CimServer = $CimCache.Value[$ComputerName]
     $CimCache = $Cache.Value['CimCache']
+    $CimServer = $CimCache.Value[$ComputerName]
     $String = [type]'String'
 
     if ($CimServer) {
