@@ -44,7 +44,7 @@ function Get-PermissionPrincipal {
 
         # The current domain
         # Can be passed as a parameter to reduce calls to Get-CurrentDomain
-        [string]$CurrentDomain = (Get-CurrentDomain -Cache $Cache)
+        [PSCustomObject]$CurrentDomain = (Get-CurrentDomain -Cache $Cache)
 
     )
 

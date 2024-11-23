@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Get-PermissionPrincipal [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-ThisFqdn] <String>]
  [[-ThisHostName] <String>] [[-WhoAmI] <String>] [-NoGroupMembers] [[-ProgressParentId] <Int32>]
- [-Cache] <PSReference> [[-CurrentDomain] <String>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-Cache] <PSReference> [[-CurrentDomain] <PSObject>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -51,7 +51,7 @@ Accept wildcard characters: False
 {{ Fill CurrentDomain Description }}
 
 ```yaml
-Type: System.String
+Type: System.Management.Automation.PSObject
 Parameter Sets: (All)
 Aliases:
 
