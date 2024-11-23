@@ -202,7 +202,7 @@ function Get-HtmlReportElements {
         ItemCount                = $ItemCount
         FormattedPermissionCount = (
             @('csv', 'html', 'js', 'json', 'prtgxml', 'xml') |
-            ForEach-Object { $FormattedPermissions.Values.NetworkPaths.$_.Count } |
+            ForEach-Object { $FormattedPermission.Values.NetworkPaths.$_.Count } |
             Measure-Object -Sum
         ).Sum
         PermissionCount          = (
