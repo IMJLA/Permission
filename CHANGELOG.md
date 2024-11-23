@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.931] - 2024-11-23 - handle zero-counts
+## [0.0.930] - 2024-11-23 - handle zero-counts
 ## [0.0.929] - 2024-11-23 - reduce debug verbosity
 ## [0.0.928] - 2024-11-22 - bugfix param type
 ## [0.0.927] - 2024-11-21 - make string comparisons in the cache case-insensitive by default

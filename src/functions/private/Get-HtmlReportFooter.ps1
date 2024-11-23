@@ -51,12 +51,12 @@ function Get-HtmlReportFooter {
         @{
             'Name'              = 'Target paths (specified in report parameters)'
             'Count'             = $TargetCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($TargetCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Parents (resolved from target paths)'
             'Count'             = $ParentCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($ParentCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Children (found beneath parent paths)'
@@ -66,42 +66,42 @@ function Get-HtmlReportFooter {
         @{
             'Name'              = 'Items (parents and children)'
             'Count'             = $ItemCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ItemCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($ItemCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ItemCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Servers (hosting items)'
             'Count'             = $FqdnCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FqdnCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($FqdnCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FqdnCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'ACLs (found on items)'
             'Count'             = $AclCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AclCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($AclCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AclCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'ACEs (in ACLs)'
             'Count'             = $AceCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AceCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($AceCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $AceCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'IDs (in ACEs)'
             'Count'             = $IdCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $IdCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($IdCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $IdCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Security Principals (represented by IDs, including group members)'
             'Count'             = $PrincipalCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($PrincipalCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PrincipalCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Unique Permissions for those security principals (non-inherited)'
             'Count'             = $PermissionCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($PermissionCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $PermissionCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Formatted Permissions (according to report parameters)'
             'Count'             = $FormattedPermissionCount
-            'Average Time Each' = Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $AllUnits
+            'Average Time Each' = if ($FormattedPermissionCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $FormattedPermissionCount ) ) -UnitsToResolve $AllUnits }
         },
         #@{
         #    'Name'              = 'Data Size'
