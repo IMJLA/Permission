@@ -92,6 +92,7 @@ function Get-CachedCimInstance {
         WhoAmI            = $WhoAmI
     }
 
+    Write-LogMsg @Log -Text "`$CimSession = Get-CachedCimSession -ComputerName '$ComputerName'" -Expand $GetCimSessionParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName @GetCimSessionParams
 
     if ($CimSession) {
