@@ -4577,6 +4577,7 @@ function Get-CachedCimInstance {
         ThisHostname = $ThisHostname
         Type         = $DebugOutputStream
         WhoAmI       = $WhoAmI
+        Suffix       = " # for ComputerName '$ComputerName'"
     }
 
     if ($PSBoundParameters.ContainsKey('ClassName')) {
@@ -4591,21 +4592,21 @@ function Get-CachedCimInstance {
 
     if ($CimServer) {
 
-        #Write-LogMsg @Log -Text " # CIM server cache hit for '$ComputerName'"
+        #Write-LogMsg @Log -Text " # CIM server cache hit"
         $InstanceCache = $CimServer.Value[$InstanceCacheKey]
 
         if ($InstanceCache) {
 
-            #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey' on '$ComputerName'"
+            #Write-LogMsg @Log -Text " # CIM instance cache hit for '$InstanceCacheKey'"
             return $InstanceCache.Value.Values
 
         } else {
-            #Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey' on '$ComputerName'"
+            #Write-LogMsg @Log -Text " # CIM instance cache miss for '$InstanceCacheKey'"
         }
 
     } else {
 
-        #Write-LogMsg @Log -Text " # CIM server cache miss for '$ComputerName'"
+        #Write-LogMsg @Log -Text " # CIM server cache miss"
         $CimServer = New-PermissionCacheRef -Key $String -Value ([type]'System.Management.Automation.PSReference')
         $CimCache.Value[$ComputerName] = $CimServer
 
@@ -4636,14 +4637,14 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession"
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession" -Expand $GetCimSessionParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession"
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession" -Expand $GetCimSessionParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
@@ -4662,13 +4663,13 @@ function Get-CachedCimInstance {
                     $InstanceCacheKey = "$Query`By$Prop"
                 }
 
-                #Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache for '$ComputerName'"
+                #Write-LogMsg @Log -Text " # Create the '$InstanceCacheKey' cache"
                 $CimServer.Value[$InstanceCacheKey] = $InstanceCache
 
                 ForEach ($Instance in $CimInstance) {
 
                     $InstancePropertyValue = $Instance.$Prop
-                    Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache for '$ComputerName'"
+                    #Write-LogMsg @Log -Text " # Add '$InstancePropertyValue' to the '$InstanceCacheKey' cache"
                     $InstanceCache.Value[$InstancePropertyValue] = $Instance
 
                 }
@@ -4678,12 +4679,12 @@ function Get-CachedCimInstance {
             return $CimInstance
 
         } else {
-            #Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query on $ComputerName"
+            #Write-LogMsg @Log -Text " # No CIM instance returned # for $ClassName$Query"
         }
 
     } else {
         $Log['Type'] = 'Warning'
-        Write-LogMsg @Log -Text " # CIM connection failure # for '$ComputerName'"
+        Write-LogMsg @Log -Text ' # CIM connection failure'
     }
 
 }
@@ -6262,6 +6263,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
