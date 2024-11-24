@@ -55,7 +55,7 @@ function Resolve-Folder {
             ThisFqdn    = $ThisFqdn
         }
 
-        Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName $ThisHostname -ClassName Win32_MappedLogicalDisk"
+        Write-LogMsg @Log -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
         $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams @LogThis
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
