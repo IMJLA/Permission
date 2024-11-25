@@ -14,27 +14,6 @@ function Get-CachedCimInstance {
         # CIM query to run. Overrides ClassName if used (but not efficiently, so don't use both)
         [String]$Query,
 
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
         [Parameter(Mandatory)]
         [String]$KeyProperty,
 
@@ -47,11 +26,8 @@ function Get-CachedCimInstance {
     )
 
     $Log = @{
-        Buffer       = $Cache.Value['LogBuffer']
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-        Suffix       = " # for ComputerName '$ComputerName'"
+        'Cache'  = $Cache
+        'Suffix' = " # for ComputerName '$ComputerName'"
     }
 
     if ($PSBoundParameters.ContainsKey('ClassName')) {
@@ -86,24 +62,19 @@ function Get-CachedCimInstance {
 
     }
 
-    $GetCimSessionParams = @{
-        Cache             = $Cache
-        DebugOutputStream = $DebugOutputStream
-        ThisHostname      = $ThisHostname
-        ThisFqdn          = $ThisFqdn
-        WhoAmI            = $WhoAmI
-    }
-
-    Write-LogMsg @Log -Text "`$CimSession = Get-CachedCimSession -ComputerName '$ComputerName'" -Expand $GetCimSessionParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
-    $CimSession = Get-CachedCimSession -ComputerName $ComputerName @GetCimSessionParams
+    Write-LogMsg @Log -Text "`$CimSession = Get-CachedCimSession -ComputerName '$ComputerName' -Cache `$Cache"
+    $CimSession = Get-CachedCimSession -ComputerName $ComputerName -Cache $Cache
 
     if ($CimSession) {
 
         $GetCimInstanceParams = @{
+            Cache       = $Cache
             CimSession  = $CimSession
             ErrorAction = 'SilentlyContinue'
             Debug       = $false
         }
+
+        $ExpandKeyMap = $Cache.Value['LogMap'].Value + @{ 'CimSession' = '$CimSession' }
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
@@ -111,14 +82,14 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName $ClassName -CimSession `$CimSession" -Expand $GetCimSessionParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -ExpandKeyMap $ExpandKeyMap
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query' -CimSession `$CimSession" -Expand $GetCimSessionParams -ExpandKeyMap @{ 'Cache' = '$Cache' }
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -ExpandKeyMap $ExpandKeyMap
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }

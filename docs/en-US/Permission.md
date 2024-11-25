@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.952
+Help Version: 0.0.953
 Locale: en-US
 ---
 
@@ -64,11 +64,11 @@ Get-AccessControlList [[-TargetPath] <hashtable>] [[-ThreadCount] <ushort>] [[-D
 
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
 
-Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Namespace] <string>] [[-Query] <string>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [-Cache] <ref> [<CommonParameters>]
+Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Namespace] <string>] [[-Query] <string>] [-KeyProperty] <string> [[-CacheByProperty] <string[]>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Get-CachedCimSession](Get-CachedCimSession.md)
 
-Get-CachedCimSession [[-ComputerName] <string>] [[-DebugOutputStream] <string>] [[-ThisHostName] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-Cache] <ref> [<CommonParameters>]
+Get-CachedCimSession [[-ComputerName] <string>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
@@ -76,7 +76,7 @@ Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [
 
 ### [Get-PermissionTrustedDomain](Get-PermissionTrustedDomain.md)
 
-Get-PermissionTrustedDomain [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-DebugOutputStream] <string>] [-Cache] <ref> [<CommonParameters>]
+Get-PermissionTrustedDomain [-Cache] <ref> [<CommonParameters>]
 
 ### [Get-PermissionWhoAmI](Get-PermissionWhoAmI.md)
 
