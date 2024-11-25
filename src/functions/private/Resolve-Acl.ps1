@@ -121,13 +121,17 @@ function Resolve-Acl {
 
         # In-process cache to reduce calls to other processes or to disk
         [Parameter(Mandatory)]
-        [ref]$Cache
+        [ref]$Cache,
+
+        # Properties of each Account to display on the report
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
     #$Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
 
     $ResolveAceSplat = @{
+        AccountProperty = $AccountProperty ;
         Cache = $Cache ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ; Type = [guid] ; WhoAmI = $WhoAmI ; ItemPath = $ItemPath ;
         DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
     }

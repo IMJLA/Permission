@@ -1,5 +1,6 @@
 function Select-ItemTableProperty {
 
+    # This may appear unused but that is because the name of the function to call is generated dynamically e.g. Select-___TableProperty
     # For the HTML table
 
     param (

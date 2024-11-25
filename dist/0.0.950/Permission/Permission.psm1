@@ -2453,7 +2453,10 @@ function Resolve-Ace {
         [ref]$Cache,
 
         # GUID type (can be provided to avoid repetitive instantiation)
-        [type]$Type = [guid]
+        [type]$Type = [guid],
+
+        # Properties of each Account to display on the report
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -2466,8 +2469,8 @@ function Resolve-Ace {
     #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS'" -Expand $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @Splat
 
-    #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer" -Expand $Splat -Suffix " # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer @Splat
+    #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -AccountProperty @('$($AccountProperty -join "','")'" -Expand $Splat -Suffix " # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -AccountProperty $AccountProperty @Splat
 
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
@@ -2614,13 +2617,17 @@ function Resolve-Acl {
 
         # In-process cache to reduce calls to other processes or to disk
         [Parameter(Mandatory)]
-        [ref]$Cache
+        [ref]$Cache,
+
+        # Properties of each Account to display on the report
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
     #$Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
 
     $ResolveAceSplat = @{
+        AccountProperty = $AccountProperty ;
         Cache = $Cache ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ; Type = [guid] ; WhoAmI = $WhoAmI ; ItemPath = $ItemPath ;
         DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
     }
@@ -3026,6 +3033,7 @@ function Resolve-SplitByParameter {
 }
 function Select-AccountTableProperty {
 
+    # This may appear unused but that is because the name of the function to call is generated dynamically e.g. Select-___TableProperty
     # For the HTML table
 
     param (
@@ -3067,6 +3075,7 @@ function Select-AccountTableProperty {
 }
 function Select-ItemTableProperty {
 
+    # This may appear unused but that is because the name of the function to call is generated dynamically e.g. Select-___TableProperty
     # For the HTML table
 
     param (
@@ -3097,7 +3106,9 @@ function Select-ItemTableProperty {
 }
 function Select-PermissionTableProperty {
 
+    # This may appear unused but that is because the name of the function to call is generated dynamically e.g. Select-___TableProperty
     # For the HTML table
+
     param (
 
         $InputObject,
@@ -6003,7 +6014,10 @@ function Resolve-AccessControlList {
 
         # In-process cache to reduce calls to other processes or to disk
         [Parameter(Mandatory)]
-        [ref]$Cache
+        [ref]$Cache,
+
+        # Properties of each Account to display on the report
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -6026,6 +6040,7 @@ function Resolve-AccessControlList {
     $ACEPropertyName = $ACLsByPath.Value.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
+        AccountProperty         = $AccountProperty
         ACEPropertyName         = $ACEPropertyName
         Cache                   = $Cache
         InheritanceFlagResolved = $InheritanceFlagResolved
@@ -6263,6 +6278,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

@@ -38,7 +38,10 @@ function Resolve-AccessControlList {
 
         # In-process cache to reduce calls to other processes or to disk
         [Parameter(Mandatory)]
-        [ref]$Cache
+        [ref]$Cache,
+
+        # Properties of each Account to display on the report
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
     )
 
@@ -61,6 +64,7 @@ function Resolve-AccessControlList {
     $ACEPropertyName = $ACLsByPath.Value.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
+        AccountProperty         = $AccountProperty
         ACEPropertyName         = $ACEPropertyName
         Cache                   = $Cache
         InheritanceFlagResolved = $InheritanceFlagResolved

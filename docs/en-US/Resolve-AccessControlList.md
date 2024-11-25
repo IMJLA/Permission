@@ -15,8 +15,8 @@ schema: 2.0.0
 ```
 Resolve-AccessControlList [[-DebugOutputStream] <String>] [[-ThreadCount] <Int32>] [[-ThisHostName] <String>]
  [[-ThisFqdn] <String>] [[-WhoAmI] <String>] [[-ProgressParentId] <Int32>]
- [[-InheritanceFlagResolved] <String[]>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [[-InheritanceFlagResolved] <String[]>] [-Cache] <PSReference> [[-AccountProperty] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -32,6 +32,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -AccountProperty
+{{ Fill AccountProperty Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -Cache
 {{ Fill Cache Description }}
