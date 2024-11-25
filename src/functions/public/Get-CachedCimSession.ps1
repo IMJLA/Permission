@@ -26,7 +26,8 @@ function Get-CachedCimSession {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )

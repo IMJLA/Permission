@@ -29,7 +29,8 @@ function Get-AccessControlList {
         # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
         [hashtable]$WarningCache = [Hashtable]::Synchronized(@{}),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )

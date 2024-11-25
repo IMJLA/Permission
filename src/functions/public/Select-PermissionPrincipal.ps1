@@ -26,7 +26,8 @@ function Select-PermissionPrincipal {
         # Unused parameter
         [String]$WhoAmI,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )

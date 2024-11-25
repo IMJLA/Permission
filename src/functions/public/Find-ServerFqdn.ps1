@@ -20,7 +20,7 @@ function Find-ServerFqdn {
 
         [uint64]$ParentCount,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
 

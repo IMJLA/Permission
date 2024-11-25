@@ -2,19 +2,17 @@ function ConvertTo-PermissionFqdn {
 
     param (
 
+        # DNS or NetBIOS hostname whose DNS FQDN to lookup
+        [Parameter(Mandatory)]
         [string]$ComputerName,
 
-        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$ThisHostname = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
 
-    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
+    Write-LogMsg -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache" -Cache $Cache
+    ConvertTo-DnsFqdn -ComputerName $ComputerName -Cache $Cache
 
 }

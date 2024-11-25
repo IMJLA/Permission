@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Get-CachedCimInstance [[-ComputerName] <String>] [[-ClassName] <String>] [[-Namespace] <String>]
  [[-Query] <String>] [[-DebugOutputStream] <String>] [[-ThisHostName] <String>] [[-ThisFqdn] <String>]
- [[-WhoAmI] <String>] [-KeyProperty] <String> [[-CacheByProperty] <String[]>] [[-Cache] <PSReference>]
+ [[-WhoAmI] <String>] [-KeyProperty] <String> [[-CacheByProperty] <String[]>] [-Cache] <PSReference>
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -41,7 +41,7 @@ Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 10
 Default value: None
 Accept pipeline input: False

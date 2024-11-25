@@ -1,5 +1,16 @@
 function New-PermissionCache {
 
+    param(
+
+        <#
+        Number of asynchronous threads to use
+        Recommended starting with the # of logical CPUs:
+        (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum
+        #>
+        [uint16]$ThreadCount = 1
+
+    )
+
     $Boolean = [type]'String'
     $String = [type]'String'
     $GuidList = [type]'System.Collections.Generic.List[Guid]'
@@ -12,13 +23,24 @@ function New-PermissionCache {
     $WellKnownSidBySid = Get-KnownSidHashTable
     $WellKnownSidByName = Get-KnownSidByName -WellKnownSIDBySID $WellKnownSidBySid
 
+    # Get the hostname of the computer running the script.
+    $ThisHostname = HOSTNAME.EXE
+    $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
+    $ProgressParentId = 0
+    $LogType = 'Debug'
+    $LogMap = @{ 'ExpandKeyMap' = @{ 'Cache' = '([ref]$PermissionCache)' } }
+    $LogEmptyMap = @{ 'ExpandKeyMap' = @{} }
+    $ParamStringMap = Get-ParamStringMap
+    Write-LogMsg -Text '$ThisHostname = HOSTNAME.EXE # This command was already run but is now being logged' @Cache
+    Write-LogMsg -Text "`$WhoAmI = Get-PermissionWhoAmI -ThisHostName '$ThisHostname'" -Suffix ' # This command was already run but is now being logged' @Cache
+
     <#
     $CimCache
         Key is a String
         Value is a dict
             Key is a String
             Value varies (CimSession or dict)
-#>
+    #>
 
 
     return [hashtable]::Synchronized(@{
@@ -36,11 +58,20 @@ function New-PermissionCache {
             IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
             LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
+            LogEmptyMap                  = [ref]$LogEmptyMap
+            LogMap                       = [ref]$LogMap
+            LogType                      = [ref]$LogType
+            ParamStringMap               = [ref]$ParamStringMap
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
+            ProgressParentId             = [ref]$ProgressParentId
             ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+            ThisFqdn                     = [ref]''
+            ThisHostname                 = [ref]$ThisHostname
+            ThreadCount                  = [ref]$ThreadCount
             WellKnownSidBySid            = [ref]$WellKnownSidBySid
             WellKnownSidByName           = [ref]$WellKnownSidByName
+            WhoAmI                       = [ref]$WhoAmI
         })
 
 }

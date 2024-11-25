@@ -58,7 +58,7 @@ function Expand-Permission {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
 

@@ -2449,7 +2449,8 @@ function Resolve-Ace {
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
         [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache,
 
         # GUID type (can be provided to avoid repetitive instantiation)
@@ -2615,7 +2616,7 @@ function Resolve-Acl {
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
         [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
 
@@ -2675,7 +2676,8 @@ function Resolve-Folder {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -2867,7 +2869,8 @@ function Resolve-IdentityReferenceDomainDNS {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -3589,20 +3592,18 @@ function ConvertTo-PermissionFqdn {
 
     param (
 
+        # DNS or NetBIOS hostname whose DNS FQDN to lookup
+        [Parameter(Mandatory)]
         [string]$ComputerName,
 
-        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$ThisHostname = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
 
-    ConvertTo-DnsFqdn -ComputerName $ComputerName -ThisHostName $ThisHostname -WhoAmI $WhoAmI -LogBuffer $Cache.Value['LogBuffer']
+    Write-LogMsg -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache" -Cache $Cache
+    ConvertTo-DnsFqdn -ComputerName $ComputerName -Cache $Cache
 
 }
 function Expand-Permission {
@@ -3665,7 +3666,7 @@ function Expand-Permission {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
 
@@ -3806,7 +3807,8 @@ function Expand-PermissionTarget {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -4001,7 +4003,7 @@ function Find-ServerFqdn {
 
         [uint64]$ParentCount,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
 
@@ -4092,7 +4094,8 @@ function Format-Permission {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache,
 
         # Properties of each Account to display on the report (left out: managedby)
@@ -4318,7 +4321,8 @@ function Get-AccessControlList {
         # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
         [hashtable]$WarningCache = [Hashtable]::Synchronized(@{}),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -4577,7 +4581,8 @@ function Get-CachedCimInstance {
 
         [string[]]$CacheByProperty = $KeyProperty,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -4726,7 +4731,8 @@ function Get-CachedCimSession {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -4858,7 +4864,7 @@ function Get-PermissionPrincipal {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
 
@@ -4966,7 +4972,8 @@ function Get-PermissionTrustedDomain {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [string]$DebugOutputStream = 'Debug',
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -4975,6 +4982,8 @@ function Get-PermissionTrustedDomain {
 
 }
 function Get-PermissionWhoAmI {
+
+    # Get the NTAccount caption of the user running the script, with the correct capitalization.
 
     param (
 
@@ -5046,7 +5055,8 @@ function Initialize-Cache {
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -5142,7 +5152,8 @@ function Invoke-PermissionAnalyzer {
         #>
         [scriptblock]$AccountConvention = { $true },
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -5264,6 +5275,17 @@ function Invoke-PermissionCommand {
 }
 function New-PermissionCache {
 
+    param(
+
+        <#
+        Number of asynchronous threads to use
+        Recommended starting with the # of logical CPUs:
+        (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum
+        #>
+        [uint16]$ThreadCount = 1
+
+    )
+
     $Boolean = [type]'String'
     $String = [type]'String'
     $GuidList = [type]'System.Collections.Generic.List[Guid]'
@@ -5276,13 +5298,24 @@ function New-PermissionCache {
     $WellKnownSidBySid = Get-KnownSidHashTable
     $WellKnownSidByName = Get-KnownSidByName -WellKnownSIDBySID $WellKnownSidBySid
 
+    # Get the hostname of the computer running the script.
+    $ThisHostname = HOSTNAME.EXE
+    $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
+    $ProgressParentId = 0
+    $LogType = 'Debug'
+    $LogMap = @{ 'ExpandKeyMap' = @{ 'Cache' = '([ref]$PermissionCache)' } }
+    $LogEmptyMap = @{ 'ExpandKeyMap' = @{} }
+    $ParamStringMap = Get-ParamStringMap
+    Write-LogMsg -Text '$ThisHostname = HOSTNAME.EXE # This command was already run but is now being logged' @Cache
+    Write-LogMsg -Text "`$WhoAmI = Get-PermissionWhoAmI -ThisHostName '$ThisHostname'" -Suffix ' # This command was already run but is now being logged' @Cache
+
     <#
     $CimCache
         Key is a String
         Value is a dict
             Key is a String
             Value varies (CimSession or dict)
-#>
+    #>
 
 
     return [hashtable]::Synchronized(@{
@@ -5300,11 +5333,20 @@ function New-PermissionCache {
             IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
             LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
+            LogEmptyMap                  = [ref]$LogEmptyMap
+            LogMap                       = [ref]$LogMap
+            LogType                      = [ref]$LogType
+            ParamStringMap               = [ref]$ParamStringMap
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
+            ProgressParentId             = [ref]$ProgressParentId
             ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+            ThisFqdn                     = [ref]''
+            ThisHostname                 = [ref]$ThisHostname
+            ThreadCount                  = [ref]$ThreadCount
             WellKnownSidBySid            = [ref]$WellKnownSidBySid
             WellKnownSidByName           = [ref]$WellKnownSidByName
+            WhoAmI                       = [ref]$WhoAmI
         })
 
 }
@@ -5559,7 +5601,8 @@ function Out-PermissionFile {
         [uint64]$IdCount,
         [UInt64]$PrincipalCount,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -6011,7 +6054,7 @@ function Resolve-AccessControlList {
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
         [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
 
@@ -6122,7 +6165,8 @@ function Resolve-PermissionTarget {
         # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
         [String]$WhoAmI = (whoami.EXE),
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache,
 
         # ID of the parent progress bar under which to show progress
@@ -6183,7 +6227,8 @@ function Select-PermissionPrincipal {
         # Unused parameter
         [String]$WhoAmI,
 
-        # In-process cache to reduce calls to other processes or to disk
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
         [ref]$Cache
 
     )
@@ -6277,6 +6322,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

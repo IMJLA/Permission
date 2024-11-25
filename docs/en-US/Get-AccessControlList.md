@@ -15,7 +15,7 @@ schema: 2.0.0
 ```
 Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
  [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-ProgressParentId] <Int32>] [[-WarningCache] <Hashtable>]
- [[-Cache] <PSReference>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Type: System.Management.Automation.PSReference
 Parameter Sets: (All)
 Aliases:
 
-Required: False
+Required: True
 Position: 7
 Default value: None
 Accept pipeline input: False
