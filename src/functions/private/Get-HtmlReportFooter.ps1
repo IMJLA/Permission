@@ -46,7 +46,7 @@ function Get-HtmlReportFooter {
         $Size = " ($TiB TiB)"
     }
 
-    $AllUnits = @('day', 'hour', 'minute', 'second', 'millisecond')
+    $AllUnits = @('day', 'hour', 'minute', 'second') #excluded millisecond
     $CompletionTime = @(
         @{
             'Name'              = 'Target paths (specified in report parameters)'
