@@ -31,8 +31,16 @@ function New-PermissionCache {
     $LogMap = @{ 'ExpandKeyMap' = @{ 'Cache' = '([ref]$PermissionCache)' } }
     $LogEmptyMap = @{ 'ExpandKeyMap' = @{} }
     $ParamStringMap = Get-ParamStringMap
-    Write-LogMsg -Text '$ThisHostname = HOSTNAME.EXE # This command was already run but is now being logged' @Cache
-    Write-LogMsg -Text "`$WhoAmI = Get-PermissionWhoAmI -ThisHostName '$ThisHostname'" -Suffix ' # This command was already run but is now being logged' @Cache
+    $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
+
+    $Log = @{
+        Type         = $LogType
+        ThisHostname = $ThisHostname
+        Buffer       = ([ref]$LogBuffer)
+    }
+
+    Write-LogMsg -Text '$ThisHostname = HOSTNAME.EXE # This command was already run but is now being logged' @Log
+    Write-LogMsg -Text "`$WhoAmI = Get-PermissionWhoAmI -ThisHostName '$ThisHostname' # This command was already run but is now being logged" @Log
 
     <#
     $CimCache
@@ -41,7 +49,6 @@ function New-PermissionCache {
             Key is a String
             Value varies (CimSession or dict)
     #>
-
 
     return [hashtable]::Synchronized(@{
             AceByGUID                    = New-PermissionCacheRef -Key $String -Value $Object #hashtable Initialize a cache of access control entries keyed by GUID generated in Resolve-ACE.
@@ -57,7 +64,8 @@ function New-PermissionCache {
             ExcludeClassFilterContents   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
             IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
-            LogBuffer                    = [ref][System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new() # Initialize a cache of log messages in memory to minimize random disk access.
+            Log                          = [ref]$Log
+            LogBuffer                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
             LogEmptyMap                  = [ref]$LogEmptyMap
             LogMap                       = [ref]$LogMap
             LogType                      = [ref]$LogType
