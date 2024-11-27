@@ -5243,7 +5243,7 @@ function New-PermissionCache {
     $ProgressParentId = 0
     $LogType = 'Debug'
     $LogMap = @{ 'ExpandKeyMap' = @{ 'Cache' = '([ref]$PermissionCache)' } }
-    $LogEmptyMap = @{ 'ExpandKeyMap' = @{} }
+    $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
 
@@ -5251,7 +5251,7 @@ function New-PermissionCache {
         'Type'         = $LogType
         'ThisHostname' = $ThisHostname
         'Buffer'       = ([ref]$LogBuffer)
-        'ExpandKeyMap' = @{}
+        'ExpandKeyMap' = $LogEmptyMap
     }
 
     # These events already happened but we will log them now that we have the correct capitalization of the user.
@@ -6286,6 +6286,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

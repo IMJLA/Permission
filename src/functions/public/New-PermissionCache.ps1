@@ -28,7 +28,7 @@ function New-PermissionCache {
     $ProgressParentId = 0
     $LogType = 'Debug'
     $LogMap = @{ 'ExpandKeyMap' = @{ 'Cache' = '([ref]$PermissionCache)' } }
-    $LogEmptyMap = @{ 'ExpandKeyMap' = @{} }
+    $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
 
@@ -36,7 +36,7 @@ function New-PermissionCache {
         'Type'         = $LogType
         'ThisHostname' = $ThisHostname
         'Buffer'       = ([ref]$LogBuffer)
-        'ExpandKeyMap' = @{}
+        'ExpandKeyMap' = $LogEmptyMap
     }
 
     # These events already happened but we will log them now that we have the correct capitalization of the user.
