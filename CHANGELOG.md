@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.957] - 2024-11-26 - improve debug logging
+## [0.0.956] - 2024-11-26 - improve debug logging
 ## [0.0.955] - 2024-11-26 - bugfix write-logmsg params
 ## [0.0.954] - 2024-11-26 - bugfix write-logmsg params
 ## [0.0.953] - 2024-11-24 - implement cache for repetitive params
