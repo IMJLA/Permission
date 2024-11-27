@@ -45,7 +45,7 @@ function New-PermissionCache {
     Write-LogMsg -Text '$ThisHostname = HOSTNAME.EXE # This command was already run but is now being logged' @Log
     Write-LogMsg -Text "`$WhoAmI = Get-PermissionWhoAmI -ThisHostName '$ThisHostname' # This command was already run but is now being logged" @Log
     Write-LogMsg -Text '$StopWatch = [System.Diagnostics.Stopwatch]::new() ; $StopWatch.Start() # This command was already run but is now being logged' @Log
-    Write-LogMsg -Text '$PermissionCache = New-PermissionCache -ThreadCount ($ThreadCount) # This command was already run but is now being logged' @Log
+    Write-LogMsg -Text "`$PermissionCache = New-PermissionCache -ThreadCount ($ThreadCount)  -OutputDir '$OutputDir' -ReportInstanceId '$ReportInstanceId' -TranscriptFile '$TranscriptFile' # This command was already run but is now being logged" @Log
     $Boolean = [type]'String'
     $String = [type]'String'
     $GuidList = [type]'System.Collections.Generic.List[Guid]'
