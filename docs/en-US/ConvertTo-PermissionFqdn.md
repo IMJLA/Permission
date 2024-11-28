@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-ConvertTo-PermissionFqdn [-ComputerName] <String> [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ConvertTo-PermissionFqdn [-ComputerName] <String> [-ThisFqdn] [-Cache] <PSReference>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -68,6 +68,21 @@ Accept wildcard characters: False
 Type: System.Management.Automation.ActionPreference
 Parameter Sets: (All)
 Aliases: proga
+
+Required: False
+Position: Named
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -ThisFqdn
+{{ Fill ThisFqdn Description }}
+
+```yaml
+Type: System.Management.Automation.SwitchParameter
+Parameter Sets: (All)
+Aliases:
 
 Required: False
 Position: Named

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.978] - 2024-11-27 - implement thisfqdn switch
+## [0.0.977] - 2024-11-27 - implement ThisFqdn switch
 ## [0.0.976] - 2024-11-27 - bugfix write-logmsg params
 ## [0.0.975] - 2024-11-27 - bugfix need to access value prop
 ## [0.0.974] - 2024-11-27 - implement da cache

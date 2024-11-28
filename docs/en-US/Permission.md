@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.976
+Help Version: 0.0.978
 Locale: en-US
 ---
 
@@ -28,7 +28,7 @@ ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
 
 ### [ConvertTo-PermissionFqdn](ConvertTo-PermissionFqdn.md)
 
-ConvertTo-PermissionFqdn [-ComputerName] <string> [-Cache] <ref> [<CommonParameters>]
+ConvertTo-PermissionFqdn [-ComputerName] <string> [-Cache] <ref> [-ThisFqdn] [<CommonParameters>]
 
 ### [Expand-Permission](Expand-Permission.md)
 
