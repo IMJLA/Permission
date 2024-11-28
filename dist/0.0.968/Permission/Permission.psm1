@@ -2665,12 +2665,6 @@ function Resolve-Folder {
 
     )
 
-    $LogThis = @{
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
-    }
-
     $RegEx = '^(?<DriveLetter>\w):'
 
     if ($TargetPath -match $RegEx) {
@@ -2682,7 +2676,7 @@ function Resolve-Folder {
         }
 
         Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -MapKeyName 'LogMap' -Cache $Cache
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams @LogThis
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -2698,7 +2692,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
-            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server @Cache @LogThis
+            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server -Cache $Cache
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
 
@@ -2739,7 +2733,7 @@ function Resolve-Folder {
         } else {
 
             $Server = $TargetPath.split('\')[2]
-            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server @Cache @LogThis
+            $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server -Cache $Cache
             $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
 
         }
@@ -6224,6 +6218,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
