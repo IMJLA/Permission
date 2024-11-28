@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.964] - 2024-11-27 - bugfix ciminstance params and use cache to simplify params
+## [0.0.963] - 2024-11-27 - bugfix ciminstance params and use cache to simplify params
 ## [0.0.962] - 2024-11-27 - bugfix debug log
 ## [0.0.961] - 2024-11-27 - bugfix debug log
 ## [0.0.960] - 2024-11-26 - add missing params in debug output

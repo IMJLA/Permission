@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.962
+Help Version: 0.0.964
 Locale: en-US
 ---
 
@@ -120,7 +120,7 @@ Resolve-AccessControlList [[-DebugOutputStream] <string>] [[-ThreadCount] <int>]
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-ThisFqdn] <string>] [[-WhoAmI] <string>] [-Cache] <ref> [[-ProgressParentId] <int>] [<CommonParameters>]
+Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 
