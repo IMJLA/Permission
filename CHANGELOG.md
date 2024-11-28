@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.973] - 2024-11-27 - bugfix no cache param for getciminstance
 ## [0.0.972] - 2024-11-27 - bugfix only put references in the cache
 ## [0.0.971] - 2024-11-27 - bugfix write-logmsg params
 ## [0.0.970] - 2024-11-27 - bugfix write-logmsg params

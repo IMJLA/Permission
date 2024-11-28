@@ -68,7 +68,6 @@ function Get-CachedCimInstance {
     if ($CimSession) {
 
         $GetCimInstanceParams = @{
-            Cache       = $Cache
             CimSession  = $CimSession
             ErrorAction = 'SilentlyContinue'
             Debug       = $false
