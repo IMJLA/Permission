@@ -25,7 +25,7 @@ function Expand-PermissionTarget {
         Activity = 'Expand-PermissionTarget'
     }
 
-    $ProgressParentId = $Cache.Value['ProgressParentId']
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     if ($ProgressParentId) {
         $Progress['ParentId'] = $ProgressParentId
