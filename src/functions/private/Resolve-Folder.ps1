@@ -29,7 +29,7 @@ function Resolve-Folder {
             KeyProperty = 'DeviceID'
         }
 
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -ExpandKeyMap @{ 'Cache' = '$Cache' } -Cache $Cache
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -ParamStringMap 'LogMap' -Cache $Cache
         $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams @LogThis
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
