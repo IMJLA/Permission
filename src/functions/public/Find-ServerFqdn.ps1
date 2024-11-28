@@ -37,6 +37,7 @@ function Find-ServerFqdn {
 
     $Progress['Id'] = $ProgressId
     Write-Progress @Progress -Status "0% (path 0 of $ParentCount)" -CurrentOperation 'Initializing' -PercentComplete 0
+    $ThisFqdn = $Cache['ThisFqdn'].Value
 
     $UniqueValues = @{
         $ThisFqdn = $null
@@ -52,7 +53,6 @@ function Find-ServerFqdn {
     $ProgressStopWatch.Start()
     $LastRemainder = [int]::MaxValue
     $i = 0
-    $ThisFqdn = $Cache['ThisFqdn'].Value
 
     ForEach ($ThisPath in $Cache['ParentByTargetPath'].Value.Values) {
 
