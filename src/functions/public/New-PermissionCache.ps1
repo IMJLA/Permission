@@ -41,7 +41,7 @@ function New-PermissionCache {
 
     # These events already happened but we will log them now that we have the correct capitalization of the user.
     Write-LogMsg -Text "New-Item -ItemType Directory -Path '$OutputDir' -ErrorAction SilentlyContinue # This command was already run but is now being logged" @Log
-    Write-LogMsg -Text "Start-Transcript -Path '$TranscriptFile' This command was already run but is now being logged" @Log
+    Write-LogMsg -Text "Start-Transcript -Path '$TranscriptFile' # This command was already run but is now being logged" @Log
     Write-LogMsg -Text '$ThisHostname = HOSTNAME.EXE # This command was already run but is now being logged' @Log
     Write-LogMsg -Text "`$WhoAmI = Get-PermissionWhoAmI -ThisHostName '$ThisHostname' # This command was already run but is now being logged" @Log
     Write-LogMsg -Text '$StopWatch = [System.Diagnostics.Stopwatch]::new() ; $StopWatch.Start() # This command was already run but is now being logged' @Log
