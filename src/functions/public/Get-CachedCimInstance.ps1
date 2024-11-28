@@ -74,7 +74,7 @@ function Get-CachedCimInstance {
             Debug       = $false
         }
 
-        $ExpandKeyMap = $Cache.Value['LogMap'].Value + @{ 'CimSession' = '$CimSession' }
+        $Cache.Value['LogCimSessionMap'] = $Cache.Value['LogMap'].Value + @{ 'CimSession' = '$CimSession' }
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
@@ -82,7 +82,7 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -ExpandKeyMap $ExpandKeyMap
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -MapKeyName 'LogCimSessionMap'
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }

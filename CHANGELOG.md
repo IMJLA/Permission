@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.970] - 2024-11-27 - bugfix write-logmsg params
+## [0.0.969] - 2024-11-27 - bugfixwrite-logmsg params
 ## [0.0.968] - 2024-11-27 - bugfix params logthis replaced by cache
 ## [0.0.967] - 2024-11-27 - oops that was supposed to be the mapkeyname param
 ## [0.0.966] - 2024-11-27 - use paramstringmap param
