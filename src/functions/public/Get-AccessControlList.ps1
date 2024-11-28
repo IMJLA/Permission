@@ -11,21 +11,6 @@ function Get-AccessControlList {
         # Path to the item whose permissions to export (inherited ACEs will be included)
         [Hashtable]$TargetPath,
 
-        # Number of asynchronous threads to use
-        [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
-
-        # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [String]$DebugOutputStream = 'Debug',
-
-        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$ThisHostname = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
         [hashtable]$WarningCache = [Hashtable]::Synchronized(@{}),
 
@@ -37,29 +22,27 @@ function Get-AccessControlList {
 
     $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
-
-    $Log = @{
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        Buffer       = $LogBuffer
-        WhoAmI       = $WhoAmI
-    }
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     $Progress = @{
         Activity = 'Get-AccessControlList'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+
+    if ($ProgressParentId) {
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
     } else {
         $ProgressId = 0
     }
+
     $Progress['Id'] = $ProgressId
+
     $ChildProgress = @{
         Activity = 'Get access control lists for parent and child items'
         Id       = $ProgressId + 1
         ParentId = $ProgressId
     }
+
     $GrandChildProgress = @{
         Activity = 'Get access control lists'
         Id       = $ProgressId + 2
@@ -69,12 +52,9 @@ function Get-AccessControlList {
     Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists for parent and child items' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0
 
     $GetDirectorySecurity = @{
-        LogBuffer         = $LogBuffer
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
-        AclByPath         = $AclByPath
-        WarningCache      = $WarningCache
+        AclByPath    = $AclByPath
+        Cache        = $Cache
+        WarningCache = $WarningCache
     }
 
     $TargetIndex = 0
@@ -151,8 +131,10 @@ function Get-AccessControlList {
 
     if ($WarningCache.Keys.Count -ge 1) {
 
+        $StartingLogType = $Cache.Value['LogType'].Value
         $Log['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
-        Write-LogMsg @Log -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists.  See verbose log for details."
+        Write-LogMsg -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists. See verbose log for details." -Cache $Cache
+        $Cache.Value['LogType'].Value = $StartingLogType
 
     }
 
@@ -242,7 +224,7 @@ function Get-AccessControlList {
     if ($AclByPath.Value.Keys.Count -eq 0) {
 
         $Log['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
-        Write-LogMsg @Log -Text ' # 0 access control lists could be retrieved.  Exiting script.'
+        Write-LogMsg -Text ' # 0 access control lists could be retrieved.  Exiting script.' -Cache $Cache
 
     }
 

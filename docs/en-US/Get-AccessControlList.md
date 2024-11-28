@@ -13,9 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-AccessControlList [[-TargetPath] <Hashtable>] [[-ThreadCount] <UInt16>] [[-DebugOutputStream] <String>]
- [[-ThisHostname] <String>] [[-WhoAmI] <String>] [[-ProgressParentId] <Int32>] [[-WarningCache] <Hashtable>]
- [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-AccessControlList [[-TargetPath] <Hashtable>] [[-WarningCache] <Hashtable>] [-Cache] <PSReference>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,21 +40,6 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 7
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -DebugOutputStream
-{{ Fill DebugOutputStream Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: 2
 Default value: None
 Accept pipeline input: False
@@ -77,21 +61,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -TargetPath
 {{ Fill TargetPath Description }}
 
@@ -107,36 +76,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ThisHostname
-{{ Fill ThisHostname Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ThreadCount
-{{ Fill ThreadCount Description }}
-
-```yaml
-Type: System.UInt16
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -WarningCache
 {{ Fill WarningCache Description }}
 
@@ -146,22 +85,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -WhoAmI
-{{ Fill WhoAmI Description }}
-
-```yaml
-Type: System.String
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 4
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
