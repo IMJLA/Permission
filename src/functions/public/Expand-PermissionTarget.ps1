@@ -68,7 +68,7 @@ function Expand-PermissionTarget {
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Write-LogMsg @Log -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
+            Write-LogMsg -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth" -Cache $Cache
             Get-Subfolder -TargetPath $ThisFolder @GetSubfolderParams
 
         }
