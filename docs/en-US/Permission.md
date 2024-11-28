@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.973
+Help Version: 0.0.974
 Locale: en-US
 ---
 
@@ -36,7 +36,7 @@ Expand-Permission [[-SplitBy] <string[]>] [[-GroupBy] <string>] [[-Children] <ha
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
-Expand-PermissionTarget [[-RecurseDepth] <int>] [[-ThreadCount] <ushort>] [[-DebugOutputStream] <string>] [[-ThisHostname] <string>] [[-WhoAmI] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [<CommonParameters>]
+Expand-PermissionTarget [[-RecurseDepth] <int>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Find-CachedCimInstance](Find-CachedCimInstance.md)
 

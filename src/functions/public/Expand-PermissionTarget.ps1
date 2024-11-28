@@ -15,21 +15,6 @@ function Expand-PermissionTarget {
         #>
         [int]$RecurseDepth,
 
-        # Number of asynchronous threads to use
-        [uint16]$ThreadCount = ((Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum),
-
-        # Will be sent to the Type parameter of Write-LogMsg in the PsLogMessage module
-        [String]$DebugOutputStream = 'Silent',
-
-        # Hostname to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$ThisHostname = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
@@ -40,8 +25,9 @@ function Expand-PermissionTarget {
         Activity = 'Expand-PermissionTarget'
     }
 
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId']
 
+    if ($ProgressParentId) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
 
@@ -56,24 +42,13 @@ function Expand-PermissionTarget {
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation 'Initializing...' -PercentComplete 0
     $LogBuffer = $Cache.Value['LogBuffer']
-
-    $Log = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
-    [Hashtable]$Output = [Hashtable]::Synchronized(@{})
+    $Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
-        LogBuffer         = $LogBuffer
-        ThisHostname      = $ThisHostname
-        DebugOutputStream = $DebugOutputStream
-        WhoAmI            = $WhoAmI
-        Output            = $Output
-        RecurseDepth      = $RecurseDepth
-        ErrorAction       = 'Continue'
+        Cache        = $Cache
+        Output       = $Output
+        RecurseDepth = $RecurseDepth
+        ErrorAction  = 'Continue'
     }
 
     if ($ThreadCount -eq 1 -or $TargetCount -eq 1) {
@@ -104,11 +79,11 @@ function Expand-PermissionTarget {
             Command           = 'Get-Subfolder'
             InputObject       = $Targets
             InputParameter    = 'TargetPath'
-            DebugOutputStream = $DebugOutputStream
-            TodaysHostname    = $ThisHostname
-            WhoAmI            = $WhoAmI
+            DebugOutputStream = $Cache.Value['DebugOutputStream'].Value
+            TodaysHostname    = $Cache.Value['ThisHostname'].Value
+            WhoAmI            = $Cache.Value['WhoAmI'].Value
             LogBuffer         = $LogBuffer
-            Threads           = $ThreadCount
+            Threads           = $Cache.Value['ThreadCount'].Value
             ProgressParentId  = $Progress['Id']
             AddParam          = $GetSubfolderParams
         }
