@@ -4891,33 +4891,6 @@ function Initialize-Cache {
         # FQDNs of the ADSI servers to use to populate the cache
         [string[]]$Fqdn,
 
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
@@ -4928,7 +4901,9 @@ function Initialize-Cache {
         Activity = 'Initialize-Cache'
     }
 
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+
+    if ($ProgressParentId) {
 
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
@@ -4940,14 +4915,9 @@ function Initialize-Cache {
     $Progress['Id'] = $ProgressId
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
-    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
 
     $GetAdsiServer = @{
-        Cache             = $Cache
-        DebugOutputStream = $DebugOutputStream
-        ThisHostName      = $ThisHostName
-        ThisFqdn          = $ThisFqdn
-        WhoAmI            = $WhoAmI
+        Cache = $Cache
     }
 
     if ($ThreadCount -eq 1) {
@@ -4959,7 +4929,7 @@ function Initialize-Cache {
             [int]$PercentComplete = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$PercentComplete% (FQDN $i of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
-            Write-LogMsg @Log -Text "Get-AdsiServer -Fqdn '$ThisServerName'" -Expand $GetAdsiServer -ExpandKeyMap @{ 'Cache' = '$Cache' }
+            Write-LogMsg -Text "Get-AdsiServer -Fqdn '$ThisServerName'" -Expand $GetAdsiServer -MapKeyName 'LogCacheMap' -Cache $Cache
             $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }
@@ -4979,7 +4949,7 @@ function Initialize-Cache {
             AddParam         = $GetAdsiServer
         }
 
-        Write-LogMsg @Log -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($Fqdn -join "',")')"
+        Write-LogMsg -Text "Split-Thread -Command 'Get-AdsiServer' -InputParameter AdsiServer -InputObject @('$($Fqdn -join "',")')" -Cache $Cache
         $null = Split-Thread @SplitThread
 
     }
@@ -6174,6 +6144,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
