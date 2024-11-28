@@ -2675,7 +2675,7 @@ function Resolve-Folder {
             KeyProperty = 'DeviceID'
         }
 
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -MapKeyName 'LogMap' -Cache $Cache
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -MapKeyName 'LogCacheMap' -Cache $Cache
         $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
@@ -4582,7 +4582,7 @@ function Get-CachedCimInstance {
             Debug       = $false
         }
 
-        $Cache.Value['LogCimSessionMap'] = $Cache.Value['LogMap'].Value + @{ 'CimSession' = '$CimSession' }
+        $Cache.Value['LogCimSessionMap'] = $Cache.Value['LogCacheMap'].Value + @{ 'CimSession' = '$CimSession' }
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
@@ -4597,7 +4597,7 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -ExpandKeyMap $ExpandKeyMap
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -MapKeyName 'LogCimSessionMap'
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
@@ -5209,7 +5209,7 @@ function New-PermissionCache {
     $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
     $ProgressParentId = 0
     $LogType = 'Debug'
-    $LogMap = @{ 'Cache' = '([ref]$PermissionCache)' }
+    $LogCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
@@ -5265,7 +5265,7 @@ function New-PermissionCache {
             Log                          = [ref]$Log
             LogBuffer                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
             LogEmptyMap                  = [ref]$LogEmptyMap
-            LogMap                       = [ref]$LogMap
+            LogCacheMap                  = [ref]$LogCacheMap
             LogType                      = [ref]$LogType
             ParamStringMap               = [ref]$ParamStringMap
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
@@ -6218,6 +6218,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

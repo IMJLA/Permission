@@ -27,7 +27,7 @@ function New-PermissionCache {
     $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
     $ProgressParentId = 0
     $LogType = 'Debug'
-    $LogMap = @{ 'Cache' = '([ref]$PermissionCache)' }
+    $LogCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
@@ -83,7 +83,7 @@ function New-PermissionCache {
             Log                          = [ref]$Log
             LogBuffer                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
             LogEmptyMap                  = [ref]$LogEmptyMap
-            LogMap                       = [ref]$LogMap
+            LogCacheMap                  = [ref]$LogCacheMap
             LogType                      = [ref]$LogType
             ParamStringMap               = [ref]$ParamStringMap
             ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.

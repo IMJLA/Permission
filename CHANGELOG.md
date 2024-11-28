@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.971] - 2024-11-27 - bugfix write-logmsg params
 ## [0.0.970] - 2024-11-27 - bugfix write-logmsg params
 ## [0.0.969] - 2024-11-27 - bugfixwrite-logmsg params
 ## [0.0.968] - 2024-11-27 - bugfix params logthis replaced by cache
