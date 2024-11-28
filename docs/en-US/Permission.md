@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.979
+Help Version: 0.0.980
 Locale: en-US
 ---
 
@@ -48,7 +48,7 @@ Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <ref>] [[-A
 
 ### [Find-ServerFqdn](Find-ServerFqdn.md)
 
-Find-ServerFqdn [[-Known] <string[]>] [[-ThisFqdn] <string>] [[-ProgressParentId] <int>] [[-ParentCount] <ulong>] [-Cache] <ref> [<CommonParameters>]
+Find-ServerFqdn [[-Known] <string[]>] [[-ProgressParentId] <int>] [[-ParentCount] <ulong>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Format-Permission](Format-Permission.md)
 

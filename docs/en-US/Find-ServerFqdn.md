@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Find-ServerFqdn [[-Known] <String[]>] [[-ThisFqdn] <String>] [[-ProgressParentId] <Int32>]
- [[-ParentCount] <UInt64>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Find-ServerFqdn [[-Known] <String[]>] [[-ProgressParentId] <Int32>] [[-ParentCount] <UInt64>]
+ [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -70,7 +70,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -96,21 +96,6 @@ Accept wildcard characters: False
 
 ```yaml
 Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ThisFqdn
-{{ Fill ThisFqdn Description }}
-
-```yaml
-Type: System.String
 Parameter Sets: (All)
 Aliases:
 

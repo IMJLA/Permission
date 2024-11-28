@@ -3927,21 +3927,15 @@ function Find-ResolvedIDsWithAccess {
 
 }
 
-# Build a list of known ADSI server names to use to populate the caches
-# Include the FQDN of the current computer and the known trusted domains
 function Find-ServerFqdn {
+
+    # Build a list of known ADSI server names to use to populate the caches
+    # Include the FQDN of the current computer and the known trusted domains
 
     param (
 
         # Known server FQDNs to include in the output
         [string[]]$Known,
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
@@ -3958,7 +3952,9 @@ function Find-ServerFqdn {
         Activity = 'Find-ServerFqdn'
     }
 
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+
+    if ($ProgressParentId) {
 
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
@@ -3984,6 +3980,7 @@ function Find-ServerFqdn {
     $ProgressStopWatch.Start()
     $LastRemainder = [int]::MaxValue
     $i = 0
+    $ThisFqdn = $Cache['ThisFqdn'].Value
 
     ForEach ($ThisPath in $Cache['ParentByTargetPath'].Value.Values) {
 
@@ -6177,6 +6174,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
