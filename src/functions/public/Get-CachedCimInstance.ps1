@@ -74,7 +74,7 @@ function Get-CachedCimInstance {
             Debug       = $false
         }
 
-        $Cache.Value['LogCimSessionMap'] = $Cache.Value['LogCacheMap'].Value + @{ 'CimSession' = '$CimSession' }
+        $Cache.Value['LogCimSessionMap'] = [ref]($Cache.Value['LogCacheMap'].Value + @{ 'CimSession' = '$CimSession' })
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
