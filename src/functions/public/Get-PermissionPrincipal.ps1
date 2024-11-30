@@ -71,7 +71,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams -ExpandKeyMap @{ Cache = '$Cache' }
+            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams -MapKeyName 'LogCacheMap'
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
