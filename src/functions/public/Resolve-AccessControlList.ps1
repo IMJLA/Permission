@@ -5,30 +5,6 @@ function Resolve-AccessControlList {
 
     param (
 
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
@@ -45,7 +21,7 @@ function Resolve-AccessControlList {
 
     )
 
-    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
+    $Log = @{ 'Cache' = $Cache }
 
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
@@ -68,12 +44,12 @@ function Resolve-AccessControlList {
         ACEPropertyName         = $ACEPropertyName
         Cache                   = $Cache
         InheritanceFlagResolved = $InheritanceFlagResolved
-        ThisHostName            = $ThisHostName
-        ThisFqdn                = $ThisFqdn
-        WhoAmI                  = $WhoAmI
     }
 
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
+
     if ($ThreadCount -eq 1) {
+
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
@@ -104,8 +80,8 @@ function Resolve-AccessControlList {
             Command          = 'Resolve-Acl'
             InputObject      = $Paths
             InputParameter   = 'ItemPath'
-            TodaysHostname   = $ThisHostname
-            WhoAmI           = $WhoAmI
+            TodaysHostname   = $Cache.Value['ThisHostname'].Value
+            WhoAmI           = $Cache.Value['WhoAmI'].Value
             LogBuffer        = $Cache.Value['LogBuffer']
             Threads          = $ThreadCount
             ProgressParentId = $Progress['Id']

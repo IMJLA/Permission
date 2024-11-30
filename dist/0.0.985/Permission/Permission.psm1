@@ -2418,27 +2418,6 @@ function Resolve-Ace {
 
         [object]$ItemPath,
 
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
         [string[]]$ACEPropertyName = $ACE.PSObject.Properties.GetEnumerator().Name,
 
         # Will be set as the Source property of the output object.
@@ -2462,16 +2441,15 @@ function Resolve-Ace {
     )
 
     #$Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
-    $Splat = @{ ThisHostname = $ThisHostname ; Cache = $Cache ; WhoAmI = $WhoAmI ; DebugOutputStream = $DebugOutputStream ; ThisFqdn = $ThisFqdn }
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath'" -Expand $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath @Splat
+    $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -Cache $Cache
 
     #Write-LogMsg @Log -Text "`$AdsiServer = Get-AdsiServer -Fqdn '$DomainDNS'" -Expand $Splat -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS @Splat
+    $AdsiServer = Get-AdsiServer -Fqdn $DomainDNS -Cache $Cache
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReference -IdentityReference '$($ACE.IdentityReference)' -AdsiServer `$AdsiServer -AccountProperty @('$($AccountProperty -join "','")'" -Expand $Splat -Suffix " # ADSI server '$($AdsiServer.AdsiProvider)://$($AdsiServer.Dns)' # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -AccountProperty $AccountProperty @Splat
+    $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -AccountProperty $AccountProperty -Cache $Cache
 
     $ObjectProperties = @{
         Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
@@ -2496,6 +2474,7 @@ function Resolve-Ace {
 
 }
 function Resolve-Acl {
+
     <#
     .SYNOPSIS
     Use ADSI to lookup info about IdentityReferences from Authorization Rule Collections that came from Discretionary Access Control Lists
@@ -2582,33 +2561,14 @@ function Resolve-Acl {
     if ($FolderPath.Length -gt 255) {
         $FolderPath = "\\?\$FolderPath"
     }
-#>
+    #>
+
     [OutputType([PSCustomObject])]
+
     param (
 
         # Authorization Rule Collection of Access Control Entries from Discretionary Access Control Lists
         [object]$ItemPath,
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
 
         [string[]]$ACEPropertyName = $ItemPath.PSObject.Properties.GetEnumerator().Name,
 
@@ -2625,27 +2585,26 @@ function Resolve-Acl {
 
     )
 
-    #$Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
+    #$Log = @{ 'Cache' = $Cache }
 
-    $ResolveAceSplat = @{
-        AccountProperty = $AccountProperty ;
-        Cache = $Cache ; ThisHostName = $ThisHostName ; ThisFqdn = $ThisFqdn ; Type = [guid] ; WhoAmI = $WhoAmI ; ItemPath = $ItemPath ;
-        DebugOutputStream = $DebugOutputStream ; ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
+    $AceParams = @{
+        AccountProperty = $AccountProperty ; Cache = $Cache ; Type = [guid] ; ItemPath = $ItemPath ;
+        ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
     }
 
     $ACL = $Cache.Value['AclByPath'].Value[$ItemPath]
 
     if ($ACL.Owner.IdentityReference) {
 
-        #Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACL.Owner -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For Owner IdentityReference '$($ACL.Owner.IdentityReference)' # For ItemPath '$ItemPath'"
-        Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @ResolveAceSplat
+        #Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACL.Owner -ACEPropertyName @('$($ACEPropertyName -join "','")') @AceParams # For Owner IdentityReference '$($ACL.Owner.IdentityReference)' # For ItemPath '$ItemPath'"
+        Resolve-Ace -ACE $ACL.Owner -Source 'Ownership' @AceParams
 
     }
 
     ForEach ($ACE in $ACL.Access) {
 
-        #Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @ResolveAceSplat # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
-        Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @ResolveAceSplat
+        #Write-LogMsg @Log -Text "Resolve-Ace -ACE `$ACE -ACEPropertyName @('$($ACEPropertyName -join "','")') @AceParams # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
+        Resolve-Ace -ACE $ACE -Source 'Discretionary ACL' @AceParams
 
     }
 
@@ -5881,30 +5840,6 @@ function Resolve-AccessControlList {
 
     param (
 
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
         # ID of the parent progress bar under which to show progress
         [int]$ProgressParentId,
 
@@ -5921,7 +5856,7 @@ function Resolve-AccessControlList {
 
     )
 
-    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $Cache.Value['LogBuffer'] ; WhoAmI = $WhoAmI }
+    $Log = @{ 'Cache' = $Cache }
 
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
@@ -5944,12 +5879,12 @@ function Resolve-AccessControlList {
         ACEPropertyName         = $ACEPropertyName
         Cache                   = $Cache
         InheritanceFlagResolved = $InheritanceFlagResolved
-        ThisHostName            = $ThisHostName
-        ThisFqdn                = $ThisFqdn
-        WhoAmI                  = $WhoAmI
     }
 
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
+
     if ($ThreadCount -eq 1) {
+
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
@@ -5980,8 +5915,8 @@ function Resolve-AccessControlList {
             Command          = 'Resolve-Acl'
             InputObject      = $Paths
             InputParameter   = 'ItemPath'
-            TodaysHostname   = $ThisHostname
-            WhoAmI           = $WhoAmI
+            TodaysHostname   = $Cache.Value['ThisHostname'].Value
+            WhoAmI           = $Cache.Value['WhoAmI'].Value
             LogBuffer        = $Cache.Value['LogBuffer']
             Threads          = $ThreadCount
             ProgressParentId = $Progress['Id']
@@ -6145,6 +6080,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
