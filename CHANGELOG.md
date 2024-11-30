@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.987] - 2024-11-30 - implement cache for find-servernameinpath
 ## [0.0.986] - 2024-11-30 - bugfix write-logmsg params
 ## [0.0.985] - 2024-11-30 - implement cache
 ## [0.0.984] - 2024-11-30 - update threadcount

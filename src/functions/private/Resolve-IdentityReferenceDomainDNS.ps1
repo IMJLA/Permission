@@ -8,52 +8,20 @@ function Resolve-IdentityReferenceDomainDNS {
         # Network path of the item whose ACL the IdentityReference parameter value is from.
         [object]$ItemPath,
 
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
 
     )
 
-    $Log = @{
-        Buffer       = $Cache.Value['LogBuffer']
-        ThisHostname = $ThisHostname
-        Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
-    $LogThis = @{
-        Cache        = $Cache
-        ThisHostname = $ThisHostname
-        WhoAmI       = $WhoAmI
-    }
+    $Log = @{ 'Cache' = $Cache }
 
     if ($Cache.Value['WellKnownSidBySid'].Value[$IdentityReference]) {
 
         # IdentityReference is a well-known SID of a local account.
         # For local accounts, the domain is the computer hosting the network resource.
         # This can be extracted from the network path of the item whose ACL IdentityReference is from.
-        $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+        $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -Cache $Cache
         return $DomainDNS
 
     }
@@ -83,7 +51,7 @@ function Resolve-IdentityReferenceDomainDNS {
             if ($KnownSid) {
 
                 #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Known SID pattern match"
-                $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+                $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -Cache $Cache
                 return $DomainDNS
 
             }
@@ -122,7 +90,7 @@ function Resolve-IdentityReferenceDomainDNS {
             # IdentityReference belongs to a well-known local domain.
             # For local accounts, the domain is the computer hosting the network resource.
             # This can be extracted from the network path of the item whose ACL IdentityReference is from.
-            $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -ThisFqdn $ThisFqdn
+            $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -Cache $Cache
             return $DomainDNS
 
         }
@@ -138,8 +106,8 @@ function Resolve-IdentityReferenceDomainDNS {
 
         # IdentityReference belongs to an unnown domain.
         # Attempt live translation to the domain's DistinguishedName then convert that to FQDN.
-        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -ThisFqdn $ThisFqdn @LogThis
-        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -ThisFqdn $ThisFqdn @LogThis
+        $ThisServerDn = ConvertTo-DistinguishedName -Domain $DomainNetBIOS -Cache $Cache
+        $DomainDNS = ConvertTo-Fqdn -DistinguishedName $ThisServerDn -Cache $Cache
         return $DomainDNS
 
     }
