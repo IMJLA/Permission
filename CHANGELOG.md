@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.984] - 2024-11-30 - update threadcount
 ## [0.0.983] - 2024-11-27 - implement cache
 ## [0.0.982] - 2024-11-27 - bugfix cache value prop
 ## [0.0.981] - 2024-11-27 - bugfix order of ops

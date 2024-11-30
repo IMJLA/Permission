@@ -49,6 +49,8 @@ function Initialize-Cache {
         Cache = $Cache
     }
 
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
+
     if ($ThreadCount -eq 1) {
 
         $i = 0

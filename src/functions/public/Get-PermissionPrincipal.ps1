@@ -68,14 +68,13 @@ function Get-PermissionPrincipal {
     $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
 
     $ADSIConversionParams = @{
-        AccountProperty   = $AccountProperty
-        Cache             = $Cache
-        CurrentDomain     = $CurrentDomain
-        DebugOutputStream = $DebugOutputStream
-        ThisFqdn          = $ThisFqdn
-        ThisHostName      = $ThisHostName
-        WhoAmI            = $WhoAmI
+        AccountProperty = $AccountProperty
+        Cache           = $Cache
+        CurrentDomain   = $CurrentDomain
+        $Log['Type']    = 'Warning'
     }
+
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
 
     if ($ThreadCount -eq 1) {
 
