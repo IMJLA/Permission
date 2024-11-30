@@ -54,7 +54,7 @@ function Resolve-AccessControlList {
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        Write-LogMsg @Log -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Expand $ResolveAclParams -Suffix " } # for $Count ACLs" -ExpandKeyMap @{ Cache = '$Cache' }
+        Write-LogMsg @Log -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Expand $ResolveAclParams -Suffix " } # for $Count ACLs" -MapKeyName 'LogCacheMap'
 
         ForEach ($ThisPath in $Paths) {
 
@@ -69,7 +69,7 @@ function Resolve-AccessControlList {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            #Write-LogMsg @Log -Text "Resolve-Acl -ItemPath '$ThisPath'" -Expand $ResolveAclParams
+            #Write-LogMsg @Log -Text "Resolve-Acl -ItemPath '$ThisPath'" -Expand $ResolveAclParams -MapKeyName 'LogCacheMap'
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
