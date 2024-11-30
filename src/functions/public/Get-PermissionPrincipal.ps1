@@ -2,30 +2,6 @@ function Get-PermissionPrincipal {
 
     param (
 
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
         <#
         Do not get group members (only report the groups themselves)
 
@@ -34,9 +10,6 @@ function Get-PermissionPrincipal {
           Remove the 'group' class from ExcludeClass in order to see groups on the report.
         #>
         [switch]$NoGroupMembers,
-
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -54,7 +27,8 @@ function Get-PermissionPrincipal {
     $Progress = @{
         Activity = 'Get-PermissionPrincipal'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {
@@ -64,14 +38,12 @@ function Get-PermissionPrincipal {
     [string[]]$IDs = $Cache.Value['AceGuidByID'].Value.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
-    $LogBuffer = $Cache.Value['LogBuffer']
-    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
+    $Log = @{ 'Cache' = $Cache }
 
     $ADSIConversionParams = @{
-        AccountProperty = $AccountProperty
-        Cache           = $Cache
-        CurrentDomain   = $CurrentDomain
-        $Log['Type']    = 'Warning'
+        'AccountProperty' = $AccountProperty
+        'Cache'           = $Cache
+        'CurrentDomain'   = $CurrentDomain
     }
 
     $ThreadCount = $Cache.Value['ThreadCount'].Value
@@ -115,11 +87,11 @@ function Get-PermissionPrincipal {
             InputObject          = $IDs
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
-            TodaysHostname       = $ThisHostname
-            WhoAmI               = $WhoAmI
-            LogBuffer            = $LogBuffer
-            Threads              = $ThreadCount
-            ProgressParentId     = $Progress['Id']
+            #TodaysHostname       = $ThisHostname
+            #WhoAmI               = $WhoAmI
+            #LogBuffer            = $LogBuffer
+            #Threads              = $ThreadCount
+            #ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
         }
 

@@ -5,9 +5,6 @@ function Resolve-AccessControlList {
 
     param (
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
         [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
@@ -26,7 +23,8 @@ function Resolve-AccessControlList {
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {

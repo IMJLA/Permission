@@ -3560,9 +3560,6 @@ function Expand-Permission {
         [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
         [String]$DebugOutputStream = 'Debug',
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache
@@ -3574,7 +3571,8 @@ function Expand-Permission {
     $Progress = @{
         Activity = 'Expand-Permission'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {
@@ -3864,9 +3862,6 @@ function Find-ServerFqdn {
         # Known server FQDNs to include in the output
         [string[]]$Known,
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         [uint64]$ParentCount,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
@@ -3960,9 +3955,6 @@ function Format-Permission {
 
         [cultureinfo]$Culture = (Get-Culture),
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -3975,7 +3967,8 @@ function Format-Permission {
     $Progress = @{
         Activity = 'Format-Permission'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
     } else {
@@ -4628,30 +4621,6 @@ function Get-PermissionPrincipal {
 
     param (
 
-        # Output stream to send the log messages to
-        [ValidateSet('Silent', 'Quiet', 'Success', 'Debug', 'Verbose', 'Output', 'Host', 'Warning', 'Error', 'Information', $null)]
-        [String]$DebugOutputStream = 'Debug',
-
-        # Maximum number of concurrent threads to allow
-        [int]$ThreadCount = (Get-CimInstance -ClassName CIM_Processor | Measure-Object -Sum -Property NumberOfLogicalProcessors).Sum,
-
-        <#
-        FQDN of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE and [System.Net.Dns]::GetHostByName()
-        #>
-        [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
-
-        <#
-        Hostname of the computer running this function.
-
-        Can be provided as a string to avoid calls to HOSTNAME.EXE
-        #>
-        [String]$ThisHostName = (HOSTNAME.EXE),
-
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        [String]$WhoAmI = (whoami.EXE),
-
         <#
         Do not get group members (only report the groups themselves)
 
@@ -4660,9 +4629,6 @@ function Get-PermissionPrincipal {
           Remove the 'group' class from ExcludeClass in order to see groups on the report.
         #>
         [switch]$NoGroupMembers,
-
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -4680,7 +4646,8 @@ function Get-PermissionPrincipal {
     $Progress = @{
         Activity = 'Get-PermissionPrincipal'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {
@@ -4690,14 +4657,12 @@ function Get-PermissionPrincipal {
     [string[]]$IDs = $Cache.Value['AceGuidByID'].Value.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
-    $LogBuffer = $Cache.Value['LogBuffer']
-    $Log = @{ ThisHostname = $ThisHostname ; Type = $DebugOutputStream ; Buffer = $LogBuffer ; WhoAmI = $WhoAmI }
+    $Log = @{ 'Cache' = $Cache }
 
     $ADSIConversionParams = @{
-        AccountProperty = $AccountProperty
-        Cache           = $Cache
-        CurrentDomain   = $CurrentDomain
-        $Log['Type']    = 'Warning'
+        'AccountProperty' = $AccountProperty
+        'Cache'           = $Cache
+        'CurrentDomain'   = $CurrentDomain
     }
 
     $ThreadCount = $Cache.Value['ThreadCount'].Value
@@ -4741,11 +4706,11 @@ function Get-PermissionPrincipal {
             InputObject          = $IDs
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
-            TodaysHostname       = $ThisHostname
-            WhoAmI               = $WhoAmI
-            LogBuffer            = $LogBuffer
-            Threads              = $ThreadCount
-            ProgressParentId     = $Progress['Id']
+            #TodaysHostname       = $ThisHostname
+            #WhoAmI               = $WhoAmI
+            #LogBuffer            = $LogBuffer
+            #Threads              = $ThreadCount
+            #ProgressParentId     = $Progress['Id']
             AddParam             = $ADSIConversionParams
         }
 
@@ -5808,9 +5773,6 @@ function Resolve-AccessControlList {
 
     param (
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
         # Parameter default value is on a single line as a workaround to a PlatyPS bug
         [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
@@ -5829,7 +5791,8 @@ function Resolve-AccessControlList {
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {
@@ -5944,9 +5907,6 @@ function Select-PermissionPrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # Unused parameter
         [String]$ThisHostName,
 
@@ -5962,7 +5922,8 @@ function Select-PermissionPrincipal {
     $Progress = @{
         Activity = 'Select-PermissionPrincipal'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {
@@ -6048,6 +6009,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

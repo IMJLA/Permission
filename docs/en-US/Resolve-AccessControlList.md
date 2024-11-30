@@ -13,9 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Resolve-AccessControlList [[-ProgressParentId] <Int32>] [[-InheritanceFlagResolved] <String[]>]
- [-Cache] <PSReference> [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Resolve-AccessControlList [[-InheritanceFlagResolved] <String[]>] [-Cache] <PSReference>
+ [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -56,7 +55,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -71,7 +70,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 1
+Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -87,21 +86,6 @@ Aliases: proga
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 0
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

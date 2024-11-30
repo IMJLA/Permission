@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.987
+Help Version: 0.0.988
 Locale: en-US
 ---
 
@@ -32,7 +32,7 @@ ConvertTo-PermissionFqdn [-ComputerName] <string> [-Cache] <ref> [-ThisFqdn] [<C
 
 ### [Expand-Permission](Expand-Permission.md)
 
-Expand-Permission [[-SplitBy] <string[]>] [[-GroupBy] <string>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-DebugOutputStream] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [<CommonParameters>]
+Expand-Permission [[-SplitBy] <string[]>] [[-GroupBy] <string>] [[-Children] <hashtable>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-DebugOutputStream] <string>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Expand-PermissionTarget](Expand-PermissionTarget.md)
 
@@ -48,11 +48,11 @@ Find-ResolvedIDsWithAccess [[-ItemPath] <Object>] [[-AceGUIDsByPath] <ref>] [[-A
 
 ### [Find-ServerFqdn](Find-ServerFqdn.md)
 
-Find-ServerFqdn [[-Known] <string[]>] [[-ProgressParentId] <int>] [[-ParentCount] <ulong>] [-Cache] <ref> [<CommonParameters>]
+Find-ServerFqdn [[-Known] <string[]>] [[-ParentCount] <ulong>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Format-Permission](Format-Permission.md)
 
-Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-Culture] <cultureinfo>] [[-ProgressParentId] <int>] [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
+Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-Culture] <cultureinfo>] [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
 
@@ -72,7 +72,7 @@ Get-CachedCimSession [[-ComputerName] <string>] [-Cache] <ref> [<CommonParameter
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
-Get-PermissionPrincipal [[-DebugOutputStream] <string>] [[-ThreadCount] <int>] [[-ThisFqdn] <string>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [[-ProgressParentId] <int>] [-Cache] <ref> [[-CurrentDomain] <psobject>] [[-AccountProperty] <string[]>] [-NoGroupMembers] [<CommonParameters>]
+Get-PermissionPrincipal [-Cache] <ref> [[-CurrentDomain] <psobject>] [[-AccountProperty] <string[]>] [-NoGroupMembers] [<CommonParameters>]
 
 ### [Get-PermissionTrustedDomain](Get-PermissionTrustedDomain.md)
 
@@ -116,7 +116,7 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 
 ### [Resolve-AccessControlList](Resolve-AccessControlList.md)
 
-Resolve-AccessControlList [[-ProgressParentId] <int>] [[-InheritanceFlagResolved] <string[]>] [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
+Resolve-AccessControlList [[-InheritanceFlagResolved] <string[]>] [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 
@@ -124,6 +124,6 @@ Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [-Cache] <ref> [<Comm
 
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 
-Select-PermissionPrincipal [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-ProgressParentId] <int>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-Cache] <ref> [<CommonParameters>]
+Select-PermissionPrincipal [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [[-ThisHostName] <string>] [[-WhoAmI] <string>] [-Cache] <ref> [<CommonParameters>]
 
 

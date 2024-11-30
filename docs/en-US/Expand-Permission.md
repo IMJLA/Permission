@@ -14,8 +14,8 @@ schema: 2.0.0
 
 ```
 Expand-Permission [[-SplitBy] <String[]>] [[-GroupBy] <String>] [[-Children] <Hashtable>]
- [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>] [[-ProgressParentId] <Int32>]
- [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-ThisHostName] <String>] [[-WhoAmI] <String>] [[-DebugOutputStream] <String>] [-Cache] <PSReference>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -104,21 +104,6 @@ Aliases: proga
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

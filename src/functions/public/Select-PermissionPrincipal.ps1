@@ -17,9 +17,6 @@ function Select-PermissionPrincipal {
         #>
         [string[]]$IgnoreDomain,
 
-        # ID of the parent progress bar under which to show progress
-        [int]$ProgressParentId,
-
         # Unused parameter
         [String]$ThisHostName,
 
@@ -35,7 +32,8 @@ function Select-PermissionPrincipal {
     $Progress = @{
         Activity = 'Select-PermissionPrincipal'
     }
-    if ($PSBoundParameters.ContainsKey('ProgressParentId')) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {

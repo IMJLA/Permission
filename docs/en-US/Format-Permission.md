@@ -14,9 +14,8 @@ schema: 2.0.0
 
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>] [[-ProgressParentId] <Int32>]
- [-Cache] <PSReference> [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>] [-Cache] <PSReference>
+ [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -57,7 +56,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -166,21 +165,6 @@ Aliases: proga
 
 Required: False
 Position: Named
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

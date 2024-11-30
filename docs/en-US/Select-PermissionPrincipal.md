@@ -14,8 +14,8 @@ schema: 2.0.0
 
 ```
 Select-PermissionPrincipal [[-ExcludeAccount] <String[]>] [[-IncludeAccount] <String[]>]
- [[-IgnoreDomain] <String[]>] [[-ProgressParentId] <Int32>] [[-ThisHostName] <String>] [[-WhoAmI] <String>]
- [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-IgnoreDomain] <String[]>] [[-ThisHostName] <String>] [[-WhoAmI] <String>] [-Cache] <PSReference>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 6
+Position: 5
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -107,21 +107,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ProgressParentId
-{{ Fill ProgressParentId Description }}
-
-```yaml
-Type: System.Int32
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ThisHostName
 {{ Fill ThisHostName Description }}
 
@@ -131,7 +116,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 4
+Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -146,7 +131,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 5
+Position: 4
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
