@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1010] - 2024-11-30 - add another map
 ## [0.0.1009] - 2024-11-30 - add another map
 ## [0.0.1008] - 2024-11-30 - add another map
 ## [0.0.1007] - 2024-11-30 - add another map

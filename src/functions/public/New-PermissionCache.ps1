@@ -34,6 +34,7 @@ function New-PermissionCache {
     $LogFormattedMap = @{ 'FormattedPermission' = '$FormattedPermissions' }
     $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' }
     $LogBufferMap = @{ 'Buffer' = "[ref]`$PermissionCache['LogBuffer']" }
+    $LogTargetPathMap = @{ 'Cache' = '([ref]$PermissionCache)' ; 'TargetPath' = '$Items' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
@@ -91,6 +92,7 @@ function New-PermissionCache {
             'LogEmptyMap'                  = [ref]$LogEmptyMap
             'LogCacheMap'                  = [ref]$LogCacheMap
             'LogPermissionCacheMap'        = [ref]$LogPermissionCacheMap
+            'LogTargetPathMap'             = [ref]$LogTargetPathMap
             'LogBufferMap'                 = [ref]$LogBufferMap
             'LogFormattedMap'              = [ref]$LogFormattedMap
             'LogStopWatchMap'              = [ref]$LogStopWatchMap
