@@ -1509,23 +1509,7 @@ function Get-HtmlReportElements {
         #>
         [cultureinfo]$Culture = (Get-Culture),
 
-        <#
-        How to group the permissions in the output stream and within each exported file
-
-            SplitBy GroupBy
-            none    none    $FlatPermissions all in 1 file per $TargetPath
-            none    account $AccountPermissions all in 1 file per $TargetPath
-            none    item    $ItemPermissions all in 1 file per $TargetPath (default behavior)
-
-            item    none    1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
-            item    account 1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
-            item    item    (same as -SplitBy item -GroupBy none)
-
-            account none    1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
-            account account (same as -SplitBy account -GroupBy none)
-            account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
-        #>
-        [ValidateSet('account', 'item', 'none', 'target')]
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$GroupBy = 'item',
 
         <#
@@ -1536,7 +1520,6 @@ function Get-HtmlReportElements {
             account generate 1 file per account
             all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
         #>
-        [ValidateSet('none', 'all', 'target', 'item', 'account')]
         [string[]]$SplitBy = 'target',
 
         [String]$Split,
@@ -6002,6 +5985,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
