@@ -5005,6 +5005,7 @@ function New-PermissionCache {
     $PSReference = [type]'ref'
     $WellKnownSidBySid = Get-KnownSidHashTable
     $WellKnownSidByName = Get-KnownSidByName -WellKnownSIDBySID $WellKnownSidBySid
+    $WellKnownSidByCaption = Get-KnownCaptionHashTable -WellKnownSidBySid $WellKnownSidBySid
 
     # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
     # Parameter default value is on a single line as a workaround to a PlatyPS bug
@@ -5055,8 +5056,9 @@ function New-PermissionCache {
             'ThisFqdn'                     = [ref]''
             'ThisHostname'                 = [ref]$ThisHostname
             'ThreadCount'                  = [ref]$ThreadCount
-            'WellKnownSidBySid'            = [ref]$WellKnownSidBySid
+            'WellKnownSidByCaption'        = [ref]$WellKnownSidByCaption
             'WellKnownSidByName'           = [ref]$WellKnownSidByName
+            'WellKnownSidBySid'            = [ref]$WellKnownSidBySid
             'WhoAmI'                       = [ref]$WhoAmI
         })
 
@@ -5932,6 +5934,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 
