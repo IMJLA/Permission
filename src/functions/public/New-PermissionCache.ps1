@@ -29,6 +29,8 @@ function New-PermissionCache {
     $LogType = 'Debug'
     $LogPermissionCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
     $LogCacheMap = @{ 'Cache' = '$Cache' }
+    $LogWellKnownMap = @{ 'Cache' = '$Cache' ; 'CachedWellKnownSID' = '$CachedWellKnownSID' }
+    $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
@@ -86,6 +88,8 @@ function New-PermissionCache {
             'LogEmptyMap'                  = [ref]$LogEmptyMap
             'LogCacheMap'                  = [ref]$LogCacheMap
             'LogPermissionCacheMap'        = [ref]$LogPermissionCacheMap
+            'LogDirEntryMap'               = [ref]$LogDirEntryMap
+            'LogWellKnownMap'              = [ref]$LogWellKnownMap
             'LogType'                      = [ref]$LogType
             'ParamStringMap'               = [ref]$ParamStringMap
             'ParentByTargetPath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
