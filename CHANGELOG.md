@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1021] - 2024-11-30 - implement cache param for find-servernameinpath
 ## [0.0.1020] - 2024-11-30 - remove unused param
 ## [0.0.1019] - 2024-11-30 - implement get-permissionprogress
 ## [0.0.1018] - 2024-11-30 - remove unused param

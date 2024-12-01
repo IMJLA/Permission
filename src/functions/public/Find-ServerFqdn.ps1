@@ -48,7 +48,7 @@ function Find-ServerFqdn {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
+            $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -Cache $Cache)] = $null
 
         }
 
