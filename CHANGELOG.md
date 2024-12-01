@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1017] - 2024-11-30 - enumerate list contents
 ## [0.0.1016] - 2024-11-30 - bugfix how the heck was this even here
 ## [0.0.1015] - 2024-11-30 - bugfix prog bars
 ## [0.0.1014] - 2024-11-30 - bugfix prog bars

@@ -51,20 +51,24 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($ThisPath in $Cache.Value['ParentByTargetPath'].Value.Values) {
+    ForEach ($Parent in $Cache.Value['ParentByTargetPath'].Value.Values) {
 
-        $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
+        ForEach ($ThisPath in $Parent) {
 
-        if ($NewRemainder -lt $LastRemainder) {
+            $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 
-            $LastRemainder = $NewRemainder
-            [int]$PercentComplete = $i / $ParentCount * 100
-            Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $ParentCount)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+            if ($NewRemainder -lt $LastRemainder) {
+
+                $LastRemainder = $NewRemainder
+                [int]$PercentComplete = $i / $ParentCount * 100
+                Write-Progress @Progress -Status "$PercentComplete% (path $($i + 1) of $ParentCount)" -CurrentOperation "Find-ServerNameInPath '$ThisPath'" -PercentComplete $PercentComplete
+
+            }
+
+            $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
+            $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
 
         }
-
-        $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-        $UniqueValues[(Find-ServerNameInPath -LiteralPath $ThisPath -ThisFqdn $ThisFqdn)] = $null
 
     }
 
