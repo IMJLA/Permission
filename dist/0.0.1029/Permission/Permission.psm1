@@ -4606,10 +4606,10 @@ function Get-PermissionPrincipal {
     $Progress = Get-PermissionProgress -Activity 'Get-PermissionPrincipal' -Cache $Cache
     [string[]]$IDs = $Cache.Value['AceGuidByID'].Value.Keys
     $Count = $IDs.Count
-    Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
+    Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-ResolvedID" -CurrentOperation 'Initialize' -PercentComplete 0
     $Log = @{ 'Cache' = $Cache }
 
-    $ADSIConversionParams = @{
+    $AdsiParams = @{
         'AccountProperty' = $AccountProperty
         'Cache'           = $Cache
     }
@@ -4619,7 +4619,7 @@ function Get-PermissionPrincipal {
     if ($ThreadCount -eq 1) {
 
         if ($NoGroupMembers) {
-            $ADSIConversionParams['NoGroupMembers'] = $true
+            $AdsiParams['NoGroupMembers'] = $true
         }
 
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
@@ -4633,25 +4633,25 @@ function Get-PermissionPrincipal {
             if ($IntervalCounter -eq $ProgressInterval) {
 
                 [int]$PercentComplete = $i / $Count * 100
-                Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation $ThisID -PercentComplete $PercentComplete
+                Write-Progress @Progress -Status "$PercentComplete% (identity $($i + 1) of $Count) ConvertFrom-ResolvedID" -CurrentOperation $ThisID -PercentComplete $PercentComplete
                 $IntervalCounter = 0
 
             }
 
             $i++
-            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams -ExpansionMap $Cache.Value['LogCacheMap'].Value
-            ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
+            Write-LogMsg @Log -Text "ConvertFrom-ResolvedID -IdentityReference '$ThisID'" -Expand $AdsiParams -ExpansionMap $Cache.Value['LogCacheMap'].Value
+            ConvertFrom-ResolvedID -IdentityReference $ThisID @AdsiParams
 
         }
 
     } else {
 
         if ($NoGroupMembers) {
-            $ADSIConversionParams['AddSwitch'] = 'NoGroupMembers'
+            $AdsiParams['AddSwitch'] = 'NoGroupMembers'
         }
 
         $SplitThreadParams = @{
-            Command              = 'ConvertFrom-IdentityReferenceResolved'
+            Command              = 'ConvertFrom-ResolvedID'
             InputObject          = $IDs
             InputParameter       = 'IdentityReference'
             ObjectStringProperty = 'Name'
@@ -4660,7 +4660,7 @@ function Get-PermissionPrincipal {
             #LogBuffer            = $LogBuffer
             #Threads              = $ThreadCount
             #ProgressParentId     = $Progress['Id']
-            AddParam             = $ADSIConversionParams
+            AddParam             = $AdsiParams
         }
 
         Write-LogMsg @Log -Text 'Split-Thread' -Expand $SplitThreadParams
@@ -5920,6 +5920,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
