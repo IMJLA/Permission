@@ -2628,14 +2628,14 @@ function Resolve-Folder {
 
     if ($TargetPath -match $RegEx) {
 
-        $GetCimInstanceParams = @{
+        $CimParams = @{
             Cache       = $Cache
             ClassName   = 'Win32_MappedLogicalDisk'
             KeyProperty = 'DeviceID'
         }
 
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -MapKeyName 'LogCacheMap' -Cache $Cache
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -MapKeyName 'LogCacheMap' -Cache $Cache
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @CimParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
@@ -5028,7 +5028,8 @@ function New-PermissionCache {
     $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
     $ProgressParentId = 0
     $LogType = 'Debug'
-    $LogCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
+    $LogPermissionCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
+    $LogCacheMap = @{ 'Cache' = '([ref]$Cache)' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
@@ -5068,35 +5069,36 @@ function New-PermissionCache {
     #>
 
     return [hashtable]::Synchronized(@{
-            AceByGUID                    = New-PermissionCacheRef -Key $String -Value $Object #hashtable Initialize a cache of access control entries keyed by GUID generated in Resolve-ACE.
-            AceGuidByID                  = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their resolved NTAccount captions.
-            AceGuidByPath                = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their paths.
-            AclByPath                    = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of access control lists keyed by their paths.
-            CimCache                     = New-PermissionCacheRef -Key $String -Value $PSReference #hashtable Initialize a cache of CIM sessions, instances, and query results.
-            DirectoryEntryByPath         = New-PermissionCacheRef -Key $String -Value $Object #DirectoryEntryCache Initialize a cache of ADSI directory entry keyed by their Path to minimize ADSI queries.
-            DomainBySID                  = New-PermissionCacheRef -Key $String -Value $Object #DomainsBySID Initialize a cache of directory domains keyed by domain SID to minimize CIM and ADSI queries.
-            DomainByNetbios              = New-PermissionCacheRef -Key $String -Value $Object #DomainsByNetbios Initialize a cache of directory domains keyed by domain NetBIOS to minimize CIM and ADSI queries.
-            DomainByFqdn                 = New-PermissionCacheRef -Key $String -Value $Object #DomainsByFqdn Initialize a cache of directory domains keyed by domain DNS FQDN to minimize CIM and ADSI queries.
-            ExcludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeAccount parameter.
-            ExcludeClassFilterContents   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
-            IdByShortName                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
-            IncludeAccountFilterContents = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
-            Log                          = [ref]$Log
-            LogBuffer                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
-            LogEmptyMap                  = [ref]$LogEmptyMap
-            LogCacheMap                  = [ref]$LogCacheMap
-            LogType                      = [ref]$LogType
-            ParamStringMap               = [ref]$ParamStringMap
-            ParentByTargetPath           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
-            PrincipalByID                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
-            ProgressParentId             = [ref]$ProgressParentId
-            ShortNameByID                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
-            ThisFqdn                     = [ref]''
-            ThisHostname                 = [ref]$ThisHostname
-            ThreadCount                  = [ref]$ThreadCount
-            WellKnownSidBySid            = [ref]$WellKnownSidBySid
-            WellKnownSidByName           = [ref]$WellKnownSidByName
-            WhoAmI                       = [ref]$WhoAmI
+            'AceByGUID'                    = New-PermissionCacheRef -Key $String -Value $Object #hashtable Initialize a cache of access control entries keyed by GUID generated in Resolve-ACE.
+            'AceGuidByID'                  = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their resolved NTAccount captions.
+            'AceGuidByPath'                = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their paths.
+            'AclByPath'                    = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of access control lists keyed by their paths.
+            'CimCache'                     = New-PermissionCacheRef -Key $String -Value $PSReference #hashtable Initialize a cache of CIM sessions, instances, and query results.
+            'DirectoryEntryByPath'         = New-PermissionCacheRef -Key $String -Value $Object #DirectoryEntryCache Initialize a cache of ADSI directory entry keyed by their Path to minimize ADSI queries.
+            'DomainBySID'                  = New-PermissionCacheRef -Key $String -Value $Object #DomainsBySID Initialize a cache of directory domains keyed by domain SID to minimize CIM and ADSI queries.
+            'DomainByNetbios'              = New-PermissionCacheRef -Key $String -Value $Object #DomainsByNetbios Initialize a cache of directory domains keyed by domain NetBIOS to minimize CIM and ADSI queries.
+            'DomainByFqdn'                 = New-PermissionCacheRef -Key $String -Value $Object #DomainsByFqdn Initialize a cache of directory domains keyed by domain DNS FQDN to minimize CIM and ADSI queries.
+            'ExcludeAccountFilterContents' = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeAccount parameter.
+            'ExcludeClassFilterContents'   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
+            'IdByShortName'                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
+            'IncludeAccountFilterContents' = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
+            'Log'                          = [ref]$Log
+            'LogBuffer'                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
+            'LogEmptyMap'                  = [ref]$LogEmptyMap
+            'LogCacheMap'                  = [ref]$LogCacheMap
+            'LogPermissionCacheMap'        = [ref]$LogPermissionCacheMap
+            'LogType'                      = [ref]$LogType
+            'ParamStringMap'               = [ref]$ParamStringMap
+            'ParentByTargetPath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
+            'PrincipalByID'                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
+            'ProgressParentId'             = [ref]$ProgressParentId
+            'ShortNameByID'                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
+            'ThisFqdn'                     = [ref]''
+            'ThisHostname'                 = [ref]$ThisHostname
+            'ThreadCount'                  = [ref]$ThreadCount
+            'WellKnownSidBySid'            = [ref]$WellKnownSidBySid
+            'WellKnownSidByName'           = [ref]$WellKnownSidByName
+            'WhoAmI'                       = [ref]$WhoAmI
         })
 
 }
@@ -6009,6 +6011,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

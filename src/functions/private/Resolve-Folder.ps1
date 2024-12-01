@@ -17,14 +17,14 @@ function Resolve-Folder {
 
     if ($TargetPath -match $RegEx) {
 
-        $GetCimInstanceParams = @{
+        $CimParams = @{
             Cache       = $Cache
             ClassName   = 'Win32_MappedLogicalDisk'
             KeyProperty = 'DeviceID'
         }
 
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $GetCimInstanceParams -MapKeyName 'LogCacheMap' -Cache $Cache
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @GetCimInstanceParams
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -MapKeyName 'LogCacheMap' -Cache $Cache
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @CimParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
