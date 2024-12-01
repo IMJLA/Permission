@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1030
+Help Version: 0.0.1031
 Locale: en-US
 ---
 
@@ -116,7 +116,7 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 
 ### [Resolve-AccessControlList](Resolve-AccessControlList.md)
 
-Resolve-AccessControlList [[-InheritanceFlagResolved] <string[]>] [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
+Resolve-AccessControlList [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
 
 ### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
 

@@ -5,10 +5,6 @@ function Resolve-AccessControlList {
 
     param (
 
-        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -28,10 +24,9 @@ function Resolve-AccessControlList {
     $ACEPropertyName = $ACLsByPath.Value.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
-        AccountProperty         = $AccountProperty
-        ACEPropertyName         = $ACEPropertyName
-        Cache                   = $Cache
-        InheritanceFlagResolved = $InheritanceFlagResolved
+        AccountProperty = $AccountProperty
+        ACEPropertyName = $ACEPropertyName
+        Cache           = $Cache
     }
 
     $ThreadCount = $Cache.Value['ThreadCount'].Value

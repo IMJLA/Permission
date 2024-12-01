@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1031] - 2024-12-01 - move inheritanceflagsresolved to cache
 ## [0.0.1030] - 2024-11-30 - clarify debug log
 ## [0.0.1029] - 2024-11-30 - rename cmd
 ## [0.0.1028] - 2024-11-30 - update maps

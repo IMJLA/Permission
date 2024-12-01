@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Resolve-AccessControlList [[-InheritanceFlagResolved] <String[]>] [-Cache] <PSReference>
- [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Resolve-AccessControlList [-Cache] <PSReference> [[-AccountProperty] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -55,21 +55,6 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -InheritanceFlagResolved
-{{ Fill InheritanceFlagResolved Description }}
-
-```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: 0
 Default value: None
 Accept pipeline input: False

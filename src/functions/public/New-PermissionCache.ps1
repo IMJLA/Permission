@@ -63,6 +63,11 @@ function New-PermissionCache {
     $WellKnownSidBySid = Get-KnownSidHashTable
     $WellKnownSidByName = Get-KnownSidByName -WellKnownSIDBySID $WellKnownSidBySid
 
+    # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
+    # Parameter default value is on a single line as a workaround to a PlatyPS bug
+    # TODO: Move to i18n
+    $InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
+
     <#
     $CimCache
         Key is a String
@@ -85,6 +90,7 @@ function New-PermissionCache {
             'ExcludeClassFilterContents'   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
             'IdByShortName'                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             'IncludeAccountFilterContents' = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
+            'InheritanceFlagResolved'      = [ref]$InheritanceFlagResolved
             'Log'                          = [ref]$Log
             'LogBuffer'                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
             'LogEmptyMap'                  = [ref]$LogEmptyMap

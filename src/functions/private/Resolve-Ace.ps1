@@ -105,10 +105,6 @@ function Resolve-Ace {
         # Intended to reflect permissions resulting from Ownership rather than Discretionary Access Lists
         [String]$Source,
 
-        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -133,7 +129,7 @@ function Resolve-Ace {
     $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -AccountProperty $AccountProperty -Cache $Cache
 
     $ObjectProperties = @{
-        Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
+        Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($Cache.Value['InheritanceFlagResolved'].Value[$ACE.InheritanceFlags])"
         AdsiProvider              = $AdsiServer.AdsiProvider
         AdsiServer                = $DomainDNS
         IdentityReferenceSID      = $ResolvedIdentityReference.SIDString

@@ -2456,10 +2456,6 @@ function Resolve-Ace {
         # Intended to reflect permissions resulting from Ownership rather than Discretionary Access Lists
         [String]$Source,
 
-        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -2484,7 +2480,7 @@ function Resolve-Ace {
     $ResolvedIdentityReference = Resolve-IdentityReference -IdentityReference $ACE.IdentityReference -AdsiServer $AdsiServer -AccountProperty $AccountProperty -Cache $Cache
 
     $ObjectProperties = @{
-        Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($InheritanceFlagResolved[$ACE.InheritanceFlags])"
+        Access                    = "$($ACE.AccessControlType) $($ACE.FileSystemRights) $($Cache.Value['InheritanceFlagResolved'].Value[$ACE.InheritanceFlags])"
         AdsiProvider              = $AdsiServer.AdsiProvider
         AdsiServer                = $DomainDNS
         IdentityReferenceSID      = $ResolvedIdentityReference.SIDString
@@ -2604,10 +2600,6 @@ function Resolve-Acl {
 
         [string[]]$ACEPropertyName = $ItemPath.PSObject.Properties.GetEnumerator().Name,
 
-        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -2621,7 +2613,7 @@ function Resolve-Acl {
 
     $AceParams = @{
         AccountProperty = $AccountProperty ; Cache = $Cache ; Type = [guid] ; ItemPath = $ItemPath ;
-        ACEPropertyName = $ACEPropertyName ; InheritanceFlagResolved = $InheritanceFlagResolved
+        ACEPropertyName = $ACEPropertyName
     }
 
     $ACL = $Cache.Value['AclByPath'].Value[$ItemPath]
@@ -4996,6 +4988,11 @@ function New-PermissionCache {
     $WellKnownSidBySid = Get-KnownSidHashTable
     $WellKnownSidByName = Get-KnownSidByName -WellKnownSIDBySID $WellKnownSidBySid
 
+    # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
+    # Parameter default value is on a single line as a workaround to a PlatyPS bug
+    # TODO: Move to i18n
+    $InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files')
+
     <#
     $CimCache
         Key is a String
@@ -5018,6 +5015,7 @@ function New-PermissionCache {
             'ExcludeClassFilterContents'   = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the ExcludeClass parameter.
             'IdByShortName'                = New-PermissionCacheRef -Key $String -Value $StringList #hashtable Initialize a cache of resolved NTAccount captions keyed by their short names (results of the IgnoreDomain parameter).
             'IncludeAccountFilterContents' = New-PermissionCacheRef -Key $String -Value $Boolean #hashtable Initialize a cache of accounts filtered by the IncludeAccount parameter.
+            'InheritanceFlagResolved'      = [ref]$InheritanceFlagResolved
             'Log'                          = [ref]$Log
             'LogBuffer'                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
             'LogEmptyMap'                  = [ref]$LogEmptyMap
@@ -5711,10 +5709,6 @@ function Resolve-AccessControlList {
 
     param (
 
-        # String translations indexed by value in the [System.Security.AccessControl.InheritanceFlags] enum
-        # Parameter default value is on a single line as a workaround to a PlatyPS bug
-        [string[]]$InheritanceFlagResolved = @('this folder but not subfolders', 'this folder and subfolders', 'this folder and files, but not subfolders', 'this folder, subfolders, and files'),
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -5734,10 +5728,9 @@ function Resolve-AccessControlList {
     $ACEPropertyName = $ACLsByPath.Value.Values.Access[0].PSObject.Properties.GetEnumerator().Name
 
     $ResolveAclParams = @{
-        AccountProperty         = $AccountProperty
-        ACEPropertyName         = $ACEPropertyName
-        Cache                   = $Cache
-        InheritanceFlagResolved = $InheritanceFlagResolved
+        AccountProperty = $AccountProperty
+        ACEPropertyName = $ACEPropertyName
+        Cache           = $Cache
     }
 
     $ThreadCount = $Cache.Value['ThreadCount'].Value
@@ -5921,6 +5914,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
