@@ -3946,7 +3946,10 @@ function Format-Permission {
         [ref]$Cache,
 
         # Properties of each Account to display on the report (left out: managedby)
-        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description'),
+
+        # Object output from Invoke-PermissionAnalyzer
+        [PSCustomObject]$Analysis
 
     )
 
@@ -5997,6 +6000,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 

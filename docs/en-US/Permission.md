@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.999
+Help Version: 0.0.1001
 Locale: en-US
 ---
 
@@ -52,7 +52,7 @@ Find-ServerFqdn [[-Known] <string[]>] [[-ParentCount] <ulong>] [-Cache] <ref> [<
 
 ### [Format-Permission](Format-Permission.md)
 
-Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-Culture] <cultureinfo>] [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
+Format-Permission [[-Permission] <psobject>] [[-IgnoreDomain] <string[]>] [[-GroupBy] <string>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-Culture] <cultureinfo>] [-Cache] <ref> [[-AccountProperty] <string[]>] [[-Analysis] <psobject>] [<CommonParameters>]
 
 ### [Format-TimeSpan](Format-TimeSpan.md)
 

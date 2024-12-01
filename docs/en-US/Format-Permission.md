@@ -15,7 +15,8 @@ schema: 2.0.0
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
  [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>] [-Cache] <PSReference>
- [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-AccountProperty] <String[]>] [[-Analysis] <PSObject>] [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,6 +43,21 @@ Aliases:
 
 Required: False
 Position: 7
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -Analysis
+{{ Fill Analysis Description }}
+
+```yaml
+Type: System.Management.Automation.PSObject
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 8
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1001] - 2024-11-30 - bugfix missing param
+## [0.0.1000] - 2024-11-30 - bugfix missing param
 ## [0.0.999] - 2024-11-30 - complete cache implementation
 ## [0.0.998] - 2024-11-30 - remove unused params
 ## [0.0.997] - 2024-11-30 - implement cache

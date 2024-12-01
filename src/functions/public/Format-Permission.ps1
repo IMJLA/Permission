@@ -33,7 +33,10 @@ function Format-Permission {
         [ref]$Cache,
 
         # Properties of each Account to display on the report (left out: managedby)
-        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description'),
+
+        # Object output from Invoke-PermissionAnalyzer
+        [PSCustomObject]$Analysis
 
     )
 
