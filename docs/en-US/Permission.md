@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1005
+Help Version: 0.0.1006
 Locale: en-US
 ---
 
@@ -24,7 +24,7 @@ Add-PermissionCacheItem [-Cache] <ref> [-Key] <Object> [[-Value] <Object>] [[-Ty
 
 ### [ConvertTo-ItemBlock](ConvertTo-ItemBlock.md)
 
-ConvertTo-ItemBlock [[-ItemPermissions] <Object>]
+ConvertTo-ItemBlock [[-ItemPermissions] <Object>] [-Cache] <ref> [[-Culture] <Object>] [<CommonParameters>]
 
 ### [ConvertTo-PermissionFqdn](ConvertTo-PermissionFqdn.md)
 
@@ -96,7 +96,7 @@ Invoke-PermissionAnalyzer [[-AllowDisabledInheritance] <hashtable>] [[-AccountCo
 
 ### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)
 
-Invoke-PermissionCommand [[-Command] <string>]
+Invoke-PermissionCommand [[-Command] <string>] [-Cache] <ref> [<CommonParameters>]
 
 ### [New-PermissionCache](New-PermissionCache.md)
 

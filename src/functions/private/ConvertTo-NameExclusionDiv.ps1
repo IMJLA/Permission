@@ -3,7 +3,11 @@ function ConvertTo-NameExclusionDiv {
     param (
 
         # Regular expressions matching names of security principals to exclude from the HTML report
-        [string[]]$ExcludeAccount
+        [string[]]$ExcludeAccount,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -21,7 +25,7 @@ function ConvertTo-NameExclusionDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content -HeadingLevel 6
 
 }

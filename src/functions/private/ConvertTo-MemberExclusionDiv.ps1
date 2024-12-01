@@ -9,7 +9,11 @@ function ConvertTo-MemberExclusionDiv {
         If using -NoGroupMembers, you most likely want to modify the value of -ExcludeClass.
         Remove the 'group' class from ExcludeClass in order to see groups on the report.
         #>
-        [switch]$NoMembers
+        [switch]$NoMembers,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -23,7 +27,7 @@ function ConvertTo-MemberExclusionDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
     return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content -HeadingLevel 6
 
 }

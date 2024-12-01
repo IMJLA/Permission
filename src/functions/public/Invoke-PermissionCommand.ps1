@@ -2,7 +2,11 @@ function Invoke-PermissionCommand {
 
     param (
 
-        [String]$Command
+        [String]$Command,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -16,17 +20,10 @@ function Invoke-PermissionCommand {
         { Get-CurrentWhoAmI -LogBuffer $LogBuffer -ThisHostName $ThisHostname }
     )
 
-    $LogParams = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        #Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
     $StepCount = $Steps.Count
-    Write-LogMsg @LogParams -Type Verbose -Text $Command
+    Write-LogMsg -Cache $Cache -Type Verbose -Text $Command
     $ScriptBlock = $Steps[$Command]
-    Write-LogMsg @LogParams -Type Debug -Text $ScriptBlock
+    Write-LogMsg -Cache $Cache -Type Debug -Text $ScriptBlock
     Invoke-Command -ScriptBlock $ScriptBlock
 
 }

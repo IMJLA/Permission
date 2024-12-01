@@ -152,10 +152,10 @@ function Get-HtmlReportElements {
     }
 
     # Build the divs showing the exclusions specified in the report parameters
-    $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount
-    $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass
-    $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain
-    $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers
+    $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount -Cache $Cache
+    $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass -Cache $Cache
+    $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain -Cache $Cache
+    $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers -Cache $Cache
 
     # Arrange the exclusion divs into two Bootstrap columns
     Write-LogMsg -Cache $Cache -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"

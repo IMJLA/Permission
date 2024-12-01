@@ -40,7 +40,6 @@ function ConvertTo-PermissionGroup {
 
         'html' {
 
-            #Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
             $Html = $Permission | ConvertTo-Html -Fragment
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable

@@ -10,7 +10,11 @@ function ConvertTo-ClassExclusionDiv {
         Any remaining groups are empty and not useful to see in the middle of a list of users/job titles/departments/etc).
         So the 'group' class is excluded here by default.
         #>
-        [string[]]$ExcludeClass
+        [string[]]$ExcludeClass,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -28,7 +32,7 @@ function ConvertTo-ClassExclusionDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content -HeadingLevel 6
 
 }

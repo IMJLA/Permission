@@ -21,6 +21,7 @@ function ConvertTo-PermissionList {
 
         [Hashtable]$HowToSplit,
 
+        # Object output from Invoke-PermissionAnalyzer
         [PSCustomObject]$Analysis,
 
         # Properties of each Account to display on the report (left out: managedby)

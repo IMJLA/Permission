@@ -11,7 +11,11 @@ function ConvertTo-ClassExclusionDiv {
         Any remaining groups are empty and not useful to see in the middle of a list of users/job titles/departments/etc).
         So the 'group' class is excluded here by default.
         #>
-        [string[]]$ExcludeClass
+        [string[]]$ExcludeClass,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -29,7 +33,7 @@ function ConvertTo-ClassExclusionDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content -HeadingLevel 6
 
 }
@@ -261,7 +265,11 @@ function ConvertTo-IgnoredDomainDiv {
         to ensure accounts only appear once on the report when they have matching SamAccountNames in multiple domains.
         when the domain is often the same and doesn't need to be displayed
         #>
-        [string[]]$IgnoreDomain
+        [string[]]$IgnoreDomain,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -279,7 +287,7 @@ function ConvertTo-IgnoredDomainDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content -HeadingLevel 6
 
 }
@@ -294,7 +302,11 @@ function ConvertTo-MemberExclusionDiv {
         If using -NoGroupMembers, you most likely want to modify the value of -ExcludeClass.
         Remove the 'group' class from ExcludeClass in order to see groups on the report.
         #>
-        [switch]$NoMembers
+        [switch]$NoMembers,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -308,7 +320,7 @@ function ConvertTo-MemberExclusionDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
     return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content -HeadingLevel 6
 
 }
@@ -317,7 +329,11 @@ function ConvertTo-NameExclusionDiv {
     param (
 
         # Regular expressions matching names of security principals to exclude from the HTML report
-        [string[]]$ExcludeAccount
+        [string[]]$ExcludeAccount,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -335,7 +351,7 @@ function ConvertTo-NameExclusionDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content -HeadingLevel 6
 
 }
@@ -381,7 +397,6 @@ function ConvertTo-PermissionGroup {
 
         'html' {
 
-            #Write-LogMsg @LogParams -Text "`$Permission | ConvertTo-Html -Fragment | New-BootstrapTable"
             $Html = $Permission | ConvertTo-Html -Fragment
             $OutputObject['Data'] = $Html
             $OutputObject['Table'] = $Html | New-BootstrapTable
@@ -456,6 +471,7 @@ function ConvertTo-PermissionList {
 
         [Hashtable]$HowToSplit,
 
+        # Object output from Invoke-PermissionAnalyzer
         [PSCustomObject]$Analysis,
 
         # Properties of each Account to display on the report (left out: managedby)
@@ -1589,10 +1605,10 @@ function Get-HtmlReportElements {
     }
 
     # Build the divs showing the exclusions specified in the report parameters
-    $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount
-    $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass
-    $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain
-    $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers
+    $ExcludedNames = ConvertTo-NameExclusionDiv -ExcludeAccount $ExcludeAccount -Cache $Cache
+    $ExcludedClasses = ConvertTo-ClassExclusionDiv -ExcludeClass $ExcludeClass -Cache $Cache
+    $IgnoredDomains = ConvertTo-IgnoredDomainDiv -IgnoreDomain $IgnoreDomain -Cache $Cache
+    $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers -Cache $Cache
 
     # Arrange the exclusion divs into two Bootstrap columns
     Write-LogMsg -Cache $Cache -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
@@ -3441,18 +3457,24 @@ function Add-PermissionCacheItem {
 }
 function ConvertTo-ItemBlock {
 
+    # TODO - Investigate.  Possibly unused.
+
     param (
 
-        $ItemPermissions
+        $ItemPermissions,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache,
+
+        $Culture = (Get-Culture)
 
     )
 
-    $Culture = Get-Culture
-
-    Write-LogMsg @LogParams -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
+    Write-LogMsg -Cache $Cache -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
     $ObjectsForTable = Select-ItemTableProperty -InputObject $ItemPermissions -Culture $Culture
 
-    Write-LogMsg @LogParams -Text "`$ObjectsForTable | ConvertTo-Html -Fragment | New-BootstrapTable"
+    Write-LogMsg -Cache $Cache -Text "`$ObjectsForTable | ConvertTo-Html -Fragment | New-BootstrapTable"
     $HtmlTable = $ObjectsForTable |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
@@ -3460,10 +3482,10 @@ function ConvertTo-ItemBlock {
     $JsonData = $ObjectsForTable |
     ConvertTo-Json -Compress
 
-    Write-LogMsg @LogParams -Text "Get-ColumnJson -InputObject `$ObjectsForTable"
+    Write-LogMsg -Cache $Cache -Text "Get-ColumnJson -InputObject `$ObjectsForTable"
     $JsonColumns = Get-ColumnJson -InputObject $ObjectsForTable
 
-    Write-LogMsg @LogParams -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
+    Write-LogMsg -Cache $Cache -Text "ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject `$ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'"
     $JsonTable = ConvertTo-BootstrapJavaScriptTable -Id 'Folders' -InputObject $ObjectsForTable -DataFilterControl -SearchableColumn 'Folder' -DropdownColumn 'Inheritance'
 
     return [pscustomobject]@{
@@ -4952,7 +4974,11 @@ function Invoke-PermissionCommand {
 
     param (
 
-        [String]$Command
+        [String]$Command,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -4966,17 +4992,10 @@ function Invoke-PermissionCommand {
         { Get-CurrentWhoAmI -LogBuffer $LogBuffer -ThisHostName $ThisHostname }
     )
 
-    $LogParams = @{
-        Buffer       = $LogBuffer
-        ThisHostname = $ThisHostname
-        #Type         = $DebugOutputStream
-        WhoAmI       = $WhoAmI
-    }
-
     $StepCount = $Steps.Count
-    Write-LogMsg @LogParams -Type Verbose -Text $Command
+    Write-LogMsg -Cache $Cache -Type Verbose -Text $Command
     $ScriptBlock = $Steps[$Command]
-    Write-LogMsg @LogParams -Type Debug -Text $ScriptBlock
+    Write-LogMsg -Cache $Cache -Type Debug -Text $ScriptBlock
     Invoke-Command -ScriptBlock $ScriptBlock
 
 }
@@ -5985,6 +6004,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

@@ -9,7 +9,11 @@ function ConvertTo-IgnoredDomainDiv {
         to ensure accounts only appear once on the report when they have matching SamAccountNames in multiple domains.
         when the domain is often the same and doesn't need to be displayed
         #>
-        [string[]]$IgnoreDomain
+        [string[]]$IgnoreDomain,
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
@@ -27,7 +31,7 @@ function ConvertTo-IgnoredDomainDiv {
 
     }
 
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content -HeadingLevel 6
 
 }
