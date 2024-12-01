@@ -27,8 +27,8 @@ function Get-PermissionPrincipal {
     $Progress = @{
         Activity = 'Get-PermissionPrincipal'
     }
-    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($ProgressParentId ) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($null -ne $ProgressParentId) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
     } else {

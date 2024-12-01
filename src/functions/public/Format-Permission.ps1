@@ -43,8 +43,8 @@ function Format-Permission {
     $Progress = @{
         Activity = 'Format-Permission'
     }
-    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($ProgressParentId ) {
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    if ($null -ne $ProgressParentId) {
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
     } else {
