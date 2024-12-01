@@ -28,7 +28,7 @@ function New-PermissionCache {
     $ProgressParentId = 0
     $LogType = 'Debug'
     $LogPermissionCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
-    $LogCacheMap = @{ 'Cache' = '([ref]$Cache)' }
+    $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
