@@ -39,6 +39,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
+            Write-LogMsg -Text "ConvertTo-PermissionFqdn -ComputerName '$Server' -Cache `$Cache" -Cache $Cache
             $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server -Cache $Cache
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }

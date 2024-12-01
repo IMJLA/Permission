@@ -2682,6 +2682,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
+            Write-LogMsg -Text "ConvertTo-PermissionFqdn -ComputerName '$Server' -Cache `$Cache" -Cache $Cache
             $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server -Cache $Cache
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
@@ -5920,6 +5921,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
