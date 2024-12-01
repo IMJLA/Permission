@@ -126,8 +126,12 @@ function Get-CachedCimInstance {
         }
 
     } else {
-        $Log['Type'] = 'Warning'
+
+        $StartingLogType = $Cache.Value['LogType'].Value
+        $Cache.Value['LogType'].Value = 'Warning'
         Write-LogMsg @Log -Text ' # CIM connection failure'
+        $Cache.Value['LogType'].Value = $StartingLogType
+
     }
 
 }

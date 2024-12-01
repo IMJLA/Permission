@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1036] - 2024-12-01 - bugfix swapping of write-logmsg params when triggering warnings
 ## [0.0.1035] - 2024-12-01 - bugfix swapping of write-logmsg params when triggering warnings
 ## [0.0.1034] - 2024-12-01 - comment multithreaded params that need TODO completion of cache implementation work
 ## [0.0.1033] - 2024-12-01 - bugfix for thishostname in resolve-folder
