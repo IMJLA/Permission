@@ -30,6 +30,7 @@ function Expand-PermissionTarget {
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation 'Initializing...' -PercentComplete 0
     $LogBuffer = $Cache.Value['LogBuffer']
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
     $Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{

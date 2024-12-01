@@ -3707,6 +3707,7 @@ function Expand-PermissionTarget {
     $TargetCount = $Targets.Count
     Write-Progress @Progress -Status "0% (item 0 of $TargetCount)" -CurrentOperation 'Initializing...' -PercentComplete 0
     $LogBuffer = $Cache.Value['LogBuffer']
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
     $Output = [Hashtable]::Synchronized(@{})
 
     $GetSubfolderParams = @{
@@ -4171,6 +4172,7 @@ function Get-AccessControlList {
 
     $TargetIndex = 0
     $ParentCount = $TargetPath.Keys.Count
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
 
     if ($ThreadCount -eq 1) {
 
@@ -5914,6 +5916,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

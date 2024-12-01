@@ -46,6 +46,7 @@ function Get-AccessControlList {
 
     $TargetIndex = 0
     $ParentCount = $TargetPath.Keys.Count
+    $ThreadCount = $Cache.Value['ThreadCount'].Value
 
     if ($ThreadCount -eq 1) {
 
