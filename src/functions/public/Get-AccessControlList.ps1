@@ -212,7 +212,7 @@ function Get-AccessControlList {
 
         $StartingLogType = $Cache.Value['LogType'].Value
         $Cache.Value['LogType'].Value = 'Error'
-        Write-LogMsg -Text ' # 0 access control lists could be retrieved.  Exiting script.' -Cache $Cache
+        Write-LogMsg -Text ' # 0 access control lists could be retrieved. Exiting script.' -Cache $Cache
         $Cache.Value['LogType'].Value = $StartingLogType
 
     }
