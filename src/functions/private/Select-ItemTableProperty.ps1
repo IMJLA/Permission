@@ -14,7 +14,13 @@ function Select-ItemTableProperty {
 
         if (-not $SkipFilterCheck) {
 
-            $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+            # seems to vary based on splitby target vs account but I don't know why
+            $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
+            if (-not $ResolvedAccountName) {
+                $ResolvedAccountName = $Object.Account.ResolvedAccountName
+            }
+
+            $AccountNames = $ShortNameByID[$ResolvedAccountName]
             if (-not $AccountNames) { continue }
             $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
             if (-not $GroupString) { continue }

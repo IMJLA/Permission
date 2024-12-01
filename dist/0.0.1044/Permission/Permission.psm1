@@ -3017,7 +3017,13 @@ function Select-ItemTableProperty {
 
         if (-not $SkipFilterCheck) {
 
-            $AccountNames = $ShortNameByID[$Object.Access.Account.ResolvedAccountName]
+            # seems to vary based on splitby target vs account but I don't know why
+            $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
+            if (-not $ResolvedAccountName) {
+                $ResolvedAccountName = $Object.Account.ResolvedAccountName
+            }
+
+            $AccountNames = $ShortNameByID[$ResolvedAccountName]
             if (-not $AccountNames) { continue }
             $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
             if (-not $GroupString) { continue }
@@ -5932,6 +5938,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
