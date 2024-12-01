@@ -15,7 +15,7 @@ function ConvertTo-PermissionFqdn {
 
     )
 
-    Write-LogMsg -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache -ThisFqdn:$ThisFqdn" -Cache $Cache
+    Write-LogMsg -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache -ThisFqdn:`$$ThisFqdn" -Cache $Cache
     ConvertTo-DnsFqdn -ComputerName $ComputerName -Cache $Cache -ThisFqdn:$ThisFqdn
 
 }
