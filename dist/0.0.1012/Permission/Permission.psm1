@@ -4460,7 +4460,6 @@ function Get-CachedCimInstance {
             Debug       = $false
         }
 
-        $CimMap = @{ 'ExpansionMap' = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' } }
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
@@ -4468,14 +4467,14 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams @CimMap
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -ExpansionMap $Cache.Value['LogCimMap'].Value
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams @CimMap
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -ExpansionMap $Cache.Value['LogCimMap'].Value
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
@@ -6011,6 +6010,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

@@ -73,7 +73,6 @@ function Get-CachedCimInstance {
             Debug       = $false
         }
 
-        $CimMap = @{ 'ExpansionMap' = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' } }
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
@@ -81,14 +80,14 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams @CimMap
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -ExpansionMap $Cache.Value['LogCimMap'].Value
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams @CimMap
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -ExpansionMap $Cache.Value['LogCimMap'].Value
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
