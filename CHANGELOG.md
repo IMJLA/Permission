@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.991] - 2024-11-30 - cleanup debug logs
 ## [0.0.990] - 2024-11-30 - bugfix write-logmsg params
 ## [0.0.989] - 2024-11-30 - rebuild
 ## [0.0.988] - 2024-11-30 - implement cache
