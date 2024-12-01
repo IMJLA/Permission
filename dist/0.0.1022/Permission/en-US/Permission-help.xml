@@ -2725,18 +2725,6 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-          <maml:name>CurrentDomain</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill CurrentDomain Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Management.Automation.PSObject</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
           <maml:name>AccountProperty</maml:name>
           <maml:description>
             <maml:para>{{ Fill AccountProperty Description }}</maml:para>
@@ -2774,7 +2762,7 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>AccountProperty</maml:name>
         <maml:description>
           <maml:para>{{ Fill AccountProperty Description }}</maml:para>
@@ -2794,18 +2782,6 @@
         <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSReference</command:parameterValue>
         <dev:type>
           <maml:name>System.Management.Automation.PSReference</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
-        <maml:name>CurrentDomain</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill CurrentDomain Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Management.Automation.PSObject</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Management.Automation.PSObject</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>

@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-PermissionPrincipal [-NoGroupMembers] [-Cache] <PSReference> [[-CurrentDomain] <PSObject>]
- [[-AccountProperty] <String[]>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
+Get-PermissionPrincipal [-NoGroupMembers] [-Cache] <PSReference> [[-AccountProperty] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -40,7 +40,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 2
+Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -56,21 +56,6 @@ Aliases:
 
 Required: True
 Position: 0
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -CurrentDomain
-{{ Fill CurrentDomain Description }}
-
-```yaml
-Type: System.Management.Automation.PSObject
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 1
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

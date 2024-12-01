@@ -15,10 +15,6 @@ function Get-PermissionPrincipal {
         [Parameter(Mandatory)]
         [ref]$Cache,
 
-        # The current domain
-        # Can be passed as a parameter to reduce calls to Get-CurrentDomain
-        [PSCustomObject]$CurrentDomain = (Get-CurrentDomain -Cache $Cache),
-
         # Properties of each Account to display on the report
         [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
 
@@ -33,7 +29,6 @@ function Get-PermissionPrincipal {
     $ADSIConversionParams = @{
         'AccountProperty' = $AccountProperty
         'Cache'           = $Cache
-        'CurrentDomain'   = $CurrentDomain
     }
 
     $ThreadCount = $Cache.Value['ThreadCount'].Value
