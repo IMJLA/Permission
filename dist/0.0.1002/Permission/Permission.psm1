@@ -5270,7 +5270,6 @@ function Out-PermissionFile {
 
         $Permission,
         $FormattedPermission,
-        $LogParams,
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
@@ -5285,7 +5284,7 @@ function Out-PermissionFile {
             5   Accounts with access                                                                        $PrincipalByID.Values | %{$_} | Sort ResolvedAccountName
             6   Expanded resolved access rules (expanded with account info)                                 $Permissions
             7   Formatted permissions                                                                       $FormattedPermissions
-            8   Best Practice issues                                                                        $BestPracticeEval
+            8   Best Practice issues                                                                        $Analysis
             9   XML custom sensor output for Paessler PRTG Network Monitor                                  $PrtgXml
             10  Permission Report
         #>
@@ -5336,7 +5335,8 @@ function Out-PermissionFile {
         [ValidateSet('none', 'all', 'target', 'item', 'account')]
         [string[]]$SplitBy = 'target',
 
-        [PSCustomObject]$BestPracticeEval,
+        # Object output from Invoke-PermissionAnalyzer
+        [PSCustomObject]$Analysis,
 
         [uint64]$TargetCount,
         [uint64]$ParentCount,
@@ -5405,7 +5405,7 @@ function Out-PermissionFile {
 
         },
         { $Permissions.Data },
-        { $BestPracticeEval },
+        { $Analysis },
         { ConvertTo-PermissionPrtgXml -Analysis $Analysis },
         {}
     )
@@ -5504,23 +5504,23 @@ function Out-PermissionFile {
                         ) {
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody @BodyParams
 
                             # Apply the report template to the generated HTML report body and description
                             $ReportParameters = $HtmlElements.ReportParameters
 
-                            Write-LogMsg @LogParams -Text 'New-BootstrapReport @ReportParameters'
+                            Write-LogMsg -Cache $Cache -Text 'New-BootstrapReport @ReportParameters'
                             New-BootstrapReport -Body $Body @ReportParameters
 
                         } else {
 
                             # Combine the header and table inside a Bootstrap div
-                            Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                            Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
                             $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
                         }
@@ -5528,7 +5528,7 @@ function Out-PermissionFile {
                         $ReportParameters = $HtmlElements.ReportParameters
 
                         # Apply the report template to the generated HTML report body and description
-                        Write-LogMsg @LogParams -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
+                        Write-LogMsg -Cache $Cache -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
                         New-BootstrapReport -Body $Body @ReportParameters
 
                     }
@@ -5561,28 +5561,28 @@ function Out-PermissionFile {
                         ) {
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg @LogParams -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody @BodyParams
 
                         } else {
 
                             # Combine the header and table inside a Bootstrap div
-                            Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                            Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
                             $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg @LogParams -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
                         }
 
                         # Build the JavaScript scripts
-                        Write-LogMsg @LogParams -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
+                        Write-LogMsg -Cache $Cache -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
                         $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy -Split $Split
                         $ReportParameters = $HtmlElements.ReportParameters
 
                         # Apply the report template to the generated HTML report body and description
-                        Write-LogMsg @LogParams -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
+                        Write-LogMsg -Cache $Cache -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
                         New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
 
                     }
@@ -6000,6 +6000,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

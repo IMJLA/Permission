@@ -16,12 +16,12 @@ schema: 2.0.0
 Out-PermissionFile [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
  [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-WhoAmI] <String>] [[-ThisFqdn] <Object>]
  [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>]
- [[-LogParams] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>]
- [[-Detail] <Int32[]>] [[-Culture] <CultureInfo>] [[-FileFormat] <String[]>] [[-OutputFormat] <String>]
- [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-BestPracticeEval] <PSObject>] [[-TargetCount] <UInt64>]
- [[-ParentCount] <UInt64>] [[-ChildCount] <UInt64>] [[-ItemCount] <UInt64>] [[-FqdnCount] <UInt64>]
- [[-AclCount] <UInt64>] [[-AceCount] <UInt64>] [[-IdCount] <UInt64>] [[-PrincipalCount] <UInt64>]
- [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Detail] <Int32[]>]
+ [[-Culture] <CultureInfo>] [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-GroupBy] <String>]
+ [[-SplitBy] <String[]>] [[-Analysis] <PSObject>] [[-TargetCount] <UInt64>] [[-ParentCount] <UInt64>]
+ [[-ChildCount] <UInt64>] [[-ItemCount] <UInt64>] [[-FqdnCount] <UInt64>] [[-AclCount] <UInt64>]
+ [[-AceCount] <UInt64>] [[-IdCount] <UInt64>] [[-PrincipalCount] <UInt64>] [-Cache] <PSReference>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -47,7 +47,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 28
+Position: 27
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -62,14 +62,14 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 27
+Position: 26
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -BestPracticeEval
-{{ Fill BestPracticeEval Description }}
+### -Analysis
+{{ Fill Analysis Description }}
 
 ```yaml
 Type: System.Management.Automation.PSObject
@@ -77,7 +77,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 21
+Position: 20
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -92,7 +92,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 31
+Position: 30
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -107,7 +107,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 24
+Position: 23
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -122,7 +122,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 16
+Position: 15
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -137,7 +137,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 15
+Position: 14
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -183,7 +183,7 @@ Aliases:
 Accepted values: csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 17
+Position: 16
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -213,7 +213,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 26
+Position: 25
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -229,7 +229,7 @@ Aliases:
 Accepted values: account, item, none, target
 
 Required: False
-Position: 19
+Position: 18
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -244,7 +244,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 29
+Position: 28
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -274,7 +274,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 25
+Position: 24
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -289,22 +289,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 13
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -LogParams
-{{ Fill LogParams Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 11
+Position: 12
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -350,7 +335,7 @@ Aliases:
 Accepted values: passthru, none, csv, html, js, json, prtgxml, xml
 
 Required: False
-Position: 18
+Position: 17
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -365,7 +350,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 23
+Position: 22
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -395,7 +380,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 30
+Position: 29
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -425,7 +410,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 12
+Position: 11
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -440,7 +425,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 14
+Position: 13
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -456,7 +441,7 @@ Aliases:
 Accepted values: none, all, target, item, account
 
 Required: False
-Position: 20
+Position: 19
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -486,7 +471,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 22
+Position: 21
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
