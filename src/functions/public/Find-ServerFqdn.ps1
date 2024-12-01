@@ -6,9 +6,6 @@ function Find-ServerFqdn {
 
     param (
 
-        # Known server FQDNs to include in the output
-        [string[]]$Known,
-
         [uint64]$ParentCount,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs

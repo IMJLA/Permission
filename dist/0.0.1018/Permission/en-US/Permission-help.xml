@@ -1639,18 +1639,6 @@
       <command:syntaxItem>
         <maml:name>Find-ServerFqdn</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>Known</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill Known Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
-          <dev:type>
-            <maml:name>System.String[]</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>ParentCount</maml:name>
           <maml:description>
             <maml:para>{{ Fill ParentCount Description }}</maml:para>
@@ -1662,7 +1650,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
           <maml:name>Cache</maml:name>
           <maml:description>
             <maml:para>{{ Fill Cache Description }}</maml:para>
@@ -1689,7 +1677,7 @@
       </command:syntaxItem>
     </command:syntax>
     <command:parameters>
-      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>Cache</maml:name>
         <maml:description>
           <maml:para>{{ Fill Cache Description }}</maml:para>
@@ -1702,18 +1690,6 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>Known</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill Known Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String[]</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="1" aliases="none">
         <maml:name>ParentCount</maml:name>
         <maml:description>
           <maml:para>{{ Fill ParentCount Description }}</maml:para>
