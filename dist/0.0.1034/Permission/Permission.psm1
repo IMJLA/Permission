@@ -4147,7 +4147,6 @@ function Get-AccessControlList {
 
     )
 
-    $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
     $Progress = Get-PermissionProgress -Activity 'Get-AccessControlList' -Cache $Cache
 
@@ -4224,16 +4223,16 @@ function Get-AccessControlList {
             $Children = $TargetPath[$Parent]
 
             $SplitThread = @{
-                Command           = 'Get-DirectorySecurity'
-                InputObject       = $Children
-                InputParameter    = 'LiteralPath'
-                DebugOutputStream = $DebugOutputStream
-                ThisHostname      = $ThisHostname
-                WhoAmI            = $WhoAmI
-                LogBuffer         = $LogBuffer
-                Threads           = $ThreadCount
-                ProgressParentId  = $ChildProgress['Id']
-                AddParam          = $GetDirectorySecurity
+                Command        = 'Get-DirectorySecurity'
+                InputObject    = $Children
+                InputParameter = 'LiteralPath'
+                #DebugOutputStream = $DebugOutputStream
+                #ThisHostname      = $ThisHostname
+                #WhoAmI            = $WhoAmI
+                #LogBuffer         = $LogBuffer
+                #Threads           = $ThreadCount
+                #ProgressParentId  = $ChildProgress['Id']
+                AddParam       = $GetDirectorySecurity
             }
 
             Split-Thread @SplitThread
@@ -4316,16 +4315,16 @@ function Get-AccessControlList {
             $Children = $TargetPath[$Parent]
 
             $SplitThread = @{
-                Command           = 'Get-OwnerAce'
-                InputObject       = $Children
-                InputParameter    = 'Item'
-                DebugOutputStream = $DebugOutputStream
-                ThisHostname      = $ThisHostname
-                WhoAmI            = $WhoAmI
-                LogBuffer         = $LogBuffer
-                Threads           = $ThreadCount
-                ProgressParentId  = $ChildProgress['Id']
-                AddParam          = $GetOwnerAce
+                Command        = 'Get-OwnerAce'
+                InputObject    = $Children
+                InputParameter = 'Item'
+                #DebugOutputStream = $DebugOutputStream
+                #ThisHostname      = $ThisHostname
+                #WhoAmI            = $WhoAmI
+                #LogBuffer         = $LogBuffer
+                #Threads           = $ThreadCount
+                #ProgressParentId  = $ChildProgress['Id']
+                AddParam       = $GetOwnerAce
             }
 
             Split-Thread @SplitThread
@@ -5917,6 +5916,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

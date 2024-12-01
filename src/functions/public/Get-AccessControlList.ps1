@@ -20,7 +20,6 @@ function Get-AccessControlList {
 
     )
 
-    $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
     $Progress = Get-PermissionProgress -Activity 'Get-AccessControlList' -Cache $Cache
 
@@ -97,16 +96,16 @@ function Get-AccessControlList {
             $Children = $TargetPath[$Parent]
 
             $SplitThread = @{
-                Command           = 'Get-DirectorySecurity'
-                InputObject       = $Children
-                InputParameter    = 'LiteralPath'
-                DebugOutputStream = $DebugOutputStream
-                ThisHostname      = $ThisHostname
-                WhoAmI            = $WhoAmI
-                LogBuffer         = $LogBuffer
-                Threads           = $ThreadCount
-                ProgressParentId  = $ChildProgress['Id']
-                AddParam          = $GetDirectorySecurity
+                Command        = 'Get-DirectorySecurity'
+                InputObject    = $Children
+                InputParameter = 'LiteralPath'
+                #DebugOutputStream = $DebugOutputStream
+                #ThisHostname      = $ThisHostname
+                #WhoAmI            = $WhoAmI
+                #LogBuffer         = $LogBuffer
+                #Threads           = $ThreadCount
+                #ProgressParentId  = $ChildProgress['Id']
+                AddParam       = $GetDirectorySecurity
             }
 
             Split-Thread @SplitThread
@@ -189,16 +188,16 @@ function Get-AccessControlList {
             $Children = $TargetPath[$Parent]
 
             $SplitThread = @{
-                Command           = 'Get-OwnerAce'
-                InputObject       = $Children
-                InputParameter    = 'Item'
-                DebugOutputStream = $DebugOutputStream
-                ThisHostname      = $ThisHostname
-                WhoAmI            = $WhoAmI
-                LogBuffer         = $LogBuffer
-                Threads           = $ThreadCount
-                ProgressParentId  = $ChildProgress['Id']
-                AddParam          = $GetOwnerAce
+                Command        = 'Get-OwnerAce'
+                InputObject    = $Children
+                InputParameter = 'Item'
+                #DebugOutputStream = $DebugOutputStream
+                #ThisHostname      = $ThisHostname
+                #WhoAmI            = $WhoAmI
+                #LogBuffer         = $LogBuffer
+                #Threads           = $ThreadCount
+                #ProgressParentId  = $ChildProgress['Id']
+                AddParam       = $GetOwnerAce
             }
 
             Split-Thread @SplitThread
