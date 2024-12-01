@@ -30,7 +30,7 @@ function Initialize-Cache {
         Activity = 'Initialize-Cache'
     }
 
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     if ($ProgressParentId) {
 

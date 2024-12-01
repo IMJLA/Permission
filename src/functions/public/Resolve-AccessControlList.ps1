@@ -23,7 +23,7 @@ function Resolve-AccessControlList {
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
     }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
     if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1

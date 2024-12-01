@@ -22,7 +22,7 @@ function Get-AccessControlList {
 
     $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     $Progress = @{
         Activity = 'Get-AccessControlList'

@@ -3570,7 +3570,7 @@ function Expand-Permission {
     $Progress = @{
         Activity = 'Expand-Permission'
     }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
     if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
@@ -3696,7 +3696,7 @@ function Expand-PermissionTarget {
         Activity = 'Expand-PermissionTarget'
     }
 
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     if ($ProgressParentId) {
         $Progress['ParentId'] = $ProgressParentId
@@ -3873,7 +3873,7 @@ function Find-ServerFqdn {
         Activity = 'Find-ServerFqdn'
     }
 
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     if ($ProgressParentId) {
 
@@ -3969,7 +3969,7 @@ function Format-Permission {
     $Progress = @{
         Activity = 'Format-Permission'
     }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
     if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $ProgressId = $ProgressParentId + 1
@@ -4178,7 +4178,7 @@ function Get-AccessControlList {
 
     $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     $Progress = @{
         Activity = 'Get-AccessControlList'
@@ -4647,7 +4647,7 @@ function Get-PermissionPrincipal {
     $Progress = @{
         Activity = 'Get-PermissionPrincipal'
     }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
     if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
@@ -4793,7 +4793,7 @@ function Initialize-Cache {
         Activity = 'Initialize-Cache'
     }
 
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     if ($ProgressParentId) {
 
@@ -5798,7 +5798,7 @@ function Resolve-AccessControlList {
     $Progress = @{
         Activity = 'Resolve-AccessControlList'
     }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
     if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
@@ -5923,7 +5923,7 @@ function Select-PermissionPrincipal {
     $Progress = @{
         Activity = 'Select-PermissionPrincipal'
     }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
     if ($ProgressParentId ) {
         $Progress['ParentId'] = $ProgressParentId
         $Progress['Id'] = $ProgressParentId + 1
@@ -6010,6 +6010,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

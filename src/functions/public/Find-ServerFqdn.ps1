@@ -21,7 +21,7 @@ function Find-ServerFqdn {
         Activity = 'Find-ServerFqdn'
     }
 
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+    [int]$ProgressParentId = $Cache.Value['ProgressParentId'].Value
 
     if ($ProgressParentId) {
 
