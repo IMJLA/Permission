@@ -4246,7 +4246,7 @@ function Get-AccessControlList {
     if ($WarningCache.Keys.Count -ge 1) {
 
         $StartingLogType = $Cache.Value['LogType'].Value
-        $Log['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        $Cache.Value['LogType'].Value = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
         Write-LogMsg -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists. See verbose log for details." -Cache $Cache
         $Cache.Value['LogType'].Value = $StartingLogType
 
@@ -4571,8 +4571,12 @@ function Get-CachedCimSession {
         return $CimSession
 
     } else {
-        $Log['Type'] = 'Warning'
+
+        $StartingLogType = $Cache.Value['LogType'].Value
+        $Cache.Value['LogType'].Value = 'Warning'
         Write-LogMsg @Log -Text " # CIM connection failure without error message # for '$ComputerName'"
+        $Cache.Value['LogType'].Value = $StartingLogType
+
     }
 
 }
@@ -5916,6 +5920,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

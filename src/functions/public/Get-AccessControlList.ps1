@@ -119,7 +119,7 @@ function Get-AccessControlList {
     if ($WarningCache.Keys.Count -ge 1) {
 
         $StartingLogType = $Cache.Value['LogType'].Value
-        $Log['Type'] = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        $Cache.Value['LogType'].Value = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
         Write-LogMsg -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists. See verbose log for details." -Cache $Cache
         $Cache.Value['LogType'].Value = $StartingLogType
 
