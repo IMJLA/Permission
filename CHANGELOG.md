@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1041] - 2024-12-01 - update map
 ## [0.0.1040] - 2024-12-01 - bugfix missing wellknownsidbyname
 ## [0.0.1039] - 2024-12-01 - bugfix missing             'WellKnownSidByName'           = [ref]$WellKnownSidByName
 ## [0.0.1038] - 2024-12-01 - bugfix swapping of write-logmsg params when triggering warnings

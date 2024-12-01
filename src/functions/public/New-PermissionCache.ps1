@@ -28,7 +28,7 @@ function New-PermissionCache {
     $LogPermissionCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
     $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogAnalysisMap = @{ 'Cache' = '$Cache' ; 'Analysis' = '$PermissionAnalysis' ; 'Permission' = '$Permissions' }
-    $LogWellKnownMap = @{ 'Cache' = '$Cache' ; 'CachedWellKnownSID' = '$CachedWellKnownSID' }
+    $LogWellKnownMap = @{ 'Cache' = '$Cache' ; 'CachedWellKnownSID' = '$CachedWellKnownSID' ; 'AceGuid' = '$AceGuids' }
     $LogStopWatchMap = @{ 'Cache' = '$Cache' ; 'StopWatch' = '$StopWatch' ; 'Analysis' = '$PermissionAnalysis' ; 'Permission' = '$Permissions' ; 'FormattedPermission' = '$FormattedPermissions' }
     $LogCimMap = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' }
     $LogFormattedMap = @{ 'FormattedPermission' = '$FormattedPermissions' ; 'Analysis' = '$PermissionAnalysis' }
