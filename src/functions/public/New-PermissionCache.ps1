@@ -30,6 +30,7 @@ function New-PermissionCache {
     $LogPermissionCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
     $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogWellKnownMap = @{ 'Cache' = '$Cache' ; 'CachedWellKnownSID' = '$CachedWellKnownSID' }
+    $LogStopWatchMap = @{ 'Cache' = '$Cache' ; 'StopWatch' = '$StopWatch' }
     $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
@@ -88,6 +89,7 @@ function New-PermissionCache {
             'LogEmptyMap'                  = [ref]$LogEmptyMap
             'LogCacheMap'                  = [ref]$LogCacheMap
             'LogPermissionCacheMap'        = [ref]$LogPermissionCacheMap
+            'LogStopWatchMap'              = [ref]$LogStopWatchMap
             'LogDirEntryMap'               = [ref]$LogDirEntryMap
             'LogWellKnownMap'              = [ref]$LogWellKnownMap
             'LogType'                      = [ref]$LogType
