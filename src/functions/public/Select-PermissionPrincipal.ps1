@@ -23,17 +23,7 @@ function Select-PermissionPrincipal {
 
     )
 
-    $Progress = @{
-        Activity = 'Select-PermissionPrincipal'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Select-PermissionPrincipal' -Cache $Cache
     $PrincipalByID = $Cache.Value['PrincipalByID']
     $IDs = $PrincipalByID.Value.Keys
     $Count = $IDs.Count

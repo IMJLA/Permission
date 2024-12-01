@@ -20,17 +20,7 @@ function Resolve-AccessControlList {
 
     $Log = @{ 'Cache' = $Cache }
 
-    $Progress = @{
-        Activity = 'Resolve-AccessControlList'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Resolve-AccessControlList' -Cache $Cache
     $ACLsByPath = $Cache.Value['AclByPath']
     $Paths = $ACLsByPath.Value.Keys
     $Count = $Paths.Count

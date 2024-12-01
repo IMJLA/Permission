@@ -21,19 +21,7 @@ function Expand-PermissionTarget {
 
     )
 
-    $Progress = @{
-        Activity = 'Expand-PermissionTarget'
-    }
-
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-
-    } else {
-        $Progress['Id'] = 0
-    }
+    $Progress = Get-PermissionProgress -Activity 'Expand-PermissionTarget' -Cache $Cache
 
     $Targets = ForEach ($Target in $Cache.Value['ParentByTargetPath'].Value.Values ) {
         $Target

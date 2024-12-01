@@ -1829,6 +1829,30 @@ $FormattedSecurityPrincipals principals represented by those identities
 $UniqueAccountPermissions.Count unique accounts after filtering out any specified domain names
 $ExpandedAccountPermissions.Count effective permissions belonging to those principals and applying to those folders
 #>
+function Get-PermissionProgress {
+
+    param (
+        [string]$Activity,
+        [ref]$Cache
+    )
+
+    $Progress = @{
+        Activity = $Activity
+    }
+
+    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
+
+    if ($null -ne $ProgressParentId) {
+
+        $Progress['ParentId'] = $ProgressParentId
+        $Progress['Id'] = $ProgressParentId + 1
+
+    } else {
+        $Progress['Id'] = 0
+    }
+
+    return $Progress
+}
 function Get-ReportDescription {
 
     param (
@@ -3566,18 +3590,7 @@ function Expand-Permission {
     )
 
     $Log = @{ 'Cache' = $Cache }
-
-    $Progress = @{
-        Activity = 'Expand-Permission'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Expand-Permission' -Cache $Cache
     Write-Progress @Progress -Status '0% : Prepare to group permission references, then expand them into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
     Write-LogMsg @Log -Text "Resolve-SplitByParameter -SplitBy $SplitBy"
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
@@ -3692,19 +3705,7 @@ function Expand-PermissionTarget {
 
     )
 
-    $Progress = @{
-        Activity = 'Expand-PermissionTarget'
-    }
-
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-
-    } else {
-        $Progress['Id'] = 0
-    }
+    $Progress = Get-PermissionProgress -Activity 'Expand-PermissionTarget' -Cache $Cache
 
     $Targets = ForEach ($Target in $Cache.Value['ParentByTargetPath'].Value.Values ) {
         $Target
@@ -3866,22 +3867,7 @@ function Find-ServerFqdn {
 
     )
 
-    $Progress = @{
-        Activity = 'Find-ServerFqdn'
-    }
-
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    if ($null -ne $ProgressParentId) {
-
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Find-ServerFqdn' -Cache $Cache
     Write-Progress @Progress -Status "0% (path 0 of $ParentCount)" -CurrentOperation 'Initializing' -PercentComplete 0
     $ThisFqdn = $Cache.Value['ThisFqdn'].Value
 
@@ -3967,18 +3953,7 @@ function Format-Permission {
 
     )
 
-    $Progress = @{
-        Activity = 'Format-Permission'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Format-Permission' -Cache $Cache
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
     $Grouping = Resolve-GroupByParameter -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
@@ -4179,31 +4154,18 @@ function Get-AccessControlList {
 
     $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    $Progress = @{
-        Activity = 'Get-AccessControlList'
-    }
-
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Get-AccessControlList' -Cache $Cache
 
     $ChildProgress = @{
         Activity = 'Get access control lists for parent and child items'
-        Id       = $ProgressId + 1
-        ParentId = $ProgressId
+        Id       = $Progress['Id'] + 1
+        ParentId = $Progress['Id']
     }
 
     $GrandChildProgress = @{
         Activity = 'Get access control lists'
-        Id       = $ProgressId + 2
-        ParentId = $ProgressId + 1
+        Id       = $Progress['Id'] + 2
+        ParentId = $Progress['Id'] + 1
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists for parent and child items' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0
@@ -4645,17 +4607,7 @@ function Get-PermissionPrincipal {
 
     )
 
-    $Progress = @{
-        Activity = 'Get-PermissionPrincipal'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Get-PermissionPrincipal' -Cache $Cache
     [string[]]$IDs = $Cache.Value['AceGuidByID'].Value.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0
@@ -4790,22 +4742,7 @@ function Initialize-Cache {
 
     )
 
-    $Progress = @{
-        Activity = 'Initialize-Cache'
-    }
-
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    if ($null -ne $ProgressParentId) {
-
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Initialize-Cache' -Cache $Cache
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
 
@@ -5796,17 +5733,7 @@ function Resolve-AccessControlList {
 
     $Log = @{ 'Cache' = $Cache }
 
-    $Progress = @{
-        Activity = 'Resolve-AccessControlList'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Resolve-AccessControlList' -Cache $Cache
     $ACLsByPath = $Cache.Value['AclByPath']
     $Paths = $ACLsByPath.Value.Keys
     $Count = $Paths.Count
@@ -5921,17 +5848,7 @@ function Select-PermissionPrincipal {
 
     )
 
-    $Progress = @{
-        Activity = 'Select-PermissionPrincipal'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Select-PermissionPrincipal' -Cache $Cache
     $PrincipalByID = $Cache.Value['PrincipalByID']
     $IDs = $PrincipalByID.Value.Keys
     $Count = $IDs.Count
@@ -6011,6 +5928,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

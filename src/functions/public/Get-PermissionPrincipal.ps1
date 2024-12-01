@@ -24,17 +24,7 @@ function Get-PermissionPrincipal {
 
     )
 
-    $Progress = @{
-        Activity = 'Get-PermissionPrincipal'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Get-PermissionPrincipal' -Cache $Cache
     [string[]]$IDs = $Cache.Value['AceGuidByID'].Value.Keys
     $Count = $IDs.Count
     Write-Progress @Progress -Status "0% (identity 0 of $Count) ConvertFrom-IdentityReferenceResolved" -CurrentOperation 'Initialize' -PercentComplete 0

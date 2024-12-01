@@ -40,18 +40,7 @@ function Format-Permission {
 
     )
 
-    $Progress = @{
-        Activity = 'Format-Permission'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Format-Permission' -Cache $Cache
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
     $Grouping = Resolve-GroupByParameter -GroupBy $GroupBy -HowToSplit $Permission.SplitBy

@@ -26,22 +26,7 @@ function Initialize-Cache {
 
     )
 
-    $Progress = @{
-        Activity = 'Initialize-Cache'
-    }
-
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    if ($null -ne $ProgressParentId) {
-
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Initialize-Cache' -Cache $Cache
     $Count = $Fqdn.Count
     $LogBuffer = $Cache.Value['LogBuffer']
 

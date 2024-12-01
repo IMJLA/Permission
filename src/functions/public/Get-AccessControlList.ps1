@@ -22,31 +22,18 @@ function Get-AccessControlList {
 
     $LogBuffer = $Cache.Value['LogBuffer']
     $AclByPath = $Cache.Value['AclByPath']
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    $Progress = @{
-        Activity = 'Get-AccessControlList'
-    }
-
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Get-AccessControlList' -Cache $Cache
 
     $ChildProgress = @{
         Activity = 'Get access control lists for parent and child items'
-        Id       = $ProgressId + 1
-        ParentId = $ProgressId
+        Id       = $Progress['Id'] + 1
+        ParentId = $Progress['Id']
     }
 
     $GrandChildProgress = @{
         Activity = 'Get access control lists'
-        Id       = $ProgressId + 2
-        ParentId = $ProgressId + 1
+        Id       = $Progress['Id'] + 2
+        ParentId = $Progress['Id'] + 1
     }
 
     Write-Progress @Progress -Status '0% (step 1 of 2) Get access control lists for parent and child items' -CurrentOperation 'Get access control lists for parent and child items' -PercentComplete 0

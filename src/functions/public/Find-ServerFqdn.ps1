@@ -14,22 +14,7 @@ function Find-ServerFqdn {
 
     )
 
-    $Progress = @{
-        Activity = 'Find-ServerFqdn'
-    }
-
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-
-    if ($null -ne $ProgressParentId) {
-
-        $Progress['ParentId'] = $ProgressParentId
-        $ProgressId = $ProgressParentId + 1
-
-    } else {
-        $ProgressId = 0
-    }
-
-    $Progress['Id'] = $ProgressId
+    $Progress = Get-PermissionProgress -Activity 'Find-ServerFqdn' -Cache $Cache
     Write-Progress @Progress -Status "0% (path 0 of $ParentCount)" -CurrentOperation 'Initializing' -PercentComplete 0
     $ThisFqdn = $Cache.Value['ThisFqdn'].Value
 

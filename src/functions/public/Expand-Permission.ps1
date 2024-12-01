@@ -48,18 +48,7 @@ function Expand-Permission {
     )
 
     $Log = @{ 'Cache' = $Cache }
-
-    $Progress = @{
-        Activity = 'Expand-Permission'
-    }
-    $ProgressParentId = $Cache.Value['ProgressParentId'].Value
-    if ($null -ne $ProgressParentId) {
-        $Progress['ParentId'] = $ProgressParentId
-        $Progress['Id'] = $ProgressParentId + 1
-    } else {
-        $Progress['Id'] = 0
-    }
-
+    $Progress = Get-PermissionProgress -Activity 'Expand-Permission' -Cache $Cache
     Write-Progress @Progress -Status '0% : Prepare to group permission references, then expand them into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
     Write-LogMsg @Log -Text "Resolve-SplitByParameter -SplitBy $SplitBy"
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
