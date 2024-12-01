@@ -3601,18 +3601,6 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-          <maml:name>ReportInstanceId</maml:name>
-          <maml:description>
-            <maml:para>{{ Fill ReportInstanceId Description }}</maml:para>
-          </maml:description>
-          <command:parameterValue required="true" variableLength="false">System.Guid</command:parameterValue>
-          <dev:type>
-            <maml:name>System.Guid</maml:name>
-            <maml:uri />
-          </dev:type>
-          <dev:defaultValue>None</dev:defaultValue>
-        </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
           <maml:name>TranscriptFile</maml:name>
           <maml:description>
             <maml:para>{{ Fill TranscriptFile Description }}</maml:para>
@@ -3639,18 +3627,6 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
-        <maml:name>ReportInstanceId</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill ReportInstanceId Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.Guid</command:parameterValue>
-        <dev:type>
-          <maml:name>System.Guid</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
         <maml:name>ThreadCount</maml:name>
         <maml:description>
@@ -3663,7 +3639,7 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="2" aliases="none">
         <maml:name>TranscriptFile</maml:name>
         <maml:description>
           <maml:para>{{ Fill TranscriptFile Description }}</maml:para>

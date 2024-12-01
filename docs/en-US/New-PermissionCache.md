@@ -13,8 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-New-PermissionCache [[-ThreadCount] <UInt16>] [[-OutputDir] <String>] [[-ReportInstanceId] <Guid>]
- [[-TranscriptFile] <String>]
+New-PermissionCache [[-ThreadCount] <UInt16>] [[-OutputDir] <String>] [[-TranscriptFile] <String>]
 ```
 
 ## DESCRIPTION
@@ -46,21 +45,6 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -ReportInstanceId
-{{ Fill ReportInstanceId Description }}
-
-```yaml
-Type: System.Guid
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
 ### -ThreadCount
 {{ Fill ThreadCount Description }}
 
@@ -85,7 +69,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 3
+Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

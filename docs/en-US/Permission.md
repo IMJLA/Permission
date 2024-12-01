@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1019
+Help Version: 0.0.1020
 Locale: en-US
 ---
 
@@ -100,7 +100,7 @@ Invoke-PermissionCommand [[-Command] <string>] [-Cache] <ref> [<CommonParameters
 
 ### [New-PermissionCache](New-PermissionCache.md)
 
-New-PermissionCache [[-ThreadCount] <ushort>] [[-OutputDir] <string>] [[-ReportInstanceId] <guid>] [[-TranscriptFile] <string>]
+New-PermissionCache [[-ThreadCount] <ushort>] [[-OutputDir] <string>] [[-TranscriptFile] <string>]
 
 ### [Out-Permission](Out-Permission.md)
 
