@@ -51,7 +51,7 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($ThisPath in $Cache['ParentByTargetPath'].Value.Values) {
+    ForEach ($ThisPath in $Cache.Value['ParentByTargetPath'].Value.Values) {
 
         $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 

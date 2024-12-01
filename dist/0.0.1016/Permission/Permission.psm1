@@ -3903,7 +3903,7 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($ThisPath in $Cache['ParentByTargetPath'].Value.Values) {
+    ForEach ($ThisPath in $Cache.Value['ParentByTargetPath'].Value.Values) {
 
         $NewRemainder = $ProgressStopWatch.ElapsedTicks % 5000
 
@@ -6010,6 +6010,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
