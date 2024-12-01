@@ -25,14 +25,13 @@ function New-PermissionCache {
     $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
     $ProgressParentId = 0
     $LogType = 'Debug'
-    $LogPermissionCacheMap = @{ 'Cache' = '([ref]$PermissionCache)' }
     $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogAnalysisMap = @{ 'Cache' = '$Cache' ; 'Analysis' = '$PermissionAnalysis' ; 'Permission' = '$Permissions' }
     $LogWellKnownMap = @{ 'Cache' = '$Cache' ; 'CachedWellKnownSID' = '$CachedWellKnownSID' ; 'AceGuid' = '$AceGuids' }
     $LogStopWatchMap = @{ 'Cache' = '$Cache' ; 'StopWatch' = '$StopWatch' ; 'Analysis' = '$PermissionAnalysis' ; 'Permission' = '$Permissions' ; 'FormattedPermission' = '$FormattedPermissions' }
     $LogCimMap = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' }
     $LogFormattedMap = @{ 'FormattedPermission' = '$FormattedPermissions' ; 'Analysis' = '$PermissionAnalysis' }
-    $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' }
+    $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' ; 'AceGuid' = '$AceGuids' }
     $LogTargetPathMap = @{ 'Cache' = '$Cache' ; 'TargetPath' = '$Items' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
@@ -96,7 +95,6 @@ function New-PermissionCache {
             'LogBuffer'                    = [ref]$LogBuffer # Initialize a cache of log messages in memory to minimize random disk access.
             'LogEmptyMap'                  = [ref]$LogEmptyMap
             'LogCacheMap'                  = [ref]$LogCacheMap
-            'LogPermissionCacheMap'        = [ref]$LogPermissionCacheMap
             'LogAnalysisMap'               = [ref]$LogAnalysisMap
             'LogTargetPathMap'             = [ref]$LogTargetPathMap
             'LogFormattedMap'              = [ref]$LogFormattedMap
