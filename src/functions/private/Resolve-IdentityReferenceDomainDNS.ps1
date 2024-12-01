@@ -57,15 +57,19 @@ function Resolve-IdentityReferenceDomainDNS {
             }
 
             # IdentityReference belongs to an unknown domain.
-            $Log['Type'] = 'Warning'
+            $StartingLogType = $Cache.Value['LogType'].Value
+            $Cache.Value['LogType'].Value = 'Warning'
             Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Unknown domain (possibly offline). Unable to resolve domain FQDN"
+            $Cache.Value['LogType'].Value = $StartingLogType
             return $DomainSid
 
         }
 
         # IdentityReference is not a properly-formatted SID.
-        $Log['Type'] = 'Error'
+        $StartingLogType = $Cache.Value['LogType'].Value
+        $Cache.Value['LogType'].Value = 'Error'
         Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Bug before Resolve-IdentityReferenceDomainDNS. Unable to resolve a DNS FQDN due to malformed SID"
+        $Cache.Value['LogType'].Value = $StartingLogType
         return $IdentityReference
 
     }
@@ -112,8 +116,10 @@ function Resolve-IdentityReferenceDomainDNS {
 
     }
 
-    $Log['Type'] = 'Error'
+    $StartingLogType = $Cache.Value['LogType'].Value
+    $Cache.Value['LogType'].Value = 'Error'
     Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Bug before Resolve-IdentityReferenceDomainDNS. Unexpectedly unable to resolve a DNS FQDN due to malformed NTAccount caption"
+    $Cache.Value['LogType'].Value = $StartingLogType
     return $IdentityReference
 
 }

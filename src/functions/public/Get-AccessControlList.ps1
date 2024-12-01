@@ -210,8 +210,10 @@ function Get-AccessControlList {
 
     if ($AclByPath.Value.Keys.Count -eq 0) {
 
-        $Log['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        $StartingLogType = $Cache.Value['LogType'].Value
+        $Cache.Value['LogType'].Value = 'Error'
         Write-LogMsg -Text ' # 0 access control lists could be retrieved.  Exiting script.' -Cache $Cache
+        $Cache.Value['LogType'].Value = $StartingLogType
 
     }
 

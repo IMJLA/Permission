@@ -2848,15 +2848,19 @@ function Resolve-IdentityReferenceDomainDNS {
             }
 
             # IdentityReference belongs to an unknown domain.
-            $Log['Type'] = 'Warning'
+            $StartingLogType = $Cache.Value['LogType'].Value
+            $Cache.Value['LogType'].Value = 'Warning'
             Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Unknown domain (possibly offline). Unable to resolve domain FQDN"
+            $Cache.Value['LogType'].Value = $StartingLogType
             return $DomainSid
 
         }
 
         # IdentityReference is not a properly-formatted SID.
-        $Log['Type'] = 'Error'
+        $StartingLogType = $Cache.Value['LogType'].Value
+        $Cache.Value['LogType'].Value = 'Error'
         Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Bug before Resolve-IdentityReferenceDomainDNS. Unable to resolve a DNS FQDN due to malformed SID"
+        $Cache.Value['LogType'].Value = $StartingLogType
         return $IdentityReference
 
     }
@@ -2903,8 +2907,10 @@ function Resolve-IdentityReferenceDomainDNS {
 
     }
 
-    $Log['Type'] = 'Error'
+    $StartingLogType = $Cache.Value['LogType'].Value
+    $Cache.Value['LogType'].Value = 'Error'
     Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Bug before Resolve-IdentityReferenceDomainDNS. Unexpectedly unable to resolve a DNS FQDN due to malformed NTAccount caption"
+    $Cache.Value['LogType'].Value = $StartingLogType
     return $IdentityReference
 
 }
@@ -4337,8 +4343,10 @@ function Get-AccessControlList {
 
     if ($AclByPath.Value.Keys.Count -eq 0) {
 
-        $Log['Type'] = 'Error' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
+        $StartingLogType = $Cache.Value['LogType'].Value
+        $Cache.Value['LogType'].Value = 'Error'
         Write-LogMsg -Text ' # 0 access control lists could be retrieved.  Exiting script.' -Cache $Cache
+        $Cache.Value['LogType'].Value = $StartingLogType
 
     }
 
@@ -5924,6 +5932,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
