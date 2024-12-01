@@ -91,6 +91,17 @@ function Get-HtmlReportElements {
         [ValidateSet('account', 'item', 'none', 'target')]
         [String]$GroupBy = 'item',
 
+        <#
+        How to split up the exported files:
+            none    generate 1 file with all permissions
+            target  generate 1 file per target
+            item    generate 1 file per item
+            account generate 1 file per account
+            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+        #>
+        [ValidateSet('none', 'all', 'target', 'item', 'account')]
+        [string[]]$SplitBy = 'target',
+
         [String]$Split,
 
         [String]$FileName,

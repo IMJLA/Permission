@@ -1528,6 +1528,17 @@ function Get-HtmlReportElements {
         [ValidateSet('account', 'item', 'none', 'target')]
         [String]$GroupBy = 'item',
 
+        <#
+        How to split up the exported files:
+            none    generate 1 file with all permissions
+            target  generate 1 file per target
+            item    generate 1 file per item
+            account generate 1 file per account
+            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+        #>
+        [ValidateSet('none', 'all', 'target', 'item', 'account')]
+        [string[]]$SplitBy = 'target',
+
         [String]$Split,
 
         [String]$FileName,
@@ -5991,6 +6002,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

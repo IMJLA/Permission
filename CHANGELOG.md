@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1004] - 2024-11-30 - bugfix missing param
 ## [0.0.1003] - 2024-11-30 - param cleanup
 ## [0.0.1002] - 2024-11-30 - bugfix params
 ## [0.0.1001] - 2024-11-30 - bugfix missing param
