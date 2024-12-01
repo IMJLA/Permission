@@ -14,6 +14,7 @@ function Resolve-Folder {
     )
 
     $RegEx = '^(?<DriveLetter>\w):'
+    $ComputerName = $Cache.Value['ThisHostname'].Value
 
     if ($TargetPath -match $RegEx) {
 
@@ -22,8 +23,8 @@ function Resolve-Folder {
             ClassName   = 'Win32_MappedLogicalDisk'
             KeyProperty = 'DeviceID'
         }
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
-        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @CimParams
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ComputerName'" -Expand $CimParams -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
+        $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ComputerName @CimParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
         Where-Object -FilterScript { $_.DeviceID -eq "$($Matches.DriveLetter):" }
