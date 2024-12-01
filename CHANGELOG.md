@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1025] - 2024-11-30 - add a map
 ## [0.0.1024] - 2024-11-30 - update map
 ## [0.0.1023] - 2024-11-30 - update map
 ## [0.0.1022] - 2024-11-30 - implement cache for get-currentdomain
