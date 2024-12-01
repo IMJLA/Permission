@@ -22,8 +22,7 @@ function Resolve-Folder {
             ClassName   = 'Win32_MappedLogicalDisk'
             KeyProperty = 'DeviceID'
         }
-
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -MapKeyName 'LogCacheMap' -Cache $Cache
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
         $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @CimParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |

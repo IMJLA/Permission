@@ -60,7 +60,7 @@ function Initialize-Cache {
             [int]$PercentComplete = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$PercentComplete% (FQDN $i of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
-            Write-LogMsg -Text "Get-AdsiServer -Fqdn '$ThisServerName'" -Expand $GetAdsiServer -MapKeyName 'LogCacheMap' -Cache $Cache
+            Write-LogMsg -Text "Get-AdsiServer -Fqdn '$ThisServerName'" -Expand $GetAdsiServer -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
             $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }

@@ -2641,8 +2641,7 @@ function Resolve-Folder {
             ClassName   = 'Win32_MappedLogicalDisk'
             KeyProperty = 'DeviceID'
         }
-
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -MapKeyName 'LogCacheMap' -Cache $Cache
+        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ThisHostname'" -Expand $CimParams -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
         $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ThisHostname @CimParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
@@ -4461,7 +4460,7 @@ function Get-CachedCimInstance {
             Debug       = $false
         }
 
-        $Cache.Value['LogCimSessionMap'] = [ref]($Cache.Value['LogCacheMap'].Value + @{ 'CimSession' = '$CimSession' })
+        $CimMap = @{ 'ExpansionMap' = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' } }
 
         if ($Namespace) {
             $GetCimInstanceParams['Namespace'] = $Namespace
@@ -4469,14 +4468,14 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -MapKeyName 'LogCimSessionMap'
+            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams @CimMap
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -MapKeyName 'LogCimSessionMap'
+            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams @CimMap
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }
@@ -4693,7 +4692,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams -MapKeyName 'LogCacheMap'
+            Write-LogMsg @Log -Text "ConvertFrom-IdentityReferenceResolved -IdentityReference '$ThisID'" -Expand $ADSIConversionParams -ExpansionMap $Cache.Value['LogCacheMap'].Value
             ConvertFrom-IdentityReferenceResolved -IdentityReference $ThisID @ADSIConversionParams
 
         }
@@ -4825,7 +4824,7 @@ function Initialize-Cache {
             [int]$PercentComplete = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$PercentComplete% (FQDN $i of $Count) Get-AdsiServer" -CurrentOperation "Get-AdsiServer '$ThisServerName'" -PercentComplete $PercentComplete @Progress
-            Write-LogMsg -Text "Get-AdsiServer -Fqdn '$ThisServerName'" -Expand $GetAdsiServer -MapKeyName 'LogCacheMap' -Cache $Cache
+            Write-LogMsg -Text "Get-AdsiServer -Fqdn '$ThisServerName'" -Expand $GetAdsiServer -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
             $null = Get-AdsiServer -Fqdn $ThisServerName @GetAdsiServer
 
         }
@@ -5032,6 +5031,7 @@ function New-PermissionCache {
     $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogWellKnownMap = @{ 'Cache' = '$Cache' ; 'CachedWellKnownSID' = '$CachedWellKnownSID' }
     $LogStopWatchMap = @{ 'Cache' = '$Cache' ; 'StopWatch' = '$StopWatch' }
+    $LogCimMap = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' }
     $LogFormattedMap = @{ 'FormattedPermission' = '$FormattedPermissions' }
     $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' }
     $LogBufferMap = @{ 'Buffer' = "[ref]`$PermissionCache['LogBuffer']" }
@@ -5097,6 +5097,7 @@ function New-PermissionCache {
             'LogBufferMap'                 = [ref]$LogBufferMap
             'LogFormattedMap'              = [ref]$LogFormattedMap
             'LogStopWatchMap'              = [ref]$LogStopWatchMap
+            'LogCimMap'                    = [ref]$LogCimMap
             'LogDirEntryMap'               = [ref]$LogDirEntryMap
             'LogWellKnownMap'              = [ref]$LogWellKnownMap
             'LogType'                      = [ref]$LogType
@@ -5827,7 +5828,7 @@ function Resolve-AccessControlList {
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        Write-LogMsg @Log -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Expand $ResolveAclParams -Suffix " } # for $Count ACLs" -MapKeyName 'LogCacheMap'
+        Write-LogMsg @Log -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Expand $ResolveAclParams -Suffix " } # for $Count ACLs" -ExpansionMap $Cache.Value['LogCacheMap'].Value
 
         ForEach ($ThisPath in $Paths) {
 
@@ -5842,7 +5843,7 @@ function Resolve-AccessControlList {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            #Write-LogMsg @Log -Text "Resolve-Acl -ItemPath '$ThisPath'" -Expand $ResolveAclParams -MapKeyName 'LogCacheMap'
+            #Write-LogMsg @Log -Text "Resolve-Acl -ItemPath '$ThisPath'" -Expand $ResolveAclParams -ExpansionMap $Cache.Value['LogCacheMap'].Value
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -6010,6 +6011,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
