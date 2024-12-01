@@ -1481,13 +1481,10 @@ function Get-HtmlReportElements {
         $Title,
 
         $Permission,
-        $LogParams,
         $RecurseDepth,
         $LogFileList,
         $ReportInstanceId,
         [Hashtable]$AceByGUID,
-        [Hashtable]$AclByPath,
-        [Hashtable]$PrincipalByID,
 
         <#
         Level of detail to export to file
@@ -1539,13 +1536,13 @@ function Get-HtmlReportElements {
         $FormattedPermission,
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        $BestPracticeIssue,
-
-        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        [string[]]$Parent,
+        $Analysis,
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [string[]]$FileFormat,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [String]$OutputFormat,
 
         [uint64]$TargetCount,
         [uint64]$ParentCount,
@@ -1557,12 +1554,13 @@ function Get-HtmlReportElements {
         [uint64]$IdCount,
         [UInt64]$PrincipalCount,
 
-        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        [String]$OutputFormat
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
 
     )
 
-    Write-LogMsg @LogParams -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
+    Write-LogMsg -Cache $Cache -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
     $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture -SkipFilterCheck |
@@ -1570,24 +1568,24 @@ function Get-HtmlReportElements {
     New-BootstrapTable
 
     $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
-    Write-LogMsg @LogParams -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
+    Write-LogMsg -Cache $Cache -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
     $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy -Split $Split
 
-    Write-LogMsg @LogParams -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
+    Write-LogMsg -Cache $Cache -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
-    Write-LogMsg @LogParams -Text "Get-DetailDivHeader -GroupBy $GroupBy"
+    Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
-    Write-LogMsg @LogParams -Text "New-HtmlHeading 'Target Paths' -Level 5"
+    Write-LogMsg -Cache $Cache -Text "New-HtmlHeading 'Target Paths' -Level 5"
     $TargetHeading = New-HtmlHeading 'Target Paths' -Level 5
 
     # Convert the target path(s) to a Bootstrap alert div
     $TargetPathString = $TargetPath -join '<br />'
-    Write-LogMsg @LogParams -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
     $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString -AdditionalClasses ' small'
 
     # Add the target path div to the parameter splat for New-BootstrapReport
@@ -1603,7 +1601,7 @@ function Get-HtmlReportElements {
     $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers
 
     # Arrange the exclusion divs into two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
     $ExclusionsDiv = New-BootstrapColumn -Html "$ExcludedMembers$ExcludedClasses", "$IgnoredDomains$ExcludedNames" -Width 6
 
     # Convert the list of generated log files to a Bootstrap list group
@@ -1626,23 +1624,23 @@ function Get-HtmlReportElements {
     $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ReportFileList) -join "`r`n"
 
     # Arrange the lists of generated files in two Bootstrap columns
-    Write-LogMsg @LogParams -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
     $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlReportsDiv", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
-    Write-LogMsg @LogParams -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
     # Generate a footer to include at the bottom of the report
-    Write-LogMsg @LogParams -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+    Write-LogMsg -Cache $Cache -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
-        ItemCount                = $ItemCount
-        FormattedPermissionCount = (
+        'ItemCount'                = $ItemCount
+        'FormattedPermissionCount' = (
             @('csv', 'html', 'js', 'json', 'prtgxml', 'xml') |
             ForEach-Object { $FormattedPermission.Values.NetworkPaths.$_.PassThru.Count } |
             Measure-Object -Sum
         ).Sum
-        PermissionCount          = (
+        'PermissionCount'          = (
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
@@ -1653,30 +1651,30 @@ function Get-HtmlReportElements {
             ) |
             Measure-Object -Maximum
         ).Maximum
-        ReportInstanceId         = $ReportInstanceId
-        StopWatch                = $StopWatch
-        ThisFqdn                 = $ThisFqdn
-        WhoAmI                   = $WhoAmI
-        TargetCount              = $TargetCount
-        ParentCount              = $ParentCount
-        ChildCount               = $ChildCount
-        FqdnCount                = $FqdnCount
-        AclCount                 = $AclCount
-        AceCount                 = $AceCount
-        PrincipalCount           = $PrincipalCount
-        IdCount                  = $IdCount
+        'ReportInstanceId'         = $ReportInstanceId
+        'StopWatch'                = $StopWatch
+        'ThisFqdn'                 = $ThisFqdn
+        'WhoAmI'                   = $WhoAmI
+        'TargetCount'              = $TargetCount
+        'ParentCount'              = $ParentCount
+        'ChildCount'               = $ChildCount
+        'FqdnCount'                = $FqdnCount
+        'AclCount'                 = $AclCount
+        'AceCount'                 = $AceCount
+        'PrincipalCount'           = $PrincipalCount
+        'IdCount'                  = $IdCount
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
     [PSCustomObject]@{
-        ReportFooter       = $ReportFooter
-        HtmlDivOfFiles     = $HtmlDivOfFiles
-        ExclusionsDiv      = $ExclusionsDiv
-        ReportParameters   = $ReportParameters
-        DetailDivHeader    = $DetailDivHeader
-        SummaryTableHeader = $SummaryTableHeader
-        SummaryDivHeader   = $SummaryDivHeader
-        NetworkPathDiv     = $NetworkPathDiv
+        'ReportFooter'       = $ReportFooter
+        'HtmlDivOfFiles'     = $HtmlDivOfFiles
+        'ExclusionsDiv'      = $ExclusionsDiv
+        'ReportParameters'   = $ReportParameters
+        'DetailDivHeader'    = $DetailDivHeader
+        'SummaryTableHeader' = $SummaryTableHeader
+        'SummaryDivHeader'   = $SummaryDivHeader
+        'NetworkPathDiv'     = $NetworkPathDiv
     }
 
 }
@@ -5255,13 +5253,6 @@ function Out-PermissionFile {
         # Path to the folder to save the logs and reports generated by this script
         $OutputDir,
 
-        # Username to record in log messages (can be passed to Write-LogMsg as a parameter to avoid calling an external process)
-        # Expects an NTAccount Name (e.g. DOMAIN\user)
-        [String]$WhoAmI = (whoami.EXE),
-
-        # FQDN of the computer running the script
-        $ThisFqdn,
-
         # Timer to measure progress and performance
         $StopWatch,
 
@@ -6000,6 +5991,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
