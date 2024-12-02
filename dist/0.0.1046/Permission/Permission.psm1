@@ -1045,13 +1045,13 @@ function Expand-AccountPermissionReference {
         $Access = ForEach ($PermissionRef in $Account.Access) {
 
             [PSCustomObject]@{
-                Path       = $PermissionRef.Path
+                Item       = $ACLsByPath.Value[$PermissionRef.Path]
                 PSTypeName = 'Permission.AccountPermissionItemAccess'
                 # Enumerate the list because the returned dictionary value is a list
-                #Access     = ForEach ($ACE in $ACEsByGUID.Value[$PermissionRef.AceGUIDs]) {
-                #    $ACE
-                #}
-                Access     = Expand-ItemPermissionReference -Reference $ACEsByGUID.Value[$PermissionRef.AceGUIDs] -PrincipalsByResolvedID $PrincipalsByResolvedID -ACEsByGUID $ACEsByGUID -ACLsByPath $ACLsByPath
+                Access     = ForEach ($ACE in $ACEsByGUID.Value[$PermissionRef.AceGUIDs]) {
+                    $ACE
+                }
+                #Access     = Expand-AccountPermissionItemAccessReference -Reference $PermissionRef.AceGUIDs -AccountReference $Account -PrincipalsByResolvedID $PrincipalsByResolvedID -ACEsByGUID $ACEsByGUID -ACLsByPath $ACLsByPath
             }
 
         }
@@ -5940,6 +5940,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
