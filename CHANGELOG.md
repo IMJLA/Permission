@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1047] - 2024-12-02 - add ids to divs
 ## [0.0.1046] - 2024-12-01 - bugfix need entire item not just path
 ## [0.0.1045] - 2024-12-01 - bugfix expansion of account permissions
 ## [0.0.1044] - 2024-12-01 - bugfix var name typo

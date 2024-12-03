@@ -726,12 +726,13 @@ function ConvertTo-PermissionList {
 
                             $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+                            $DivId = $TableId.Replace('Perms', 'Div')
 
                             [PSCustomObject]@{
                                 PSTypeName = 'Permission.AccountPermissionList'
                                 Columns    = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
                                 Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                 PassThru   = $ObjectsForJsonData
                                 Grouping   = $GroupID
                                 Table      = $TableId
@@ -773,6 +774,7 @@ function ConvertTo-PermissionList {
                                 }
 
                                 $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                                $DivId = $TableId.Replace('Perms', 'Div')
                                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
                                 [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
@@ -780,7 +782,7 @@ function ConvertTo-PermissionList {
                                     PSTypeName = 'Permission.ItemPermissionList'
                                     Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                                     Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                    Div        = New-BootstrapDiv -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                    Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                     Grouping   = $GroupID
                                     PassThru   = $ObjectsForJsonData
                                     Table      = $TableId
@@ -822,6 +824,7 @@ function ConvertTo-PermissionList {
                             }
 
                             $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                            $DivId = $TableId.Replace('Perms', 'Div')
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
                             [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
@@ -829,7 +832,7 @@ function ConvertTo-PermissionList {
                                 PSTypeName = 'Permission.TargetPermissionList'
                                 Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                                 Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                 Grouping   = $GroupID
                                 PassThru   = $ObjectsForJsonData
                                 Table      = $TableId
@@ -5940,6 +5943,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
