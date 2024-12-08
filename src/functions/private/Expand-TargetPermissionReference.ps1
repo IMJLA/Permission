@@ -106,7 +106,7 @@ function Expand-TargetPermissionReference {
 
                     [pscustomobject]@{
                         Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
-                        Item       = $AclsByPath[$NetworkPath.Path]
+                        Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.FlatPermission'
 
                     }
