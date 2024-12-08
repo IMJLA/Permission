@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1058] - 2024-12-07 - bugfix missing param when calling convertto-permissiongroup
 ## [0.0.1057] - 2024-12-07 - bugfix the second half of select-permissiontableproperty
 ## [0.0.1056] - 2024-12-07 - bugfix the second half of select-permissiontableproperty
 ## [0.0.1055] - 2024-12-07 - bugfix first part of select-permissiontableproperty
