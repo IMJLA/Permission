@@ -140,7 +140,10 @@ function Group-TargetPermissionReference {
 
                     $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
-                    $ItemsForThisNetworkPath.AddRange([string[]]$Children[$NetworkPath])
+                    $Kids = [string[]]$Children[$NetworkPath]
+                    if ($Kids) {
+                        $ItemsForThisNetworkPath.AddRange($Kids)
+                    }
 
                     [PSCustomObject]@{
                         Path   = $NetworkPath
