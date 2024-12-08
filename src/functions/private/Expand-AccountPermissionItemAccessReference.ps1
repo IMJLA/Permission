@@ -3,8 +3,6 @@ function Expand-AccountPermissionItemAccessReference {
     param (
 
         $Reference,
-        $AccountReference,
-        [ref]$PrincipalByResolvedID,
         [ref]$AceByGUID,
         [ref]$AclByPath
 

@@ -13,7 +13,7 @@ function Expand-AccountPermissionReference {
 
         [PSCustomObject]@{
             Account    = $PrincipalsByResolvedID.Value[$Account.Account]
-            Access     = Expand-AccountPermissionItemAccessReference -Reference $Account.Access -AccountReference $Account -PrincipalByResolvedID $PrincipalsByResolvedID -AceByGUID $ACEsByGUID -AclByPath $ACLsByPath
+            Access     = Expand-AccountPermissionItemAccessReference -Reference $Account.Access -AceByGUID $ACEsByGUID -AclByPath $ACLsByPath
             PSTypeName = 'Permission.AccountPermission'
         }
 
