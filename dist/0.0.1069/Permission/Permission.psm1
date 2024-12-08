@@ -2869,7 +2869,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = 'Access'
-            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeFilterContents `$args[3] -ExcludeClassFilterContents `$args[4]")
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeAccountFilterContents `$args[3] -ExcludeClassFilterContents `$args[4]")
         }
 
     } else {
@@ -3151,11 +3151,11 @@ function Select-PermissionTableProperty {
 
         # Dictionary of shortened account IDs keyed by full resolved account IDs
         # Populated by Select-PermissionPrincipal
-        [ref]$ShortNameByID = @{},
+        [ref]$ShortNameByID,
 
-        [ref]$ExcludeClassFilterContents = @{},
+        [ref]$ExcludeClassFilterContents,
 
-        [ref]$IncludeAccountFilterContents = @{},
+        [ref]$IncludeAccountFilterContents,
 
         # Properties of each Account to display on the report (left out: managedby)
         [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
@@ -6072,6 +6072,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

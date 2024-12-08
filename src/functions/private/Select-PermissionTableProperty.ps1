@@ -10,11 +10,11 @@ function Select-PermissionTableProperty {
 
         # Dictionary of shortened account IDs keyed by full resolved account IDs
         # Populated by Select-PermissionPrincipal
-        [ref]$ShortNameByID = @{},
+        [ref]$ShortNameByID,
 
-        [ref]$ExcludeClassFilterContents = @{},
+        [ref]$ExcludeClassFilterContents,
 
-        [ref]$IncludeAccountFilterContents = @{},
+        [ref]$IncludeAccountFilterContents,
 
         # Properties of each Account to display on the report (left out: managedby)
         [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')

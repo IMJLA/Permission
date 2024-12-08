@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1069] - 2024-12-08 - bugfix erroneous param name
 ## [0.0.1068] - 2024-12-08 - butfix null check before addrange
 ## [0.0.1067] - 2024-12-08 - bugfix need to populate $Item even when skipping filter check
 ## [0.0.1066] - 2024-12-08 - this is horrific
