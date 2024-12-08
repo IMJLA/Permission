@@ -297,47 +297,95 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
 
-                            $GroupID = $Group.Item.Path
-                            $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
-                            $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                            $StartingPermissions = $Permission[$GroupID]
+                            if ($null -ne $Group.Account) {
+                                $GroupID = $Group.Account.ResolvedAccountName
+                                $Heading = New-HtmlHeading "Folders acccessible to $GroupID" -Level 6
+                                $SubHeading = 'This account has the following access to items and their children, except where inheritance is disabled on the child.'
+                                Pause
+                                $StartingPermissions = $Permission[$GroupID]
 
-                            if ($StartingPermissions) {
+                                if ($StartingPermissions) {
 
-                                # Remove spaces from property titles
-                                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
+                                    # Remove spaces from property titles
+                                    $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
 
-                                    $Props = [ordered]@{
-                                        Account           = $Obj.Account
-                                        Access            = $Obj.Access
-                                        DuetoMembershipIn = $Obj.'Due to Membership In'
-                                        SourceofAccess    = $Obj.'Source of Access'
-                                        Name              = $Obj.Name
+                                        $Props = [ordered]@{
+                                            Account           = $Obj.Account
+                                            Access            = $Obj.Access
+                                            DuetoMembershipIn = $Obj.'Due to Membership In'
+                                            SourceofAccess    = $Obj.'Source of Access'
+                                            Name              = $Obj.Name
+                                        }
+
+                                        ForEach ($PropName in $AccountProperty) {
+                                            $Props[$PropName] = $Obj.$PropName
+                                        }
+
+                                        [PSCustomObject]$Props
+
                                     }
 
-                                    ForEach ($PropName in $AccountProperty) {
-                                        $Props[$PropName] = $Obj.$PropName
+                                    $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                                    $DivId = $TableId.Replace('Perms', 'Div')
+                                    $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+                                    [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+
+                                    [PSCustomObject]@{
+                                        PSTypeName = 'Permission.ItemPermissionList'
+                                        Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
+                                        Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                        Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                        Grouping   = $GroupID
+                                        PassThru   = $ObjectsForJsonData
+                                        Table      = $TableId
                                     }
 
-                                    [PSCustomObject]$Props
+                                }
+                            } else {
+                                $GroupID = $Group.Item.Path
+
+                                $GroupID = $Group.Item.Path
+                                $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
+                                $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                                $StartingPermissions = $Permission[$GroupID]
+
+                                if ($StartingPermissions) {
+
+                                    # Remove spaces from property titles
+                                    $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
+
+                                        $Props = [ordered]@{
+                                            Account           = $Obj.Account
+                                            Access            = $Obj.Access
+                                            DuetoMembershipIn = $Obj.'Due to Membership In'
+                                            SourceofAccess    = $Obj.'Source of Access'
+                                            Name              = $Obj.Name
+                                        }
+
+                                        ForEach ($PropName in $AccountProperty) {
+                                            $Props[$PropName] = $Obj.$PropName
+                                        }
+
+                                        [PSCustomObject]$Props
+
+                                    }
+
+                                    $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
+                                    $DivId = $TableId.Replace('Perms', 'Div')
+                                    $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+                                    [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+
+                                    [PSCustomObject]@{
+                                        PSTypeName = 'Permission.ItemPermissionList'
+                                        Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
+                                        Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
+                                        Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
+                                        Grouping   = $GroupID
+                                        PassThru   = $ObjectsForJsonData
+                                        Table      = $TableId
+                                    }
 
                                 }
-
-                                $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
-                                $DivId = $TableId.Replace('Perms', 'Div')
-                                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
-                                [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
-
-                                [PSCustomObject]@{
-                                    PSTypeName = 'Permission.ItemPermissionList'
-                                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
-                                    Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
-                                    Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-                                    Grouping   = $GroupID
-                                    PassThru   = $ObjectsForJsonData
-                                    Table      = $TableId
-                                }
-
                             }
 
                         }
