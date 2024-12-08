@@ -1,10 +1,13 @@
 function Expand-AccountPermissionItemAccessReference {
 
     param (
+
         $Reference,
         $AccountReference,
         [ref]$PrincipalByResolvedID,
-        [ref]$AceByGUID
+        [ref]$AceByGUID,
+        [ref]$AclByPath
+
     )
 
     if ($Reference) {
@@ -37,34 +40,36 @@ function Expand-AccountPermissionItemAccessReference {
 
         $ACEProps = $FirstACE.PSObject.Properties.GetEnumerator().Name
 
-        $Account = $PrincipalByResolvedID.Value[$AccountReference.Account]
-
     }
 
     ForEach ($PermissionRef in $Reference) {
 
+        $Item = $AclByPath[$PermissionRef.Path]
+
         [PSCustomObject]@{
-            Account     = $Account
-            AccountName = $PermissionRef.Account
-            Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
+            Access     = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
 
                 ForEach ($Guid in $GuidList) {
 
                     $ACE = $AceByGUID.Value[$Guid]
 
                     $OutputProperties = @{
-                        Account = $Account
+                        Item = $Item
                     }
 
                     ForEach ($Prop in $ACEProps) {
                         $OutputProperties[$Prop] = $ACE.$Prop
                     }
 
-                    [pscustomobject]$OutputProperties
+                    [PSCustomObject]$OutputProperties
 
                 }
+
             }
-            PSTypeName  = 'Permission.ItemPermissionAccountAccess'
+            Item       = $Item
+            ItemPath   = $PermissionRef.Path
+            PSTypeName = 'Permission.AccountPermissionItemAccess'
+
         }
 
     }

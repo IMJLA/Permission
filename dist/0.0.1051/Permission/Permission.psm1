@@ -1035,10 +1035,13 @@ function ConvertTo-ScriptHtml {
 function Expand-AccountPermissionItemAccessReference {
 
     param (
+
         $Reference,
         $AccountReference,
         [ref]$PrincipalByResolvedID,
-        [ref]$AceByGUID
+        [ref]$AceByGUID,
+        [ref]$AclByPath
+
     )
 
     if ($Reference) {
@@ -1071,34 +1074,36 @@ function Expand-AccountPermissionItemAccessReference {
 
         $ACEProps = $FirstACE.PSObject.Properties.GetEnumerator().Name
 
-        $Account = $PrincipalByResolvedID.Value[$AccountReference.Account]
-
     }
 
     ForEach ($PermissionRef in $Reference) {
 
+        $Item = $AclByPath[$PermissionRef.Path]
+
         [PSCustomObject]@{
-            Account     = $Account
-            AccountName = $PermissionRef.Account
-            Access      = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
+            Access     = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
 
                 ForEach ($Guid in $GuidList) {
 
                     $ACE = $AceByGUID.Value[$Guid]
 
                     $OutputProperties = @{
-                        Account = $Account
+                        Item = $Item
                     }
 
                     ForEach ($Prop in $ACEProps) {
                         $OutputProperties[$Prop] = $ACE.$Prop
                     }
 
-                    [pscustomobject]$OutputProperties
+                    [PSCustomObject]$OutputProperties
 
                 }
+
             }
-            PSTypeName  = 'Permission.ItemPermissionAccountAccess'
+            Item       = $Item
+            ItemPath   = $PermissionRef.Path
+            PSTypeName = 'Permission.AccountPermissionItemAccess'
+
         }
 
     }
@@ -1117,21 +1122,10 @@ function Expand-AccountPermissionReference {
 
     ForEach ($Account in $Reference) {
 
-        $Access = ForEach ($PermissionRef in $Account.Access) {
-
-            [PSCustomObject]@{
-                Access     = Expand-AccountPermissionItemAccessReference -Reference $PermissionRef.AceGUIDs -AccountReference $Account -PrincipalsByResolvedID $PrincipalsByResolvedID -ACEsByGUID $ACEsByGUID -ACLsByPath $ACLsByPath
-                Item       = $ACLsByPath.Value[$PermissionRef.Path]
-                PSTypeName = 'Permission.AccountPermissionItemAccess'
-            }
-
-        }
-
         [PSCustomObject]@{
-            Account     = $PrincipalsByResolvedID.Value[$Account.Account]
-            AccountName = $Account.Account
-            Access      = $Access
-            PSTypeName  = 'Permission.AccountPermission'
+            Account    = $PrincipalsByResolvedID.Value[$Account.Account]
+            Access     = Expand-AccountPermissionItemAccessReference -Reference $Account.Access -AccountReference $Account -PrincipalByResolvedID $PrincipalsByResolvedID -AceByGUID $ACEsByGUID -AclByPath $ACLsByPath
+            PSTypeName = 'Permission.AccountPermission'
         }
 
     }
@@ -6014,6 +6008,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
