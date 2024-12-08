@@ -166,19 +166,35 @@ function Select-PermissionTableProperty {
                             # Use '$null -ne' to avoid treating an empty string '' as $null
                             if ($null -ne $GroupString) {
 
-                                $Props = [ordered]@{
-                                    'Account'              = $AccountName
-                                    'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
-                                    'Due to Membership In' = $GroupString
-                                    'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
-                                    'Name'                 = $AceList.Account.Name
-                                }
+                                # this indicates SplitBy Account GroupBy Item
+                                if ($null -ne $Object.Account) {
 
-                                ForEach ($PropName in $AccountProperty) {
-                                    $Props[$PropName] = $AceList.Account.$PropName
-                                }
+                                    $Props = [ordered]@{
+                                        'Item'                 = $ACE.Path
+                                        'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                        'Due to Membership In' = $GroupString
+                                        'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                    }
 
-                                [PSCustomObject]$Props
+                                    [PSCustomObject]$Props
+
+                                } else {
+
+                                    $Props = [ordered]@{
+                                        'Account'              = $AccountName
+                                        'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                        'Due to Membership In' = $GroupString
+                                        'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                        'Name'                 = $AceList.Account.Name
+                                    }
+
+                                    ForEach ($PropName in $AccountProperty) {
+                                        $Props[$PropName] = $AceList.Account.$PropName
+                                    }
+
+                                    [PSCustomObject]$Props
+
+                                }
 
                             }
 
