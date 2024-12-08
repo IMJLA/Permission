@@ -299,7 +299,7 @@ function ConvertTo-PermissionList {
 
                             if ($null -ne $Group.Account) {
                                 [string[]]$PropNames = @('Access', 'Due to Membership In', 'Source of Access')
-                                $GroupID = $Group.Account.ResolvedAccountName
+                                $GroupID = $Group.Access.Item.Path
                                 $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
                                 $SubHeading = 'This account has the below access to this item and its children, except children with inheritance disabled.'
                                 $ObjProps = [ordered]@{
