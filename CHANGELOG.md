@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1073] - 2024-12-08 - bugfix enumerate list
+## [0.0.1072] - 2024-12-08 - bugfix enumerate list
 ## [0.0.1071] - 2024-12-08 - bugfix missing value property when accessing value of a ref
 ## [0.0.1070] - 2024-12-08 - bugfix acesbyguid key matching (there is no key which is a list of guids, so enumerate the guids first and look them each up individually)
 ## [0.0.1069] - 2024-12-08 - bugfix erroneous param name
