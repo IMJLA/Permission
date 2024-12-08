@@ -44,7 +44,7 @@ function Expand-AccountPermissionItemAccessReference {
 
     ForEach ($PermissionRef in $Reference) {
 
-        $Item = $AclByPath[$PermissionRef.Path]
+        $Item = $AclByPath.Value[$PermissionRef.Path]
 
         [PSCustomObject]@{
             Access     = ForEach ($GuidList in $PermissionRef.AceGUIDs) {
