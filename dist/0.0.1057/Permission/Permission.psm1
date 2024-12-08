@@ -3213,19 +3213,25 @@ function Select-PermissionTableProperty {
             ForEach ($Object in $InputObject) {
 
                 $Accounts = @{}
+                $Account = $null
+
+                if ($null -ne $Object.Account) {
+                    $Account = $Object.Account
+                    $Item = $Object.Access.Item
+                } else {
+                    $Item = $Object.Item
+                }
 
                 # Apply the -IgnoreDomain parameter
                 ForEach ($AceList in $Object.Access) {
 
-                    if ($null -ne $Object.Account) {
+                    if ($null -eq $Account) {
 
-                        $AccountName = $ShortNameByID.Value[$Object.Account.ResolvedAccountName]
-
-                    } else {
-
-                        $AccountName = $ShortNameByID.Value[$AceList.Account.ResolvedAccountName]
+                        $Account = $AceList.Account
 
                     }
+
+                    $AccountName = $ShortNameByID.Value[$Account.ResolvedAccountName]
 
                     if ($AccountName) {
 
@@ -3237,7 +3243,7 @@ function Select-PermissionTableProperty {
 
                 }
 
-                $OutputHash[$Object.Item.Path] = ForEach ($AccountName in $Accounts.Keys) {
+                $OutputHash[$Item.Path] = ForEach ($AccountName in $Accounts.Keys) {
 
                     ForEach ($AceList in $Accounts[$AccountName]) {
 
@@ -6037,6 +6043,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
