@@ -3085,10 +3085,17 @@ function Select-ItemTableProperty {
 
         if (-not $SkipFilterCheck) {
 
-            # seems to vary based on splitby target vs account but I don't know why
-            $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
-            if (-not $ResolvedAccountName) {
+            if ($null -ne $Object.Account) {
+
                 $ResolvedAccountName = $Object.Account.ResolvedAccountName
+                $Item = $Object.Access.Item
+
+            } else {
+
+                # seems to vary based on splitby target vs account but I don't know why
+                $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
+                $Item = $Object.Item
+
             }
 
             $AccountNames = $ShortNameByID[$ResolvedAccountName]
@@ -3099,8 +3106,8 @@ function Select-ItemTableProperty {
         }
 
         [PSCustomObject]@{
-            Folder      = $Object.Item.Path
-            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
+            Folder      = $Item.Path
+            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Item.AreAccessRulesProtected)
         }
 
     }
@@ -6006,6 +6013,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

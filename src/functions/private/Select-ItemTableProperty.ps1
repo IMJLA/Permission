@@ -14,10 +14,17 @@ function Select-ItemTableProperty {
 
         if (-not $SkipFilterCheck) {
 
-            # seems to vary based on splitby target vs account but I don't know why
-            $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
-            if (-not $ResolvedAccountName) {
+            if ($null -ne $Object.Account) {
+
                 $ResolvedAccountName = $Object.Account.ResolvedAccountName
+                $Item = $Object.Access.Item
+
+            } else {
+
+                # seems to vary based on splitby target vs account but I don't know why
+                $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
+                $Item = $Object.Item
+
             }
 
             $AccountNames = $ShortNameByID[$ResolvedAccountName]
@@ -28,8 +35,8 @@ function Select-ItemTableProperty {
         }
 
         [PSCustomObject]@{
-            Folder      = $Object.Item.Path
-            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Object.Item.AreAccessRulesProtected)
+            Folder      = $Item.Path
+            Inheritance = $Culture.TextInfo.ToTitleCase(-not $Item.AreAccessRulesProtected)
         }
 
     }
