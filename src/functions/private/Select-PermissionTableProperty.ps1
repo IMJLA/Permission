@@ -102,7 +102,15 @@ function Select-PermissionTableProperty {
                 # Apply the -IgnoreDomain parameter
                 ForEach ($AceList in $Object.Access) {
 
-                    $AccountName = $ShortNameByID.Value[$AceList.Account.ResolvedAccountName]
+                    if ($null -ne $Object.Account) {
+
+                        $AccountName = $ShortNameByID.Value[$Object.Account.ResolvedAccountName]
+
+                    } else {
+
+                        $AccountName = $ShortNameByID.Value[$AceList.Account.ResolvedAccountName]
+
+                    }
 
                     if ($AccountName) {
 
