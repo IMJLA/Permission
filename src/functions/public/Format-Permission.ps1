@@ -64,12 +64,8 @@ function Format-Permission {
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
-                Account      = $Account.Account
-                Path         = $Permission.TargetPermissions.Path.FullName
-                NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                #passthru     = [PSCustomObject]@{
-                #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
-                #}
+                Account = $Account.Account
+                Path    = $Account.Access.Item.Path
             }
 
             ForEach ($Format in $Formats) {
@@ -104,9 +100,6 @@ function Format-Permission {
                 Item         = $Item.Item
                 TargetPaths  = $Permission.TargetPermissions.Path.FullName
                 NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
-                #passthru     = [PSCustomObject]@{
-                #    'Data' = ForEach ($Value in $PermissionsWithChosenProperties.Values) { $Value }
-                #}
             }
 
             ForEach ($Format in $Formats) {
