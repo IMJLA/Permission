@@ -15,9 +15,9 @@ function Expand-FlatPermissionReference {
 
         $AceGUIDs = $AceGUIDsByPath.Value[$Item]
 
-        if (-not $AceGUIDs) { continue }
+        ForEach ($Guid in $AceGUIDs) {
 
-        ForEach ($ACE in $ACEsByGUID.Value[$AceGUIDs]) {
+            $ACE = $ACEsByGUID.Value[$Guid]
 
             Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
 
