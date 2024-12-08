@@ -12,6 +12,8 @@ function Select-ItemTableProperty {
 
     ForEach ($Object in $InputObject) {
 
+        $Item = $Object.Item
+
         if (-not $SkipFilterCheck) {
 
             if ($null -ne $Object.Account) {
@@ -23,7 +25,6 @@ function Select-ItemTableProperty {
 
                 # seems to vary based on splitby target vs account but I don't know why
                 $ResolvedAccountName = $Object.Access.Account.ResolvedAccountName
-                $Item = $Object.Item
 
             }
 
