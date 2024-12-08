@@ -3174,8 +3174,6 @@ function Select-PermissionTableProperty {
         # Populated by Select-PermissionPrincipal
         [ref]$ShortNameByID = @{},
 
-        [hashtable]$OutputHash = @{},
-
         [ref]$ExcludeClassFilterContents = @{},
 
         [ref]$IncludeAccountFilterContents = @{},
@@ -3185,8 +3183,8 @@ function Select-PermissionTableProperty {
 
     )
 
+    $OutputHash = @{}
     $Type = [PSCustomObject]
-
     $IncludeFilterCount = $IncludeAccountFilterContents.Value.Keys.Count
 
     switch ($GroupBy) {
@@ -6092,6 +6090,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

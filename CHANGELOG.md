@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1062] - 2024-12-07 - output is not an input
 ## [0.0.1061] - 2024-12-07 - add culture to cache
 ## [0.0.1060] - 2024-12-07 - add debug pause
 ## [0.0.1059] - 2024-12-07 - bugfix duplicate param when calling convertto-permissiongroup

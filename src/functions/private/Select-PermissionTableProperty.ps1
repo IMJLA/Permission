@@ -12,8 +12,6 @@ function Select-PermissionTableProperty {
         # Populated by Select-PermissionPrincipal
         [ref]$ShortNameByID = @{},
 
-        [hashtable]$OutputHash = @{},
-
         [ref]$ExcludeClassFilterContents = @{},
 
         [ref]$IncludeAccountFilterContents = @{},
@@ -23,8 +21,8 @@ function Select-PermissionTableProperty {
 
     )
 
+    $OutputHash = @{}
     $Type = [PSCustomObject]
-
     $IncludeFilterCount = $IncludeAccountFilterContents.Value.Keys.Count
 
     switch ($GroupBy) {
