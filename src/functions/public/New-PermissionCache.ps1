@@ -24,6 +24,7 @@ function New-PermissionCache {
     $ThisHostname = HOSTNAME.EXE
     $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
     $ProgressParentId = 0
+    $Culture = Get-Culture
     $LogType = 'Debug'
     $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogAnalysisMap = @{ 'Cache' = '$Cache' ; 'Analysis' = '$PermissionAnalysis' ; 'Permission' = '$Permissions' }
@@ -82,6 +83,7 @@ function New-PermissionCache {
             'AceGuidByPath'                = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their paths.
             'AclByPath'                    = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of access control lists keyed by their paths.
             'CimCache'                     = New-PermissionCacheRef -Key $String -Value $PSReference #hashtable Initialize a cache of CIM sessions, instances, and query results.
+            'Culture'                      = [ref]$Culture
             'DirectoryEntryByPath'         = New-PermissionCacheRef -Key $String -Value $Object #DirectoryEntryCache Initialize a cache of ADSI directory entry keyed by their Path to minimize ADSI queries.
             'DomainBySID'                  = New-PermissionCacheRef -Key $String -Value $Object #DomainsBySID Initialize a cache of directory domains keyed by domain SID to minimize CIM and ADSI queries.
             'DomainByNetbios'              = New-PermissionCacheRef -Key $String -Value $Object #DomainsByNetbios Initialize a cache of directory domains keyed by domain NetBIOS to minimize CIM and ADSI queries.

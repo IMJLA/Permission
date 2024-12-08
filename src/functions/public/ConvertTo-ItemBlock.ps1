@@ -10,7 +10,7 @@ function ConvertTo-ItemBlock {
         [Parameter(Mandatory)]
         [ref]$Cache,
 
-        $Culture = (Get-Culture)
+        $Culture = $Cache.Value['Culture']
 
     )
 

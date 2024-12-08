@@ -26,7 +26,7 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$OutputFormat = 'passthru',
 
-        [cultureinfo]$Culture = (Get-Culture),
+        [cultureinfo]$Culture = $Cache.Value['Culture'],
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]

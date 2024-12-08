@@ -749,8 +749,8 @@ function ConvertTo-PermissionList {
 
                             if ($null -ne $Group.Account) {
                                 $GroupID = $Group.Account.ResolvedAccountName
-                                $Heading = New-HtmlHeading "Folders acccessible to $GroupID" -Level 6
-                                $SubHeading = 'This account has the following access to items and their children, except where inheritance is disabled on the child.'
+                                $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
+                                $SubHeading = 'This account has the following access to this item and its, except where inheritance is disabled on the child.'
                                 Pause
                                 $StartingPermissions = $Permission[$GroupID]
 
@@ -792,7 +792,6 @@ function ConvertTo-PermissionList {
 
                                 }
                             } else {
-                                $GroupID = $Group.Item.Path
 
                                 $GroupID = $Group.Item.Path
                                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
@@ -1636,7 +1635,7 @@ function Get-HtmlReportElements {
         This includes information about the current language settings on the system, such as the keyboard layout, and the
         display format of items such as numbers, currency, and dates.
         #>
-        [cultureinfo]$Culture = (Get-Culture),
+        [cultureinfo]$Culture = $Cache.Value['Culture'],
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$GroupBy = 'item',
@@ -3649,7 +3648,7 @@ function ConvertTo-ItemBlock {
         [Parameter(Mandatory)]
         [ref]$Cache,
 
-        $Culture = (Get-Culture)
+        $Culture = $Cache.Value['Culture']
 
     )
 
@@ -4099,7 +4098,7 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$OutputFormat = 'passthru',
 
-        [cultureinfo]$Culture = (Get-Culture),
+        [cultureinfo]$Culture = $Cache.Value['Culture'],
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -5126,6 +5125,7 @@ function New-PermissionCache {
     $ThisHostname = HOSTNAME.EXE
     $WhoAmI = Get-PermissionWhoAmI -ThisHostname $ThisHostname
     $ProgressParentId = 0
+    $Culture = Get-Culture
     $LogType = 'Debug'
     $LogCacheMap = @{ 'Cache' = '$Cache' }
     $LogAnalysisMap = @{ 'Cache' = '$Cache' ; 'Analysis' = '$PermissionAnalysis' ; 'Permission' = '$Permissions' }
@@ -5184,6 +5184,7 @@ function New-PermissionCache {
             'AceGuidByPath'                = New-PermissionCacheRef -Key $String -Value $GuidList #hashtable Initialize a cache of access control entry GUIDs keyed by their paths.
             'AclByPath'                    = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of access control lists keyed by their paths.
             'CimCache'                     = New-PermissionCacheRef -Key $String -Value $PSReference #hashtable Initialize a cache of CIM sessions, instances, and query results.
+            'Culture'                      = [ref]$Culture
             'DirectoryEntryByPath'         = New-PermissionCacheRef -Key $String -Value $Object #DirectoryEntryCache Initialize a cache of ADSI directory entry keyed by their Path to minimize ADSI queries.
             'DomainBySID'                  = New-PermissionCacheRef -Key $String -Value $Object #DomainsBySID Initialize a cache of directory domains keyed by domain SID to minimize CIM and ADSI queries.
             'DomainByNetbios'              = New-PermissionCacheRef -Key $String -Value $Object #DomainsByNetbios Initialize a cache of directory domains keyed by domain NetBIOS to minimize CIM and ADSI queries.
@@ -5411,7 +5412,7 @@ function Out-PermissionFile {
         This includes information about the current language settings on the system, such as the keyboard layout, and the
         display format of items such as numbers, currency, and dates.
         #>
-        [cultureinfo]$Culture = (Get-Culture),
+        [cultureinfo]$Culture = $Cache.Value['Culture'],
 
         # File format(s) to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -6091,6 +6092,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

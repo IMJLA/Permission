@@ -299,8 +299,8 @@ function ConvertTo-PermissionList {
 
                             if ($null -ne $Group.Account) {
                                 $GroupID = $Group.Account.ResolvedAccountName
-                                $Heading = New-HtmlHeading "Folders acccessible to $GroupID" -Level 6
-                                $SubHeading = 'This account has the following access to items and their children, except where inheritance is disabled on the child.'
+                                $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
+                                $SubHeading = 'This account has the following access to this item and its, except where inheritance is disabled on the child.'
                                 Pause
                                 $StartingPermissions = $Permission[$GroupID]
 
@@ -342,7 +342,6 @@ function ConvertTo-PermissionList {
 
                                 }
                             } else {
-                                $GroupID = $Group.Item.Path
 
                                 $GroupID = $Group.Item.Path
                                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6

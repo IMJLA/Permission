@@ -70,7 +70,7 @@ function Get-HtmlReportElements {
         This includes information about the current language settings on the system, such as the keyboard layout, and the
         display format of items such as numbers, currency, and dates.
         #>
-        [cultureinfo]$Culture = (Get-Culture),
+        [cultureinfo]$Culture = $Cache.Value['Culture'],
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$GroupBy = 'item',
