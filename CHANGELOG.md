@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1050] - 2024-12-07 - implement Expand-AccountPermissionItemAccessReference
 ## [0.0.1049] - 2024-12-02 - null check to avoid errors
 ## [0.0.1048] - 2024-12-02 - null check to avoid addrange errors
 ## [0.0.1047] - 2024-12-02 - add ids to divs
