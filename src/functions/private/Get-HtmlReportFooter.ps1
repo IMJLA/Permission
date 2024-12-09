@@ -31,7 +31,7 @@ function Get-HtmlReportFooter {
 
         [String]$ReportInstanceId,
 
-        [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second')
+        [string[]]$UnitsToResolve = @('day', 'hour', 'minute', 'second', 'millisecond')
 
     )
 
