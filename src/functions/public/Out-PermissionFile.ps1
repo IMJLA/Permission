@@ -56,13 +56,6 @@ function Out-PermissionFile {
         #>
         [int[]]$Detail = @(0..10),
 
-        <#
-        Information about the current culture settings.
-        This includes information about the current language settings on the system, such as the keyboard layout, and the
-        display format of items such as numbers, currency, and dates.
-        #>
-        [cultureinfo]$Culture = $Cache.Value['Culture'],
-
         # File format(s) to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string[]]$FileFormat = @('csv', 'html', 'js', 'json', 'prtgxml', 'xml'),
@@ -120,6 +113,12 @@ function Out-PermissionFile {
 
     )
 
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
     $AceByGUID = $Cache.Value['AceByGUID']
     $AclByPath = $Cache.Value['AclByPath']
     $PrincipalByID = $Cache.Value['PrincipalByID']

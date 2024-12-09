@@ -26,8 +26,6 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$OutputFormat = 'passthru',
 
-        [cultureinfo]$Culture = $Cache.Value['Culture'],
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -40,6 +38,13 @@ function Format-Permission {
 
     )
 
+
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
     $Progress = Get-PermissionProgress -Activity 'Format-Permission' -Cache $Cache
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat

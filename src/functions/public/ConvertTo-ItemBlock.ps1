@@ -8,11 +8,16 @@ function ConvertTo-ItemBlock {
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
-        [ref]$Cache,
-
-        $Culture = $Cache.Value['Culture']
+        [ref]$Cache
 
     )
+
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
 
     Write-LogMsg -Cache $Cache -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
     $ObjectsForTable = Select-ItemTableProperty -InputObject $ItemPermissions -Culture $Culture

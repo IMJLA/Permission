@@ -1607,13 +1607,6 @@ function Get-HtmlReportElements {
         #>
         [int[]]$Detail = @(0..10),
 
-        <#
-        Information about the current culture settings.
-        This includes information about the current language settings on the system, such as the keyboard layout, and the
-        display format of items such as numbers, currency, and dates.
-        #>
-        [cultureinfo]$Culture = $Cache.Value['Culture'],
-
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$GroupBy = 'item',
 
@@ -1658,6 +1651,13 @@ function Get-HtmlReportElements {
         [ref]$Cache
 
     )
+
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
 
     Write-LogMsg -Cache $Cache -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
@@ -3625,11 +3625,16 @@ function ConvertTo-ItemBlock {
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
-        [ref]$Cache,
-
-        $Culture = $Cache.Value['Culture']
+        [ref]$Cache
 
     )
+
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
 
     Write-LogMsg -Cache $Cache -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
     $ObjectsForTable = Select-ItemTableProperty -InputObject $ItemPermissions -Culture $Culture
@@ -4077,8 +4082,6 @@ function Format-Permission {
         [ValidateSet('passthru', 'none', 'csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$OutputFormat = 'passthru',
 
-        [cultureinfo]$Culture = $Cache.Value['Culture'],
-
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
         [ref]$Cache,
@@ -4091,6 +4094,13 @@ function Format-Permission {
 
     )
 
+
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
     $Progress = Get-PermissionProgress -Activity 'Format-Permission' -Cache $Cache
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
@@ -5389,13 +5399,6 @@ function Out-PermissionFile {
         #>
         [int[]]$Detail = @(0..10),
 
-        <#
-        Information about the current culture settings.
-        This includes information about the current language settings on the system, such as the keyboard layout, and the
-        display format of items such as numbers, currency, and dates.
-        #>
-        [cultureinfo]$Culture = $Cache.Value['Culture'],
-
         # File format(s) to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [string[]]$FileFormat = @('csv', 'html', 'js', 'json', 'prtgxml', 'xml'),
@@ -5453,6 +5456,12 @@ function Out-PermissionFile {
 
     )
 
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
     $AceByGUID = $Cache.Value['AceByGUID']
     $AclByPath = $Cache.Value['AclByPath']
     $PrincipalByID = $Cache.Value['PrincipalByID']
@@ -6074,6 +6083,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

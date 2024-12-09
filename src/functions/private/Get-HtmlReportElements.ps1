@@ -65,13 +65,6 @@ function Get-HtmlReportElements {
         #>
         [int[]]$Detail = @(0..10),
 
-        <#
-        Information about the current culture settings.
-        This includes information about the current language settings on the system, such as the keyboard layout, and the
-        display format of items such as numbers, currency, and dates.
-        #>
-        [cultureinfo]$Culture = $Cache.Value['Culture'],
-
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$GroupBy = 'item',
 
@@ -116,6 +109,13 @@ function Get-HtmlReportElements {
         [ref]$Cache
 
     )
+
+    <#
+    Information about the current culture settings.
+    This includes information about the current language settings on the system, such as the keyboard layout, and the
+    display format of items such as numbers, currency, and dates.
+    #>
+    $Culture = $Cache.Value['Culture'].Value
 
     Write-LogMsg -Cache $Cache -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth

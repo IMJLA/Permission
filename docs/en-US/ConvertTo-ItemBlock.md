@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-ConvertTo-ItemBlock [[-ItemPermissions] <Object>] [-Cache] <PSReference> [[-Culture] <Object>]
- [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ConvertTo-ItemBlock [[-ItemPermissions] <Object>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
+ [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -41,21 +41,6 @@ Aliases:
 
 Required: True
 Position: 1
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Culture
-{{ Fill Culture Description }}
-
-```yaml
-Type: System.Object
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 2
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

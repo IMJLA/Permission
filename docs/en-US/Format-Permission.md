@@ -14,9 +14,8 @@ schema: 2.0.0
 
 ```
 Format-Permission [[-Permission] <PSObject>] [[-IgnoreDomain] <String[]>] [[-GroupBy] <String>]
- [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [[-Culture] <CultureInfo>] [-Cache] <PSReference>
- [[-AccountProperty] <String[]>] [[-Analysis] <PSObject>] [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+ [[-FileFormat] <String[]>] [[-OutputFormat] <String>] [-Cache] <PSReference> [[-AccountProperty] <String[]>]
+ [[-Analysis] <PSObject>] [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -42,7 +41,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 7
+Position: 6
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -57,7 +56,7 @@ Parameter Sets: (All)
 Aliases:
 
 Required: False
-Position: 8
+Position: 7
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
@@ -72,21 +71,6 @@ Parameter Sets: (All)
 Aliases:
 
 Required: True
-Position: 6
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -Culture
-{{ Fill Culture Description }}
-
-```yaml
-Type: System.Globalization.CultureInfo
-Parameter Sets: (All)
-Aliases:
-
-Required: False
 Position: 5
 Default value: None
 Accept pipeline input: False
