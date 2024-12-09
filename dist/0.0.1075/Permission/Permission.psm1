@@ -1463,7 +1463,7 @@ function Get-DetailDivHeader {
     } else {
 
         switch ($GroupBy) {
-            'account' { 'Folders Included in Those Permissions'; break }
+            'account' { 'Access for Each Account'; break }
             'item' { 'Accounts Included in Those Permissions'; break }
             'target' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
@@ -1977,7 +1977,7 @@ function Get-SummaryDivHeader {
     } else {
 
         switch ($GroupBy) {
-            'account' { 'Accounts With Permissions'; break }
+            'account' { 'Accounts with Access'; break }
             'item' { 'Items in Those Paths with Unique Permissions'; break }
             'target' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
@@ -6083,6 +6083,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

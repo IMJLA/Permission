@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1075] - 2024-12-08 - update report verbiage
 ## [0.0.1074] - 2024-12-08 - use cache for culture instead of param
 ## [0.0.1073] - 2024-12-08 - bugfix enumerate list
 ## [0.0.1072] - 2024-12-08 - bugfix enumerate list

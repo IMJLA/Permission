@@ -12,7 +12,7 @@ function Get-DetailDivHeader {
     } else {
 
         switch ($GroupBy) {
-            'account' { 'Folders Included in Those Permissions'; break }
+            'account' { 'Access for Each Account'; break }
             'item' { 'Accounts Included in Those Permissions'; break }
             'target' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
