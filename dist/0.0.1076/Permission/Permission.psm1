@@ -1666,7 +1666,7 @@ function Get-HtmlReportElements {
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 
-    $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
+    $NetworkPathDivHeader = 'Local target paths were resolved to UNC paths, and UNC target paths were resolved to DFS folder targets'
     Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
@@ -2013,15 +2013,15 @@ function Get-SummaryTableHeader {
 
             switch ($RecurseDepth ) {
                 0 {
-                    'Includes the target folder only (option to report on subfolders was declined)'
+                    'Includes the target path only (option to report on child items was declined)'
                     break
                 }
                 -1 {
-                    'Includes the target folder and all subfolders with unique permissions'
+                    'Includes the target path and all child items with unique permissions'
                     break
                 }
                 default {
-                    "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
+                    "Includes the target path and $RecurseDepth levels of child items with unique permissions"
                     break
                 }
             }
@@ -6083,6 +6083,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

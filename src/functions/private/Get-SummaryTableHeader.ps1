@@ -25,15 +25,15 @@ function Get-SummaryTableHeader {
 
             switch ($RecurseDepth ) {
                 0 {
-                    'Includes the target folder only (option to report on subfolders was declined)'
+                    'Includes the target path only (option to report on child items was declined)'
                     break
                 }
                 -1 {
-                    'Includes the target folder and all subfolders with unique permissions'
+                    'Includes the target path and all child items with unique permissions'
                     break
                 }
                 default {
-                    "Includes the target folder and $RecurseDepth levels of subfolders with unique permissions"
+                    "Includes the target path and $RecurseDepth levels of child items with unique permissions"
                     break
                 }
             }

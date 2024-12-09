@@ -124,7 +124,7 @@ function Get-HtmlReportElements {
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 
-    $NetworkPathDivHeader = 'Local paths were resolved to UNC paths, and UNC paths were resolved to all DFS folder targets'
+    $NetworkPathDivHeader = 'Local target paths were resolved to UNC paths, and UNC target paths were resolved to DFS folder targets'
     Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
