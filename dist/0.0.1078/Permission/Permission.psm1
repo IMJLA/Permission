@@ -3239,22 +3239,16 @@ function Select-PermissionTableProperty {
             ForEach ($Object in $InputObject) {
 
                 $Accounts = @{}
-                $Account = $null
-
-                if ($null -ne $Object.Account) {
-                    $Account = $Object.Account
-                    $Item = $Object.Access.Item
-                } else {
-                    $Item = $Object.Item
-                }
 
                 # Apply the -IgnoreDomain parameter
                 ForEach ($AceList in $Object.Access) {
 
-                    if ($null -eq $Account) {
-
+                    if ($null -ne $Object.Account) {
+                        $Account = $Object.Account
+                        $Item = $Object.Access.Item
+                    } else {
+                        $Item = $Object.Item
                         $Account = $AceList.Account
-
                     }
 
                     $AccountName = $ShortNameByID.Value[$Account.ResolvedAccountName]
@@ -6083,6 +6077,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 
