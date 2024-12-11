@@ -752,17 +752,20 @@ function ConvertTo-PermissionList {
                                 $GroupID = $Group.Access.Item.Path
                                 $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
                                 $SubHeading = 'This account has the below access to this item and its children, except children with inheritance disabled.'
+                                # This dict will be used to remove spaces from property titles
                                 $ObjProps = [ordered]@{
                                     'Access'            = 'Access'
                                     'DuetoMembershipIn' = 'Due to Membership In'
                                     'SourceofAccess'    = 'Source of Access'
                                 }
+                                $ObjProps = 'Access', 'Due to Membership In', 'Source of Access'
                                 [bool]$IsAccount = $false
                             } else {
                                 [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
                                 $GroupID = $Group.Item.Path
                                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                                 $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                                # This dict will be used to remove spaces from property titles
                                 $ObjProps = [ordered]@{
                                     'Account'           = 'Account'
                                     'Access'            = 'Access'
@@ -770,6 +773,7 @@ function ConvertTo-PermissionList {
                                     'SourceofAccess'    = 'Source of Access'
                                     'Name'              = 'Name'
                                 }
+                                $ObjProps = 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name'
                                 [bool]$IsAccount = $true
                             }
 
@@ -783,7 +787,7 @@ function ConvertTo-PermissionList {
                                     $Props = [ordered]@{}
 
                                     ForEach ($PropName in $ObjProps.Keys) {
-                                        $Props[$ObjProps[$PropName]] = $Obj.$PropName
+                                        $Props[$PropName] = $Obj.$($ObjProps[$PropName])
                                     }
 
                                     if ($IsAccount) {
@@ -3294,7 +3298,7 @@ function Select-PermissionTableProperty {
                                             $IncludeAccountFilterContents.Value[$AccountName]
                                         )
                                     ) {
-                                        $GroupString = $ACE.IdentityReferenceResolved #TODO - Apply IgnoreDomain here.  Put that .Replace logic into a function.
+                                        $GroupString = $ACE.IdentityReferenceResolved
                                     }
 
                                 }
@@ -3312,9 +3316,9 @@ function Select-PermissionTableProperty {
 
                                     $Props = [ordered]@{
                                         'Item'                 = $ACE.Path
-                                        'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                        'Access'               = $ACE.Access
                                         'Due to Membership In' = $GroupString
-                                        'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                        'Source of Access'     = $ACE.SourceOfAccess
                                     }
 
                                     [PSCustomObject]$Props
@@ -3323,9 +3327,9 @@ function Select-PermissionTableProperty {
 
                                     $Props = [ordered]@{
                                         'Account'              = $AccountName
-                                        'Access'               = $ACE.Access #($ACE.Access.Access | Sort-Object -Unique) -join ' ; '
+                                        'Access'               = $ACE.Access
                                         'Due to Membership In' = $GroupString
-                                        'Source of Access'     = $ACE.SourceOfAccess #($ACE.Access.SourceOfAccess | Sort-Object -Unique) -join ' ; '
+                                        'Source of Access'     = $ACE.SourceOfAccess
                                         'Name'                 = $AceList.Account.Name
                                     }
 
@@ -6077,6 +6081,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
 
 
 

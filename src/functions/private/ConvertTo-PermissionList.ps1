@@ -302,17 +302,20 @@ function ConvertTo-PermissionList {
                                 $GroupID = $Group.Access.Item.Path
                                 $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
                                 $SubHeading = 'This account has the below access to this item and its children, except children with inheritance disabled.'
+                                # This dict will be used to remove spaces from property titles
                                 $ObjProps = [ordered]@{
                                     'Access'            = 'Access'
                                     'DuetoMembershipIn' = 'Due to Membership In'
                                     'SourceofAccess'    = 'Source of Access'
                                 }
+                                $ObjProps = 'Access', 'Due to Membership In', 'Source of Access'
                                 [bool]$IsAccount = $false
                             } else {
                                 [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
                                 $GroupID = $Group.Item.Path
                                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                                 $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+                                # This dict will be used to remove spaces from property titles
                                 $ObjProps = [ordered]@{
                                     'Account'           = 'Account'
                                     'Access'            = 'Access'
@@ -320,6 +323,7 @@ function ConvertTo-PermissionList {
                                     'SourceofAccess'    = 'Source of Access'
                                     'Name'              = 'Name'
                                 }
+                                $ObjProps = 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name'
                                 [bool]$IsAccount = $true
                             }
 
@@ -333,7 +337,7 @@ function ConvertTo-PermissionList {
                                     $Props = [ordered]@{}
 
                                     ForEach ($PropName in $ObjProps.Keys) {
-                                        $Props[$ObjProps[$PropName]] = $Obj.$PropName
+                                        $Props[$PropName] = $Obj.$($ObjProps[$PropName])
                                     }
 
                                     if ($IsAccount) {
