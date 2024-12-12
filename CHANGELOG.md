@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1081] - 2024-12-11 - bugfix propnames logic
+## [0.0.1080] - 2024-12-11 - bugfix propnames logic
 ## [0.0.1079] - 2024-12-11 - bugfix properties with spaces
 ## [0.0.1078] - 2024-12-10 - bugfix need to update $Account inside of foreach loop
 ## [0.0.1077] - 2024-12-08 - ms better than blank when -lt 1s

@@ -752,29 +752,11 @@ function ConvertTo-PermissionList {
                                 $GroupID = $Group.Access.Item.Path
                                 $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
                                 $SubHeading = 'This account has the below access to this item and its children, except children with inheritance disabled.'
-                                # This dict will be used to remove spaces from property titles
-                                $ObjProps = [ordered]@{
-                                    'Access'            = 'Access'
-                                    'DuetoMembershipIn' = 'Due to Membership In'
-                                    'SourceofAccess'    = 'Source of Access'
-                                }
-                                $ObjProps = 'Access', 'Due to Membership In', 'Source of Access'
-                                [bool]$IsAccount = $false
                             } else {
                                 [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
                                 $GroupID = $Group.Item.Path
                                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                                 $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
-                                # This dict will be used to remove spaces from property titles
-                                $ObjProps = [ordered]@{
-                                    'Account'           = 'Account'
-                                    'Access'            = 'Access'
-                                    'DuetoMembershipIn' = 'Due to Membership In'
-                                    'SourceofAccess'    = 'Source of Access'
-                                    'Name'              = 'Name'
-                                }
-                                $ObjProps = 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name'
-                                [bool]$IsAccount = $true
                             }
 
                             $StartingPermissions = $Permission[$GroupID]
@@ -782,18 +764,18 @@ function ConvertTo-PermissionList {
                             if ($StartingPermissions) {
 
                                 # Remove spaces from property titles
+                                $ObjProps = [ordered]@{}
+
+                                ForEach ($Prop in $PropNames) {
+                                    $ObjProps[$Prop.Replace(' ', '')] = $Prop
+                                }
+
                                 $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
 
                                     $Props = [ordered]@{}
 
                                     ForEach ($PropName in $ObjProps.Keys) {
                                         $Props[$PropName] = $Obj.$($ObjProps[$PropName])
-                                    }
-
-                                    if ($IsAccount) {
-                                        ForEach ($PropName in $AccountProperty) {
-                                            $Props[$PropName] = $Obj.$PropName
-                                        }
                                     }
 
                                     [PSCustomObject]$Props
@@ -6081,6 +6063,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionTarget','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionTarget','Select-PermissionPrincipal')
+
+
 
 
 
