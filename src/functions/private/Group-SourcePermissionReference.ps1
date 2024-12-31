@@ -109,7 +109,7 @@ function Group-SourcePermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break

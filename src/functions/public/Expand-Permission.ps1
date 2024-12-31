@@ -122,7 +122,6 @@ function Expand-Permission {
         Pause
         $SourcePermissionReferences = Group-SourcePermissionReference -SourcePath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams
 
-
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '88% : Expand item permissions into objects' -CurrentOperation 'Expand-SourcePermissionReference' -PercentComplete 67
         Write-LogMsg @Log -Text '$SourcePermissions = Expand-SourcePermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
