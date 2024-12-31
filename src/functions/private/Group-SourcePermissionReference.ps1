@@ -1,10 +1,10 @@
-function Group-TargetPermissionReference {
+function Group-SourcePermissionReference {
 
     # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
 
     param (
 
-        [ref]$TargetPath,
+        [ref]$SourcePath,
         [Hashtable]$Children,
         [ref]$PrincipalsByResolvedID,
         [ref]$AceGuidByID,
@@ -46,13 +46,13 @@ function Group-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($SourcePath.Value.Keys | Sort-Object)) {
 
                 $SourceProperties = @{
                     Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
+                $NetworkPaths = $SourcePath.Value[$Source] | Sort-Object
 
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -118,13 +118,13 @@ function Group-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($SourcePath.Value.Keys | Sort-Object)) {
 
                 $SourceProperties = @{
                     Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
+                $NetworkPaths = $SourcePath.Value[$Source] | Sort-Object
 
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -146,13 +146,13 @@ function Group-TargetPermissionReference {
         # 'none' and 'source' behave the same
         default {
 
-            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($SourcePath.Value.Keys | Sort-Object)) {
 
                 $SourceProperties = @{
                     Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
+                $NetworkPaths = $SourcePath.Value[$Source] | Sort-Object
 
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 

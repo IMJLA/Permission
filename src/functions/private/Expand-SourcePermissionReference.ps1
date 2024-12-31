@@ -1,4 +1,4 @@
-function Expand-TargetPermissionReference {
+function Expand-SourcePermissionReference {
 
     # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
 

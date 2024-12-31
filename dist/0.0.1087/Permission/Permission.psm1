@@ -1321,7 +1321,7 @@ function Expand-ItemPermissionReference {
     }
 
 }
-function Expand-TargetPermissionReference {
+function Expand-SourcePermissionReference {
 
     # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
 
@@ -2234,13 +2234,13 @@ function Group-ItemPermissionReference {
     }
 
 }
-function Group-TargetPermissionReference {
+function Group-SourcePermissionReference {
 
     # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
 
     param (
 
-        [ref]$TargetPath,
+        [ref]$SourcePath,
         [Hashtable]$Children,
         [ref]$PrincipalsByResolvedID,
         [ref]$AceGuidByID,
@@ -2282,13 +2282,13 @@ function Group-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($SourcePath.Value.Keys | Sort-Object)) {
 
                 $SourceProperties = @{
                     Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
+                $NetworkPaths = $SourcePath.Value[$Source] | Sort-Object
 
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -2354,13 +2354,13 @@ function Group-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($SourcePath.Value.Keys | Sort-Object)) {
 
                 $SourceProperties = @{
                     Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
+                $NetworkPaths = $SourcePath.Value[$Source] | Sort-Object
 
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -2382,13 +2382,13 @@ function Group-TargetPermissionReference {
         # 'none' and 'source' behave the same
         default {
 
-            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($SourcePath.Value.Keys | Sort-Object)) {
 
                 $SourceProperties = @{
                     Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
+                $NetworkPaths = $SourcePath.Value[$Source] | Sort-Object
 
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
@@ -3987,16 +3987,17 @@ function Expand-Permission {
         $HowToSplit['source']
     ) {
 
-        # Group reference GUIDs by their associated TargetPath.
-        Write-Progress @Progress -Status '75% : Group permission references by target' -CurrentOperation 'Group-TargetPermissionReference' -PercentComplete 17
-        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams'
-        $TargetPermissionReferences = Group-TargetPermissionReference -TargetPath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams
+        # Group reference GUIDs by their associated source path.
+        Write-Progress @Progress -Status '75% : Group permission references by source' -CurrentOperation 'Group-SourcePermissionReference' -PercentComplete 17
+        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-SourcePermissionReference -SourcePath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams'
+        Pause
+        $SourcePermissionReferences = Group-SourcePermissionReference -SourcePath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams
 
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-Progress @Progress -Status '88% : Expand item permissions into objects' -CurrentOperation 'Expand-TargetPermissionReference' -PercentComplete 67
-        Write-LogMsg @Log -Text '$SourcePermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
-        $SourcePermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
+        Write-Progress @Progress -Status '88% : Expand item permissions into objects' -CurrentOperation 'Expand-SourcePermissionReference' -PercentComplete 67
+        Write-LogMsg @Log -Text '$SourcePermissions = Expand-SourcePermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
+        $SourcePermissions = Expand-SourcePermissionReference -Reference $SourcePermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -6291,6 +6292,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
