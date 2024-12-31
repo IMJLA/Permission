@@ -16,27 +16,25 @@ function Expand-Permission {
         [string[]]$SplitBy = 'target',
 
         <#
-        How to group the permissions in the output stream and within each exported file
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
 
-            SplitBy	GroupBy
-            none	none	$FlatPermissions all in 1 file
-            none	account	$AccountPermissions all in 1 file
-            none	item	$ItemPermissions all in 1 file
-
-            account	none	1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
-            account	account	(same as -SplitBy account -GroupBy none)
-            account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
-
-            item	none	1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
-            item	account	1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
-            item	item	(same as -SplitBy item -GroupBy none)
-
-            target	none	1 file per $TargetPath.  In each file, sort ACEs by item path then account name
-            target	account	1 file per $TargetPath.  In each file, group ACEs by account and sort by account name
-            target	item	1 file per $TargetPath.  In each file, group ACEs by item and sort by item path
-            target  target  (same as -SplitBy target -GroupBy none)
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
-        [ValidateSet('account', 'item', 'none', 'target')]
+        [ValidateSet('account', 'item', 'none', 'source')]
         [string]$GroupBy = 'item',
 
         [Hashtable]$Children,

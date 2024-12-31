@@ -12,9 +12,27 @@ function Group-TargetPermissionReference {
         [ref]$AceGUIDsByPath,
         [ref]$ACLsByPath,
 
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item'
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
 
     )
 
@@ -28,15 +46,15 @@ function Group-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
 
-                $TargetProperties = @{
-                    Path = $Target
+                $SourceProperties = @{
+                    Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
 
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
@@ -46,10 +64,10 @@ function Group-TargetPermissionReference {
                     }
                     $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath @CommonParams
 
-                    # Prepare a dictionary for quick lookup of ACE GUIDs for this target
+                    # Prepare a dictionary for quick lookup of ACE GUIDs for this source
                     $AceGuidsForThisNetworkPath = @{}
 
-                    # Enumerate the collection of ACE GUIDs for this target
+                    # Enumerate the collection of ACE GUIDs for this source
                     ForEach ($Item in $ItemsForThisNetworkPath) {
 
                         ForEach ($Guid in $AceGUIDsByPath.Value[$Item]) {
@@ -100,15 +118,15 @@ function Group-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
 
-                $TargetProperties = @{
-                    Path = $Target
+                $SourceProperties = @{
+                    Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
 
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $TopLevelItemProperties = @{
                         'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
@@ -118,25 +136,25 @@ function Group-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break
 
         }
 
-        # 'none' and 'target' behave the same
+        # 'none' and 'source' behave the same
         default {
 
-            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
 
-                $TargetProperties = @{
-                    Path = $Target
+                $SourceProperties = @{
+                    Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
 
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
@@ -152,7 +170,7 @@ function Group-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break

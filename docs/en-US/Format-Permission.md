@@ -100,7 +100,7 @@ Accept wildcard characters: False
 Type: System.String
 Parameter Sets: (All)
 Aliases:
-Accepted values: account, item, none, target
+Accepted values: account, item, none, source
 
 Required: False
 Position: 2

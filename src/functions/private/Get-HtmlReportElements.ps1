@@ -66,7 +66,8 @@ function Get-HtmlReportElements {
         [int[]]$Detail = @(0..10),
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        [String]$GroupBy = 'item',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         <#
         How to split up the exported files:

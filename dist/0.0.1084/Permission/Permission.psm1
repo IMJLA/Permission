@@ -366,9 +366,27 @@ function ConvertTo-PermissionGroup {
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
         [String]$Format,
 
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item',
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         # Properties of each Account to display on the report (left out: managedby)
         [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description'),
@@ -465,9 +483,27 @@ function ConvertTo-PermissionList {
 
         [String]$NetworkPath,
 
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item',
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         [Hashtable]$HowToSplit,
 
@@ -528,7 +564,7 @@ function ConvertTo-PermissionList {
 
                     }
 
-                    'target' {
+                    'source' {
 
                         ForEach ($Group in $PermissionGrouping) {
 
@@ -627,7 +663,7 @@ function ConvertTo-PermissionList {
 
                     }
 
-                    'target' {
+                    'source' {
 
                         ForEach ($Group in $PermissionGrouping) {
 
@@ -803,7 +839,7 @@ function ConvertTo-PermissionList {
 
                     }
 
-                    'target' {
+                    'source' {
 
                         ForEach ($Group in $PermissionGrouping) {
 
@@ -915,7 +951,7 @@ function ConvertTo-PermissionList {
 
                     }
 
-                    'target' {
+                    'source' {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
@@ -1020,10 +1056,35 @@ function ConvertTo-PermissionPrtgXml {
 function ConvertTo-ScriptHtml {
 
     param (
+
         $Permission,
+
         $PermissionGrouping,
-        [String]$GroupBy,
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
+
         [String]$Split
+
     )
 
     $ScriptHtmlBuilder = [System.Text.StringBuilder]::new()
@@ -1271,9 +1332,28 @@ function Expand-TargetPermissionReference {
         [ref]$ACEsByGUID,
         [ref]$ACLsByPath,
         [ref]$AceGuidByPath,
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item'
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
 
     )
 
@@ -1281,15 +1361,15 @@ function Expand-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Target in $Reference) {
+            ForEach ($Source in $Reference) {
 
-                $TargetProperties = @{
+                $SourceProperties = @{
                     PSTypeName = 'Permission.TargetPermission'
-                    Path       = $Target.Path
+                    Path       = $Source.Path
                 }
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $Source.NetworkPaths) {
 
                     [pscustomobject]@{
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
@@ -1299,7 +1379,7 @@ function Expand-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break
@@ -1308,27 +1388,27 @@ function Expand-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Target in $Reference) {
+            ForEach ($Source in $Reference) {
 
-                $TargetProperties = @{
-                    Path = $Target.Path
+                $SourceProperties = @{
+                    Path = $Source.Path
                 }
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $Source.NetworkPaths) {
 
                     [pscustomobject]@{
                         Access = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
                         Item   = $AclsByPath.Value[$NetworkPath.Path]
-                        Items  = ForEach ($TargetChild in $NetworkPath.Items) {
+                        Items  = ForEach ($SourceChild in $NetworkPath.Items) {
 
-                            $Access = Expand-ItemPermissionAccountAccessReference -Reference $TargetChild.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
+                            $Access = Expand-ItemPermissionAccountAccessReference -Reference $SourceChild.Access -AceByGUID $ACEsByGUID -PrincipalByResolvedID $PrincipalsByResolvedID
 
                             if ($Access) {
 
                                 [pscustomobject]@{
                                     Access     = $Access
-                                    Item       = $AclsByPath.Value[$TargetChild.Path]
+                                    Item       = $AclsByPath.Value[$SourceChild.Path]
                                     PSTypeName = 'Permission.ChildItemPermission'
                                 }
 
@@ -1340,14 +1420,14 @@ function Expand-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break
 
         }
 
-        # 'none' and 'target' behave the same
+        # 'none' and 'source' behave the same
         default {
 
             $ExpansionParameters = @{
@@ -1356,15 +1436,15 @@ function Expand-TargetPermissionReference {
                 PrincipalsByResolvedID = $PrincipalsByResolvedID
             }
 
-            ForEach ($Target in $Reference) {
+            ForEach ($Source in $Reference) {
 
-                $TargetProperties = @{
+                $SourceProperties = @{
                     PSTypeName = 'Permission.TargetPermission'
-                    Path       = $Target.Path
+                    Path       = $Source.Path
                 }
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $Target.NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $Source.NetworkPaths) {
 
                     [pscustomobject]@{
                         Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
@@ -1375,7 +1455,7 @@ function Expand-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break
@@ -1438,7 +1518,27 @@ function Get-ColumnJson {
 function Get-DetailDivHeader {
 
     param (
-        [String]$GroupBy,
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
         [String]$Split
     )
 
@@ -1451,7 +1551,7 @@ function Get-DetailDivHeader {
         switch ($GroupBy) {
             'account' { 'Access for Each Account'; break }
             'item' { 'Accounts Included in Those Permissions'; break }
-            'target' { 'Target Paths'; break }
+            'source' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
         }
 
@@ -1594,7 +1694,8 @@ function Get-HtmlReportElements {
         [int[]]$Detail = @(0..10),
 
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
-        [String]$GroupBy = 'item',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         <#
         How to split up the exported files:
@@ -1952,8 +2053,31 @@ function Get-ReportDescription {
 function Get-SummaryDivHeader {
 
     param (
-        [String]$GroupBy,
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
+
         [String]$Split
+
     )
 
     if ( $GroupBy -eq $Split ) {
@@ -1965,7 +2089,7 @@ function Get-SummaryDivHeader {
         switch ($GroupBy) {
             'account' { 'Accounts with Access'; break }
             'item' { 'Items in Those Paths with Unique Permissions'; break }
-            'target' { 'Target Paths'; break }
+            'source' { 'Target Paths'; break }
             'none' { 'Permissions'; break }
         }
 
@@ -1975,7 +2099,29 @@ function Get-SummaryDivHeader {
 function Get-SummaryTableHeader {
     param (
         [int]$RecurseDepth,
-        [String]$GroupBy
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
+
     )
 
     switch ($GroupBy) {
@@ -2015,7 +2161,7 @@ function Get-SummaryTableHeader {
 
         }
 
-        'target' {
+        'source' {
             break
         }
 
@@ -2099,9 +2245,27 @@ function Group-TargetPermissionReference {
         [ref]$AceGUIDsByPath,
         [ref]$ACLsByPath,
 
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item'
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
 
     )
 
@@ -2115,15 +2279,15 @@ function Group-TargetPermissionReference {
 
         'account' {
 
-            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
 
-                $TargetProperties = @{
-                    Path = $Target
+                $SourceProperties = @{
+                    Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
 
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
@@ -2133,10 +2297,10 @@ function Group-TargetPermissionReference {
                     }
                     $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemsForThisNetworkPath @CommonParams
 
-                    # Prepare a dictionary for quick lookup of ACE GUIDs for this target
+                    # Prepare a dictionary for quick lookup of ACE GUIDs for this source
                     $AceGuidsForThisNetworkPath = @{}
 
-                    # Enumerate the collection of ACE GUIDs for this target
+                    # Enumerate the collection of ACE GUIDs for this source
                     ForEach ($Item in $ItemsForThisNetworkPath) {
 
                         ForEach ($Guid in $AceGUIDsByPath.Value[$Item]) {
@@ -2187,15 +2351,15 @@ function Group-TargetPermissionReference {
 
         'item' {
 
-            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
 
-                $TargetProperties = @{
-                    Path = $Target
+                $SourceProperties = @{
+                    Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
 
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $TopLevelItemProperties = @{
                         'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
@@ -2205,25 +2369,25 @@ function Group-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break
 
         }
 
-        # 'none' and 'target' behave the same
+        # 'none' and 'source' behave the same
         default {
 
-            ForEach ($Target in ($TargetPath.Value.Keys | Sort-Object)) {
+            ForEach ($Source in ($TargetPath.Value.Keys | Sort-Object)) {
 
-                $TargetProperties = @{
-                    Path = $Target
+                $SourceProperties = @{
+                    Path = $Source
                 }
 
-                $NetworkPaths = $TargetPath.Value[$Target] | Sort-Object
+                $NetworkPaths = $TargetPath.Value[$Source] | Sort-Object
 
-                $TargetProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
+                $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $ItemsForThisNetworkPath = [System.Collections.Generic.List[String]]::new()
                     $ItemsForThisNetworkPath.Add($NetworkPath)
@@ -2239,7 +2403,7 @@ function Group-TargetPermissionReference {
 
                 }
 
-                [pscustomobject]$TargetProperties
+                [pscustomobject]$SourceProperties
 
             }
             break
@@ -2842,9 +3006,27 @@ function Resolve-FormatParameter {
 function Resolve-GroupByParameter {
     param (
 
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item',
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         [Hashtable]$HowToSplit
 
@@ -3135,7 +3317,27 @@ function Select-PermissionTableProperty {
 
         $InputObject,
 
-        [String]$GroupBy,
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         # Dictionary of shortened account IDs keyed by full resolved account IDs
         # Populated by Select-PermissionPrincipal
@@ -3336,7 +3538,7 @@ function Select-PermissionTableProperty {
 
         }
 
-        # 'none' and 'target' behave the same
+        # 'none' and 'source' behave the same
         default {
 
             $i = 0
@@ -3680,27 +3882,25 @@ function Expand-Permission {
         [string[]]$SplitBy = 'target',
 
         <#
-        How to group the permissions in the output stream and within each exported file
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
 
-            SplitBy	GroupBy
-            none	none	$FlatPermissions all in 1 file
-            none	account	$AccountPermissions all in 1 file
-            none	item	$ItemPermissions all in 1 file
-
-            account	none	1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
-            account	account	(same as -SplitBy account -GroupBy none)
-            account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
-
-            item	none	1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
-            item	account	1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
-            item	item	(same as -SplitBy item -GroupBy none)
-
-            target	none	1 file per $TargetPath.  In each file, sort ACEs by item path then account name
-            target	account	1 file per $TargetPath.  In each file, group ACEs by account and sort by account name
-            target	item	1 file per $TargetPath.  In each file, group ACEs by item and sort by item path
-            target  target  (same as -SplitBy target -GroupBy none)
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
-        [ValidateSet('account', 'item', 'none', 'target')]
+        [ValidateSet('account', 'item', 'none', 'source')]
         [string]$GroupBy = 'item',
 
         [Hashtable]$Children,
@@ -4050,9 +4250,27 @@ function Format-Permission {
         #>
         [string[]]$IgnoreDomain,
 
-        # How to group the permissions in the output stream and within each exported file
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item',
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         # File formats to export
         [ValidateSet('csv', 'html', 'js', 'json', 'prtgxml', 'xml')]
@@ -5202,27 +5420,25 @@ function Out-Permission {
         [string]$OutputFormat = 'passthru',
 
         <#
-        How to group the permissions in the output stream and within each exported file
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
 
-            SplitBy	GroupBy
-            none	none	$FlatPermissions all in 1 file
-            none	account	$AccountPermissions all in 1 file
-            none	item	$ItemPermissions all in 1 file
-
-            account	none	1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
-            account	account	(same as -SplitBy account -GroupBy none)
-            account	item	1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
-
-            item	none	1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
-            item	account	1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
-            item	item	(same as -SplitBy item -GroupBy none)
-
-            target	none	1 file per $TargetPath.  In each file, sort ACEs by item path then account name
-            target	account	1 file per $TargetPath.  In each file, group ACEs by account and sort by account name
-            target	item	1 file per $TargetPath.  In each file, group ACEs by item and sort by item path
-            target  target  (same as -SplitBy target -GroupBy none)
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
-        [ValidateSet('account', 'item', 'none', 'target')]
+        [ValidateSet('account', 'item', 'none', 'source')]
         [string]$GroupBy = 'item',
 
         [hashtable]$FormattedPermission
@@ -5388,23 +5604,26 @@ function Out-PermissionFile {
         [String]$OutputFormat = 'passthru',
 
         <#
-        How to group the permissions in the output stream and within each exported file
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
 
-            SplitBy GroupBy
-            none    none    $FlatPermissions all in 1 file per $SourcePath
-            none    account $AccountPermissions all in 1 file per $SourcePath
-            none    item    $ItemPermissions all in 1 file per $SourcePath (default behavior)
-
-            item    none    1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
-            item    account 1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
-            item    item    (same as -SplitBy item -GroupBy none)
-
-            account none    1 file per item in $AccountPermissions.  In each file, $_.Access | sort path
-            account account (same as -SplitBy account -GroupBy none)
-            account item    1 file per item in $AccountPermissions.  In each file, $_.Access | group item | sort name
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [String]$GroupBy = 'item',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
 
         <#
         How to split up the exported files:
@@ -6063,6 +6282,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
