@@ -153,7 +153,7 @@ function Format-Permission {
         $i = 0
         $Count = $Permission.SourcePermissions.Count
 
-        $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.SourcePermissions) {
+        $FormattedResults['SplitBySource'] = ForEach ($Target in $Permission.SourcePermissions) {
 
             [int]$Percent = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
