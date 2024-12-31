@@ -35,8 +35,8 @@ function ConvertTo-FileList {
         # String translations indexed by value in the $Detail parameter
         # TODO: Move to i18n
         $DetailStrings = @(
-            'Target paths',
-            'Network paths (target path servers and DFS targets resolved)',
+            'Source paths',
+            'Network paths (source path servers and DFS targets resolved)',
             'Item paths (network paths expanded into their children)',
             'Access lists',
             'Access rules (resolved identity references and inheritance flags)',

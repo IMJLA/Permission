@@ -106,7 +106,7 @@ function New-PermissionCache {
             'LogWellKnownMap'              = [ref]$LogWellKnownMap
             'LogType'                      = [ref]$LogType
             'ParamStringMap'               = [ref]$ParamStringMap
-            'ParentBySourcePath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
+            'ParentBySourcePath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #hashtable Initialize a cache of resolved parent item paths keyed by their unresolved source paths.
             'PrincipalByID'                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             'ProgressParentId'             = [ref]$ProgressParentId
             'ShortNameByID'                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.

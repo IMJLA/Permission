@@ -137,7 +137,7 @@ function Out-PermissionFile {
     $DetailStrings = @(
         'Item paths',
         'Resolved item paths (server names and DFS targets resolved)',
-        'Expanded resolved item paths (resolved target paths expanded into their children)',
+        'Expanded resolved item paths (resolved source paths expanded into their children)',
         'Access lists',
         'Access rules (resolved identity references and inheritance flags)',
         'Accounts with access',

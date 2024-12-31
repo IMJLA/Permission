@@ -49,12 +49,12 @@ function Get-HtmlReportFooter {
     $AllUnits = @('day', 'hour', 'minute', 'second') #excluded millisecond
     $CompletionTime = @(
         @{
-            'Name'              = 'Target paths (specified in report parameters)'
+            'Name'              = 'Source paths (specified in report parameters)'
             'Count'             = $TargetCount
             'Average Time Each' = if ($TargetCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
-            'Name'              = 'Parents (resolved from target paths)'
+            'Name'              = 'Parents (resolved from source paths)'
             'Count'             = $ParentCount
             'Average Time Each' = if ($ParentCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $AllUnits }
         },

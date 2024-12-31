@@ -34,7 +34,7 @@ function Get-DetailDivHeader {
         switch ($GroupBy) {
             'account' { 'Access for Each Account'; break }
             'item' { 'Accounts Included in Those Permissions'; break }
-            'source' { 'Target Paths'; break }
+            'source' { 'Source Paths'; break }
             'none' { 'Permissions'; break }
         }
 

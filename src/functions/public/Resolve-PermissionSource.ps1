@@ -1,6 +1,6 @@
 function Resolve-PermissionSource {
 
-    # Resolve each target path to all of its associated UNC paths (including all DFS folder targets)
+    # Resolve each source path to all of its associated UNC paths (including all DFS folder targets)
 
     param (
 

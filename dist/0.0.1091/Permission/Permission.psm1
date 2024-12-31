@@ -74,8 +74,8 @@ function ConvertTo-FileList {
         # String translations indexed by value in the $Detail parameter
         # TODO: Move to i18n
         $DetailStrings = @(
-            'Target paths',
-            'Network paths (target path servers and DFS targets resolved)',
+            'Source paths',
+            'Network paths (source path servers and DFS targets resolved)',
             'Item paths (network paths expanded into their children)',
             'Access lists',
             'Access rules (resolved identity references and inheritance flags)',
@@ -1551,7 +1551,7 @@ function Get-DetailDivHeader {
         switch ($GroupBy) {
             'account' { 'Access for Each Account'; break }
             'item' { 'Accounts Included in Those Permissions'; break }
-            'source' { 'Target Paths'; break }
+            'source' { 'Source Paths'; break }
             'none' { 'Permissions'; break }
         }
 
@@ -1918,12 +1918,12 @@ function Get-HtmlReportFooter {
     $AllUnits = @('day', 'hour', 'minute', 'second') #excluded millisecond
     $CompletionTime = @(
         @{
-            'Name'              = 'Target paths (specified in report parameters)'
+            'Name'              = 'Source paths (specified in report parameters)'
             'Count'             = $TargetCount
             'Average Time Each' = if ($TargetCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
-            'Name'              = 'Parents (resolved from target paths)'
+            'Name'              = 'Parents (resolved from source paths)'
             'Count'             = $ParentCount
             'Average Time Each' = if ($ParentCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $AllUnits }
         },
@@ -2092,7 +2092,7 @@ function Get-SummaryDivHeader {
         switch ($GroupBy) {
             'account' { 'Accounts with Access'; break }
             'item' { 'Items in Those Paths with Unique Permissions'; break }
-            'source' { 'Target Paths'; break }
+            'source' { 'Source Paths'; break }
             'none' { 'Permissions'; break }
         }
 
@@ -2148,15 +2148,15 @@ function Get-SummaryTableHeader {
 
             switch ($RecurseDepth ) {
                 0 {
-                    'Includes the target path only (option to report on child items was declined)'
+                    'Includes the source path only (option to report on child items was declined)'
                     break
                 }
                 -1 {
-                    'Includes the target path and all child items with unique permissions'
+                    'Includes the source path and all child items with unique permissions'
                     break
                 }
                 default {
-                    "Includes the target path and $RecurseDepth levels of child items with unique permissions"
+                    "Includes the source path and $RecurseDepth levels of child items with unique permissions"
                     break
                 }
             }
@@ -5403,7 +5403,7 @@ function New-PermissionCache {
             'LogWellKnownMap'              = [ref]$LogWellKnownMap
             'LogType'                      = [ref]$LogType
             'ParamStringMap'               = [ref]$ParamStringMap
-            'ParentBySourcePath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
+            'ParentBySourcePath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #hashtable Initialize a cache of resolved parent item paths keyed by their unresolved source paths.
             'PrincipalByID'                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             'ProgressParentId'             = [ref]$ProgressParentId
             'ShortNameByID'                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.
@@ -5682,7 +5682,7 @@ function Out-PermissionFile {
     $DetailStrings = @(
         'Item paths',
         'Resolved item paths (server names and DFS targets resolved)',
-        'Expanded resolved item paths (resolved target paths expanded into their children)',
+        'Expanded resolved item paths (resolved source paths expanded into their children)',
         'Access lists',
         'Access rules (resolved identity references and inheritance flags)',
         'Accounts with access',
@@ -6162,7 +6162,7 @@ function Resolve-AccessControlList {
 }
 function Resolve-PermissionSource {
 
-    # Resolve each target path to all of its associated UNC paths (including all DFS folder targets)
+    # Resolve each source path to all of its associated UNC paths (including all DFS folder targets)
 
     param (
 
@@ -6290,6 +6290,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

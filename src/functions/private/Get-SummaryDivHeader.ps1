@@ -37,7 +37,7 @@ function Get-SummaryDivHeader {
         switch ($GroupBy) {
             'account' { 'Accounts with Access'; break }
             'item' { 'Items in Those Paths with Unique Permissions'; break }
-            'source' { 'Target Paths'; break }
+            'source' { 'Source Paths'; break }
             'none' { 'Permissions'; break }
         }
 
