@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Expand-PermissionTarget
+# Resolve-PermissionSource
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,8 +13,8 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Expand-PermissionTarget [[-RecurseDepth] <Int32>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
- [<CommonParameters>]
+Resolve-PermissionSource [[-SourcePath] <DirectoryInfo[]>] [-Cache] <PSReference>
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -61,11 +61,11 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -RecurseDepth
-{{ Fill RecurseDepth Description }}
+### -SourcePath
+{{ Fill SourcePath Description }}
 
 ```yaml
-Type: System.Int32
+Type: System.IO.DirectoryInfo[]
 Parameter Sets: (All)
 Aliases:
 

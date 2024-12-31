@@ -5,7 +5,7 @@ function Resolve-Folder {
     param (
 
         # Path of the folder(s) to resolve to all their associated UNC paths
-        [String]$TargetPath,
+        [String]$SourcePath,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -16,7 +16,7 @@ function Resolve-Folder {
     $RegEx = '^(?<DriveLetter>\w):'
     $ComputerName = $Cache.Value['ThisHostname'].Value
 
-    if ($TargetPath -match $RegEx) {
+    if ($SourcePath -match $RegEx) {
 
         $CimParams = @{
             Cache       = $Cache
@@ -34,7 +34,7 @@ function Resolve-Folder {
             $UNC = $MatchingNetworkDrive.ProviderName
         } else {
             # Resolve local drive letters to their UNC paths using administrative shares
-            $UNC = $TargetPath -replace $RegEx, "\\$(hostname)\$($Matches.DriveLetter)$"
+            $UNC = $SourcePath -replace $RegEx, "\\$(hostname)\$($Matches.DriveLetter)$"
         }
 
         if ($UNC) {
@@ -50,15 +50,15 @@ function Resolve-Folder {
         ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
         ## https://github.com/IMJLA/Export-Permission/issues/46
         ## https://github.com/IMJLA/PsNtfs/issues/1
-        Write-LogMsg -Text "Get-NetDfsEnum -FolderPath '$TargetPath'" -Cache $Cache
-        $AllDfs = Get-NetDfsEnum -FolderPath $TargetPath -ErrorAction SilentlyContinue
+        Write-LogMsg -Text "Get-NetDfsEnum -FolderPath '$SourcePath'" -Cache $Cache
+        $AllDfs = Get-NetDfsEnum -FolderPath $SourcePath -ErrorAction SilentlyContinue
 
         if ($AllDfs) {
 
             $MatchingDfsEntryPaths = $AllDfs |
             Group-Object -Property DfsEntryPath |
             Where-Object -FilterScript {
-                $TargetPath -match [regex]::Escape($_.Name)
+                $SourcePath -match [regex]::Escape($_.Name)
             }
 
             # Filter out the DFS Namespace
@@ -81,9 +81,9 @@ function Resolve-Folder {
 
         } else {
 
-            $Server = $TargetPath.split('\')[2]
+            $Server = $SourcePath.split('\')[2]
             $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server -Cache $Cache
-            $TargetPath -replace "^\\\\$Server\\", "\\$FQDN\"
+            $SourcePath -replace "^\\\\$Server\\", "\\$FQDN\"
 
         }
 

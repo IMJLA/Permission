@@ -33,7 +33,7 @@ function Find-ServerFqdn {
     $LastRemainder = [int]::MaxValue
     $i = 0
 
-    ForEach ($Parent in $Cache.Value['ParentByTargetPath'].Value.Values) {
+    ForEach ($Parent in $Cache.Value['ParentBySourcePath'].Value.Values) {
 
         ForEach ($ThisPath in $Parent) {
 

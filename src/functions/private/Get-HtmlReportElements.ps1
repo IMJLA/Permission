@@ -20,7 +20,7 @@ function Get-HtmlReportElements {
         $IgnoreDomain,
 
         # Path to the NTFS folder whose permissions are being exported
-        [string[]]$TargetPath,
+        [string[]]$SourcePath,
 
         # Network Path to the NTFS folder whose permissions are being exported
         $NetworkPath,
@@ -51,7 +51,7 @@ function Get-HtmlReportElements {
 
         <#
         Level of detail to export to file
-            0   Item paths                                                                                  $TargetPath
+            0   Item paths                                                                                  $SourcePath
             1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents
             2   Expanded resolved item paths (parent paths expanded into children)                          $AclByPath.Keys
             3   Access rules                                                                                $AclByPath.Values
@@ -94,7 +94,7 @@ function Get-HtmlReportElements {
         # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         [String]$OutputFormat,
 
-        [uint64]$TargetCount,
+        [uint64]$SourceCount,
         [uint64]$ParentCount,
         [uint64]$ChildCount,
         [uint64]$ItemCount,
@@ -124,7 +124,7 @@ function Get-HtmlReportElements {
     ConvertTo-Html -Fragment |
     New-BootstrapTable
 
-    $NetworkPathDivHeader = 'Local target paths were resolved to UNC paths, and UNC target paths were resolved to DFS folder targets'
+    $NetworkPathDivHeader = 'Local source paths were resolved to UNC paths, and UNC source paths were resolved to DFS folder targets'
     Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
@@ -137,18 +137,18 @@ function Get-HtmlReportElements {
     Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy $GroupBy"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
-    Write-LogMsg -Cache $Cache -Text "New-HtmlHeading 'Target Paths' -Level 5"
-    $TargetHeading = New-HtmlHeading 'Target Paths' -Level 5
+    Write-LogMsg -Cache $Cache -Text "New-HtmlHeading 'Source Paths' -Level 5"
+    $SourceHeading = New-HtmlHeading 'Source Paths' -Level 5
 
-    # Convert the target path(s) to a Bootstrap alert div
-    $TargetPathString = $TargetPath -join '<br />'
-    Write-LogMsg -Cache $Cache -Text "New-BootstrapAlert -Class Dark -Text '$TargetPathString'"
-    $TargetAlert = New-BootstrapAlert -Class Dark -Text $TargetPathString -AdditionalClasses ' small'
+    # Convert the source path(s) to a Bootstrap alert div
+    $SourcePathString = $SourcePath -join '<br />'
+    Write-LogMsg -Cache $Cache -Text "New-BootstrapAlert -Class Dark -Text '$SourcePathString'"
+    $SourceAlert = New-BootstrapAlert -Class Dark -Text $SourcePathString -AdditionalClasses ' small'
 
-    # Add the target path div to the parameter splat for New-BootstrapReport
+    # Add the source path div to the parameter splat for New-BootstrapReport
     $ReportParameters = @{
         Title       = $Title
-        Description = "$TargetHeading $TargetAlert $ReportDescription"
+        Description = "$SourceHeading $SourceAlert $ReportDescription"
     }
 
     # Build the divs showing the exclusions specified in the report parameters
@@ -212,7 +212,7 @@ function Get-HtmlReportElements {
         'StopWatch'                = $StopWatch
         'ThisFqdn'                 = $ThisFqdn
         'WhoAmI'                   = $WhoAmI
-        'TargetCount'              = $TargetCount
+        'SourceCount'              = $SourceCount
         'ParentCount'              = $ParentCount
         'ChildCount'               = $ChildCount
         'FqdnCount'                = $FqdnCount

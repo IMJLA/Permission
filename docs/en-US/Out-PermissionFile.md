@@ -14,11 +14,11 @@ schema: 2.0.0
 
 ```
 Out-PermissionFile [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [[-IgnoreDomain] <Object>]
- [[-TargetPath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>]
+ [[-SourcePath] <String[]>] [-NoMembers] [[-OutputDir] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>]
  [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-RecurseDepth] <Object>]
  [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Detail] <Int32[]>] [[-FileFormat] <String[]>]
  [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-Analysis] <PSObject>]
- [[-TargetCount] <UInt64>] [[-ParentCount] <UInt64>] [[-ChildCount] <UInt64>] [[-ItemCount] <UInt64>]
+ [[-SourceCount] <UInt64>] [[-ParentCount] <UInt64>] [[-ChildCount] <UInt64>] [[-ItemCount] <UInt64>]
  [[-FqdnCount] <UInt64>] [[-AclCount] <UInt64>] [[-AceCount] <UInt64>] [[-IdCount] <UInt64>]
  [[-PrincipalCount] <UInt64>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
@@ -415,6 +415,36 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
+### -SourceCount
+{{ Fill SourceCount Description }}
+
+```yaml
+Type: System.UInt64
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 18
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -SourcePath
+{{ Fill SourcePath Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 3
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
 ### -SplitBy
 {{ Fill SplitBy Description }}
 
@@ -441,36 +471,6 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TargetCount
-{{ Fill TargetCount Description }}
-
-```yaml
-Type: System.UInt64
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 18
-Default value: None
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -TargetPath
-{{ Fill TargetPath Description }}
-
-```yaml
-Type: System.String[]
-Parameter Sets: (All)
-Aliases:
-
-Required: False
-Position: 3
 Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False

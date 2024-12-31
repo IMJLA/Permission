@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1083] - 2024-12-30 - rename target to source for clarity
+## [0.0.1082] - 2024-12-30 - rename Target to Source for clarity
 ## [0.0.1081] - 2024-12-11 - bugfix propnames logic
 ## [0.0.1080] - 2024-12-11 - bugfix propnames logic
 ## [0.0.1079] - 2024-12-11 - bugfix properties with spaces

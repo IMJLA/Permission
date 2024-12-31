@@ -1148,9 +1148,9 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Expand-PermissionTarget</command:name>
+      <command:name>Expand-PermissionSource</command:name>
       <command:verb>Expand</command:verb>
-      <command:noun>PermissionTarget</command:noun>
+      <command:noun>PermissionSource</command:noun>
       <maml:description>
         <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
@@ -1160,7 +1160,7 @@
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Expand-PermissionTarget</maml:name>
+        <maml:name>Expand-PermissionSource</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
           <maml:name>RecurseDepth</maml:name>
           <maml:description>
@@ -2140,9 +2140,9 @@
       <command:syntaxItem>
         <maml:name>Get-AccessControlList</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>TargetPath</maml:name>
+          <maml:name>SourcePath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TargetPath Description }}</maml:para>
+            <maml:para>{{ Fill SourcePath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
           <dev:type>
@@ -2215,9 +2215,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>TargetPath</maml:name>
+        <maml:name>SourcePath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill TargetPath Description }}</maml:para>
+          <maml:para>{{ Fill SourcePath Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.Collections.Hashtable</command:parameterValue>
         <dev:type>
@@ -3926,9 +3926,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
-          <maml:name>TargetCount</maml:name>
+          <maml:name>SourceCount</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TargetCount Description }}</maml:para>
+            <maml:para>{{ Fill SourceCount Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.UInt64</command:parameterValue>
           <dev:type>
@@ -4058,9 +4058,9 @@
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-          <maml:name>TargetPath</maml:name>
+          <maml:name>SourcePath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TargetPath Description }}</maml:para>
+            <maml:para>{{ Fill SourcePath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
           <dev:type>
@@ -4467,6 +4467,30 @@
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
+        <maml:name>SourceCount</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill SourceCount Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.UInt64</command:parameterValue>
+        <dev:type>
+          <maml:name>System.UInt64</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
+        <maml:name>SourcePath</maml:name>
+        <maml:description>
+          <maml:para>{{ Fill SourcePath Description }}</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="16" aliases="none">
         <maml:name>SplitBy</maml:name>
         <maml:description>
@@ -4487,30 +4511,6 @@
         <command:parameterValue required="true" variableLength="false">System.Object</command:parameterValue>
         <dev:type>
           <maml:name>System.Object</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="18" aliases="none">
-        <maml:name>TargetCount</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill TargetCount Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.UInt64</command:parameterValue>
-        <dev:type>
-          <maml:name>System.UInt64</maml:name>
-          <maml:uri />
-        </dev:type>
-        <dev:defaultValue>None</dev:defaultValue>
-      </command:parameter>
-      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="3" aliases="none">
-        <maml:name>TargetPath</maml:name>
-        <maml:description>
-          <maml:para>{{ Fill TargetPath Description }}</maml:para>
-        </maml:description>
-        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
-        <dev:type>
-          <maml:name>System.String[]</maml:name>
           <maml:uri />
         </dev:type>
         <dev:defaultValue>None</dev:defaultValue>
@@ -4772,9 +4772,9 @@
   </command:command>
   <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
     <command:details>
-      <command:name>Resolve-PermissionTarget</command:name>
+      <command:name>Resolve-PermissionSource</command:name>
       <command:verb>Resolve</command:verb>
-      <command:noun>PermissionTarget</command:noun>
+      <command:noun>PermissionSource</command:noun>
       <maml:description>
         <maml:para>{{ Fill in the Synopsis }}</maml:para>
       </maml:description>
@@ -4784,11 +4784,11 @@
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
-        <maml:name>Resolve-PermissionTarget</maml:name>
+        <maml:name>Resolve-PermissionSource</maml:name>
         <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-          <maml:name>TargetPath</maml:name>
+          <maml:name>SourcePath</maml:name>
           <maml:description>
-            <maml:para>{{ Fill TargetPath Description }}</maml:para>
+            <maml:para>{{ Fill SourcePath Description }}</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.IO.DirectoryInfo[]</command:parameterValue>
           <dev:type>
@@ -4849,9 +4849,9 @@
         <dev:defaultValue>None</dev:defaultValue>
       </command:parameter>
       <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="0" aliases="none">
-        <maml:name>TargetPath</maml:name>
+        <maml:name>SourcePath</maml:name>
         <maml:description>
-          <maml:para>{{ Fill TargetPath Description }}</maml:para>
+          <maml:para>{{ Fill SourcePath Description }}</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.IO.DirectoryInfo[]</command:parameterValue>
         <dev:type>

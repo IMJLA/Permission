@@ -1,11 +1,11 @@
-function Resolve-PermissionTarget {
+function Resolve-PermissionSource {
 
     # Resolve each target path to all of its associated UNC paths (including all DFS folder targets)
 
     param (
 
         # Path to the NTFS folder whose permissions to export
-        [System.IO.DirectoryInfo[]]$TargetPath,
+        [System.IO.DirectoryInfo[]]$SourcePath,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -13,12 +13,12 @@ function Resolve-PermissionTarget {
 
     )
 
-    $Parents = $Cache.Value['ParentByTargetPath']
+    $Parents = $Cache.Value['ParentBySourcePath']
 
-    ForEach ($ThisTargetPath in $TargetPath) {
+    ForEach ($ThisSourcePath in $SourcePath) {
 
-        Write-LogMsg -Text "Resolve-Folder -TargetPath '$ThisTargetPath' -Cache `$Cache" -Cache $Cache
-        $Parents.Value[$ThisTargetPath] = Resolve-Folder -TargetPath $ThisTargetPath -Cache $Cache
+        Write-LogMsg -Text "Resolve-Folder -SourcePath '$ThisSourcePath' -Cache `$Cache" -Cache $Cache
+        $Parents.Value[$ThisSourcePath] = Resolve-Folder -SourcePath $ThisSourcePath -Cache $Cache
 
     }
 

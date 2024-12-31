@@ -33,7 +33,7 @@ function New-PermissionCache {
     $LogCimMap = @{ 'Cache' = '$Cache' ; 'CimSession' = '$CimSession' }
     $LogFormattedMap = @{ 'FormattedPermission' = '$FormattedPermissions' ; 'Analysis' = '$PermissionAnalysis' }
     $LogDirEntryMap = @{ 'Cache' = '$Cache' ; 'DirectoryEntry' = '$DirectoryEntry' ; 'AceGuid' = '$AceGuids' }
-    $LogTargetPathMap = @{ 'Cache' = '$Cache' ; 'TargetPath' = '$Items' }
+    $LogSourcePathMap = @{ 'Cache' = '$Cache' ; 'TargetPath' = '$Items' }
     $LogEmptyMap = @{}
     $ParamStringMap = Get-ParamStringMap
     $LogBuffer = [System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new()
@@ -98,7 +98,7 @@ function New-PermissionCache {
             'LogEmptyMap'                  = [ref]$LogEmptyMap
             'LogCacheMap'                  = [ref]$LogCacheMap
             'LogAnalysisMap'               = [ref]$LogAnalysisMap
-            'LogTargetPathMap'             = [ref]$LogTargetPathMap
+            'LogSourcePathMap'             = [ref]$LogSourcePathMap
             'LogFormattedMap'              = [ref]$LogFormattedMap
             'LogStopWatchMap'              = [ref]$LogStopWatchMap
             'LogCimMap'                    = [ref]$LogCimMap
@@ -106,7 +106,7 @@ function New-PermissionCache {
             'LogWellKnownMap'              = [ref]$LogWellKnownMap
             'LogType'                      = [ref]$LogType
             'ParamStringMap'               = [ref]$ParamStringMap
-            'ParentByTargetPath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #ParentByTargetPath hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
+            'ParentBySourcePath'           = New-PermissionCacheRef -Key $DirectoryInfo -Value $StringArray #hashtable Initialize a cache of resolved parent item paths keyed by their unresolved target paths.
             'PrincipalByID'                = New-PermissionCacheRef -Key $String -Value $PSCustomObject #hashtable Initialize a cache of ADSI security principals keyed by their resolved NTAccount caption.
             'ProgressParentId'             = [ref]$ProgressParentId
             'ShortNameByID'                = New-PermissionCacheRef -Key $String -Value $String  #hashtable Initialize a cache of short names (results of the IgnoreDomain parameter) keyed by their resolved NTAccount captions.

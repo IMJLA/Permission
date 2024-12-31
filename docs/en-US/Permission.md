@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1081
+Help Version: 0.0.1083
 Locale: en-US
 ---
 
@@ -34,9 +34,9 @@ ConvertTo-PermissionFqdn [-ComputerName] <string> [-Cache] <ref> [-ThisFqdn] [<C
 
 Expand-Permission [[-SplitBy] <string[]>] [[-GroupBy] <string>] [[-Children] <hashtable>] [-Cache] <ref> [<CommonParameters>]
 
-### [Expand-PermissionTarget](Expand-PermissionTarget.md)
+### [Expand-PermissionSource](Expand-PermissionSource.md)
 
-Expand-PermissionTarget [[-RecurseDepth] <int>] [-Cache] <ref> [<CommonParameters>]
+Expand-PermissionSource [[-RecurseDepth] <int>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Find-CachedCimInstance](Find-CachedCimInstance.md)
 
@@ -60,7 +60,7 @@ Format-TimeSpan [[-TimeSpan] <timespan>] [[-UnitsToResolve] <string[]>]
 
 ### [Get-AccessControlList](Get-AccessControlList.md)
 
-Get-AccessControlList [[-TargetPath] <hashtable>] [[-WarningCache] <hashtable>] [-Cache] <ref> [<CommonParameters>]
+Get-AccessControlList [[-SourcePath] <hashtable>] [[-WarningCache] <hashtable>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Get-CachedCimInstance](Get-CachedCimInstance.md)
 
@@ -108,7 +108,7 @@ Out-Permission [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-FormattedPerm
 
 ### [Out-PermissionFile](Out-PermissionFile.md)
 
-Out-PermissionFile [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-TargetPath] <string[]>] [[-OutputDir] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Detail] <int[]>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-SplitBy] <string[]>] [[-Analysis] <psobject>] [[-TargetCount] <ulong>] [[-ParentCount] <ulong>] [[-ChildCount] <ulong>] [[-ItemCount] <ulong>] [[-FqdnCount] <ulong>] [[-AclCount] <ulong>] [[-AceCount] <ulong>] [[-IdCount] <ulong>] [[-PrincipalCount] <ulong>] [-Cache] <ref> [-NoMembers] [<CommonParameters>]
+Out-PermissionFile [[-ExcludeAccount] <string[]>] [[-ExcludeClass] <string[]>] [[-IgnoreDomain] <Object>] [[-SourcePath] <string[]>] [[-OutputDir] <Object>] [[-StopWatch] <Object>] [[-Title] <Object>] [[-Permission] <Object>] [[-FormattedPermission] <Object>] [[-RecurseDepth] <Object>] [[-LogFileList] <Object>] [[-ReportInstanceId] <Object>] [[-Detail] <int[]>] [[-FileFormat] <string[]>] [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-SplitBy] <string[]>] [[-Analysis] <psobject>] [[-SourceCount] <ulong>] [[-ParentCount] <ulong>] [[-ChildCount] <ulong>] [[-ItemCount] <ulong>] [[-FqdnCount] <ulong>] [[-AclCount] <ulong>] [[-AceCount] <ulong>] [[-IdCount] <ulong>] [[-PrincipalCount] <ulong>] [-Cache] <ref> [-NoMembers] [<CommonParameters>]
 
 ### [Remove-CachedCimSession](Remove-CachedCimSession.md)
 
@@ -118,9 +118,9 @@ Remove-CachedCimSession [[-CimCache] <hashtable>]
 
 Resolve-AccessControlList [-Cache] <ref> [[-AccountProperty] <string[]>] [<CommonParameters>]
 
-### [Resolve-PermissionTarget](Resolve-PermissionTarget.md)
+### [Resolve-PermissionSource](Resolve-PermissionSource.md)
 
-Resolve-PermissionTarget [[-TargetPath] <DirectoryInfo[]>] [-Cache] <ref> [<CommonParameters>]
+Resolve-PermissionSource [[-SourcePath] <DirectoryInfo[]>] [-Cache] <ref> [<CommonParameters>]
 
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 

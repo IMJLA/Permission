@@ -59,7 +59,7 @@ function Expand-Permission {
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
     $ACLsByPath = $Cache.Value['AclByPath']
-    $TargetPath = $Cache.Value['ParentByTargetPath']
+    $TargetPath = $Cache.Value['ParentBySourcePath']
 
     $CommonParams = @{
         ACEsByGUID             = $ACEsByGUID

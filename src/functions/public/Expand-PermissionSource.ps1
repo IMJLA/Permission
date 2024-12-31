@@ -1,4 +1,4 @@
-function Expand-PermissionTarget {
+function Expand-PermissionSource {
 
     # Expand a folder path into the paths of its subfolders
 
@@ -23,7 +23,7 @@ function Expand-PermissionTarget {
 
     $Progress = Get-PermissionProgress -Activity 'Expand-PermissionTarget' -Cache $Cache
 
-    $Targets = ForEach ($Target in $Cache.Value['ParentByTargetPath'].Value.Values ) {
+    $Targets = ForEach ($Target in $Cache.Value['ParentBySourcePath'].Value.Values ) {
         $Target
     }
 

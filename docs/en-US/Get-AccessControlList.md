@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Get-AccessControlList [[-TargetPath] <Hashtable>] [[-WarningCache] <Hashtable>] [-Cache] <PSReference>
+Get-AccessControlList [[-SourcePath] <Hashtable>] [[-WarningCache] <Hashtable>] [-Cache] <PSReference>
  [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
@@ -61,8 +61,8 @@ Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -TargetPath
-{{ Fill TargetPath Description }}
+### -SourcePath
+{{ Fill SourcePath Description }}
 
 ```yaml
 Type: System.Collections.Hashtable

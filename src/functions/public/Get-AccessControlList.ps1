@@ -9,7 +9,7 @@ function Get-AccessControlList {
     param (
 
         # Path to the item whose permissions to export (inherited ACEs will be included)
-        [Hashtable]$TargetPath,
+        [Hashtable]$SourcePath,
 
         # Hashtable of warning messages to allow a summarized count in the Warning stream with detail in the Verbose stream
         [hashtable]$WarningCache = [Hashtable]::Synchronized(@{}),
@@ -44,19 +44,19 @@ function Get-AccessControlList {
     }
 
     $TargetIndex = 0
-    $ParentCount = $TargetPath.Keys.Count
+    $ParentCount = $SourcePath.Keys.Count
     $ThreadCount = $Cache.Value['ThreadCount'].Value
 
     if ($ThreadCount -eq 1) {
 
-        ForEach ($Parent in $TargetPath.Keys) {
+        ForEach ($Parent in $SourcePath.Keys) {
 
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
             Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Write-Progress @GrandChildProgress -Status '0% (parent) Get-DirectorySecurity -IncludeInherited' -CurrentOperation $Parent -PercentComplete 0
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
-            $Children = $TargetPath[$Parent]
+            $Children = $SourcePath[$Parent]
             $ChildCount = $Children.Count
             [int]$ProgressInterval = [math]::max(($ChildCount / 100), 1)
             $IntervalCounter = 0
@@ -87,13 +87,13 @@ function Get-AccessControlList {
 
     } else {
 
-        ForEach ($Parent in $TargetPath.Keys) {
+        ForEach ($Parent in $SourcePath.Keys) {
 
             [int]$PercentComplete = $TargetIndex / $ParentCount * 100
             $TargetIndex++
             Write-Progress @ChildProgress -Status "$PercentComplete% (parent $TargetIndex of $ParentCount) Get access control lists" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-DirectorySecurity -LiteralPath $Parent -IncludeInherited @GetDirectorySecurity
-            $Children = $TargetPath[$Parent]
+            $Children = $SourcePath[$Parent]
 
             $SplitThread = @{
                 Command        = 'Get-DirectorySecurity'
@@ -141,14 +141,14 @@ function Get-AccessControlList {
         # Update the cache with ACEs for the item owners (if they do not match the owner of the item's parent folder)
         # First return the owner of the parent item
 
-        ForEach ($Parent in $TargetPath.Keys) {
+        ForEach ($Parent in $SourcePath.Keys) {
 
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
             Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Find non-inherited ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Write-Progress @GrandChildProgress -Status '0% (parent) Get-OwnerAce' -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
-            $Children = $TargetPath[$Parent]
+            $Children = $SourcePath[$Parent]
             $ChildCount = $Children.Count
             [int]$ProgressInterval = [math]::max(($ChildCount / 100), 1)
             $IntervalCounter = 0
@@ -179,13 +179,13 @@ function Get-AccessControlList {
 
     } else {
 
-        ForEach ($Parent in $TargetPath.Keys) {
+        ForEach ($Parent in $SourcePath.Keys) {
 
             [int]$PercentComplete = $ParentIndex / $ParentCount * 100
             $ParentIndex++
             Write-Progress @ChildProgress -Status "$PercentComplete% (parent $ParentIndex of $ParentCount) Find non-inherited ACL Owners" -CurrentOperation $Parent -PercentComplete $PercentComplete
             Get-OwnerAce -Item $Parent @GetOwnerAce
-            $Children = $TargetPath[$Parent]
+            $Children = $SourcePath[$Parent]
 
             $SplitThread = @{
                 Command        = 'Get-OwnerAce'

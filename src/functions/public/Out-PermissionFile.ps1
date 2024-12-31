@@ -20,7 +20,7 @@ function Out-PermissionFile {
         $IgnoreDomain,
 
         # Path to the NTFS folder whose permissions are being exported
-        [string[]]$TargetPath,
+        [string[]]$SourcePath,
 
         # Group members are not being exported (only the groups themselves)
         [switch]$NoMembers,
@@ -42,7 +42,7 @@ function Out-PermissionFile {
 
         <#
         Level of detail to export to file
-            0   Item paths                                                                                  $TargetPath
+            0   Item paths                                                                                  $SourcePath
             1   Resolved item paths (server names resolved, DFS targets resolved)                           $Parents
             2   Expanded resolved item paths (parent paths expanded into children)                          $AclByPath.Keys
             3   Access rules                                                                                $AclByPath.Values
@@ -68,9 +68,9 @@ function Out-PermissionFile {
         How to group the permissions in the output stream and within each exported file
 
             SplitBy GroupBy
-            none    none    $FlatPermissions all in 1 file per $TargetPath
-            none    account $AccountPermissions all in 1 file per $TargetPath
-            none    item    $ItemPermissions all in 1 file per $TargetPath (default behavior)
+            none    none    $FlatPermissions all in 1 file per $SourcePath
+            none    account $AccountPermissions all in 1 file per $SourcePath
+            none    item    $ItemPermissions all in 1 file per $SourcePath (default behavior)
 
             item    none    1 file per item in $ItemPermissions.  In each file, $_.Access | sort account
             item    account 1 file per item in $ItemPermissions.  In each file, $_.Access | group account | sort name
@@ -97,7 +97,7 @@ function Out-PermissionFile {
         # Object output from Invoke-PermissionAnalyzer
         [PSCustomObject]$Analysis,
 
-        [uint64]$TargetCount,
+        [uint64]$SourceCount,
         [uint64]$ParentCount,
         [uint64]$ChildCount,
         [uint64]$ItemCount,
@@ -122,7 +122,7 @@ function Out-PermissionFile {
     $AceByGUID = $Cache.Value['AceByGUID']
     $AclByPath = $Cache.Value['AclByPath']
     $PrincipalByID = $Cache.Value['PrincipalByID']
-    $Parent = $Cache.Value['ParentByTargetPath']
+    $Parent = $Cache.Value['ParentBySourcePath']
 
     # Determine all formats specified by the parameters
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
@@ -147,10 +147,10 @@ function Out-PermissionFile {
     $SplitDetail = $Detail | Where-Object -FilterScript { $_ -gt 5 -and $_ -notin 8, 9 }
 
     $DetailScripts = @(
-        { $TargetPath },
+        { $SourcePath },
         { ForEach ($Key in $Parent.Value.Keys) {
                 [PSCustomObject]@{
-                    OriginalTargetPath  = $Key
+                    OriginalSourcePath  = $Key
                     ResolvedNetworkPath = $Parent.Value[$Key]
                 }
             }
@@ -440,7 +440,7 @@ function Out-PermissionFile {
                 $ReportObjects = @{}
 
                 [Hashtable]$Params = $PSBoundParameters
-                $Params['TargetPath'] = $File.Path
+                $Params['SourcePath'] = $File.Path
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
