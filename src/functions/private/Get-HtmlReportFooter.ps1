@@ -59,7 +59,7 @@ function Get-HtmlReportFooter {
             'Average Time Each' = if ($ParentCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ParentCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
-            'Name'              = 'Children (found beneath parent paths)'
+            'Name'              = 'Children (found in parents)'
             'Count'             = $ChildCount
             'Average Time Each' = if ($ChildCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $ChildCount ) ) -UnitsToResolve $AllUnits }
         },
