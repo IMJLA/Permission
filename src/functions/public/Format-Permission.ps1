@@ -99,7 +99,7 @@ function Format-Permission {
                 }
 
                 $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
 
             }
 
@@ -126,8 +126,8 @@ function Format-Permission {
 
             $OutputProperties = @{
                 Item         = $Item.Item
-                TargetPaths  = $Permission.TargetPermissions.Path.FullName
-                NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
+                TargetPaths  = $Permission.SourcePermissions.Path.FullName
+                NetworkPaths = $Permission.SourcePermissions.NetworkPaths.Item
             }
 
             ForEach ($Format in $Formats) {
@@ -138,7 +138,7 @@ function Format-Permission {
                 }
 
                 $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
 
             }
 
@@ -151,9 +151,9 @@ function Format-Permission {
     if ($Permission.SplitBy['target']) {
 
         $i = 0
-        $Count = $Permission.TargetPermissions.Count
+        $Count = $Permission.SourcePermissions.Count
 
-        $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
+        $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.SourcePermissions) {
 
             [int]$Percent = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically

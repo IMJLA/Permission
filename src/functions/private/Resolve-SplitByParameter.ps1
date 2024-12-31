@@ -4,14 +4,16 @@ function Resolve-SplitByParameter {
 
         <#
         How to split up the exported files:
-            none    generate a single file with all permissions
-            target  generate a file per target
-            item    generate a file per item
-            account generate a file per account
-            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [ValidateSet('none', 'all', 'target', 'item', 'account')]
-        [string[]]$SplitBy = 'all'
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source'
 
     )
 
@@ -26,7 +28,7 @@ function Resolve-SplitByParameter {
         } elseif ($Split -eq 'all') {
 
             return @{
-                'target'  = $true
+                'source'  = $true
                 'none'    = $true
                 'item'    = $true
                 'account' = $true

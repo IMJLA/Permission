@@ -71,13 +71,16 @@ function Get-HtmlReportElements {
 
         <#
         How to split up the exported files:
-            none    generate 1 file with all permissions
-            target  generate 1 file per target
-            item    generate 1 file per item
-            account generate 1 file per account
-            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [string[]]$SplitBy = 'target',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source',
 
         [String]$Split,
 
@@ -202,9 +205,9 @@ function Get-HtmlReportElements {
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.TargetPermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account
-                ($Permission.TargetPermissions.NetworkPaths.Items.Access.Access.Count + $Permission.TargetPermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
-                $Permission.TargetPermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target/none
+                $Permission.SourcePermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account
+                ($Permission.SourcePermissions.NetworkPaths.Items.Access.Access.Count + $Permission.SourcePermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
+                $Permission.SourcePermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target/none
                 $AceByGUID.Keys.Count
             ) |
             Measure-Object -Maximum

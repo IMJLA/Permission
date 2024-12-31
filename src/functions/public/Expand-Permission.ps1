@@ -6,14 +6,16 @@ function Expand-Permission {
 
         <#
         How to split up the exported files:
-            none    generate 1 report file with all permissions
-            target  generate 1 report file per target (default)
-            item    generate 1 report file per item
-            account generate 1 report file per account
-            all     generate 1 report file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [string[]]$SplitBy = 'target',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source',
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -122,8 +124,8 @@ function Expand-Permission {
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '88% : Expand item permissions into objects' -CurrentOperation 'Expand-TargetPermissionReference' -PercentComplete 67
-        Write-LogMsg @Log -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
-        $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
+        Write-LogMsg @Log -Text '$SourcePermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
+        $SourcePermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -133,7 +135,7 @@ function Expand-Permission {
         AccountPermissions = $AccountPermissions
         FlatPermissions    = $FlatPermissions
         ItemPermissions    = $ItemPermissions
-        TargetPermissions  = $TargetPermissions
+        SourcePermissions  = $SourcePermissions
         SplitBy            = $HowToSplit
     }
 

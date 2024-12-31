@@ -1699,13 +1699,16 @@ function Get-HtmlReportElements {
 
         <#
         How to split up the exported files:
-            none    generate 1 file with all permissions
-            target  generate 1 file per target
-            item    generate 1 file per item
-            account generate 1 file per account
-            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [string[]]$SplitBy = 'target',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source',
 
         [String]$Split,
 
@@ -1830,9 +1833,9 @@ function Get-HtmlReportElements {
             @(
                 $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
                 $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.TargetPermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account
-                ($Permission.TargetPermissions.NetworkPaths.Items.Access.Access.Count + $Permission.TargetPermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
-                $Permission.TargetPermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target/none
+                $Permission.SourcePermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account
+                ($Permission.SourcePermissions.NetworkPaths.Items.Access.Access.Count + $Permission.SourcePermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
+                $Permission.SourcePermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target/none
                 $AceByGUID.Keys.Count
             ) |
             Measure-Object -Maximum
@@ -3183,14 +3186,16 @@ function Resolve-SplitByParameter {
 
         <#
         How to split up the exported files:
-            none    generate a single file with all permissions
-            target  generate a file per target
-            item    generate a file per item
-            account generate a file per account
-            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [ValidateSet('none', 'all', 'target', 'item', 'account')]
-        [string[]]$SplitBy = 'all'
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source'
 
     )
 
@@ -3205,7 +3210,7 @@ function Resolve-SplitByParameter {
         } elseif ($Split -eq 'all') {
 
             return @{
-                'target'  = $true
+                'source'  = $true
                 'none'    = $true
                 'item'    = $true
                 'account' = $true
@@ -3872,14 +3877,16 @@ function Expand-Permission {
 
         <#
         How to split up the exported files:
-            none    generate 1 report file with all permissions
-            target  generate 1 report file per target (default)
-            item    generate 1 report file per item
-            account generate 1 report file per account
-            all     generate 1 report file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [ValidateSet('account', 'item', 'none', 'target')]
-        [string[]]$SplitBy = 'target',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source',
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -3988,8 +3995,8 @@ function Expand-Permission {
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '88% : Expand item permissions into objects' -CurrentOperation 'Expand-TargetPermissionReference' -PercentComplete 67
-        Write-LogMsg @Log -Text '$TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
-        $TargetPermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
+        Write-LogMsg @Log -Text '$SourcePermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
+        $SourcePermissions = Expand-TargetPermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -3999,7 +4006,7 @@ function Expand-Permission {
         AccountPermissions = $AccountPermissions
         FlatPermissions    = $FlatPermissions
         ItemPermissions    = $ItemPermissions
-        TargetPermissions  = $TargetPermissions
+        SourcePermissions  = $SourcePermissions
         SplitBy            = $HowToSplit
     }
 
@@ -4335,7 +4342,7 @@ function Format-Permission {
                 }
 
                 $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
 
             }
 
@@ -4362,8 +4369,8 @@ function Format-Permission {
 
             $OutputProperties = @{
                 Item         = $Item.Item
-                TargetPaths  = $Permission.TargetPermissions.Path.FullName
-                NetworkPaths = $Permission.TargetPermissions.NetworkPaths.Item
+                TargetPaths  = $Permission.SourcePermissions.Path.FullName
+                NetworkPaths = $Permission.SourcePermissions.NetworkPaths.Item
             }
 
             ForEach ($Format in $Formats) {
@@ -4374,7 +4381,7 @@ function Format-Permission {
                 }
 
                 $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.TargetPermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
 
             }
 
@@ -4387,9 +4394,9 @@ function Format-Permission {
     if ($Permission.SplitBy['target']) {
 
         $i = 0
-        $Count = $Permission.TargetPermissions.Count
+        $Count = $Permission.SourcePermissions.Count
 
-        $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.TargetPermissions) {
+        $FormattedResults['SplitByTarget'] = ForEach ($Target in $Permission.SourcePermissions) {
 
             [int]$Percent = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
@@ -5627,14 +5634,16 @@ function Out-PermissionFile {
 
         <#
         How to split up the exported files:
-            none    generate 1 file with all permissions
-            target  generate 1 file per target
-            item    generate 1 file per item
-            account generate 1 file per account
-            all     generate 1 file per target and 1 file per item and 1 file per account and 1 file with all permissions.
+
+        | Value   | Behavior |
+        |---------|----------|
+        | none    | generate 1 report file with all permissions |
+        | source  | generate 1 report file per source path (default) |
+        | item    | generate 1 report file per item |
+        | account | generate 1 report file per account |
         #>
-        [ValidateSet('none', 'all', 'target', 'item', 'account')]
-        [string[]]$SplitBy = 'target',
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string[]]$SplitBy = 'source',
 
         # Object output from Invoke-PermissionAnalyzer
         [PSCustomObject]$Analysis,
@@ -5707,7 +5716,7 @@ function Out-PermissionFile {
                 'account' { $Permission.AccountPermissions ; break }
                 'none' { $Permission.FlatPermissions ; break }
                 'item' { $Permission.ItemPermissions ; break }
-                'target' { $Permission.TargetPermissions ; break }
+                'source' { $Permission.SourcePermissions ; break }
             }
 
         },
@@ -6282,6 +6291,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
