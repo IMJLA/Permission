@@ -32,7 +32,7 @@ function Out-Permission {
 
     )
 
-    ForEach ($Split in 'target', 'item', 'account') {
+    ForEach ($Split in 'source', 'item', 'account') {
         $ThisFormat = $FormattedPermission["SplitBy$Split"]
         if ($ThisFormat) {
             $ThisFormat

@@ -113,7 +113,7 @@ function Expand-Permission {
     }
 
     if (
-        $HowToSplit['target']
+        $HowToSplit['source']
     ) {
 
         # Group reference GUIDs by their associated TargetPath.

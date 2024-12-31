@@ -148,7 +148,7 @@ function Format-Permission {
 
     }
 
-    if ($Permission.SplitBy['target']) {
+    if ($Permission.SplitBy['source']) {
 
         $i = 0
         $Count = $Permission.SourcePermissions.Count

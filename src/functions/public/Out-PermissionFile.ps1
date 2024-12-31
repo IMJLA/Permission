@@ -211,7 +211,7 @@ function Out-PermissionFile {
                 break
             }
 
-            'target' {
+            'source' {
                 $Subproperty = 'NetworkPaths'
                 $FileNameProperty = ''
                 $FileNameSubproperty = 'Path'
