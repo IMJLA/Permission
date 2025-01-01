@@ -704,15 +704,18 @@ function ConvertTo-PermissionList {
                 $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
 
                 # Remove spaces from property titles
+                $ObjProps = [ordered]@{}
+
+                ForEach ($Prop in $PropNames) {
+                    $ObjProps[$Prop.Replace(' ', '')] = $Prop
+                }
+
                 $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
 
-                    $Props = [ordered]@{
-                        Item              = $Obj.Item
-                        Account           = $Obj.Account
-                        Access            = $Obj.Access
-                        DuetoMembershipIn = $Obj.'Due to Membership In'
-                        SourceofAccess    = $Obj.'Source of Access'
-                        Name              = $Obj.Name
+                    $Props = [ordered]@{}
+
+                    ForEach ($PropName in $ObjProps.Keys) {
+                        $Props[$PropName] = $Obj.$($ObjProps[$PropName])
                     }
 
                     ForEach ($PropName in $AccountProperty) {
@@ -6290,6 +6293,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

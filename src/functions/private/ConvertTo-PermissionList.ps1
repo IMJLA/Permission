@@ -236,15 +236,18 @@ function ConvertTo-PermissionList {
                 $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
 
                 # Remove spaces from property titles
+                $ObjProps = [ordered]@{}
+
+                ForEach ($Prop in $PropNames) {
+                    $ObjProps[$Prop.Replace(' ', '')] = $Prop
+                }
+
                 $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
 
-                    $Props = [ordered]@{
-                        Item              = $Obj.Item
-                        Account           = $Obj.Account
-                        Access            = $Obj.Access
-                        DuetoMembershipIn = $Obj.'Due to Membership In'
-                        SourceofAccess    = $Obj.'Source of Access'
-                        Name              = $Obj.Name
+                    $Props = [ordered]@{}
+
+                    ForEach ($PropName in $ObjProps.Keys) {
+                        $Props[$PropName] = $Obj.$($ObjProps[$PropName])
                     }
 
                     ForEach ($PropName in $AccountProperty) {
