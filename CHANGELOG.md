@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1102] - 2025-01-01 - resolve milliseconds to avoid null result for sub-1-second times
 ## [0.0.1101] - 2025-01-01 - bugfix use dynamic rather than static property names
 ## [0.0.1100] - 2025-01-01 - bugfix use word 'path' instead of 'item', changing that was a mistake
 ## [0.0.1099] - 2025-01-01 - bugfix to handle accounts that have been filtered out based on params
