@@ -271,9 +271,9 @@ function ConvertTo-PermissionList {
                 $TableId = 'Perms'
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
                 if ($GroupBy -eq 'account') {
-                    [string[]]$PropNames = @('Item', 'Access', 'Due to Membership In', 'Source of Access')
+                    [string[]]$PropNames = @('Path', 'Access', 'Due to Membership In', 'Source of Access')
                 } else {
-                    [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+                    [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
                 }
 
                 [PSCustomObject]@{
@@ -419,7 +419,7 @@ function ConvertTo-PermissionList {
                             $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
                             $DivId = $TableId.Replace('Perms', 'Div')
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
-                            [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+                            [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                             [PSCustomObject]@{
                                 PSTypeName = 'Permission.TargetPermissionList'

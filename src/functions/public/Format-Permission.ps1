@@ -129,7 +129,7 @@ function Format-Permission {
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
-                Item         = $Item.Item
+                Path         = $Item.Item
                 TargetPaths  = $Permission.SourcePermissions.Path.FullName
                 NetworkPaths = $Permission.SourcePermissions.NetworkPaths.Item
             }

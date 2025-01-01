@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1100] - 2025-01-01 - bugfix use word 'path' instead of 'item', changing that was a mistake
 ## [0.0.1099] - 2025-01-01 - bugfix to handle accounts that have been filtered out based on params
 ## [0.0.1098] - 2025-01-01 - bugfix missing props
 ## [0.0.1097] - 2025-01-01 - bugfix for splitbyAccount groupbyAccount

@@ -188,7 +188,7 @@ function Select-PermissionTableProperty {
                                 if ($null -ne $Object.Account) {
 
                                     $Props = [ordered]@{
-                                        'Item'                 = $ACE.Path
+                                        'Path'                 = $ACE.Path
                                         'Access'               = $ACE.Access
                                         'Due to Membership In' = $GroupString
                                         'Source of Access'     = $ACE.SourceOfAccess
@@ -273,7 +273,7 @@ function Select-PermissionTableProperty {
                         if ($null -ne $GroupString) {
 
                             $Props = [ordered]@{
-                                'Item'                 = $Object.ItemPath
+                                'Path'                 = $Object.ItemPath
                                 'Account'              = $AccountName
                                 'Access'               = $ACE.Access
                                 'Due to Membership In' = $GroupString

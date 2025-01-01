@@ -739,9 +739,9 @@ function ConvertTo-PermissionList {
                 $TableId = 'Perms'
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
                 if ($GroupBy -eq 'account') {
-                    [string[]]$PropNames = @('Item', 'Access', 'Due to Membership In', 'Source of Access')
+                    [string[]]$PropNames = @('Path', 'Access', 'Due to Membership In', 'Source of Access')
                 } else {
-                    [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+                    [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
                 }
 
                 [PSCustomObject]@{
@@ -887,7 +887,7 @@ function ConvertTo-PermissionList {
                             $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
                             $DivId = $TableId.Replace('Perms', 'Div')
                             $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
-                            [string[]]$PropNames = @('Item', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+                            [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                             [PSCustomObject]@{
                                 PSTypeName = 'Permission.TargetPermissionList'
@@ -3521,7 +3521,7 @@ function Select-PermissionTableProperty {
                                 if ($null -ne $Object.Account) {
 
                                     $Props = [ordered]@{
-                                        'Item'                 = $ACE.Path
+                                        'Path'                 = $ACE.Path
                                         'Access'               = $ACE.Access
                                         'Due to Membership In' = $GroupString
                                         'Source of Access'     = $ACE.SourceOfAccess
@@ -3606,7 +3606,7 @@ function Select-PermissionTableProperty {
                         if ($null -ne $GroupString) {
 
                             $Props = [ordered]@{
-                                'Item'                 = $Object.ItemPath
+                                'Path'                 = $Object.ItemPath
                                 'Account'              = $AccountName
                                 'Access'               = $ACE.Access
                                 'Due to Membership In' = $GroupString
@@ -4388,7 +4388,7 @@ function Format-Permission {
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
-                Item         = $Item.Item
+                Path         = $Item.Item
                 TargetPaths  = $Permission.SourcePermissions.Path.FullName
                 NetworkPaths = $Permission.SourcePermissions.NetworkPaths.Item
             }
@@ -6311,6 +6311,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
