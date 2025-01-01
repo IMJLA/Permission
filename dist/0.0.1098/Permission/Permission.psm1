@@ -706,6 +706,14 @@ function ConvertTo-PermissionList {
                 # Remove spaces from property titles
                 $ObjProps = [ordered]@{}
 
+                if ($StartingPermissions -is [System.Collections.IEnumerable]) {
+                    $FirstInputObject = $StartingPermissions[0]
+                } else {
+                    $FirstInputObject = $StartingPermissions
+                }
+
+                $PropNames = $FirstInputObject.PSObject.Properties.GetEnumerator().Name
+
                 ForEach ($Prop in $PropNames) {
                     $ObjProps[$Prop.Replace(' ', '')] = $Prop
                 }
@@ -762,7 +770,7 @@ function ConvertTo-PermissionList {
                             # Remove spaces from property titles
                             $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
                                 [PSCustomObject]@{
-                                    Path              = $Obj.Path
+                                    Item              = $Obj.Path
                                     Access            = $Obj.Access
                                     DuetoMembershipIn = $Obj.'Due to Membership In'
                                     SourceofAccess    = $Obj.'Source of Access'
@@ -775,7 +783,7 @@ function ConvertTo-PermissionList {
 
                             [PSCustomObject]@{
                                 PSTypeName = 'Permission.AccountPermissionList'
-                                Columns    = Get-ColumnJson -InputObject $StartingPermissions-PropNames Path, Access, 'Due to Membership In', 'Source of Access'
+                                Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames Path, Access, 'Due to Membership In', 'Source of Access'
                                 Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                 PassThru   = $ObjectsForJsonData
@@ -6299,6 +6307,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

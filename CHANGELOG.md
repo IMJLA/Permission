@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1098] - 2025-01-01 - bugfix missing props
 ## [0.0.1097] - 2025-01-01 - bugfix for splitbyAccount groupbyAccount
 ## [0.0.1096] - 2025-01-01 - pass the accountproperty param
 ## [0.0.1095] - 2025-01-01 - use dynamic property enumeration for space removal
