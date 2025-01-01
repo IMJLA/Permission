@@ -1925,7 +1925,7 @@ function Get-HtmlReportFooter {
         #>
         [String]$ThisFqdn = ([System.Net.Dns]::GetHostByName((HOSTNAME.EXE)).HostName),
 
-        [uint64]$TargetCount,
+        [uint64]$SourceCount,
         [uint64]$ParentCount,
         [uint64]$ChildCount,
         [uint64]$ItemCount,
@@ -1960,8 +1960,8 @@ function Get-HtmlReportFooter {
     $CompletionTime = @(
         @{
             'Name'              = 'Source paths (specified in report parameters)'
-            'Count'             = $TargetCount
-            'Average Time Each' = if ($TargetCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $TargetCount ) ) -UnitsToResolve $AllUnits }
+            'Count'             = $SourceCount
+            'Average Time Each' = if ($SourceCount -gt 0) { Format-TimeSpan -TimeSpan ( New-TimeSpan -Milliseconds ( $StopWatch.Elapsed.TotalMilliseconds / $SourceCount ) ) -UnitsToResolve $AllUnits }
         },
         @{
             'Name'              = 'Parents (resolved from source paths)'
@@ -6335,6 +6335,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
+
 
 
 
