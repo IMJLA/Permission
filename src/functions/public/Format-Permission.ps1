@@ -83,7 +83,7 @@ function Format-Permission {
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $Selection = $Account
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{

@@ -718,8 +718,10 @@ function ConvertTo-PermissionList {
                         $Props[$PropName] = $Obj.$($ObjProps[$PropName])
                     }
 
-                    ForEach ($PropName in $AccountProperty) {
-                        $Props[$PropName] = $Obj.$PropName
+                    if (-not $HowToSplit['Account']) {
+                        ForEach ($PropName in $AccountProperty) {
+                            $Props[$PropName] = $Obj.$PropName
+                        }
                     }
 
                     [PSCustomObject]$Props
@@ -3045,7 +3047,7 @@ function Resolve-GroupByParameter {
 
         return @{
             Property = 'Access'
-            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeAccountFilterContents `$args[3] -ExcludeClassFilterContents `$args[4] -GroupBy `$args[5]")
+            Script   = [scriptblock]::create("Select-PermissionTableProperty -InputObject `$args[0] -ShortNameById `$args[2] -IncludeAccountFilterContents `$args[3] -ExcludeClassFilterContents `$args[4] -GroupBy `$args[5] -AccountProperty `$args[6]")
         }
 
     } else {
@@ -4328,7 +4330,7 @@ function Format-Permission {
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
             $Selection = $Account
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy
+            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
             $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
             $OutputProperties = @{
@@ -6293,6 +6295,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

@@ -250,8 +250,10 @@ function ConvertTo-PermissionList {
                         $Props[$PropName] = $Obj.$($ObjProps[$PropName])
                     }
 
-                    ForEach ($PropName in $AccountProperty) {
-                        $Props[$PropName] = $Obj.$PropName
+                    if (-not $HowToSplit['Account']) {
+                        ForEach ($PropName in $AccountProperty) {
+                            $Props[$PropName] = $Obj.$PropName
+                        }
                     }
 
                     [PSCustomObject]$Props
