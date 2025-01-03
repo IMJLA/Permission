@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1106] - 2025-01-02 - troubleshoot stub expansion
+## [0.0.1105] - 2025-01-02 - troubleshoot
 ## [0.0.1104] - 2025-01-01 - rename targetcount to sourecount
 ## [0.0.1103] - 2025-01-01 - rename targetcount to sourecount
 ## [0.0.1102] - 2025-01-01 - resolve milliseconds to avoid null result for sub-1-second times

@@ -122,12 +122,11 @@ function Expand-SourcePermissionReference {
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $Source.NetworkPaths) {
-
+                    Pause # pause here to figure out where the heck SortedPaths is supposed to come from
                     [pscustomobject]@{
                         Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.FlatPermission'
-
                     }
 
                 }

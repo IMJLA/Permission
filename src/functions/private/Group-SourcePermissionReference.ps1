@@ -104,7 +104,7 @@ function Group-SourcePermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy
                     }
 
                 }
@@ -129,10 +129,10 @@ function Group-SourcePermissionReference {
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $TopLevelItemProperties = @{
-                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) @CommonParams
                     }
 
-                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties @CommonParams
 
                 }
 

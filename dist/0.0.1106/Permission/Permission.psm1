@@ -1224,19 +1224,120 @@ function Expand-AccountPermissionReference {
         $Reference,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
-        [ref]$ACLsByPath
+        [ref]$ACLsByPath,
+        [ref]$ParentBySourcePath,
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
 
     )
 
-    ForEach ($Account in $Reference) {
+    switch ($GroupBy) {
 
-        [PSCustomObject]@{
-            Account    = $PrincipalsByResolvedID.Value[$Account.Account]
-            Access     = Expand-AccountPermissionItemAccessReference -Reference $Account.Access -AceByGUID $ACEsByGUID -AclByPath $ACLsByPath
-            PSTypeName = 'Permission.AccountPermission'
+        'item' {}
+        'source' {}
+
+        # 'none' and 'account' behave the same
+        default {
+
+            ForEach ($Account in $Reference) {
+
+                [PSCustomObject]@{
+                    PSTypeName   = 'Permission.AccountPermission'
+                    Account      = $PrincipalsByResolvedID.Value[$Account.Account]
+                    NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
+                        Pause # pause here to figure out where the heck SortedPaths is supposed to come from
+                        [pscustomobject]@{
+                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
+                            Item       = $AclsByPath.Value[$NetworkPath.Path]
+                            PSTypeName = 'Permission.FlatPermission'
+                        }
+
+                    }
+
+                }
+
+            }
+
         }
 
     }
+
+
+
+
+    <#
+
+    $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
+    $SourcePathByParent = @{}
+
+    ForEach ($SourcePath in $ParentBySourcePath.Keys) {
+
+        ForEach ($NetworkPath in $ParentBySourcePath[$SourcePath]) {
+            $SourcePathByParent[$NetworkPath] += $SourcePath
+        }
+
+    }
+
+    ForEach ($Account in $Reference) {
+
+        $ItemByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[PSCustomObject]])
+
+        ForEach ($Access in $Account.Access) {
+
+            ForEach ($Key in $ParentBySourcePath.Keys) {
+
+                ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+
+                    if ($Access.Path.StartsWith($NetworkPath)) {
+
+                        Add-PermissionCacheItem -Cache $ItemByNetworkPath -Key $NetworkPath -Value $Access -Type ([PSCustomObject])
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        [PSCustomObject]@{
+            PSTypeName   = 'Permission.AccountPermission'
+            Account      = $PrincipalsByResolvedID.Value[$Account.Account]
+            NetworkPaths = ForEach ($NetworkPath in $ItemByNetworkPath.Keys) {
+
+                $ItemPaths = $ItemByNetworkPath[$NetworkPath]
+
+                [PSCustomObject]@{
+
+                    Item   = $ACLsByPath.Value[$NetworkPath]
+                    Access = Expand-AccountPermissionItemAccessReference -Reference $Account.Access -AceByGUID $ACEsByGUID -AclByPath $ACLsByPath
+                }
+
+            }
+        }
+
+    }
+    #>
 
 }
 function Expand-FlatPermissionReference {
@@ -1486,12 +1587,11 @@ function Expand-SourcePermissionReference {
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $Source.NetworkPaths) {
-
+                    Pause # pause here to figure out where the heck SortedPaths is supposed to come from
                     [pscustomobject]@{
                         Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.FlatPermission'
-
                     }
 
                 }
@@ -2215,30 +2315,91 @@ function Get-SummaryTableHeader {
 function Group-AccountPermissionReference {
 
     param (
+
         [string[]]$ID,
         [ref]$AceGuidByID,
-        [ref]$AceByGuid
+        [ref]$AceByGuid,
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
+
     )
 
-    $GuidType = [guid]
+    $CommonParams = @{
+        AceGUIDsByPath         = $AceGUIDsByPath
+        ACEsByGUID             = $ACEsByGUID
+        PrincipalsByResolvedID = $PrincipalsByResolvedID
+    }
 
-    ForEach ($Identity in ($ID | Sort-Object)) {
+    switch ($GroupBy) {
 
-        $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
+        'item' {}
+        'source' {}
 
-        ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
+        # 'none' and 'account' behave the same
+        default {
 
-            Add-PermissionCacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
+            $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
+            $GuidType = [guid]
 
-        }
+            ForEach ($Identity in ($ID | Sort-Object)) {
 
-        [PSCustomObject]@{
-            Account = $Identity
-            Access  = ForEach ($Item in ($ItemPaths.Value.Keys | Sort-Object)) {
+                $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
+                $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
+
+                ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
+
+                    $Ace = $AceByGuid.Value[$Guid]
+                    Add-PermissionCacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type $GuidType
+
+                    ForEach ($Key in $ParentBySourcePath.Keys) {
+
+                        ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+
+                            if ($Ace.Path.StartsWith($NetworkPath)) {
+
+                                Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([PSCustomObject])
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
                 [PSCustomObject]@{
-                    Path     = $Item
-                    AceGUIDs = $ItemPaths.Value[$Item]
+                    Account      = $Identity
+                    NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
+
+                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object
+
+                        [pscustomobject]@{
+                            Path  = $NetworkPath
+                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                        }
+
+                    }
+
                 }
 
             }
@@ -2381,7 +2542,7 @@ function Group-SourcePermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy
                     }
 
                 }
@@ -2406,10 +2567,10 @@ function Group-SourcePermissionReference {
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $NetworkPaths) {
 
                     $TopLevelItemProperties = @{
-                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) -ACLsByPath $ACLsByPath @CommonParams
+                        'Items' = Group-ItemPermissionReference -SortedPath ($Children[$NetworkPath] | Sort-Object) @CommonParams
                     }
 
-                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties -ACLsByPath $ACLsByPath @CommonParams
+                    Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties @CommonParams
 
                 }
 
@@ -3986,7 +4147,7 @@ function Expand-Permission {
 
         # Group reference GUIDs by the name of their associated account.
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID'
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID -GroupBy $GroupBy
 
         Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 33
 
@@ -6335,6 +6496,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
+
 
 
 

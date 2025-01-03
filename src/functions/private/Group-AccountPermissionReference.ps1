@@ -1,30 +1,91 @@
 function Group-AccountPermissionReference {
 
     param (
+
         [string[]]$ID,
         [ref]$AceGuidByID,
-        [ref]$AceByGuid
+        [ref]$AceByGuid,
+
+        <#
+        How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
+
+        | SplitBy | GroupBy | Behavior |
+        |---------|---------|----------|
+        | none    | none    | 1 file with all permissions in a flat list |
+        | none    | account | 1 file with all permissions grouped by account |
+        | none    | item    | 1 file with all permissions grouped by item |
+        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | account | account | (same as -SplitBy account -GroupBy none) |
+        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
+        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
+        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
+        | item    | item    | (same as -SplitBy item -GroupBy none) |
+        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
+        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | source  | source  | (same as -SplitBy source -GroupBy none) |
+        #>
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item'
+
     )
 
-    $GuidType = [guid]
+    $CommonParams = @{
+        AceGUIDsByPath         = $AceGUIDsByPath
+        ACEsByGUID             = $ACEsByGUID
+        PrincipalsByResolvedID = $PrincipalsByResolvedID
+    }
 
-    ForEach ($Identity in ($ID | Sort-Object)) {
+    switch ($GroupBy) {
 
-        $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
+        'item' {}
+        'source' {}
 
-        ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
+        # 'none' and 'account' behave the same
+        default {
 
-            Add-PermissionCacheItem -Cache $ItemPaths -Key $AceByGuid.Value[$Guid].Path -Value $Guid -Type $GuidType
+            $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
+            $GuidType = [guid]
 
-        }
+            ForEach ($Identity in ($ID | Sort-Object)) {
 
-        [PSCustomObject]@{
-            Account = $Identity
-            Access  = ForEach ($Item in ($ItemPaths.Value.Keys | Sort-Object)) {
+                $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
+                $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
+
+                ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
+
+                    $Ace = $AceByGuid.Value[$Guid]
+                    Add-PermissionCacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type $GuidType
+
+                    ForEach ($Key in $ParentBySourcePath.Keys) {
+
+                        ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+
+                            if ($Ace.Path.StartsWith($NetworkPath)) {
+
+                                Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([PSCustomObject])
+
+                            }
+
+                        }
+
+                    }
+
+                }
 
                 [PSCustomObject]@{
-                    Path     = $Item
-                    AceGUIDs = $ItemPaths.Value[$Item]
+                    Account      = $Identity
+                    NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
+
+                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object
+
+                        [pscustomobject]@{
+                            Path  = $NetworkPath
+                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                        }
+
+                    }
+
                 }
 
             }
