@@ -2319,6 +2319,7 @@ function Group-AccountPermissionReference {
         [string[]]$ID,
         [ref]$AceGuidByID,
         [ref]$AceByGuid,
+        [ref]$AceGuidByPath,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -2345,7 +2346,7 @@ function Group-AccountPermissionReference {
     )
 
     $CommonParams = @{
-        AceGUIDsByPath         = $AceGUIDsByPath
+        AceGUIDsByPath         = $AceGuidByPath
         ACEsByGUID             = $ACEsByGUID
         PrincipalsByResolvedID = $PrincipalsByResolvedID
     }
@@ -2542,7 +2543,7 @@ function Group-SourcePermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy -AceGuidByPath $AceGuidsByPath
                     }
 
                 }
@@ -4147,7 +4148,7 @@ function Expand-Permission {
 
         # Group reference GUIDs by the name of their associated account.
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID'
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID -GroupBy $GroupBy
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID -AceGuidByPath $AceGuidByPath -GroupBy $GroupBy
 
         Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 33
 
@@ -6496,6 +6497,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

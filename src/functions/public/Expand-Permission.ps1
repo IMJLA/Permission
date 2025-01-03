@@ -74,7 +74,7 @@ function Expand-Permission {
 
         # Group reference GUIDs by the name of their associated account.
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID'
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID -GroupBy $GroupBy
+        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID -AceGuidByPath $AceGuidByPath -GroupBy $GroupBy
 
         Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 33
 

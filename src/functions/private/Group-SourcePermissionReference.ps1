@@ -104,7 +104,7 @@ function Group-SourcePermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy -AceGuidByPath $AceGuidsByPath
                     }
 
                 }
