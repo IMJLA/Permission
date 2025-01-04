@@ -4512,9 +4512,9 @@ function Format-Permission {
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
 
             [PSCustomObject]@{
-                PSTypeName   = 'Permission.AccountPermission'
-                Account      = $Account.Account
-                NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
+                'PSTypeName'   = 'Permission.AccountPermission'
+                'Account'      = $Account.Account
+                'NetworkPaths' = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
                     $Prop = $Grouping['Property']
 
@@ -4524,9 +4524,9 @@ function Format-Permission {
 
                         # Add the network path itself
                         $Selection.Add([PSCustomObject]@{
-                                PSTypeName = 'Permission.ItemPermission'
-                                Item       = $NetworkPath.Item
-                                Access     = $NetworkPath.Access
+                                'PSTypeName' = 'Permission.ItemPermission'
+                                'Item'       = $NetworkPath.Item
+                                'Access'     = $NetworkPath.Access
                             })
 
                         # Add child items
@@ -4536,15 +4536,18 @@ function Format-Permission {
                         }
 
                     } else {
-                        $Selection = $NetworkPath.$Prop
+                        $Selection = [PSCustomObject]@{
+                            'Access'  = $NetworkPath.$Prop
+                            'Account' = $Account.Account
+                        }
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        PSTypeName = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
-                        Item       = $NetworkPath.Item
+                        'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
+                        'Item'       = $NetworkPath.Item
                     }
 
                     ForEach ($Format in $Formats) {
@@ -6508,6 +6511,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

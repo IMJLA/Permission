@@ -84,9 +84,9 @@ function Format-Permission {
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
 
             [PSCustomObject]@{
-                PSTypeName   = 'Permission.AccountPermission'
-                Account      = $Account.Account
-                NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
+                'PSTypeName'   = 'Permission.AccountPermission'
+                'Account'      = $Account.Account
+                'NetworkPaths' = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
                     $Prop = $Grouping['Property']
 
@@ -96,9 +96,9 @@ function Format-Permission {
 
                         # Add the network path itself
                         $Selection.Add([PSCustomObject]@{
-                                PSTypeName = 'Permission.ItemPermission'
-                                Item       = $NetworkPath.Item
-                                Access     = $NetworkPath.Access
+                                'PSTypeName' = 'Permission.ItemPermission'
+                                'Item'       = $NetworkPath.Item
+                                'Access'     = $NetworkPath.Access
                             })
 
                         # Add child items
@@ -108,15 +108,18 @@ function Format-Permission {
                         }
 
                     } else {
-                        $Selection = $NetworkPath.$Prop
+                        $Selection = [PSCustomObject]@{
+                            'Access'  = $NetworkPath.$Prop
+                            'Account' = $Account.Account
+                        }
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
                     $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        PSTypeName = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
-                        Item       = $NetworkPath.Item
+                        'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
+                        'Item'       = $NetworkPath.Item
                     }
 
                     ForEach ($Format in $Formats) {
