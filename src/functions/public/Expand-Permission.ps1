@@ -1,6 +1,7 @@
 function Expand-Permission {
 
-    # TODO: If SplitBy account or item, each file needs to include inherited permissions (with default $SplitBy = 'none', the parent folder's inherited permissions are already included)
+    # TODO: If SplitBy account or item, each file needs to include inherited permissions
+    # (with default $SplitBy = 'none', the parent folder's inherited permissions are already included)
 
     param (
 
@@ -49,38 +50,55 @@ function Expand-Permission {
 
     $Log = @{ 'Cache' = $Cache }
     $Progress = Get-PermissionProgress -Activity 'Expand-Permission' -Cache $Cache
-    Write-Progress @Progress -Status '0% : Prepare to group permission references, then expand them into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 0
+    $ProgressSplat = @{
+        'Status'           = '0% : Prepare to group permission references, then expand them into objects'
+        'CurrentOperation' = 'Resolve-SplitByParameter'
+        'PercentComplete'  = 0
+    }
+    Write-Progress @Progress @ProgressSplat
     Write-LogMsg @Log -Text "Resolve-SplitByParameter -SplitBy $SplitBy"
     $HowToSplit = Resolve-SplitByParameter -SplitBy $SplitBy
-    Write-LogMsg @Log -Text "`$SortedPaths = `$AceGuidByPath.Keys | Sort-Object"
     $AceGuidByPath = $Cache.Value['AceGuidByPath']
-    $SortedPaths = $AceGuidByPath.Value.Keys | Sort-Object
+    $Paths = @{
+        'SortedPath' = $AceGuidByPath.Value.Keys | Sort-Object
+    }
     $AceGuidByID = $Cache.Value['AceGuidByID']
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
-    $ACLsByPath = $Cache.Value['AclByPath']
+    $AclByPath = @{ 'ACLsByPath' = $Cache.Value['AclByPath'] }
     $TargetPath = $Cache.Value['ParentBySourcePath']
 
     $CommonParams = @{
-        ACEsByGUID             = $ACEsByGUID
-        PrincipalsByResolvedID = $PrincipalsByResolvedID
+        'ACEsByGUID'             = $ACEsByGUID
+        'PrincipalsByResolvedID' = $PrincipalsByResolvedID
     }
 
     if (
         $HowToSplit['account']
     ) {
 
-        Write-Progress @Progress -Status '13% : Group permission references by account' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 17
-
         # Group reference GUIDs by the name of their associated account.
-        Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID'
-        $AccountPermissionReferences = Group-AccountPermissionReference -ID $PrincipalsByResolvedID.Value.Keys -AceGuidByID $AceGuidByID -AceByGuid $ACEsByGUID -AceGuidByPath $AceGuidByPath -GroupBy $GroupBy
-
-        Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Resolve-SplitByParameter' -PercentComplete 33
+        Write-Progress @Progress -Status '13% : Group permission references by account' -CurrentOperation 'Group-AccountPermissionReference' -PercentComplete 13
+        $GroupSplat = @{
+            'ID'            = $PrincipalsByResolvedID.Value.Keys
+            'GroupBy'       = $GroupBy
+            'AceByGuid'     = $ACEsByGUID
+            'AceGuidByID'   = $AceGuidByID
+            'AceGuidByPath' = $AceGuidByPath
+        }
+        Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference' -Expand $GroupSplat
+        $AccountPermissionReferences = Group-AccountPermissionReference @GroupSplat
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -ACLsByPath $ACLsByPath @CommonParams'
-        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByPath $AceGuidByPath @CommonParams
+        Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Expand-AccountPermissionReference' -PercentComplete 25
+        $ExpandSplat = @{
+            'Reference'     = $AccountPermissionReferences
+            'AclByPath'     = $AclByPath
+            'AceGuidByPath' = $AceGuidByPath
+            'GroupBy'       = $GroupBy
+        }
+        Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference' -Expand $ExpandSplat, $Paths, $CommonParams
+        $AccountPermissions = Expand-AccountPermissionReference @ExpandSplat @Paths @CommonParams
 
     }
 
@@ -89,15 +107,15 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by the path to their associated item.
-        Write-Progress @Progress -Status '38% : Group permission references by item' -CurrentOperation 'Group-ItemPermissionReference' -PercentComplete 50
-        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath'
-        $ItemPermissionReferences = Group-ItemPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath @CommonParams
+        Write-Progress @Progress -Status '38% : Group permission references by item' -CurrentOperation 'Group-ItemPermissionReference' -PercentComplete 38
+        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams @Paths -AceGUIDsByPath $AceGuidByPath @AclByPath'
+        $ItemPermissionReferences = Group-ItemPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath @AclByPath @CommonParams
 
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-Progress @Progress -Status '50% : Expand item permissions into objects' -CurrentOperation 'Expand-ItemPermissionReference' -PercentComplete 67
-        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams'
-        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -ACLsByPath $ACLsByPath @CommonParams
+        Write-Progress @Progress -Status '50% : Expand item permissions into objects' -CurrentOperation 'Expand-ItemPermissionReference' -PercentComplete 50
+        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences @AclByPath @CommonParams'
+        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences @AclByPath @CommonParams
 
     }
 
@@ -106,9 +124,9 @@ function Expand-Permission {
     ) {
 
         # Expand each Access Control Entry with the Security Principal for the resolved IdentityReference.
-        Write-Progress @Progress -Status '63% : Expand flat permissions into objects' -CurrentOperation 'Expand-FlatPermissionReference' -PercentComplete 83
-        Write-LogMsg @Log -Text '$FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams'
-        $FlatPermissions = Expand-FlatPermissionReference -SortedPath $SortedPaths -AceGUIDsByPath $AceGuidByPath @CommonParams
+        Write-Progress @Progress -Status '63% : Expand flat permissions into objects' -CurrentOperation 'Expand-FlatPermissionReference' -PercentComplete 63
+        Write-LogMsg @Log -Text '$FlatPermissions = Expand-FlatPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath @CommonParams'
+        $FlatPermissions = Expand-FlatPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -117,25 +135,39 @@ function Expand-Permission {
     ) {
 
         # Group reference GUIDs by their associated source path.
-        Write-Progress @Progress -Status '75% : Group permission references by source' -CurrentOperation 'Group-SourcePermissionReference' -PercentComplete 17
-        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-SourcePermissionReference -SourcePath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams'
-        $SourcePermissionReferences = Group-SourcePermissionReference -SourcePath $TargetPath -Children $Children -AceGUIDsByPath $AceGuidByPath -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByID $AceGuidByID @CommonParams
+        Write-Progress @Progress -Status '75% : Group permission references by source' -CurrentOperation 'Group-SourcePermissionReference' -PercentComplete 75
+        $GroupSplat = @{
+            'SourcePath'    = $TargetPath
+            'Children'      = $Children
+            'AceGuidByPath' = $AceGuidByPath
+            'AclByPath'     = $AclByPath
+            'GroupBy'       = $GroupBy
+            'AceGuidByID'   = $AceGuidByID
+        }
+        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-SourcePermissionReference' -Expand $GroupSplat, $CommonParams
+        $SourcePermissionReferences = Group-SourcePermissionReference @GroupSplat @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
-        Write-Progress @Progress -Status '88% : Expand item permissions into objects' -CurrentOperation 'Expand-SourcePermissionReference' -PercentComplete 67
-        Write-LogMsg @Log -Text '$SourcePermissions = Expand-SourcePermissionReference -Reference $TargetPermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath @CommonParams'
-        $SourcePermissions = Expand-SourcePermissionReference -Reference $SourcePermissionReferences -GroupBy $GroupBy -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath @CommonParams
+        Write-Progress @Progress -Status '88% : Expand source permissions into objects' -CurrentOperation 'Expand-SourcePermissionReference' -PercentComplete 88
+        $ExpandSplat = @{
+            'Reference'     = $SourcePermissionReferences
+            'AclByPath'     = $AclByPath
+            'AceGuidByPath' = $AceGuidByPath
+            'GroupBy'       = $GroupBy
+        }
+        Write-LogMsg @Log -Text '$SourcePermissions = Expand-SourcePermissionReference' -Expand $ExpandSplat, $Paths, $CommonParams
+        $SourcePermissions = Expand-SourcePermissionReference @ExpandSplat @Paths @CommonParams
 
     }
 
     Write-Progress @Progress -Completed
 
     return [PSCustomObject]@{
-        AccountPermissions = $AccountPermissions
-        FlatPermissions    = $FlatPermissions
-        ItemPermissions    = $ItemPermissions
-        SourcePermissions  = $SourcePermissions
-        SplitBy            = $HowToSplit
+        'AccountPermissions' = $AccountPermissions
+        'FlatPermissions'    = $FlatPermissions
+        'ItemPermissions'    = $ItemPermissions
+        'SourcePermissions'  = $SourcePermissions
+        'SplitBy'            = $HowToSplit
     }
 
 }

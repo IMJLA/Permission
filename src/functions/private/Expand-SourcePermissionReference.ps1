@@ -9,6 +9,7 @@ function Expand-SourcePermissionReference {
         [ref]$ACEsByGUID,
         [ref]$ACLsByPath,
         [ref]$AceGuidByPath,
+        [string[]]$SortedPath,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -51,7 +52,7 @@ function Expand-SourcePermissionReference {
                     [pscustomobject]@{
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath
+                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath -SortedPath $SortedPath -GroupBy $GroupBy
                     }
 
                 }
@@ -122,9 +123,9 @@ function Expand-SourcePermissionReference {
 
                 # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
                 $SourceProperties['NetworkPaths'] = ForEach ($NetworkPath in $Source.NetworkPaths) {
-                    Pause # pause here to figure out where the heck SortedPaths is supposed to come from
+
                     [pscustomobject]@{
-                        Access     = Expand-FlatPermissionReference -SortedPath $SortedPaths @ExpansionParameters
+                        Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.FlatPermission'
                     }
