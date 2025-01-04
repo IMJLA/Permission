@@ -52,7 +52,7 @@ function Expand-SourcePermissionReference {
                     [pscustomobject]@{
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath -SortedPath $SortedPath -GroupBy $GroupBy
+                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -AclByPath $ACLsByPath -AceGuidByPath $AceGuidByPath -SortedPath $SortedPath -GroupBy $GroupBy
                     }
 
                 }

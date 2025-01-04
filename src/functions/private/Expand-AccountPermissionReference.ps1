@@ -6,7 +6,7 @@ function Expand-AccountPermissionReference {
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
         [ref]$AceGuidByPath,
-        [ref]$ACLsByPath,
+        [ref]$AclByPath,
         [string[]]$SortedPath,
 
         <#
@@ -56,7 +56,7 @@ function Expand-AccountPermissionReference {
 
                         [pscustomobject]@{
                             Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
-                            Item       = $AclsByPath.Value[$NetworkPath.Path]
+                            Item       = $AclByPath.Value[$NetworkPath.Path]
                             PSTypeName = 'Permission.FlatPermission'
                         }
 

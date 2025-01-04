@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1113] - 2025-01-03 - bugfix aclbypath param
 ## [0.0.1112] - 2025-01-03 - bugfix aclbypath
 ## [0.0.1111] - 2025-01-03 - bugfixes around parameters. also improve splatting
 ## [0.0.1110] - 2025-01-03 - bugfix missing params
