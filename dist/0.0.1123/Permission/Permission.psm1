@@ -2499,7 +2499,7 @@ function Group-SourcePermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy -AceGuidByPath $AceGuidsByPath
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy -AceGuidByPath $AceGuidsByPath -PrincipalsByResolvedID $PrincipalsByResolvedID
                     }
 
                 }
@@ -4117,11 +4117,12 @@ function Expand-Permission {
         # Group reference GUIDs by the name of their associated account.
         Write-Progress @Progress -Status '13% : Group permission references by account' -CurrentOperation 'Group-AccountPermissionReference' -PercentComplete 13
         $GroupSplat = @{
-            'ID'            = $PrincipalsByResolvedID.Value.Keys
-            'GroupBy'       = $GroupBy
-            'AceByGuid'     = $ACEsByGUID
-            'AceGuidByID'   = $AceGuidByID
-            'AceGuidByPath' = $AceGuidByPath
+            'ID'                     = $PrincipalsByResolvedID.Value.Keys
+            'GroupBy'                = $GroupBy
+            'AceByGuid'              = $ACEsByGUID
+            'AceGuidByID'            = $AceGuidByID
+            'AceGuidByPath'          = $AceGuidByPath
+            'PrincipalsByResolvedID' = $PrincipalsByResolvedID
         }
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference' -Expand $GroupSplat
         $AccountPermissionReferences = Group-AccountPermissionReference @GroupSplat
@@ -6528,6 +6529,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

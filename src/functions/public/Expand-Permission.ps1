@@ -80,11 +80,12 @@ function Expand-Permission {
         # Group reference GUIDs by the name of their associated account.
         Write-Progress @Progress -Status '13% : Group permission references by account' -CurrentOperation 'Group-AccountPermissionReference' -PercentComplete 13
         $GroupSplat = @{
-            'ID'            = $PrincipalsByResolvedID.Value.Keys
-            'GroupBy'       = $GroupBy
-            'AceByGuid'     = $ACEsByGUID
-            'AceGuidByID'   = $AceGuidByID
-            'AceGuidByPath' = $AceGuidByPath
+            'ID'                     = $PrincipalsByResolvedID.Value.Keys
+            'GroupBy'                = $GroupBy
+            'AceByGuid'              = $ACEsByGUID
+            'AceGuidByID'            = $AceGuidByID
+            'AceGuidByPath'          = $AceGuidByPath
+            'PrincipalsByResolvedID' = $PrincipalsByResolvedID
         }
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference' -Expand $GroupSplat
         $AccountPermissionReferences = Group-AccountPermissionReference @GroupSplat

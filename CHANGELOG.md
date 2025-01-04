@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1123] - 2025-01-04 - missing PrincipalsByResolvedID param
 ## [0.0.1122] - 2025-01-04 - bugfix; limit ACEs returned by Expand-FlatPermissionReference to only ACEs for the current identity
 ## [0.0.1121] - 2025-01-04 - add missing networkpath param
 ## [0.0.1120] - 2025-01-04 - bugfix splitby account subproperty
