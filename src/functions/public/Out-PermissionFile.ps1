@@ -185,7 +185,7 @@ function Out-PermissionFile {
         switch ($Split) {
 
             'account' {
-                $Subproperty = ''
+                $Subproperty = 'NetworkPaths'
                 $FileNameProperty = $Split
                 $FileNameSubproperty = 'ResolvedAccountName'
                 $ReportFiles = $FormattedPermission["SplitBy$Split"]
