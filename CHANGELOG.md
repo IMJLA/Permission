@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1127] - 2025-01-04 - add filtering functionality to expand-flatpermissionreference
 ## [0.0.1126] - 2025-01-04 - bugfix singular vs plural
 ## [0.0.1125] - 2025-01-04 - bugfix singular vs plural
 ## [0.0.1124] - 2025-01-04 - bugfix singular vs plural

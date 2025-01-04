@@ -1299,7 +1299,8 @@ function Expand-FlatPermissionReference {
         $SortedPath,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
-        [ref]$AceGUIDsByPath
+        [ref]$AceGUIDsByPath,
+        [string]$Account
 
     )
 
@@ -1311,7 +1312,11 @@ function Expand-FlatPermissionReference {
 
             ForEach ($ACE in $ACEsByGUID.Value[$Guid]) {
 
-                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
+                if ($Account -eq $ACE.IdentityReferenceResolved) {
+
+                    Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
+
+                }
 
             }
 
@@ -2315,8 +2320,6 @@ function Group-AccountPermissionReference {
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
-                # Limit the PrincipalByResolvedID cache to the current identity
-                $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
                 # Create a new cache for items accessible to the current identity, keyed by network path
                 $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
 
@@ -2352,7 +2355,7 @@ function Group-AccountPermissionReference {
 
                         [pscustomobject]@{
                             Path  = $NetworkPath
-                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath -Account $Identity @CommonParams
                         }
 
                     }
@@ -6529,6 +6532,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
