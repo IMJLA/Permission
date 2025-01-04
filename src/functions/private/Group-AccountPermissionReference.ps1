@@ -47,11 +47,14 @@ function Group-AccountPermissionReference {
         default {
 
             $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
+            $GuidType = [guid]
+
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
                 # Create a new cache for items accessible to the current identity, keyed by network path
                 $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
+                $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
 
                 ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
 
@@ -65,6 +68,7 @@ function Group-AccountPermissionReference {
 
                                 if ($Ace.Path.StartsWith($NetworkPath)) {
 
+                                    Add-PermissionCacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type $GuidType
                                     Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([string])
 
                                 }
@@ -82,10 +86,11 @@ function Group-AccountPermissionReference {
                     NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
 
                         $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object
+                        $CommonParams['AceGuidsByPath'] = $ItemPaths
 
                         [pscustomobject]@{
                             Path  = $NetworkPath
-                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath -Account $Identity @CommonParams
+                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
                         }
 
                     }
