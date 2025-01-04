@@ -66,13 +66,20 @@ function Format-Permission {
     $Progress = Get-PermissionProgress -Activity 'Format-Permission' -Cache $Cache
     $FormattedResults = @{}
     $Formats = Resolve-FormatParameter -FileFormat $FileFormat -OutputFormat $OutputFormat
+
     $Grouping = Resolve-GroupByParameter -GroupBy $GroupBy -HowToSplit $Permission.SplitBy
     $ShortNameByID = $Cache.Value['ShortNameByID']
     $ExcludeClassFilterContents = $Cache.Value['ExcludeClassFilterContents']
     $IncludeAccountFilterContents = $Cache.Value['IncludeAccountFilterContents']
-    $ConvertSplat = @{ AccountProperty = $AccountProperty ; GroupBy = $GroupBy }
+    $ConvertSplat = @{ AccountProperty = $AccountProperty }
 
     if ($Permission.SplitBy['account']) {
+
+        if ($GroupBy -eq 'account') {
+            $GroupByForThisSplit = 'none'
+        } else {
+            $GroupByForThisSplit = $GroupBy
+        }
 
         $i = 0
         $Count = $Permission.AccountPermissions.Count
@@ -114,11 +121,11 @@ function Format-Permission {
                         }
                     }
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupByForThisSplit, $AccountProperty
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupByForThisSplit -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                     $OutputProperties = @{
-                        'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
+                        'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupByForThisSplit))Permission"
                         'Item'       = $NetworkPath.Item
                     }
 
@@ -129,8 +136,8 @@ function Format-Permission {
                             $FormatString = 'json'
                         }
 
-                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy -GroupBy $GroupByForThisSplit @ConvertSplat
+                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format -GroupBy $GroupByForThisSplit @ConvertSplat
 
                     }
 
@@ -172,8 +179,8 @@ function Format-Permission {
                     $FormatString = 'json'
                 }
 
-                $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat -GroupBy $GroupBy
+                $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format -GroupBy $GroupBy @ConvertSplat
 
             }
 
@@ -237,8 +244,8 @@ function Format-Permission {
                             $FormatString = 'json'
                         }
 
-                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path -Analysis $Analysis -Format $Format @ConvertSplat
+                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy -GroupBy $GroupBy @ConvertSplat
+                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath $NetworkPath.Item.Path -HowToSplit $Permission.SplitBy -NetworkPath $NetworkPath.Item.Path -Analysis $Analysis -Format $Format -GroupBy $GroupBy @ConvertSplat
 
                     }
 
