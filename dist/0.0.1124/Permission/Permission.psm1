@@ -2271,7 +2271,7 @@ function Group-AccountPermissionReference {
         [ref]$AceGuidByID,
         [ref]$AceByGuid,
         [ref]$AceGuidByPath,
-        [ref]$PrincipalsByResolvedID,
+        [ref]$PrincipalByResolvedID,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -2300,7 +2300,7 @@ function Group-AccountPermissionReference {
     $CommonParams = @{
         AceGUIDsByPath         = $AceGuidByPath
         ACEsByGUID             = $ACEsByGUID
-        PrincipalsByResolvedID = $PrincipalsByResolvedID
+        PrincipalsByResolvedID = $PrincipalByResolvedID
     }
 
     switch ($GroupBy) {
@@ -2499,7 +2499,7 @@ function Group-SourcePermissionReference {
 
                     [PSCustomObject]@{
                         Path     = $NetworkPath
-                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy -AceGuidByPath $AceGuidsByPath -PrincipalsByResolvedID $PrincipalsByResolvedID
+                        Accounts = Group-AccountPermissionReference -ID $IDsWithAccess.Value.Keys -AceGuidByID ([ref]$AceGuidByIDForThisNetworkPath) -AceByGuid $ACEsByGUID -GroupBy $GroupBy -AceGuidByPath $AceGuidsByPath -PrincipalByResolvedID $PrincipalsByResolvedID
                     }
 
                 }
@@ -4117,12 +4117,12 @@ function Expand-Permission {
         # Group reference GUIDs by the name of their associated account.
         Write-Progress @Progress -Status '13% : Group permission references by account' -CurrentOperation 'Group-AccountPermissionReference' -PercentComplete 13
         $GroupSplat = @{
-            'ID'                     = $PrincipalsByResolvedID.Value.Keys
-            'GroupBy'                = $GroupBy
-            'AceByGuid'              = $ACEsByGUID
-            'AceGuidByID'            = $AceGuidByID
-            'AceGuidByPath'          = $AceGuidByPath
-            'PrincipalsByResolvedID' = $PrincipalsByResolvedID
+            'ID'                    = $PrincipalsByResolvedID.Value.Keys
+            'GroupBy'               = $GroupBy
+            'AceByGuid'             = $ACEsByGUID
+            'AceGuidByID'           = $AceGuidByID
+            'AceGuidByPath'         = $AceGuidByPath
+            'PrincipalByResolvedID' = $PrincipalsByResolvedID
         }
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference' -Expand $GroupSplat
         $AccountPermissionReferences = Group-AccountPermissionReference @GroupSplat
@@ -6529,6 +6529,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

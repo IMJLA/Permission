@@ -6,7 +6,7 @@ function Group-AccountPermissionReference {
         [ref]$AceGuidByID,
         [ref]$AceByGuid,
         [ref]$AceGuidByPath,
-        [ref]$PrincipalsByResolvedID,
+        [ref]$PrincipalByResolvedID,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -35,7 +35,7 @@ function Group-AccountPermissionReference {
     $CommonParams = @{
         AceGUIDsByPath         = $AceGuidByPath
         ACEsByGUID             = $ACEsByGUID
-        PrincipalsByResolvedID = $PrincipalsByResolvedID
+        PrincipalsByResolvedID = $PrincipalByResolvedID
     }
 
     switch ($GroupBy) {
