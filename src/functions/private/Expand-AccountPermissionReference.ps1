@@ -5,6 +5,7 @@ function Expand-AccountPermissionReference {
         $Reference,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
+        [ref]$AceGuidByPath,
         [ref]$ACLsByPath,
         [ref]$ParentBySourcePath,
 
@@ -39,6 +40,12 @@ function Expand-AccountPermissionReference {
 
         # 'none' and 'account' behave the same
         default {
+
+            $ExpansionParameters = @{
+                AceGUIDsByPath         = $AceGuidByPath
+                ACEsByGUID             = $ACEsByGUID
+                PrincipalsByResolvedID = $PrincipalsByResolvedID
+            }
 
             ForEach ($Account in $Reference) {
 

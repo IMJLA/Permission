@@ -1224,6 +1224,7 @@ function Expand-AccountPermissionReference {
         $Reference,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
+        [ref]$AceGuidByPath,
         [ref]$ACLsByPath,
         [ref]$ParentBySourcePath,
 
@@ -1258,6 +1259,12 @@ function Expand-AccountPermissionReference {
 
         # 'none' and 'account' behave the same
         default {
+
+            $ExpansionParameters = @{
+                AceGUIDsByPath         = $AceGuidByPath
+                ACEsByGUID             = $ACEsByGUID
+                PrincipalsByResolvedID = $PrincipalsByResolvedID
+            }
 
             ForEach ($Account in $Reference) {
 
@@ -1516,7 +1523,7 @@ function Expand-SourcePermissionReference {
                     [pscustomobject]@{
                         Item       = $AclsByPath.Value[$NetworkPath.Path]
                         PSTypeName = 'Permission.ParentItemPermission'
-                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -ACLsByPath $ACLsByPath
+                        Accounts   = Expand-AccountPermissionReference -Reference $NetworkPath.Accounts -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID -ACLsByPath $ACLsByPath -AceGuidByPath $AceGuidByPath
                     }
 
                 }
@@ -4155,7 +4162,7 @@ function Expand-Permission {
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -ACLsByPath $ACLsByPath @CommonParams'
-        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -ACLsByPath $ACLsByPath -GroupBy $GroupBy @CommonParams
+        $AccountPermissions = Expand-AccountPermissionReference -Reference $AccountPermissionReferences -ACLsByPath $ACLsByPath -GroupBy $GroupBy -AceGuidByPath $AceGuidByPath @CommonParams
 
     }
 
@@ -6498,6 +6505,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
