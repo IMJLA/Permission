@@ -6222,7 +6222,9 @@ function Out-PermissionFile {
                 $ReportObjects = @{}
 
                 [Hashtable]$Params = $PSBoundParameters
-                $Params['SourcePath'] = $File.Path
+                if ($File.Path) {
+                    $Params['SourcePath'] = $File.Path
+                }
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
@@ -6522,6 +6524,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

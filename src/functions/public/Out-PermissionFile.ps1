@@ -445,7 +445,9 @@ function Out-PermissionFile {
                 $ReportObjects = @{}
 
                 [Hashtable]$Params = $PSBoundParameters
-                $Params['SourcePath'] = $File.Path
+                if ($File.Path) {
+                    $Params['SourcePath'] = $File.Path
+                }
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
