@@ -82,30 +82,58 @@ function Format-Permission {
             [int]$Percent = $i / $Count * 100
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
-            $Selection = $Account
-            $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
-            $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
-            if ($PermissionsWithChosenProperties.Keys.Count -gt 0) {
+            [PSCustomObject]@{
+                PSTypeName   = 'Permission.AccountPermission'
+                Account      = $Account.Account
+                NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
-                $OutputProperties = @{
-                    Account = $Account.Account
-                    Path    = $Account.Access.Item.Path
-                }
+                    $Prop = $Grouping['Property']
 
-                ForEach ($Format in $Formats) {
+                    if ($Prop -eq 'items') {
 
-                    $FormatString = $Format
-                    if ($Format -eq 'js') {
-                        $FormatString = 'json'
+                        $Selection = [System.Collections.Generic.List[PSCustomObject]]::new()
+
+                        # Add the network path itself
+                        $Selection.Add([PSCustomObject]@{
+                                PSTypeName = 'Permission.ItemPermission'
+                                Item       = $NetworkPath.Item
+                                Access     = $NetworkPath.Access
+                            })
+
+                        # Add child items
+                        $ChildItems = [PSCustomObject[]]$NetworkPath.$Prop
+                        if ($ChildItems) {
+                            $Selection.AddRange($ChildItems)
+                        }
+
+                    } else {
+                        $Selection = $NetworkPath.$Prop
                     }
 
-                    $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
-                    $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupBy, $AccountProperty
+                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupBy -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+
+                    $OutputProperties = @{
+                        PSTypeName = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupBy))Permission"
+                        Item       = $NetworkPath.Item
+                    }
+
+                    ForEach ($Format in $Formats) {
+
+                        $FormatString = $Format
+                        if ($Format -eq 'js') {
+                            $FormatString = 'json'
+                        }
+
+                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy @ConvertSplat
+                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format @ConvertSplat
+
+                    }
+
+                    [PSCustomObject]$OutputProperties
 
                 }
-
-                [PSCustomObject]$OutputProperties
 
             }
 
