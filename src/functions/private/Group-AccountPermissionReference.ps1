@@ -51,7 +51,7 @@ function Group-AccountPermissionReference {
             ForEach ($Identity in ($ID | Sort-Object)) {
 
                 # Limit the PrincipalByResolvedID cache to the current identity
-                $CommonParams['PrincipalByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
+                $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
                 # Create a new cache for items accessible to the current identity, keyed by network path
                 $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
 
