@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1109] - 2025-01-03 - missing groupby param
 ## [0.0.1108] - 2025-01-03 - bugfix enumerate acelist
 ## [0.0.1107] - 2025-01-02 - bugfix params
 ## [0.0.1106] - 2025-01-02 - troubleshoot stub expansion
