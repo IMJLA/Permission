@@ -46,25 +46,26 @@ function Group-AccountPermissionReference {
         default {
 
             $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
-            $GuidType = [guid]
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
-                $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
                 $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
 
                 ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
 
-                    $Ace = $AceByGuid.Value[$Guid]
-                    Add-PermissionCacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type $GuidType
+                    $AceList = $AceByGuid.Value[$Guid]
 
-                    ForEach ($Key in $ParentBySourcePath.Keys) {
+                    ForEach ($Ace in $AceList) {
 
-                        ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+                        ForEach ($Key in $ParentBySourcePath.Keys) {
 
-                            if ($Ace.Path.StartsWith($NetworkPath)) {
+                            ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
 
-                                Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([PSCustomObject])
+                                if ($Ace.Path.StartsWith($NetworkPath)) {
+
+                                    Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([string])
+
+                                }
 
                             }
 
