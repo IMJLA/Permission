@@ -115,10 +115,7 @@ function Format-Permission {
                         }
 
                     } else {
-                        $Selection = [PSCustomObject]@{
-                            'Access'  = $NetworkPath.$Prop
-                            'Account' = $Account.Account
-                        }
+                        $Selection = $NetworkPath.$Prop
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupByForThisSplit, $AccountProperty

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1118] - 2025-01-04 - bugfix format-permission for splitby account
 ## [0.0.1117] - 2025-01-04 - bugfix groupby
 ## [0.0.1116] - 2025-01-04 - retain redundant account prop on child networkpaths so it can be used by select-permissiontableproperty
 ## [0.0.1115] - 2025-01-04 - update format-permission for splitby account

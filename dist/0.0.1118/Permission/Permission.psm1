@@ -3705,13 +3705,16 @@ function Select-PermissionTableProperty {
 
             ForEach ($Object in $InputObject) {
 
-                $OutputHash[$i] = ForEach ($ACE in $Object) {
+                $Results = ForEach ($ACE in $Object) {
 
                     $AccountName = $ShortNameByID.Value[$ACE.ResolvedAccountName]
 
                     # Exclude the ACEs whose account names match the regular expressions specified in the -ExcludeAccount parameter
                     # Include the ACEs whose account names match the regular expressions specified in the -IncludeAccount parameter
                     # Exclude the ACEs whose account classes were included in the -ExcludeClass parameter
+                    # TODO: At least ExcludeAccount appears to already be done before populating $ShortNameByID.
+                    #     Investigate then update these comments accordingly.
+                    #     Is it possible that IdentityReference vs. its members are handled here vs. there or something?
                     if ($AccountName) {
 
                         if ($ACE.IdentityReferenceResolved -eq $ACE.ResolvedAccountName) {
@@ -3764,7 +3767,11 @@ function Select-PermissionTableProperty {
 
                 }
 
-                $i = $i + 1
+                if ($Results) {
+                    $OutputHash[$i] = $Results
+                    $i = $i + 1
+                }
+
 
             }
             break
@@ -4543,10 +4550,7 @@ function Format-Permission {
                         }
 
                     } else {
-                        $Selection = [PSCustomObject]@{
-                            'Access'  = $NetworkPath.$Prop
-                            'Account' = $Account.Account
-                        }
+                        $Selection = $NetworkPath.$Prop
                     }
 
                     $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupByForThisSplit, $AccountProperty
@@ -6518,6 +6522,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
