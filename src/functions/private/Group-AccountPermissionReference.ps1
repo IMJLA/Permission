@@ -89,8 +89,9 @@ function Group-AccountPermissionReference {
                         $CommonParams['AceGuidsByPath'] = $ItemPaths
 
                         [pscustomobject]@{
-                            Path  = $NetworkPath
-                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                            AceGuidByPath = $ItemPaths
+                            Path          = $NetworkPath
+                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
                         }
 
                     }

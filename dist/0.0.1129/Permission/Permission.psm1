@@ -1273,6 +1273,8 @@ function Expand-AccountPermissionReference {
                     Account      = $PrincipalsByResolvedID.Value[$Account.Account]
                     NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
+                        $ExpansionParameters['AceGuidsByPath'] = $NetworkPath.AceGuidByPath
+
                         [pscustomobject]@{
                             Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
                             Item       = $AclByPath.Value[$NetworkPath.Path]
@@ -2354,8 +2356,9 @@ function Group-AccountPermissionReference {
                         $CommonParams['AceGuidsByPath'] = $ItemPaths
 
                         [pscustomobject]@{
-                            Path  = $NetworkPath
-                            Items = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                            AceGuidByPath = $ItemPaths
+                            Path          = $NetworkPath
+                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
                         }
 
                     }
@@ -6532,6 +6535,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
