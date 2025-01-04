@@ -6,6 +6,7 @@ function Group-AccountPermissionReference {
         [ref]$AceGuidByID,
         [ref]$AceByGuid,
         [ref]$AceGuidByPath,
+        [ref]$PrincipalsByResolvedID,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -49,6 +50,9 @@ function Group-AccountPermissionReference {
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
+                # Limit the PrincipalByResolvedID cache to the current identity
+                $CommonParams['PrincipalByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
+                # Create a new cache for items accessible to the current identity, keyed by network path
                 $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
 
                 ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
