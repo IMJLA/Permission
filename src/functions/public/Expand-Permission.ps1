@@ -65,7 +65,7 @@ function Expand-Permission {
     $AceGuidByID = $Cache.Value['AceGuidByID']
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
-    $AclByPath = @{ 'ACLsByPath' = $Cache.Value['AclByPath'] }
+    $AclByPath = $Cache.Value['AclByPath']
     $TargetPath = $Cache.Value['ParentBySourcePath']
 
     $CommonParams = @{
@@ -108,14 +108,13 @@ function Expand-Permission {
 
         # Group reference GUIDs by the path to their associated item.
         Write-Progress @Progress -Status '38% : Group permission references by item' -CurrentOperation 'Group-ItemPermissionReference' -PercentComplete 38
-        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams @Paths -AceGUIDsByPath $AceGuidByPath @AclByPath'
-        $ItemPermissionReferences = Group-ItemPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath @AclByPath @CommonParams
-
+        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams @Paths -AceGUIDsByPath $AceGuidByPath -AclByPath $AclByPath'
+        $ItemPermissionReferences = Group-ItemPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath -AclByPath $AclByPath @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '50% : Expand item permissions into objects' -CurrentOperation 'Expand-ItemPermissionReference' -PercentComplete 50
-        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences @AclByPath @CommonParams'
-        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences @AclByPath @CommonParams
+        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -AclByPath $AclByPath @CommonParams'
+        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -AclByPath $AclByPath @CommonParams
 
     }
 

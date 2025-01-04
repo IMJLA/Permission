@@ -4091,7 +4091,7 @@ function Expand-Permission {
     $AceGuidByID = $Cache.Value['AceGuidByID']
     $ACEsByGUID = $Cache.Value['AceByGUID']
     $PrincipalsByResolvedID = $Cache.Value['PrincipalByID']
-    $AclByPath = @{ 'ACLsByPath' = $Cache.Value['AclByPath'] }
+    $AclByPath = $Cache.Value['AclByPath']
     $TargetPath = $Cache.Value['ParentBySourcePath']
 
     $CommonParams = @{
@@ -4134,14 +4134,13 @@ function Expand-Permission {
 
         # Group reference GUIDs by the path to their associated item.
         Write-Progress @Progress -Status '38% : Group permission references by item' -CurrentOperation 'Group-ItemPermissionReference' -PercentComplete 38
-        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams @Paths -AceGUIDsByPath $AceGuidByPath @AclByPath'
-        $ItemPermissionReferences = Group-ItemPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath @AclByPath @CommonParams
-
+        Write-LogMsg @Log -Text '$ItemPermissionReferences = Group-ItemPermissionReference @CommonParams @Paths -AceGUIDsByPath $AceGuidByPath -AclByPath $AclByPath'
+        $ItemPermissionReferences = Group-ItemPermissionReference @Paths -AceGUIDsByPath $AceGuidByPath -AclByPath $AclByPath @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '50% : Expand item permissions into objects' -CurrentOperation 'Expand-ItemPermissionReference' -PercentComplete 50
-        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences @AclByPath @CommonParams'
-        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences @AclByPath @CommonParams
+        Write-LogMsg @Log -Text '$ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -AclByPath $AclByPath @CommonParams'
+        $ItemPermissions = Expand-ItemPermissionReference -Reference $ItemPermissionReferences -AclByPath $AclByPath @CommonParams
 
     }
 
@@ -6481,6 +6480,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
