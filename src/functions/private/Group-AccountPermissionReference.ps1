@@ -90,7 +90,7 @@ function Group-AccountPermissionReference {
                         $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
                         $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
                         $CommonParams['AceGuidsByPath'] = $ForThisId
-                        Pause
+
                         [pscustomobject]@{
                             AceGuidByPath = $ForThisId
                             Path          = $NetworkPath

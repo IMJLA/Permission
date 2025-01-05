@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1137] - 2025-01-04 - remove debug pause
 ## [0.0.1136] - 2025-01-04 - alphabetical order
 ## [0.0.1135] - 2025-01-04 - remove group members
 ## [0.0.1134] - 2025-01-04 - bugfix and add debug pause
