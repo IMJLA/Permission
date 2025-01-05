@@ -233,7 +233,8 @@ function Get-HtmlReportElements {
 
     if ($Account) {
 
-        $AccountTable = Select-AccountTableProperty -InputObject $Account -Culture $Culture -ShortNameByID $Cache.Value['ShortNameById'].Value -AccountProperty $AccountProperty |
+        $AccountObj = [pscustomobject]@{'Account' = $Account }
+        $AccountTable = Select-AccountTableProperty -InputObject $AccountObj -Culture $Culture -ShortNameByID $Cache.Value['ShortNameById'].Value -AccountProperty $AccountProperty |
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
