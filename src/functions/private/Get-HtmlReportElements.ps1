@@ -231,7 +231,8 @@ function Get-HtmlReportElements {
     if ($Account) {
 
         $AccountTable = $Account |
-        ConvertTo-HtmlTable -Culture $Culture -SkipFilterCheck |
+        Select-AccountTableProperty -Culture $Culture -ShortNameByID $Cache.Value['ShortNameById'].Value -AccountProperty $AccountProperty |
+        ConvertTo-Html -Fragment |
         New-BootstrapTable
 
         $AccountDivHeader = 'The report includes permissions for this account'
