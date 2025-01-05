@@ -7,7 +7,8 @@ function Expand-FlatPermissionReference {
         $SortedPath,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
-        [ref]$AceGUIDsByPath
+        [ref]$AceGUIDsByPath,
+        [switch]$NoMembers
 
     )
 
@@ -19,7 +20,7 @@ function Expand-FlatPermissionReference {
 
             ForEach ($ACE in $ACEsByGUID.Value[$Guid]) {
 
-                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
+                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID -NoMembers:$NoMembers
 
             }
 

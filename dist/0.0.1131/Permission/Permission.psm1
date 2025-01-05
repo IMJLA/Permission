@@ -1301,7 +1301,8 @@ function Expand-FlatPermissionReference {
         $SortedPath,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
-        [ref]$AceGUIDsByPath
+        [ref]$AceGUIDsByPath,
+        [switch]$NoMembers
 
     )
 
@@ -1313,7 +1314,7 @@ function Expand-FlatPermissionReference {
 
             ForEach ($ACE in $ACEsByGUID.Value[$Guid]) {
 
-                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
+                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID -NoMembers:$NoMembers
 
             }
 
@@ -2358,7 +2359,7 @@ function Group-AccountPermissionReference {
                         [pscustomobject]@{
                             AceGuidByPath = $ItemPaths
                             Path          = $NetworkPath
-                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                            Items         = Expand-FlatPermissionReference -NoMembers -SortedPath $SortedPath @CommonParams
                         }
 
                     }
@@ -2658,12 +2659,17 @@ function Merge-AceAndPrincipal {
     param (
         $Principal,
         $ACE,
-        [ref]$PrincipalByResolvedID
+        [ref]$PrincipalByResolvedID,
+        [switch]$NoMembers
     )
 
-    ForEach ($Member in $Principal.Members) {
+    if (-not $NoMembers) {
 
-        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID.Value[$Member] -PrincipalByResolvedID $PrincipalByResolvedID
+        ForEach ($Member in $Principal.Members) {
+
+            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID.Value[$Member] -PrincipalByResolvedID $PrincipalByResolvedID
+
+        }
 
     }
 
@@ -6535,6 +6541,8 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
+
 
 
 
