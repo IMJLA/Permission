@@ -8,6 +8,7 @@ function Expand-AccountPermissionReference {
         [ref]$AceGuidByPath,
         [ref]$AclByPath,
         [string[]]$SortedPath,
+        [switch]$NoMembers,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -57,7 +58,7 @@ function Expand-AccountPermissionReference {
                         $ExpansionParameters['AceGuidsByPath'] = $NetworkPath.AceGuidByPath
 
                         [pscustomobject]@{
-                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
+                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath -NoMembers:$NoMembers @ExpansionParameters
                             Item       = $AclByPath.Value[$NetworkPath.Path]
                             PSTypeName = 'Permission.FlatPermission'
                         }

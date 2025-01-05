@@ -97,6 +97,7 @@ function Expand-Permission {
             'AclByPath'     = $AclByPath
             'AceGuidByPath' = $AceGuidByPath
             'GroupBy'       = $GroupBy
+            'NoMembers'     = $true
         }
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference' -Expand $ExpandSplat, $Paths, $CommonParams
         $AccountPermissions = Expand-AccountPermissionReference @ExpandSplat @Paths @CommonParams

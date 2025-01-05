@@ -1227,6 +1227,7 @@ function Expand-AccountPermissionReference {
         [ref]$AceGuidByPath,
         [ref]$AclByPath,
         [string[]]$SortedPath,
+        [switch]$NoMembers,
 
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
@@ -1276,7 +1277,7 @@ function Expand-AccountPermissionReference {
                         $ExpansionParameters['AceGuidsByPath'] = $NetworkPath.AceGuidByPath
 
                         [pscustomobject]@{
-                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
+                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath -NoMembers:$NoMembers @ExpansionParameters
                             Item       = $AclByPath.Value[$NetworkPath.Path]
                             PSTypeName = 'Permission.FlatPermission'
                         }
@@ -4149,6 +4150,7 @@ function Expand-Permission {
             'AclByPath'     = $AclByPath
             'AceGuidByPath' = $AceGuidByPath
             'GroupBy'       = $GroupBy
+            'NoMembers'     = $true
         }
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference' -Expand $ExpandSplat, $Paths, $CommonParams
         $AccountPermissions = Expand-AccountPermissionReference @ExpandSplat @Paths @CommonParams
@@ -6544,6 +6546,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
