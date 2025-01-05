@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1133] - 2025-01-04 - define AceGuidByPathByNetworkPathForThisId
 ## [0.0.1132] - 2025-01-04 - bugfix filtering
 ## [0.0.1131] - 2025-01-04 - implement nomembers
 ## [0.0.1130] - 2025-01-04 - implement nomembers

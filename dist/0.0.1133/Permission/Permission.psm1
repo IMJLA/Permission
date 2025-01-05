@@ -2316,13 +2316,14 @@ function Group-AccountPermissionReference {
 
             $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
             $GuidType = [guid]
-
+            $StringType = [string]
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
                 # Create a new cache for items accessible to the current identity, keyed by network path
-                $ItemPathByNetworkPath = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[string]])
-                $ItemPaths = New-PermissionCacheRef -Key ([string]) -Value ([System.Collections.Generic.List[guid]])
+                $ItemPathByNetworkPath = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[string]])
+                $ItemPaths = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[guid]])
+                $AceGuidByPathByNetworkPathForThisId = @{}
 
                 ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
 
@@ -2337,7 +2338,7 @@ function Group-AccountPermissionReference {
                                 if ($Ace.Path.StartsWith($NetworkPath)) {
 
                                     Add-PermissionCacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type $GuidType
-                                    Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([string])
+                                    Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type $StringType
                                     $AceGuidByPathByNetworkPathForThisId[$NetworkPath] = $AceGuidByPathForThisId
 
                                 }
@@ -2354,7 +2355,7 @@ function Group-AccountPermissionReference {
                     Account      = $Identity
                     NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
 
-                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object
+                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
                         $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
                         $CommonParams['AceGuidsByPath'] = $ForThisId
 
@@ -6543,6 +6544,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
