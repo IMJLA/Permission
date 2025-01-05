@@ -7,7 +7,8 @@ function Select-AccountTableProperty {
 
         $InputObject,
 
-        [cultureinfo]$Culture = (Get-Culture), #Unused but exists here for parameter consistency with Select-AccountTableProperty
+        #Unused but exists here for parameter consistency with Select-AccountTableProperty
+        [cultureinfo]$Culture = (Get-Culture),
 
         [Hashtable]$ShortNameByID = [Hashtable]::Synchronized(@{}),
 
