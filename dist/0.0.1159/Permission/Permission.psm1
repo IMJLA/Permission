@@ -1943,11 +1943,11 @@ function Get-HtmlReportElements {
         ).Sum
         'PermissionCount'          = (
             @(
-                $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
+                $Permission.AccountPermissions.NetworkPaths.Access.Count, # SplitBy Account GroupBy Account/None
                 $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.SourcePermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account
-                ($Permission.SourcePermissions.NetworkPaths.Items.Access.Access.Count + $Permission.SourcePermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
-                $Permission.SourcePermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target/none
+                $Permission.SourcePermissions.NetworkPaths.Accounts.NetworkPaths.Access.Count, # SplitBy Source GroupBy Account
+                ($Permission.SourcePermissions.NetworkPaths.Items.Access.Access.Count + $Permission.SourcePermissions.NetworkPaths.Access.Access.Count), # SplitBy Source GroupBy Item
+                $Permission.SourcePermissions.NetworkPaths.Access.Count, # SplitBy Source GroupBy Source/None
                 $AceByGUID.Keys.Count
             ) |
             Measure-Object -Maximum
@@ -6594,6 +6594,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

@@ -207,11 +207,11 @@ function Get-HtmlReportElements {
         ).Sum
         'PermissionCount'          = (
             @(
-                $Permission.AccountPermissions.Access.Access.Count, #SplitBy Account
+                $Permission.AccountPermissions.NetworkPaths.Access.Count, # SplitBy Account GroupBy Account/None
                 $Permission.ItemPermissions.Access.Access.Count,
-                $Permission.SourcePermissions.NetworkPaths.Accounts.Access.Access.Count, # -SplitBy target -GroupBy account
-                ($Permission.SourcePermissions.NetworkPaths.Items.Access.Access.Count + $Permission.SourcePermissions.NetworkPaths.Access.Access.Count), # -SplitBy target -GroupBy item
-                $Permission.SourcePermissions.NetworkPaths.Access.Count, # -SplitBy target -GroupBy target/none
+                $Permission.SourcePermissions.NetworkPaths.Accounts.NetworkPaths.Access.Count, # SplitBy Source GroupBy Account
+                ($Permission.SourcePermissions.NetworkPaths.Items.Access.Access.Count + $Permission.SourcePermissions.NetworkPaths.Access.Access.Count), # SplitBy Source GroupBy Item
+                $Permission.SourcePermissions.NetworkPaths.Access.Count, # SplitBy Source GroupBy Source/None
                 $AceByGUID.Keys.Count
             ) |
             Measure-Object -Maximum
