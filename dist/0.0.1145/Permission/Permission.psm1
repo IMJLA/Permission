@@ -1693,14 +1693,14 @@ function Get-HtmlBody {
         $HtmlExclusions,
         $SummaryDivHeader,
         $DetailDivHeader,
-        $Account
+        $AccountDiv
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
 
-    if ($Account) {
+    if ($AccountDiv) {
         $null = $StringBuilder.Append((New-HtmlHeading 'Account Details' -Level 5))
-        $null = $StringBuilder.Append($Account)
+        $null = $StringBuilder.Append($AccountDiv)
     }
     $null = $StringBuilder.Append((New-HtmlHeading 'Network Paths' -Level 5))
     $null = $StringBuilder.Append($NetworkPathDiv)
@@ -6579,6 +6579,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

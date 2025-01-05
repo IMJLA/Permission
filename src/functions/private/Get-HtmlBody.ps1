@@ -9,14 +9,14 @@ function Get-HtmlBody {
         $HtmlExclusions,
         $SummaryDivHeader,
         $DetailDivHeader,
-        $Account
+        $AccountDiv
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
 
-    if ($Account) {
+    if ($AccountDiv) {
         $null = $StringBuilder.Append((New-HtmlHeading 'Account Details' -Level 5))
-        $null = $StringBuilder.Append($Account)
+        $null = $StringBuilder.Append($AccountDiv)
     }
     $null = $StringBuilder.Append((New-HtmlHeading 'Network Paths' -Level 5))
     $null = $StringBuilder.Append($NetworkPathDiv)
