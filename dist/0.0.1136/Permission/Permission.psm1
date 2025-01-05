@@ -4146,11 +4146,11 @@ function Expand-Permission {
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Expand-AccountPermissionReference' -PercentComplete 25
         $ExpandSplat = @{
-            'Reference'     = $AccountPermissionReferences
-            'AclByPath'     = $AclByPath
             'AceGuidByPath' = $AceGuidByPath
+            'AclByPath'     = $AclByPath
             'GroupBy'       = $GroupBy
             'NoMembers'     = $true
+            'Reference'     = $AccountPermissionReferences
         }
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference' -Expand $ExpandSplat, $Paths, $CommonParams
         $AccountPermissions = Expand-AccountPermissionReference @ExpandSplat @Paths @CommonParams
@@ -6546,6 +6546,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

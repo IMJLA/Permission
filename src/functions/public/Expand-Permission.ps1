@@ -93,11 +93,11 @@ function Expand-Permission {
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
         Write-Progress @Progress -Status '25% : Expand account permissions into objects' -CurrentOperation 'Expand-AccountPermissionReference' -PercentComplete 25
         $ExpandSplat = @{
-            'Reference'     = $AccountPermissionReferences
-            'AclByPath'     = $AclByPath
             'AceGuidByPath' = $AceGuidByPath
+            'AclByPath'     = $AclByPath
             'GroupBy'       = $GroupBy
             'NoMembers'     = $true
+            'Reference'     = $AccountPermissionReferences
         }
         Write-LogMsg @Log -Text '$AccountPermissions = Expand-AccountPermissionReference' -Expand $ExpandSplat, $Paths, $CommonParams
         $AccountPermissions = Expand-AccountPermissionReference @ExpandSplat @Paths @CommonParams
