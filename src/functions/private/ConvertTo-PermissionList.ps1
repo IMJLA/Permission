@@ -291,11 +291,8 @@ function ConvertTo-PermissionList {
 
                     'account' {
 
-                        ##ForEach ($Group in $PermissionGrouping) {
-                        ForEach ($GroupID in $Permission.Keys) {
-                            # TODO: $Permission.Keys | Sort-Object would result in this being sorted, but this wasn't needed previously.  Investigate to avoid redundant sorting.
+                        ForEach ($GroupID in ($Permission.Keys | Sort-Object)) {
 
-                            ##$GroupID = $Group.Account.ResolvedAccountName
                             $Heading = New-HtmlHeading "Items accessible to $GroupID" -Level 6
                             $StartingPermissions = $Permission[$GroupID]
 
