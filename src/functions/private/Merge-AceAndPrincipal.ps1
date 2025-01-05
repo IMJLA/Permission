@@ -24,12 +24,12 @@ function Merge-AceAndPrincipal {
         AccountName = $Principal.ResolvedAccountName
     }
 
-    ForEach ($Prop in $ACE.PSObject.Properties.GetEnumerator().Name) {
-        $OutputProperties[$Prop] = $ACE.$Prop
-    }
-
     ForEach ($Prop in $Principal.PSObject.Properties.GetEnumerator().Name) {
         $OutputProperties[$Prop] = $Principal.$Prop
+    }
+
+    ForEach ($Prop in $ACE.PSObject.Properties.GetEnumerator().Name) {
+        $OutputProperties[$Prop] = $ACE.$Prop
     }
 
     return [pscustomobject]$OutputProperties

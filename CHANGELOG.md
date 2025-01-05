@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1152] - 2025-01-05 - ensure ACE path overwrites Principal path in merge-aceandprincipal.  also handle networkpaths nesting in select-permissiontableproperty for groupby account
 ## [0.0.1151] - 2025-01-05 - bugfix singular vs plural
 ## [0.0.1150] - 2025-01-05 - comment-based help cleanup
 ## [0.0.1149] - 2025-01-05 - bugfix remove excessive properties disrupting the order of displayed properties
