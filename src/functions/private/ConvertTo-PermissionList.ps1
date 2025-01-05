@@ -233,7 +233,7 @@ function ConvertTo-PermissionList {
             ) {
 
                 $Heading = New-HtmlHeading "Permissions in $NetworkPath" -Level 6
-                $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account
+                $StartingPermissions = $Permission.Values | Sort-Object -Property Item, Account -Debug:$false
 
                 # Remove spaces from property titles
                 $ObjProps = [ordered]@{}

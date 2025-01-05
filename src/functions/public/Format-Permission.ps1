@@ -119,6 +119,7 @@ function Format-Permission {
                 $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupByForThisSplit -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
                 if ($PermissionsWithChosenProperties.Keys.Count -gt 0) {
+
                     $OutputProperties = @{
                         'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupByForThisSplit))Permission"
                         'Item'       = $NetworkPath.Item
