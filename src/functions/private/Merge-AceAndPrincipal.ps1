@@ -7,6 +7,10 @@ function Merge-AceAndPrincipal {
         [switch]$NoMembers
     )
 
+    if (-not $Principal) {
+        return
+    }
+
     if (-not $NoMembers) {
 
         ForEach ($Member in $Principal.Members) {

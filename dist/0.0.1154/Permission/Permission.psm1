@@ -1266,15 +1266,18 @@ function Expand-AccountPermissionReference {
 
             ForEach ($Account in $Reference) {
 
+                $Principal = $PrincipalsByResolvedID.Value[$Account.Account]
+
                 [PSCustomObject]@{
                     PSTypeName   = 'Permission.AccountPermission'
-                    Account      = $PrincipalsByResolvedID.Value[$Account.Account]
+                    Account      = $Principal
                     NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
                         $ExpansionParameters['AceGuidsByPath'] = $NetworkPath.AceGuidByPath
+                        $ExpansionParameters['PrincipalsByResolvedID'] = [ref]@{ $Account.Account = $Principal }
 
                         [pscustomobject]@{
-                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath -NoMembers:$NoMembers @ExpansionParameters
+                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
                             Item       = $AclByPath.Value[$NetworkPath.Path]
                             PSTypeName = 'Permission.FlatPermission'
                         }
@@ -1299,8 +1302,7 @@ function Expand-FlatPermissionReference {
         $SortedPath,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
-        [ref]$AceGUIDsByPath,
-        [switch]$NoMembers
+        [ref]$AceGUIDsByPath
 
     )
 
@@ -1312,7 +1314,7 @@ function Expand-FlatPermissionReference {
 
             ForEach ($ACE in $ACEsByGUID.Value[$Guid]) {
 
-                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID -NoMembers:$NoMembers
+                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
 
             }
 
@@ -2323,9 +2325,8 @@ function Group-AccountPermissionReference {
     )
 
     $CommonParams = @{
-        AceGUIDsByPath         = $AceGuidByPath
-        ACEsByGUID             = $ACEsByGUID
-        PrincipalsByResolvedID = $PrincipalByResolvedID
+        AceGUIDsByPath = $AceGuidByPath
+        ACEsByGUID     = $ACEsByGUID
     }
 
     switch ($GroupBy) {
@@ -2380,11 +2381,12 @@ function Group-AccountPermissionReference {
                         $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
                         $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
                         $CommonParams['AceGuidsByPath'] = $ForThisId
+                        $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
 
                         [pscustomobject]@{
                             AceGuidByPath = $ForThisId
                             Path          = $NetworkPath
-                            Items         = Expand-FlatPermissionReference -NoMembers -SortedPath $SortedPath @CommonParams
+                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
                         }
 
                     }
@@ -2687,6 +2689,10 @@ function Merge-AceAndPrincipal {
         [ref]$PrincipalByResolvedID,
         [switch]$NoMembers
     )
+
+    if (-not $Principal) {
+        return
+    }
 
     if (-not $NoMembers) {
 
@@ -6585,6 +6591,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

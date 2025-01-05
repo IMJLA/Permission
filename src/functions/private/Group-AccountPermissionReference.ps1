@@ -33,9 +33,8 @@ function Group-AccountPermissionReference {
     )
 
     $CommonParams = @{
-        AceGUIDsByPath         = $AceGuidByPath
-        ACEsByGUID             = $ACEsByGUID
-        PrincipalsByResolvedID = $PrincipalByResolvedID
+        AceGUIDsByPath = $AceGuidByPath
+        ACEsByGUID     = $ACEsByGUID
     }
 
     switch ($GroupBy) {
@@ -90,11 +89,12 @@ function Group-AccountPermissionReference {
                         $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
                         $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
                         $CommonParams['AceGuidsByPath'] = $ForThisId
+                        $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
 
                         [pscustomobject]@{
                             AceGuidByPath = $ForThisId
                             Path          = $NetworkPath
-                            Items         = Expand-FlatPermissionReference -NoMembers -SortedPath $SortedPath @CommonParams
+                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
                         }
 
                     }

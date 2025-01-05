@@ -50,15 +50,18 @@ function Expand-AccountPermissionReference {
 
             ForEach ($Account in $Reference) {
 
+                $Principal = $PrincipalsByResolvedID.Value[$Account.Account]
+
                 [PSCustomObject]@{
                     PSTypeName   = 'Permission.AccountPermission'
-                    Account      = $PrincipalsByResolvedID.Value[$Account.Account]
+                    Account      = $Principal
                     NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
                         $ExpansionParameters['AceGuidsByPath'] = $NetworkPath.AceGuidByPath
+                        $ExpansionParameters['PrincipalsByResolvedID'] = [ref]@{ $Account.Account = $Principal }
 
                         [pscustomobject]@{
-                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath -NoMembers:$NoMembers @ExpansionParameters
+                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
                             Item       = $AclByPath.Value[$NetworkPath.Path]
                             PSTypeName = 'Permission.FlatPermission'
                         }
