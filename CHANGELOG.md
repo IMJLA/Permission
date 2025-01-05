@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1146] - 2025-01-04 - bugfix missing accountproperty param
 ## [0.0.1145] - 2025-01-04 - bugfix param name
 ## [0.0.1144] - 2025-01-04 - bugfix account table
 ## [0.0.1143] - 2025-01-04 - bugfix account table

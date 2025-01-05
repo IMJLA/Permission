@@ -20,7 +20,8 @@ Out-PermissionFile [[-ExcludeAccount] <String[]>] [[-ExcludeClass] <String[]>] [
  [[-OutputFormat] <String>] [[-GroupBy] <String>] [[-SplitBy] <String[]>] [[-Analysis] <PSObject>]
  [[-SourceCount] <UInt64>] [[-ParentCount] <UInt64>] [[-ChildCount] <UInt64>] [[-ItemCount] <UInt64>]
  [[-FqdnCount] <UInt64>] [[-AclCount] <UInt64>] [[-AceCount] <UInt64>] [[-IdCount] <UInt64>]
- [[-PrincipalCount] <UInt64>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>] [<CommonParameters>]
+ [[-PrincipalCount] <UInt64>] [-Cache] <PSReference> [[-AccountProperty] <String[]>]
+ [-ProgressAction <ActionPreference>] [<CommonParameters>]
 ```
 
 ## DESCRIPTION
@@ -36,6 +37,21 @@ PS C:\> {{ Add example code here }}
 {{ Add example description here }}
 
 ## PARAMETERS
+
+### -AccountProperty
+{{ Fill AccountProperty Description }}
+
+```yaml
+Type: System.String[]
+Parameter Sets: (All)
+Aliases:
+
+Required: False
+Position: 28
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
 
 ### -AceCount
 {{ Fill AceCount Description }}
