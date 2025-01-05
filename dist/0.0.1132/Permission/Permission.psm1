@@ -2338,6 +2338,7 @@ function Group-AccountPermissionReference {
 
                                     Add-PermissionCacheItem -Cache $ItemPaths -Key $Ace.Path -Value $Guid -Type $GuidType
                                     Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type ([string])
+                                    $AceGuidByPathByNetworkPathForThisId[$NetworkPath] = $AceGuidByPathForThisId
 
                                 }
 
@@ -2354,10 +2355,11 @@ function Group-AccountPermissionReference {
                     NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
 
                         $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object
-                        $CommonParams['AceGuidsByPath'] = $ItemPaths
+                        $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
+                        $CommonParams['AceGuidsByPath'] = $ForThisId
 
                         [pscustomobject]@{
-                            AceGuidByPath = $ItemPaths
+                            AceGuidByPath = $ForThisId
                             Path          = $NetworkPath
                             Items         = Expand-FlatPermissionReference -NoMembers -SortedPath $SortedPath @CommonParams
                         }
@@ -6541,6 +6543,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
