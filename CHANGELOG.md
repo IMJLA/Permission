@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1144] - 2025-01-04 - bugfix account table
 ## [0.0.1143] - 2025-01-04 - bugfix account table
 ## [0.0.1142] - 2025-01-04 - add account details table
 ## [0.0.1141] - 2025-01-04 - bugfix check for networkpaths AFTER it is populated. for some weird reason.  variables, how do they work

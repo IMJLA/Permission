@@ -452,7 +452,6 @@ function Out-PermissionFile {
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
                 $Params['Account'] = $File.Account
-                $Params['ShortNameById'] = $Cache.Value['ShortNameById']
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
