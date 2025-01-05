@@ -61,7 +61,7 @@ function Expand-AccountPermissionReference {
                         $ExpansionParameters['PrincipalsByResolvedID'] = [ref]@{ $Account.Account = $Principal }
 
                         [pscustomobject]@{
-                            Access     = Expand-FlatPermissionReference -SortedPath $SortedPath @ExpansionParameters
+                            Access     = Expand-FlatPermissionReference -Identity $Account.Account -SortedPath $SortedPath @ExpansionParameters
                             Item       = $AclByPath.Value[$NetworkPath.Path]
                             PSTypeName = 'Permission.FlatPermission'
                         }

@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1158] - 2025-01-05 - implement identity override
 ## [0.0.1157] - 2025-01-05 - bugfix allow override of ace identityreference for merging of ace with group members of the identityreference
 ## [0.0.1156] - 2025-01-05 - bugfix allow override of ace identityreference for merging of ace with group members of the identityreference
 ## [0.0.1155] - 2025-01-05 - bugfix allow override of ace identityreference for merging of ace with group members of the identityreference
