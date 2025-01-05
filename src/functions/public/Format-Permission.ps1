@@ -90,56 +90,62 @@ function Format-Permission {
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Account.Account.ResolvedAccountName -PercentComplete $Percent @Progress
 
-            [PSCustomObject]@{
-                'PSTypeName'   = 'Permission.AccountPermission'
-                'Account'      = $Account.Account
-                'NetworkPaths' = ForEach ($NetworkPath in $Account.NetworkPaths) {
+            $NetworkPaths = ForEach ($NetworkPath in $Account.NetworkPaths) {
 
-                    $Prop = $Grouping['Property']
+                $Prop = $Grouping['Property']
 
-                    if ($Prop -eq 'items') {
+                if ($Prop -eq 'items') {
 
-                        $Selection = [System.Collections.Generic.List[PSCustomObject]]::new()
+                    $Selection = [System.Collections.Generic.List[PSCustomObject]]::new()
 
-                        # Add the network path itself
-                        $Selection.Add([PSCustomObject]@{
-                                'PSTypeName' = 'Permission.ItemPermission'
-                                'Item'       = $NetworkPath.Item
-                                'Access'     = $NetworkPath.Access
-                            })
+                    # Add the network path itself
+                    $Selection.Add([PSCustomObject]@{
+                            'PSTypeName' = 'Permission.ItemPermission'
+                            'Item'       = $NetworkPath.Item
+                            'Access'     = $NetworkPath.Access
+                        })
 
-                        # Add child items
-                        $ChildItems = [PSCustomObject[]]$NetworkPath.$Prop
-                        if ($ChildItems) {
-                            $Selection.AddRange($ChildItems)
-                        }
-
-                    } else {
-                        $Selection = $NetworkPath.$Prop
+                    # Add child items
+                    $ChildItems = [PSCustomObject[]]$NetworkPath.$Prop
+                    if ($ChildItems) {
+                        $Selection.AddRange($ChildItems)
                     }
 
-                    $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupByForThisSplit, $AccountProperty
-                    $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupByForThisSplit -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+                } else {
+                    $Selection = $NetworkPath.$Prop
+                }
 
-                    if ($PermissionsWithChosenProperties.Keys.Count -gt 0) {
-                        $OutputProperties = @{
-                            'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupByForThisSplit))Permission"
-                            'Item'       = $NetworkPath.Item
+                $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupByForThisSplit, $AccountProperty
+                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupByForThisSplit -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
+
+                if ($PermissionsWithChosenProperties.Keys.Count -gt 0) {
+                    $OutputProperties = @{
+                        'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupByForThisSplit))Permission"
+                        'Item'       = $NetworkPath.Item
+                    }
+
+                    ForEach ($Format in $Formats) {
+
+                        $FormatString = $Format
+                        if ($Format -eq 'js') {
+                            $FormatString = 'json'
                         }
 
-                        ForEach ($Format in $Formats) {
+                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy -GroupBy $GroupByForThisSplit @ConvertSplat
+                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format -GroupBy $GroupByForThisSplit -NetworkPath $NetworkPath.Item.Path @ConvertSplat
 
-                            $FormatString = $Format
-                            if ($Format -eq 'js') {
-                                $FormatString = 'json'
-                            }
+                    }
 
-                            $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy -GroupBy $GroupByForThisSplit @ConvertSplat
-                            $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format -GroupBy $GroupByForThisSplit -NetworkPath $NetworkPath.Item.Path @ConvertSplat
+                    [PSCustomObject]$OutputProperties
 
-                        }
+                }
 
-                        [PSCustomObject]$OutputProperties
+                if ($NetworkPaths) {
+
+                    [PSCustomObject]@{
+                        'PSTypeName'   = 'Permission.AccountPermission'
+                        'Account'      = $Account.Account
+                        'NetworkPaths' = $NetworkPaths
 
                     }
 
