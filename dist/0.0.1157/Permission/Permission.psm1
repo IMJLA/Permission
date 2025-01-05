@@ -1300,6 +1300,7 @@ function Expand-FlatPermissionReference {
     param (
 
         $SortedPath,
+        [string]$Identity,
         [ref]$PrincipalsByResolvedID,
         [ref]$ACEsByGUID,
         [ref]$AceGUIDsByPath
@@ -1314,7 +1315,13 @@ function Expand-FlatPermissionReference {
 
             ForEach ($ACE in $ACEsByGUID.Value[$Guid]) {
 
-                Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved] -PrincipalByResolvedID $PrincipalsByResolvedID
+                if ($Identity) {
+                    $Principal = $PrincipalsByResolvedID.Value[$Identity]
+                } else {
+                    $Principal = $PrincipalsByResolvedID.Value[$ACE.IdentityReferenceResolved]
+                }
+
+                Merge-AceAndPrincipal -ACE $ACE -Principal $Principal -PrincipalByResolvedID $PrincipalsByResolvedID
 
             }
 
@@ -2340,12 +2347,13 @@ function Group-AccountPermissionReference {
             $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
             $GuidType = [guid]
             $StringType = [string]
+            $Comparer = [StringComparer]::OrdinalIgnoreCase
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
                 # Create a new cache for items accessible to the current identity, keyed by network path
-                $ItemPathByNetworkPath = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[string]])
-                $AceGuidByPathForThisId = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[guid]])
+                $ItemPathByNetworkPath = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[string]]) -Comparer $Comparer
+                $AceGuidByPathForThisId = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[guid]]) -Comparer $Comparer
                 $AceGuidByPathByNetworkPathForThisId = @{}
 
                 ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
@@ -2386,7 +2394,7 @@ function Group-AccountPermissionReference {
                         [pscustomobject]@{
                             AceGuidByPath = $ForThisId
                             Path          = $NetworkPath
-                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                            Items         = Expand-FlatPermissionReference -Identity $Identity -SortedPath $SortedPath @CommonParams
                         }
 
                     }
@@ -2686,21 +2694,16 @@ function Merge-AceAndPrincipal {
     param (
         $Principal,
         $ACE,
-        [ref]$PrincipalByResolvedID,
-        [switch]$NoMembers
+        [ref]$PrincipalByResolvedID
     )
 
     if (-not $Principal) {
         return
     }
 
-    if (-not $NoMembers) {
+    ForEach ($Member in $Principal.Members) {
 
-        ForEach ($Member in $Principal.Members) {
-
-            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID.Value[$Member] -PrincipalByResolvedID $PrincipalByResolvedID
-
-        }
+        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID.Value[$Member] -PrincipalByResolvedID $PrincipalByResolvedID
 
     }
 
@@ -6591,6 +6594,9 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
+
+
 
 
 

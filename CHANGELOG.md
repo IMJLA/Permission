@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1157] - 2025-01-05 - bugfix allow override of ace identityreference for merging of ace with group members of the identityreference
+## [0.0.1156] - 2025-01-05 - bugfix allow override of ace identityreference for merging of ace with group members of the identityreference
+## [0.0.1155] - 2025-01-05 - bugfix allow override of ace identityreference for merging of ace with group members of the identityreference
 ## [0.0.1154] - 2025-01-05 - replace nomembers with an updated principalsbyresolvedid cache
 ## [0.0.1153] - 2025-01-05 - sort all the things
 ## [0.0.1152] - 2025-01-05 - ensure ACE path overwrites Principal path in merge-aceandprincipal.  also handle networkpaths nesting in select-permissiontableproperty for groupby account

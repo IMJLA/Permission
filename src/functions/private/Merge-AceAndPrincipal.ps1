@@ -3,21 +3,16 @@ function Merge-AceAndPrincipal {
     param (
         $Principal,
         $ACE,
-        [ref]$PrincipalByResolvedID,
-        [switch]$NoMembers
+        [ref]$PrincipalByResolvedID
     )
 
     if (-not $Principal) {
         return
     }
 
-    if (-not $NoMembers) {
+    ForEach ($Member in $Principal.Members) {
 
-        ForEach ($Member in $Principal.Members) {
-
-            Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID.Value[$Member] -PrincipalByResolvedID $PrincipalByResolvedID
-
-        }
+        Merge-AceAndPrincipal -ACE $ACE -Principal $PrincipalByResolvedID.Value[$Member] -PrincipalByResolvedID $PrincipalByResolvedID
 
     }
 

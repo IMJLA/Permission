@@ -48,12 +48,13 @@ function Group-AccountPermissionReference {
             $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
             $GuidType = [guid]
             $StringType = [string]
+            $Comparer = [StringComparer]::OrdinalIgnoreCase
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
                 # Create a new cache for items accessible to the current identity, keyed by network path
-                $ItemPathByNetworkPath = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[string]])
-                $AceGuidByPathForThisId = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[guid]])
+                $ItemPathByNetworkPath = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[string]]) -Comparer $Comparer
+                $AceGuidByPathForThisId = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[guid]]) -Comparer $Comparer
                 $AceGuidByPathByNetworkPathForThisId = @{}
 
                 ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
@@ -94,7 +95,7 @@ function Group-AccountPermissionReference {
                         [pscustomobject]@{
                             AceGuidByPath = $ForThisId
                             Path          = $NetworkPath
-                            Items         = Expand-FlatPermissionReference -SortedPath $SortedPath @CommonParams
+                            Items         = Expand-FlatPermissionReference -Identity $Identity -SortedPath $SortedPath @CommonParams
                         }
 
                     }
