@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1149] - 2025-01-05 - bugfix remove excessive properties disrupting the order of displayed properties
 ## [0.0.1148] - 2025-01-05 - workaround for expectation of an obj with an account property
 ## [0.0.1147] - 2025-01-05 - bugfix remove pipeline usage
 ## [0.0.1146] - 2025-01-04 - bugfix missing accountproperty param

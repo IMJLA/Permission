@@ -23,10 +23,8 @@ function Select-AccountTableProperty {
         if ($AccountName) {
 
             $Props = [ordered]@{
-                Account     = $AccountName
-                Name        = $Object.Account.Name
-                DisplayName = $Object.Account.DisplayName
-                Description = $Object.Account.Description
+                Account = $AccountName
+                Name    = $Object.Account.Name
             }
 
             ForEach ($PropName in $AccountProperty) {
