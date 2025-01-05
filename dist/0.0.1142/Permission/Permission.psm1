@@ -1692,10 +1692,16 @@ function Get-HtmlBody {
         $HtmlFileList,
         $HtmlExclusions,
         $SummaryDivHeader,
-        $DetailDivHeader
+        $DetailDivHeader,
+        $Account
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
+
+    if ($Account) {
+        $null = $StringBuilder.Append((New-HtmlHeading 'Account Details' -Level 5))
+        $null = $StringBuilder.Append($Account)
+    }
     $null = $StringBuilder.Append((New-HtmlHeading 'Network Paths' -Level 5))
     $null = $StringBuilder.Append($NetworkPathDiv)
 
@@ -1711,11 +1717,11 @@ function Get-HtmlBody {
     }
 
     if ($HtmlExclusions) {
-        $null = $StringBuilder.Append((New-HtmlHeading "Exclusions from This Report" -Level 5))
+        $null = $StringBuilder.Append((New-HtmlHeading 'Exclusions from This Report' -Level 5))
         $null = $StringBuilder.Append($HtmlExclusions)
     }
 
-    $null = $StringBuilder.Append((New-HtmlHeading "Files Generated" -Level 5))
+    $null = $StringBuilder.Append((New-HtmlHeading 'Files Generated' -Level 5))
     $null = $StringBuilder.Append($HtmlFileList)
     $null = $StringBuilder.Append($ReportFooter)
 
@@ -1831,6 +1837,7 @@ function Get-HtmlReportElements {
         [uint64]$AceCount,
         [uint64]$IdCount,
         [UInt64]$PrincipalCount,
+        [pscustomobject[]]$Account,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -1951,7 +1958,20 @@ function Get-HtmlReportElements {
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
+    if ($Account) {
+
+        $AccountTable = $Account |
+        ConvertTo-HtmlTable -Culture $Culture -SkipFilterCheck |
+        New-BootstrapTable
+
+        $AccountDivHeader = 'The report includes permissions for this account'
+        Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
+        $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
+
+    }
+
     [PSCustomObject]@{
+        'AccountDiv'         = $AccountDiv
         'ReportFooter'       = $ReportFooter
         'HtmlDivOfFiles'     = $HtmlDivOfFiles
         'ExclusionsDiv'      = $ExclusionsDiv
@@ -6260,6 +6280,7 @@ function Out-PermissionFile {
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
+                $Params['Account'] = $File.Account
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
@@ -6270,6 +6291,7 @@ function Out-PermissionFile {
                     SummaryDivHeader      = $HtmlElements.SummaryDivHeader
                     DetailDivHeader       = $HtmlElements.DetailDivHeader
                     NetworkPathDiv        = $HtmlElements.NetworkPathDiv
+                    AccountDiv            = $HtmlElements.AccountDiv
                 }
 
                 ForEach ($Level in $SplitDetail) {
@@ -6556,6 +6578,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

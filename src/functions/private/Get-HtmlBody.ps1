@@ -8,10 +8,16 @@ function Get-HtmlBody {
         $HtmlFileList,
         $HtmlExclusions,
         $SummaryDivHeader,
-        $DetailDivHeader
+        $DetailDivHeader,
+        $Account
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
+
+    if ($Account) {
+        $null = $StringBuilder.Append((New-HtmlHeading 'Account Details' -Level 5))
+        $null = $StringBuilder.Append($Account)
+    }
     $null = $StringBuilder.Append((New-HtmlHeading 'Network Paths' -Level 5))
     $null = $StringBuilder.Append($NetworkPathDiv)
 
@@ -27,11 +33,11 @@ function Get-HtmlBody {
     }
 
     if ($HtmlExclusions) {
-        $null = $StringBuilder.Append((New-HtmlHeading "Exclusions from This Report" -Level 5))
+        $null = $StringBuilder.Append((New-HtmlHeading 'Exclusions from This Report' -Level 5))
         $null = $StringBuilder.Append($HtmlExclusions)
     }
 
-    $null = $StringBuilder.Append((New-HtmlHeading "Files Generated" -Level 5))
+    $null = $StringBuilder.Append((New-HtmlHeading 'Files Generated' -Level 5))
     $null = $StringBuilder.Append($HtmlFileList)
     $null = $StringBuilder.Append($ReportFooter)
 

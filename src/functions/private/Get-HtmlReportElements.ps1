@@ -107,6 +107,7 @@ function Get-HtmlReportElements {
         [uint64]$AceCount,
         [uint64]$IdCount,
         [UInt64]$PrincipalCount,
+        [pscustomobject[]]$Account,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -227,7 +228,20 @@ function Get-HtmlReportElements {
     }
     $ReportFooter = Get-HtmlReportFooter @FooterParams
 
+    if ($Account) {
+
+        $AccountTable = $Account |
+        ConvertTo-HtmlTable -Culture $Culture -SkipFilterCheck |
+        New-BootstrapTable
+
+        $AccountDivHeader = 'The report includes permissions for this account'
+        Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
+        $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
+
+    }
+
     [PSCustomObject]@{
+        'AccountDiv'         = $AccountDiv
         'ReportFooter'       = $ReportFooter
         'HtmlDivOfFiles'     = $HtmlDivOfFiles
         'ExclusionsDiv'      = $ExclusionsDiv

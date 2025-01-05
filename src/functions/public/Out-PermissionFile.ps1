@@ -451,6 +451,7 @@ function Out-PermissionFile {
                 $Params['NetworkPath'] = $File.NetworkPaths
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
+                $Params['Account'] = $File.Account
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
@@ -461,6 +462,7 @@ function Out-PermissionFile {
                     SummaryDivHeader      = $HtmlElements.SummaryDivHeader
                     DetailDivHeader       = $HtmlElements.DetailDivHeader
                     NetworkPathDiv        = $HtmlElements.NetworkPathDiv
+                    AccountDiv            = $HtmlElements.AccountDiv
                 }
 
                 ForEach ($Level in $SplitDetail) {
