@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1141] - 2025-01-04 - bugfix check for networkpaths AFTER it is populated. for some weird reason.  variables, how do they work
 ## [0.0.1140] - 2025-01-04 - remove unnecessary debug output
 ## [0.0.1139] - 2025-01-04 - don't do anything if there are no permissions
 ## [0.0.1138] - 2025-01-04 - don't do anything if there are no permissions

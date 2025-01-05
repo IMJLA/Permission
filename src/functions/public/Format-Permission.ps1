@@ -141,14 +141,14 @@ function Format-Permission {
 
                 }
 
-                if ($NetworkPaths) {
+            }
 
-                    [PSCustomObject]@{
-                        'PSTypeName'   = 'Permission.AccountPermission'
-                        'Account'      = $Account.Account
-                        'NetworkPaths' = $NetworkPaths
+            if ($NetworkPaths) {
 
-                    }
+                [PSCustomObject]@{
+                    'PSTypeName'   = 'Permission.AccountPermission'
+                    'Account'      = $Account.Account
+                    'NetworkPaths' = $NetworkPaths
 
                 }
 
