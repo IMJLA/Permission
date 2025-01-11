@@ -31,6 +31,7 @@ function Get-DetailDivHeader {
     )
 
     switch ($GroupBy) {
+
         'account' {
 
             if ( $GroupBy -eq $Split ) { "Permissions for $ThisSplit" }
@@ -38,6 +39,7 @@ function Get-DetailDivHeader {
             break
 
         }
+
         'item' {
 
             if ( $GroupBy -eq $Split ) { 'Permissions' }
@@ -45,6 +47,7 @@ function Get-DetailDivHeader {
             break
 
         }
+
         'source' {
 
             if ( $GroupBy -eq $Split ) { 'Permissions' }
@@ -52,7 +55,9 @@ function Get-DetailDivHeader {
             break
 
         }
+
         'none' { 'Permissions'; break }
+
     }
 
 }

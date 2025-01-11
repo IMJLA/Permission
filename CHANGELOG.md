@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1161] - 2025-01-11 - upgrade detail div header
 ## [0.0.1160] - 2025-01-11 - improve detail div header
 ## [0.0.1159] - 2025-01-05 - bugfix permission count
 ## [0.0.1158] - 2025-01-05 - implement identity override
