@@ -1,7 +1,7 @@
 # Initialize the BuildHelpers environment variables here so they are usable in all child scopes including the psake properties block
 BuildHelpers\Set-BuildEnvironment -Force
 
-properties {
+Properties {
 
     # Version of the module manifest in the src directory before the build is run and the version is updated
     $SourceModuleVersion = (Import-PowerShellDataFile -Path $env:BHPSModuleManifest).ModuleVersion
@@ -92,16 +92,16 @@ FormatTaskName {
     Write-Host $taskName -ForegroundColor Blue
 }
 
-task Default -depends RemoveScriptScopedVariables
+Task Default -depends RemoveScriptScopedVariables
 
-task InitializeEnvironmentVariables {
+Task InitializeEnvironmentVariables {
 
     # Should I be running Git before this? I haven't run Git yet, so BuildHelpers finds the previous commit msg and I have to use the line below to update it
     $env:BHCommitMessage = $CommitMessage
 
 } -description 'Initialize the environment variables from the BuildHelpers module'
 
-task UpdateModuleVersion -depends InitializeEnvironmentVariables -Action {
+Task UpdateModuleVersion -depends InitializeEnvironmentVariables -action {
     $CurrentVersion = (Test-ModuleManifest $env:BHPSModuleManifest).Version
     "`tOld Version: $CurrentVersion"
     if ($IncrementMajorVersion) {
@@ -119,7 +119,7 @@ task UpdateModuleVersion -depends InitializeEnvironmentVariables -Action {
     Update-Metadata -Path $env:BHPSModuleManifest -PropertyName ModuleVersion -Value $NewModuleVersion -ErrorAction Stop
 } -description 'Increment the module version and update the module manifest accordingly'
 
-task InitializePowershellBuild -depends UpdateModuleVersion {
+Task InitializePowershellBuild -depends UpdateModuleVersion {
 
     $NewModuleVersion = (Import-PowerShellDataFile -Path $env:BHPSModuleManifest).ModuleVersion
 
@@ -159,7 +159,7 @@ task InitializePowershellBuild -depends UpdateModuleVersion {
 
 } -description 'Initialize environment variables from the PowerShellBuild module'
 
-task RotateBuilds -depends InitializePowershellBuild {
+Task RotateBuilds -depends InitializePowershellBuild {
     $BuildVersionsToRetain = 1
     if ($BuildOutDir.Length -gt 3) {
         Get-ChildItem -Directory -Path $BuildOutDir |
@@ -175,7 +175,7 @@ task RotateBuilds -depends InitializePowershellBuild {
     $NewLine
 } -description 'Delete old builds'
 
-task UpdateChangeLog -depends RotateBuilds -Action {
+Task UpdateChangeLog -depends RotateBuilds -action {
     <#
 TODO
     This task runs before the Test task so that tests of the change log will pass
@@ -186,7 +186,7 @@ TODO
 #>
     $ChangeLog = "$env:BHProjectPath\CHANGELOG.md"
     $NewModuleVersion = (Import-PowerShellDataFile -Path $env:BHPSModuleManifest).ModuleVersion
-    $NewChanges = "## [$NewModuleVersion] - $(Get-Date -format 'yyyy-MM-dd') - $CommitMessage"
+    $NewChanges = "## [$NewModuleVersion] - $(Get-Date -Format 'yyyy-MM-dd') - $CommitMessage"
     "`tChange Log:  $ChangeLog"
     "`tNew Changes: $NewChanges"
     [string[]]$ChangeLogContents = Get-Content -Path $ChangeLog
@@ -202,7 +202,7 @@ TODO
     $NewChangeLogContents | Out-File -FilePath $ChangeLog -Encoding utf8 -Force
 }
 
-task ExportPublicFunctions -depends UpdateChangeLog -Action {
+Task ExportPublicFunctions -depends UpdateChangeLog -action {
     # Discover public functions
     $ScriptFiles = Get-ChildItem -Path "$env:BHPSModulePath\*.ps1" -Recurse
     $PublicScriptFiles = $ScriptFiles | Where-Object -FilterScript {
@@ -224,11 +224,11 @@ task ExportPublicFunctions -depends UpdateChangeLog -Action {
     }
 
     # Export public functions in the manifest
-    Update-MetaData -Path $env:BHPSModuleManifest -PropertyName FunctionsToExport -Value $publicFunctions
+    Update-Metadata -Path $env:BHPSModuleManifest -PropertyName FunctionsToExport -Value $publicFunctions
 
 } -description 'Export all public functions in the module'
 
-task BuildModule -depends ExportPublicFunctions {
+Task BuildModule -depends ExportPublicFunctions {
     $buildParams = @{
         Path               = $env:BHPSModulePath
         ModuleName         = $env:BHProjectName
@@ -258,7 +258,7 @@ task BuildModule -depends ExportPublicFunctions {
     Build-PSBuildModule @buildParams
 } -description 'Build a PowerShell script module based on the source directory'
 
-task CopyCSharpClasses -depends BuildModule {
+Task CopyCSharpClasses -depends BuildModule {
     New-Item -Path $env:BHBuildOutput\classes -ItemType Directory
     Copy-Item .\src\classes $env:BHBuildOutput\classes -Include *.cs
 }
@@ -272,14 +272,14 @@ $genMarkdownPreReqs = {
     $result
 }
 
-task DeleteMarkdownHelp -depends CopyCSharpClasses -precondition $genMarkdownPreReqs {
+Task DeleteMarkdownHelp -depends CopyCSharpClasses -precondition $genMarkdownPreReqs {
     $MarkdownDir = [IO.Path]::Combine($DocsRootDir, $HelpDefaultLocale)
     "`tDeleting folder: '$MarkdownDir'"
     Get-ChildItem -Path $MarkdownDir -Recurse | Remove-Item
     $NewLine
 } -description 'Delete existing .md files to prepare for PlatyPS to build new ones'
 
-task BuildMarkdownHelp -depends DeleteMarkdownHelp {
+Task BuildMarkdownHelp -depends DeleteMarkdownHelp {
     $ManifestPath = [IO.Path]::Combine($env:BHBuildOutput, "$env:BHProjectName.psd1")
     $moduleInfo = Import-Module $ManifestPath  -Global -Force -PassThru
     $manifestInfo = Test-ModuleManifest -Path $ManifestPath
@@ -318,7 +318,7 @@ task BuildMarkdownHelp -depends DeleteMarkdownHelp {
     }
 } -description 'Generate markdown files from the module help'
 
-task FixMarkdownHelp -depends BuildMarkdownHelp {
+Task FixMarkdownHelp -depends BuildMarkdownHelp {
     $ManifestPath = [IO.Path]::Combine($env:BHBuildOutput, "$env:BHProjectName.psd1")
     $moduleInfo = Import-Module $ManifestPath  -Global -Force -PassThru
     $manifestInfo = Test-ModuleManifest -Path $ManifestPath
@@ -328,7 +328,7 @@ task FixMarkdownHelp -depends BuildMarkdownHelp {
     [string]$ModuleHelp = Get-Content -LiteralPath $ModuleHelpFile -Raw
 
     #-Update the module description
-    $RegEx = "(?ms)\#\#\ Description\s*[^\r\n]*\s*"
+    $RegEx = '(?ms)\#\#\ Description\s*[^\r\n]*\s*'
     $NewString = "## Description$NewLine$($moduleInfo.Description)$NewLine"
     $ModuleHelp = $ModuleHelp -replace $RegEx, $NewString
 
@@ -336,7 +336,7 @@ task FixMarkdownHelp -depends BuildMarkdownHelp {
 
     #-Update the description of each function (use its synopsis for brevity)
     ForEach ($ThisFunction in $ManifestInfo.ExportedCommands.Keys) {
-        $Synopsis = (Get-Help -Name $ThisFunction).Synopsis
+        $Synopsis = (Get-Help -name $ThisFunction).Synopsis
         $RegEx = "(?ms)\#\#\#\ \[$ThisFunction]\($ThisFunction\.md\)\s*[^\r\n]*\s*"
         $NewString = "### [$ThisFunction]($ThisFunction.md)$NewLine$Synopsis$NewLine"
         $ModuleHelp = $ModuleHelp -replace $RegEx, $NewString
@@ -355,7 +355,7 @@ $genHelpFilesPreReqs = {
     $result
 }
 
-task BuildMAMLHelp -depends FixMarkdownHelp -precondition $genHelpFilesPreReqs {
+Task BuildMAMLHelp -depends FixMarkdownHelp -precondition $genHelpFilesPreReqs {
     Build-PSBuildMAMLHelp -Path $DocsRootDir -DestinationPath $env:BHBuildOutput
 } -description 'Generates MAML-based help from PlatyPS markdown files'
 
@@ -368,7 +368,7 @@ $genUpdatableHelpPreReqs = {
     $result
 }
 
-task BuildUpdatableHelp -depends BuildMAMLHelp -precondition $genUpdatableHelpPreReqs {
+Task BuildUpdatableHelp -depends BuildMAMLHelp -precondition $genUpdatableHelpPreReqs {
 
     $OS = (Get-CimInstance -ClassName CIM_OperatingSystem).Caption
     if ($OS -notmatch 'Windows') {
@@ -417,7 +417,7 @@ $analyzePreReqs = {
     $result
 }
 
-task Lint -depends BuildUpdatableHelp -precondition $analyzePreReqs {
+Task Lint -depends BuildUpdatableHelp -precondition $analyzePreReqs {
 
     $analyzeParams = @{
         Path              = $env:BHBuildOutput
@@ -446,7 +446,7 @@ $pesterPreReqs = {
     return $result
 }
 
-task UnitTests -depends Lint -precondition $pesterPreReqs {
+Task UnitTests -depends Lint -precondition $pesterPreReqs {
 
     Write-Host "`tInvoke-Pester -Configuration `$PesterConfiguration"
 
@@ -466,7 +466,7 @@ task UnitTests -depends Lint -precondition $pesterPreReqs {
     Test-PSBuildPester @pesterParams
 } -description 'Execute Pester tests'
 
-task SourceControl -depends UnitTests {
+Task SourceControl -depends UnitTests {
 
     Write-Host "`tgit add ."
     git add .
@@ -477,7 +477,7 @@ task SourceControl -depends UnitTests {
 
 } -description 'git add, commit, and push'
 
-task Publish -depends SourceControl {
+Task Publish -depends SourceControl {
 
     Assert -conditionToCheck ($PublishPSRepositoryApiKey -or $PublishPSRepositoryCredential) -failureMessage "API key or credential not defined to authenticate with [$PublishPSRepository)] with."
 
@@ -501,7 +501,7 @@ task Publish -depends SourceControl {
 
 } -description 'Publish module to the defined PowerShell repository'
 
-task WaitForRepoToUpdate -depends Publish {
+Task WaitForRepoToUpdate -depends Publish {
 
     $timer = 0
     $timer = 30
@@ -511,7 +511,7 @@ task WaitForRepoToUpdate -depends Publish {
         Start-Sleep -Seconds 1
         $timer++
         Write-Host "`tFind-Module -Name '$env:BHProjectName' -Repository '$PublishPSRepository'"
-        $VersionInGallery = Find-Module -Name $env:BHProjectName -Repository $PublishPSRepository
+        $VersionInGallery = Find-Module -name $env:BHProjectName -Repository $PublishPSRepository
 
     } while (
 
@@ -526,35 +526,41 @@ task WaitForRepoToUpdate -depends Publish {
 
 } -description 'Await the new version in the defined PowerShell repository'
 
-task Uninstall -depends WaitForRepoToUpdate {
+Task Uninstall -depends WaitForRepoToUpdate {
 
     Write-Host "`tGet-Module -Name '$env:BHProjectName' -ListAvailable"
 
-    if (Get-Module -Name $env:BHProjectName -ListAvailable) {
+    if (Get-Module -name $env:BHProjectName -ListAvailable) {
         Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
-        Uninstall-Module -Name $env:BHProjectName -AllVersions
+        Uninstall-Module -name $env:BHProjectName -AllVersions
     } else {
-        Write-Host ""
+        Write-Host ''
     }
 
 } -description 'Uninstall all versions of the module'
 
-task Reinstall -depends Uninstall {
+Task Reinstall -depends Uninstall {
 
-    Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force"
-    Install-Module -Name $env:BHProjectName -Force
+    [int]$attempts = 0
+
+    do {
+        $attempts++
+        Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force"
+        Install-Module -name $env:BHProjectName -Force
+        Start-Sleep -Seconds 1
+    } while ($null -eq (Get-Module -name $env:BHProjectName -ListAvailable) -and ($attempts -lt 3))
 
 } -description 'Reinstall the latest version of the module from the defined PowerShell repository'
 
-task RemoveScriptScopedVariables -depends Reinstall {
+Task RemoveScriptScopedVariables -depends Reinstall {
 
     # Remove script-scoped variables to avoid their accidental re-use
     Write-Host "`tRemove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue"
-    Remove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
+    Remove-Variable -name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
 
 }
 
-task ? -description 'Lists the available tasks' {
+Task ? -description 'Lists the available tasks' {
     'Available tasks:'
     $psake.context.Peek().Tasks.Keys | Sort-Object
 }
