@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1169] - 2025-01-11 - implement groupby item
 ## [0.0.1168] - 2025-01-11 - Remove account properties from the permissions list if they have already been displayed on the report
 ## [0.0.1167] - 2025-01-11 - remove debug pause
 ## [0.0.1166] - 2025-01-11 - clarify report scope

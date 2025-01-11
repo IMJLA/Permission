@@ -2349,6 +2349,8 @@ function Group-AccountPermissionReference {
 
     )
 
+    $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
+
     $CommonParams = @{
         AceGUIDsByPath = $AceGuidByPath
         ACEsByGUID     = $ACEsByGUID
@@ -2356,13 +2358,72 @@ function Group-AccountPermissionReference {
 
     switch ($GroupBy) {
 
-        'item' {}
+        'item' {
+
+            ForEach ($Identity in ($ID | Sort-Object)) {
+
+                # Create a new cache for items accessible to the current identity, keyed by network path
+                $ItemPathByNetworkPath = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[string]]) -Comparer $Comparer
+                $AceGuidByPathForThisId = New-PermissionCacheRef -Key $StringType -Value ([System.Collections.Generic.List[guid]]) -Comparer $Comparer
+                $AceGuidByPathByNetworkPathForThisId = @{}
+
+                ForEach ($Guid in $AceGuidByID.Value[$Identity]) {
+
+                    $AceList = $AceByGuid.Value[$Guid]
+
+                    ForEach ($Ace in $AceList) {
+
+                        ForEach ($Key in $ParentBySourcePath.Keys) {
+
+                            ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+
+                                if ($Ace.Path.StartsWith($NetworkPath)) {
+
+                                    Add-PermissionCacheItem -Cache $AceGuidByPathForThisId -Key $Ace.Path -Value $Guid -Type $GuidType
+                                    Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type $StringType
+                                    $AceGuidByPathByNetworkPathForThisId[$NetworkPath] = $AceGuidByPathForThisId
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+                [PSCustomObject]@{
+                    Account      = $Identity
+                    NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
+
+                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
+                        $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
+                        $CommonParams['AceGuidsByPath'] = $ForThisId
+                        $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
+
+                        $TopLevelItemProperties = @{
+                            'AceGuidByPath' = $ForThisId
+                            'Path'          = $NetworkPath
+                            'Items'         = Group-ItemPermissionReference -SortedPath $SortedPath @CommonParams
+                        }
+
+                        Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties @CommonParams
+
+                    }
+
+                }
+
+            }
+
+            break
+
+        }
         'source' {}
 
         # 'none' and 'account' behave the same
         default {
 
-            $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
             $GuidType = [guid]
             $StringType = [string]
             $Comparer = [StringComparer]::OrdinalIgnoreCase
@@ -6612,6 +6673,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
