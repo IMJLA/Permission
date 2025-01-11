@@ -142,10 +142,10 @@ function Get-HtmlReportElements {
     Write-LogMsg -Cache $Cache -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
-    if ($Account) {
+    Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy '$GroupBy' -Split '$Split'"
+    $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
-        Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy '$GroupBy' -Split '$Split' -ThisSplit '$($Account.ResolvedAccountName)'"
-        $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split -ThisSplit $Account.ResolvedAccountName
+    if ($Account) {
 
         $AccountObj = [pscustomobject]@{'Account' = $Account }
         $AccountTable = Select-AccountTableProperty -InputObject $AccountObj -Culture $Culture -ShortNameByID $Cache.Value['ShortNameById'].Value -AccountProperty $AccountProperty |
@@ -155,11 +155,6 @@ function Get-HtmlReportElements {
         $AccountDivHeader = 'The report includes permissions for this account'
         Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
         $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
-
-    } else {
-
-        Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy '$GroupBy' -Split '$Split'"
-        $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
     }
 
