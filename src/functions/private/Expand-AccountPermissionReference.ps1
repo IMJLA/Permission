@@ -36,7 +36,54 @@ function Expand-AccountPermissionReference {
 
     switch ($GroupBy) {
 
-        'item' {}
+        'item' {
+
+            $ExpansionParameters = @{
+                'AceGUIDsByPath'         = $AceGuidByPath
+                'ACEsByGUID'             = $ACEsByGUID
+                'PrincipalsByResolvedID' = $PrincipalsByResolvedID
+            }
+
+            ForEach ($Account in $Reference) {
+
+                $Principal = $PrincipalsByResolvedID.Value[$Account.Account]
+
+                [PSCustomObject]@{
+                    'PSTypeName'   = 'Permission.AccountPermission'
+                    'Account'      = $Principal
+                    'NetworkPaths' = ForEach ($NetworkPath in $Account.NetworkPaths) {
+
+                        $ExpansionParameters['PrincipalByResolvedID'] = [ref]@{ $Account.Account = $Principal }
+
+                        [pscustomobject]@{
+                            'Access' = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID @ExpansionParameters
+                            'Item'   = $AclByPath.Value[$NetworkPath.Path]
+                            'Items'  = ForEach ($SourceChild in $NetworkPath.Items) {
+
+                                $Access = Expand-ItemPermissionAccountAccessReference -Reference $SourceChild.Access -AceByGUID $ACEsByGUID @ExpansionParameters
+
+                                if ($Access) {
+
+                                    [pscustomobject]@{
+                                        'Access'     = $Access
+                                        'Item'       = $AclsByPath.Value[$SourceChild.Path]
+                                        'PSTypeName' = 'Permission.ChildItemPermission'
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
         'source' {}
 
         # 'none' and 'account' behave the same

@@ -1268,7 +1268,54 @@ function Expand-AccountPermissionReference {
 
     switch ($GroupBy) {
 
-        'item' {}
+        'item' {
+
+            $ExpansionParameters = @{
+                'AceGUIDsByPath'         = $AceGuidByPath
+                'ACEsByGUID'             = $ACEsByGUID
+                'PrincipalsByResolvedID' = $PrincipalsByResolvedID
+            }
+
+            ForEach ($Account in $Reference) {
+
+                $Principal = $PrincipalsByResolvedID.Value[$Account.Account]
+
+                [PSCustomObject]@{
+                    'PSTypeName'   = 'Permission.AccountPermission'
+                    'Account'      = $Principal
+                    'NetworkPaths' = ForEach ($NetworkPath in $Account.NetworkPaths) {
+
+                        $ExpansionParameters['PrincipalByResolvedID'] = [ref]@{ $Account.Account = $Principal }
+
+                        [pscustomobject]@{
+                            'Access' = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID @ExpansionParameters
+                            'Item'   = $AclByPath.Value[$NetworkPath.Path]
+                            'Items'  = ForEach ($SourceChild in $NetworkPath.Items) {
+
+                                $Access = Expand-ItemPermissionAccountAccessReference -Reference $SourceChild.Access -AceByGUID $ACEsByGUID @ExpansionParameters
+
+                                if ($Access) {
+
+                                    [pscustomobject]@{
+                                        'Access'     = $Access
+                                        'Item'       = $AclsByPath.Value[$SourceChild.Path]
+                                        'PSTypeName' = 'Permission.ChildItemPermission'
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        }
+
         'source' {}
 
         # 'none' and 'account' behave the same
@@ -4252,6 +4299,7 @@ function Expand-Permission {
             'PrincipalByResolvedID' = $PrincipalsByResolvedID
         }
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference' -Expand $GroupSplat
+        Pause
         $AccountPermissionReferences = Group-AccountPermissionReference @GroupSplat
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
@@ -6672,6 +6720,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

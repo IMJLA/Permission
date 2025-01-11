@@ -88,6 +88,7 @@ function Expand-Permission {
             'PrincipalByResolvedID' = $PrincipalsByResolvedID
         }
         Write-LogMsg @Log -Text '$AccountPermissionReferences = Group-AccountPermissionReference' -Expand $GroupSplat
+        Pause
         $AccountPermissionReferences = Group-AccountPermissionReference @GroupSplat
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
