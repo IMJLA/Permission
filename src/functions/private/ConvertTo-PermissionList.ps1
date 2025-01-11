@@ -270,8 +270,10 @@ function ConvertTo-PermissionList {
 
                 $TableId = 'Perms'
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
-                Pause
-                if ($GroupBy -eq 'account') {
+                if (
+                    $GroupBy -eq 'account' -or
+                    ($GroupBy -eq 'none' -and $HowToSplit['Account'])
+                ) {
                     [string[]]$PropNames = @('Path', 'Access', 'Due to Membership In', 'Source of Access')
                 } else {
                     [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty

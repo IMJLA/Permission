@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1163] - 2025-01-11 - remove account properties from permission list when entire report is for an account whose properties are already displayed elsewhere
 ## [0.0.1162] - 2025-01-11 - update comment based help
 ## [0.0.1161] - 2025-01-11 - upgrade detail div header
 ## [0.0.1160] - 2025-01-11 - improve detail div header
