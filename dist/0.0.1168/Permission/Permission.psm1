@@ -718,38 +718,51 @@ function ConvertTo-PermissionList {
                     $ObjProps[$Prop.Replace(' ', '')] = $Prop
                 }
 
-                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
-
-                    $Props = [ordered]@{}
-
-                    ForEach ($PropName in $ObjProps.Keys) {
-                        $Props[$PropName] = $Obj.$($ObjProps[$PropName])
-                    }
-
-                    if (-not $HowToSplit['Account']) {
-                        ForEach ($PropName in $AccountProperty) {
-                            $Props[$PropName] = $Obj.$PropName
-                        }
-                    }
-
-                    [PSCustomObject]$Props
-
-                }
-
-                $TableId = 'Perms'
-                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
+                # Remove account properties from the permissions list if they have already been displayed on the report
                 if (
                     $GroupBy -eq 'account' -or
                     ($GroupBy -eq 'none' -and $HowToSplit['Account'])
                 ) {
-                    [string[]]$PropNames = @('Path', 'Access', 'Due to Membership In', 'Source of Access')
+                    [string[]]$HtmlPropNames = @('Path', 'Access', 'Due to Membership In', 'Source of Access')
                 } else {
-                    [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
+                    [string[]]$HtmlPropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
                 }
+
+                # Select the desired properties for the objects
+                $ObjectsForJsonData = [system.collections.generic.list[PSCustomObject]]::new()
+                $ObjectsForHtmlTable = [system.collections.generic.list[PSCustomObject]]::new()
+
+                ForEach ($Obj in $StartingPermissions) {
+
+                    $jsonProps = [ordered]@{}
+                    $htmlProps = [ordered]@{}
+
+                    ForEach ($PropName in $HtmlPropNames) {
+                        $htmlProps[$PropName] = $Obj.$PropName
+                    }
+
+                    ForEach ($PropName in $ObjProps.Keys) {
+                        $jsonProps[$PropName] = $Obj.$($ObjProps[$PropName])
+                    }
+
+                    if (-not $HowToSplit['Account']) {
+                        ForEach ($PropName in $AccountProperty) {
+                            $jsonProps[$PropName] = $Obj.$PropName
+                        }
+                    }
+
+                    $ObjectsForHtmlTable.Add([PSCustomObject]$htmlProps)
+                    $ObjectsForJsonData.Add([PSCustomObject]$jsonProps)
+
+                }
+
+                # Format the objects with those properties
+                $TableId = 'Perms'
+                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $ObjectsForHtmlTable -DataFilterControl -AllColumnsSearchable -PageSize 25
 
                 [PSCustomObject]@{
                     PSTypeName = 'Permission.PermissionList'
-                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
+                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $HtmlPropNames
                     Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                     Div        = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                     PassThru   = $ObjectsForJsonData
@@ -6599,6 +6612,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
