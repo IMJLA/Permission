@@ -39,9 +39,7 @@ function Expand-AccountPermissionReference {
         'item' {
 
             $ExpansionParameters = @{
-                'AceGUIDsByPath'         = $AceGuidByPath
-                'ACEsByGUID'             = $ACEsByGUID
-                'PrincipalsByResolvedID' = $PrincipalsByResolvedID
+                'AceByGUID' = $ACEsByGUID
             }
 
             ForEach ($Account in $Reference) {
@@ -56,11 +54,11 @@ function Expand-AccountPermissionReference {
                         $ExpansionParameters['PrincipalByResolvedID'] = [ref]@{ $Account.Account = $Principal }
 
                         [pscustomobject]@{
-                            'Access' = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access -AceByGUID $ACEsByGUID @ExpansionParameters
+                            'Access' = Expand-ItemPermissionAccountAccessReference -Reference $NetworkPath.Access @ExpansionParameters
                             'Item'   = $AclByPath.Value[$NetworkPath.Path]
                             'Items'  = ForEach ($SourceChild in $NetworkPath.Items) {
 
-                                $Access = Expand-ItemPermissionAccountAccessReference -Reference $SourceChild.Access -AceByGUID $ACEsByGUID @ExpansionParameters
+                                $Access = Expand-ItemPermissionAccountAccessReference -Reference $SourceChild.Access @ExpansionParameters
 
                                 if ($Access) {
 
