@@ -33,6 +33,9 @@ function Group-AccountPermissionReference {
     )
 
     $ParentBySourcePath = $Cache.Value['ParentBySourcePath'].Value
+    $GuidType = [guid]
+    $StringType = [string]
+    $Comparer = [StringComparer]::OrdinalIgnoreCase
 
     $CommonParams = @{
         AceGUIDsByPath = $AceGuidByPath
@@ -106,10 +109,6 @@ function Group-AccountPermissionReference {
 
         # 'none' and 'account' behave the same
         default {
-
-            $GuidType = [guid]
-            $StringType = [string]
-            $Comparer = [StringComparer]::OrdinalIgnoreCase
 
             ForEach ($Identity in ($ID | Sort-Object)) {
 
