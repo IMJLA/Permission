@@ -1620,6 +1620,7 @@ function Get-ColumnJson {
 function Get-DetailDivHeader {
 
     param (
+
         <#
         How to group the permissions in the output stream and within each exported file. Interacts with the SplitBy parameter:
 
@@ -1641,22 +1642,36 @@ function Get-DetailDivHeader {
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
         [string]$GroupBy = 'item',
-        [String]$Split
+
+        [String]$Split,
+
+        [string]$ThisSplit
+
     )
 
-    if ( $GroupBy -eq $Split ) {
+    switch ($GroupBy) {
+        'account' {
 
-        'Permissions'
+            if ( $GroupBy -eq $Split ) { "Permissions for $ThisSplit" }
+            else { 'Permissions for Each Account' }
+            break
 
-    } else {
-
-        switch ($GroupBy) {
-            'account' { 'Access for Each Account'; break }
-            'item' { 'Accounts Included in Those Permissions'; break }
-            'source' { 'Source Paths'; break }
-            'none' { 'Permissions'; break }
         }
+        'item' {
 
+            if ( $GroupBy -eq $Split ) { 'Permissions' }
+            else { 'Accounts Included in Those Permissions' }
+            break
+
+        }
+        'source' {
+
+            if ( $GroupBy -eq $Split ) { 'Permissions' }
+            else { 'Source Paths' }
+            break
+
+        }
+        'none' { 'Permissions'; break }
     }
 
 }
@@ -1879,6 +1894,7 @@ function Get-HtmlReportElements {
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
     Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy $GroupBy"
+    Pause
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
     Write-LogMsg -Cache $Cache -Text "New-HtmlHeading 'Source Paths' -Level 5"
@@ -2227,6 +2243,8 @@ function Get-SummaryDivHeader {
 }
 function Get-SummaryTableHeader {
     param (
+
+        # How many levels of child items were enumerated for the report
         [int]$RecurseDepth,
 
         <#
@@ -6594,6 +6612,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

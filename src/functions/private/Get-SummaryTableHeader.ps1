@@ -1,5 +1,7 @@
 function Get-SummaryTableHeader {
     param (
+
+        # How many levels of child items were enumerated for the report
         [int]$RecurseDepth,
 
         <#

@@ -143,6 +143,7 @@ function Get-HtmlReportElements {
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
     Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy $GroupBy"
+    Pause
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
     Write-LogMsg -Cache $Cache -Text "New-HtmlHeading 'Source Paths' -Level 5"
