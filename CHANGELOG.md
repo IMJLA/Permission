@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1167] - 2025-01-11 - remove debug pause
 ## [0.0.1166] - 2025-01-11 - clarify report scope
 ## [0.0.1165] - 2025-01-11 - simplify detail div header by removing redundant account name
 ## [0.0.1164] - 2025-01-11 - add debug pause

@@ -267,7 +267,7 @@ function ConvertTo-PermissionList {
                     [PSCustomObject]$Props
 
                 }
-                Pause
+
                 $TableId = 'Perms'
                 $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable -PageSize 25
                 if (
