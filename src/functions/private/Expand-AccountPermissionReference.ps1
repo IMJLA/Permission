@@ -64,7 +64,7 @@ function Expand-AccountPermissionReference {
 
                                     [pscustomobject]@{
                                         'Access'     = $Access
-                                        'Item'       = $AclsByPath.Value[$SourceChild.Path]
+                                        'Item'       = $AclByPath.Value[$SourceChild.Path]
                                         'PSTypeName' = 'Permission.ChildItemPermission'
                                     }
 
