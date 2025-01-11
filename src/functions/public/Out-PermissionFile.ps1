@@ -1,6 +1,6 @@
 function Out-PermissionFile {
 
-    # missing
+    # write the permissions to disk
 
     param (
 
