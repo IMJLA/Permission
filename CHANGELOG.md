@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1179] - 2025-01-12 - improve psake error handling during reinstall
 ## [0.0.1178] - 2025-01-12 - bugfix format-permission to not return any networkpaths in event of all accounts being excluded (which is just 1 account per report when splitby acct)
 ## [0.0.1177] - 2025-01-12 - rebvuild because previous build was interrupted
 ## [0.0.1176] - 2025-01-12 - bugfix splitby account groupby item

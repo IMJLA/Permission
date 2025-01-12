@@ -336,7 +336,7 @@ Task FixMarkdownHelp -depends BuildMarkdownHelp {
 
     #-Update the description of each function (use its synopsis for brevity)
     ForEach ($ThisFunction in $ManifestInfo.ExportedCommands.Keys) {
-        $Synopsis = (Get-Help -name $ThisFunction).Synopsis
+        $Synopsis = (Get-Help -Name $ThisFunction).Synopsis
         $RegEx = "(?ms)\#\#\#\ \[$ThisFunction]\($ThisFunction\.md\)\s*[^\r\n]*\s*"
         $NewString = "### [$ThisFunction]($ThisFunction.md)$NewLine$Synopsis$NewLine"
         $ModuleHelp = $ModuleHelp -replace $RegEx, $NewString
@@ -530,7 +530,7 @@ Task Uninstall -depends WaitForRepoToUpdate {
 
     Write-Host "`tGet-Module -Name '$env:BHProjectName' -ListAvailable"
 
-    if (Get-Module -name $env:BHProjectName -ListAvailable) {
+    if (Get-Module -Name $env:BHProjectName -ListAvailable) {
         Write-Host "`tUninstall-Module -Name '$env:BHProjectName' -AllVersions"
         Uninstall-Module -name $env:BHProjectName -AllVersions
     } else {
@@ -546,9 +546,9 @@ Task Reinstall -depends Uninstall {
     do {
         $attempts++
         Write-Host "`tInstall-Module -Name '$env:BHProjectName' -Force"
-        Install-Module -name $env:BHProjectName -Force
+        Install-Module -name $env:BHProjectName -Force -ErrorAction Continue
         Start-Sleep -Seconds 1
-    } while ($null -eq (Get-Module -name $env:BHProjectName -ListAvailable) -and ($attempts -lt 3))
+    } while ($null -eq (Get-Module -Name $env:BHProjectName -ListAvailable) -and ($attempts -lt 3))
 
 } -description 'Reinstall the latest version of the module from the defined PowerShell repository'
 
@@ -556,7 +556,7 @@ Task RemoveScriptScopedVariables -depends Reinstall {
 
     # Remove script-scoped variables to avoid their accidental re-use
     Write-Host "`tRemove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue"
-    Remove-Variable -name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
+    Remove-Variable -Name ModuleOutDir -Scope Script -Force -ErrorAction SilentlyContinue
 
 }
 
