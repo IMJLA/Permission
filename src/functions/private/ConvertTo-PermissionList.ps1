@@ -369,7 +369,7 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
 
-                            if ($null -ne $Group.Account) {
+                            if ($HowToSplit['Account']) {
                                 [string[]]$PropNames = @('Access', 'Due to Membership In', 'Source of Access')
                                 $GroupID = $Group.Access.Item.Path
                                 $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
