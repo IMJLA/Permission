@@ -1739,7 +1739,13 @@ function Get-DetailDivHeader {
 
         switch ($GroupBy) {
             'account' { 'Access for Each Account'; break }
-            'item' { 'Accounts Included in Those Permissions'; break }
+            'item' {
+
+                if ($Split -eq 'Account') { 'Permissions' }
+                else { 'Accounts Included in Those Permissions' }
+                break
+
+            }
             'source' { 'Source Paths'; break }
             'none' { 'Permissions'; break }
         }
@@ -1975,7 +1981,7 @@ function Get-HtmlReportElements {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $AccountDivHeader = 'The report only includes permissions for this account'
+        $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a report per account)'
         Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
         $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
@@ -6799,6 +6805,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-Cache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','New-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

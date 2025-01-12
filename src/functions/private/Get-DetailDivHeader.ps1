@@ -33,7 +33,13 @@ function Get-DetailDivHeader {
 
         switch ($GroupBy) {
             'account' { 'Access for Each Account'; break }
-            'item' { 'Accounts Included in Those Permissions'; break }
+            'item' {
+
+                if ($Split -eq 'Account') { 'Permissions' }
+                else { 'Accounts Included in Those Permissions' }
+                break
+
+            }
             'source' { 'Source Paths'; break }
             'none' { 'Permissions'; break }
         }

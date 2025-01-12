@@ -152,7 +152,7 @@ function Get-HtmlReportElements {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $AccountDivHeader = 'The report only includes permissions for this account'
+        $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a report per account)'
         Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
         $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
