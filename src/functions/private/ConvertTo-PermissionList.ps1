@@ -369,16 +369,24 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
 
-                            if ($HowToSplit['Account']) {
-                                [string[]]$PropNames = @('Access', 'Due to Membership In', 'Source of Access')
+                            $GroupID = $Group.Item.Path
+
+                            if (-not $GroupID) {
                                 $GroupID = $Group.Access.Item.Path
+                            }
+
+                            if ($HowToSplit['Account']) {
+
+                                [string[]]$PropNames = @('Access', 'Due to Membership In', 'Source of Access')
                                 $Heading = New-HtmlHeading "Access to $GroupID" -Level 6
                                 $SubHeading = 'This account has the below access to this item and its children, except children with inheritance disabled.'
+
                             } else {
+
                                 [string[]]$PropNames = @('Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
-                                $GroupID = $Group.Item.Path
                                 $Heading = New-HtmlHeading "Accounts with access to $GroupID" -Level 6
                                 $SubHeading = Get-FolderPermissionTableHeader -Group $Group -GroupID $GroupID -ShortestFolderPath $ShortestPath
+
                             }
 
                             $StartingPermissions = $Permission[$GroupID]
@@ -392,25 +400,42 @@ function ConvertTo-PermissionList {
                                     $ObjProps[$Prop.Replace(' ', '')] = $Prop
                                 }
 
-                                $ObjectsForJsonData = ForEach ($Obj in $StartingPermissions) {
+                                # Remove account properties from the permissions list if they have already been displayed on the report
+                                if ($HowToSplit['Account']) {
+                                    [string[]]$HtmlPropNames = @('Access', 'Due to Membership In', 'Source of Access')
+                                } else {
+                                    [string[]]$HtmlPropNames = $PropNames
+                                }
 
-                                    $Props = [ordered]@{}
+                                # Select the desired properties for the objects
+                                $ObjectsForJsonData = [system.collections.generic.list[PSCustomObject]]::new()
+                                $ObjectsForHtmlTable = [system.collections.generic.list[PSCustomObject]]::new()
 
-                                    ForEach ($PropName in $ObjProps.Keys) {
-                                        $Props[$PropName] = $Obj.$($ObjProps[$PropName])
+                                ForEach ($Obj in $StartingPermissions) {
+
+                                    $jsonProps = [ordered]@{}
+                                    $htmlProps = [ordered]@{}
+
+                                    ForEach ($PropName in $HtmlPropNames) {
+                                        $htmlProps[$PropName] = $Obj.$PropName
                                     }
 
-                                    [PSCustomObject]$Props
+                                    ForEach ($PropName in $ObjProps.Keys) {
+                                        $jsonProps[$PropName] = $Obj.$($ObjProps[$PropName])
+                                    }
+
+                                    $ObjectsForHtmlTable.Add([PSCustomObject]$htmlProps)
+                                    $ObjectsForJsonData.Add([PSCustomObject]$jsonProps)
 
                                 }
 
                                 $TableId = "Perms_$($GroupID -replace '[^A-Za-z0-9\-_]', '-')"
                                 $DivId = $TableId.Replace('Perms', 'Div')
-                                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $StartingPermissions -DataFilterControl -AllColumnsSearchable
+                                $Table = ConvertTo-BootstrapJavaScriptTable -Id $TableId -InputObject $ObjectsForHtmlTable -DataFilterControl -AllColumnsSearchable
 
                                 [PSCustomObject]@{
                                     PSTypeName = 'Permission.ItemPermissionList'
-                                    Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
+                                    Columns    = Get-ColumnJson -InputObject $ObjectsForHtmlTable -PropNames $PropNames
                                     Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                     Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $SubHeading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
                                     Grouping   = $GroupID
