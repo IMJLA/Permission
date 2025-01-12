@@ -5,7 +5,8 @@ function Group-ItemPermissionReference {
         [ref]$AceGUIDsByPath,
         [ref]$ACEsByGUID,
         [ref]$PrincipalsByResolvedID,
-        [Hashtable]$Property = @{}
+        [Hashtable]$Property = @{},
+        [string]$Identity
     )
 
     ForEach ($ItemPath in $SortedPath) {
@@ -13,11 +14,24 @@ function Group-ItemPermissionReference {
         $Property['Path'] = $ItemPath
         $IDsWithAccess = Find-ResolvedIDsWithAccess -ItemPath $ItemPath -AceGUIDsByPath $AceGUIDsByPath -ACEsByGUID $ACEsByGUID -PrincipalsByResolvedID $PrincipalsByResolvedID
 
-        $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Value.Keys | Sort-Object)) {
-            [PSCustomObject]@{
-                Account  = $ID
-                AceGUIDs = $IDsWithAccess.Value[$ID]
+        if ($Identity) {
+
+            $Property['Access'] = [PSCustomObject]@{
+                'Account'  = $Identity
+                'AceGUIDs' = $IDsWithAccess.Value[$Identity]
             }
+
+        } else {
+
+            $Property['Access'] = ForEach ($ID in ($IDsWithAccess.Value.Keys | Sort-Object)) {
+
+                [PSCustomObject]@{
+                    'Account'  = $ID
+                    'AceGUIDs' = $IDsWithAccess.Value[$ID]
+                }
+
+            }
+
         }
 
         [PSCustomObject]$Property

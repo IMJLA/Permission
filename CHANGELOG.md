@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1176] - 2025-01-12 - bugfix splitby account groupby item
 ## [0.0.1175] - 2025-01-11 - bugfix principal cache
 ## [0.0.1174] - 2025-01-11 - bugfix singular vs plural
 ## [0.0.1173] - 2025-01-11 - remove extraneous params

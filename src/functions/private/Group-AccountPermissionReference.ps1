@@ -38,8 +38,9 @@ function Group-AccountPermissionReference {
     $Comparer = [StringComparer]::OrdinalIgnoreCase
 
     $CommonParams = @{
-        AceGUIDsByPath = $AceGuidByPath
-        ACEsByGUID     = $ACEsByGUID
+        AceGUIDsByPath         = $AceGuidByPath
+        ACEsByGUID             = $ACEsByGUID
+        PrincipalsByResolvedID = $PrincipalByResolvedID
     }
 
     switch ($GroupBy) {
@@ -59,15 +60,18 @@ function Group-AccountPermissionReference {
 
                     ForEach ($Ace in $AceList) {
 
-                        ForEach ($Key in $ParentBySourcePath.Keys) {
+                        ForEach ($SourcePath in $ParentBySourcePath.Keys) {
 
-                            ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+                            ForEach ($NetworkPath in $ParentBySourcePath[$SourcePath]) {
 
                                 if ($Ace.Path.StartsWith($NetworkPath)) {
 
                                     Add-PermissionCacheItem -Cache $AceGuidByPathForThisId -Key $Ace.Path -Value $Guid -Type $GuidType
-                                    Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type $StringType
                                     $AceGuidByPathByNetworkPathForThisId[$NetworkPath] = $AceGuidByPathForThisId
+
+                                    if ($Ace.Path -ne $NetworkPath) {
+                                        Add-PermissionCacheItem -Cache $ItemPathByNetworkPath -Key $NetworkPath -Value $Ace.Path -Type $StringType
+                                    }
 
                                 }
 
@@ -81,20 +85,33 @@ function Group-AccountPermissionReference {
 
                 [PSCustomObject]@{
                     Account      = $Identity
-                    NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
+                    NetworkPaths = ForEach ($SourcePath in $ParentBySourcePath.Keys) {
 
-                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
-                        $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
-                        $CommonParams['AceGuidsByPath'] = $ForThisId
-                        $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
+                        ForEach ($NetworkPath in $ParentBySourcePath[$SourcePath]) {
 
-                        $TopLevelItemProperties = @{
-                            'AceGuidByPath' = $ForThisId
-                            'Path'          = $NetworkPath
-                            'Items'         = Group-ItemPermissionReference -SortedPath $SortedPath @CommonParams
+                            $NetworkPathProperties = @{
+                                'Path' = $NetworkPath
+                            }
+
+                            $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
+                            $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
+
+                            if ($ForThisId) {
+
+                                $CommonParams['AceGuidsByPath'] = $ForThisId
+                                $NetworkPathProperties['Items'] = Group-ItemPermissionReference -Identity $Identity -SortedPath $SortedPath @CommonParams
+                                $NetworkPathProperties['AceGuidByPath'] = $ForThisId
+
+                            } else {
+
+                                $NetworkPathProperties['Items'] = $null
+                                $NetworkPathProperties['AceGuidByPath'] = $AceGuidByPath
+
+                            }
+
                         }
 
-                        Group-ItemPermissionReference -SortedPath $NetworkPath -Property $TopLevelItemProperties @CommonParams
+                        Group-ItemPermissionReference -Identity $Identity -SortedPath $NetworkPath -Property $NetworkPathProperties @CommonParams
 
                     }
 
@@ -105,6 +122,7 @@ function Group-AccountPermissionReference {
             break
 
         }
+
         'source' {}
 
         # 'none' and 'account' behave the same
@@ -123,9 +141,9 @@ function Group-AccountPermissionReference {
 
                     ForEach ($Ace in $AceList) {
 
-                        ForEach ($Key in $ParentBySourcePath.Keys) {
+                        ForEach ($SourcePath in $ParentBySourcePath.Keys) {
 
-                            ForEach ($NetworkPath in $ParentBySourcePath[$Key]) {
+                            ForEach ($NetworkPath in $ParentBySourcePath[$SourcePath]) {
 
                                 if ($Ace.Path.StartsWith($NetworkPath)) {
 
@@ -145,17 +163,33 @@ function Group-AccountPermissionReference {
 
                 [PSCustomObject]@{
                     Account      = $Identity
-                    NetworkPaths = ForEach ($NetworkPath in $ItemPathByNetworkPath.Value.Keys) {
+                    NetworkPaths = ForEach ($SourcePath in $ParentBySourcePath.Keys) {
 
-                        $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
-                        $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
-                        $CommonParams['AceGuidsByPath'] = $ForThisId
-                        $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
+                        ForEach ($NetworkPath in $ParentBySourcePath[$SourcePath]) {
 
-                        [pscustomobject]@{
-                            AceGuidByPath = $ForThisId
-                            Path          = $NetworkPath
-                            Items         = Expand-FlatPermissionReference -Identity $Identity -SortedPath $SortedPath @CommonParams
+                            $NetworkPathProperties = @{
+                                'Path' = $NetworkPath
+                            }
+
+                            $SortedPath = $ItemPathByNetworkPath.Value[$NetworkPath] | Sort-Object -Unique
+                            $ForThisId = $AceGuidByPathByNetworkPathForThisId[$NetworkPath]
+
+                            if ($ForThisId) {
+
+                                $CommonParams['AceGuidsByPath'] = $ForThisId
+                                $CommonParams['PrincipalsByResolvedID'] = [ref]@{ $Identity = $PrincipalByResolvedID.Value[$Identity] }
+                                $NetworkPathProperties['Items'] = Expand-FlatPermissionReference -Identity $Identity -SortedPath $SortedPath @CommonParams
+                                $NetworkPathProperties['AceGuidByPath'] = $ForThisId
+
+                            } else {
+
+                                $NetworkPathProperties['Items'] = $null
+                                $NetworkPathProperties['AceGuidByPath'] = $AceGuidByPath
+
+                            }
+
+                            [pscustomobject]$NetworkPathProperties
+
                         }
 
                     }

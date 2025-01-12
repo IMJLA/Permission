@@ -28,10 +28,9 @@ function Select-ItemTableProperty {
 
             }
 
+            # Filter out any accounts that are not in the ShortNameByID hashtable
             $AccountNames = $ShortNameByID[$ResolvedAccountName]
             if (-not $AccountNames) { continue }
-            $GroupString = $ShortNameByID[$Object.Access.Access.IdentityReferenceResolved]
-            if (-not $GroupString) { continue }
 
         }
 
