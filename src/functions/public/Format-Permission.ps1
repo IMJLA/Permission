@@ -116,30 +116,37 @@ function Format-Permission {
                 }
 
                 $PermissionGroupingsWithChosenProperties = Invoke-Command -ScriptBlock $Grouping['Script'] -ArgumentList $Selection, $Culture, $ShortNameById, $IncludeAccountFilterContents, $ExcludeClassFilterContents, $GroupByForThisSplit, $AccountProperty
-                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupByForThisSplit -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents
 
-                if ($PermissionsWithChosenProperties.Keys.Count -gt 0) {
+                # This indicates the report criteria did not match any permissions for the Account on the NetworkPath.
+                # For example, this happens when the ExcludeClass filter was used to exclude an account from the report.
+                if (-not $PermissionGroupingsWithChosenProperties) {
+                    continue
+                }
 
-                    $OutputProperties = @{
-                        'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupByForThisSplit))Permission"
-                        'Item'       = $NetworkPath.Item
+                $PermissionsWithChosenProperties = Select-PermissionTableProperty -InputObject $Selection -GroupBy $GroupByForThisSplit -AccountProperty $AccountProperty -ShortNameById $ShortNameByID -IncludeAccountFilterContents $IncludeAccountFilterContents -ExcludeClassFilterContents $ExcludeClassFilterContents -NoAccountProperty
+
+                if ([int]$PermissionsWithChosenProperties.Keys.Count -eq 0) {
+                    continue
+                }
+
+                $OutputProperties = @{
+                    'PSTypeName' = "Permission.Parent$($Culture.TextInfo.ToTitleCase($GroupByForThisSplit))Permission"
+                    'Item'       = $NetworkPath.Item
+                }
+
+                ForEach ($Format in $Formats) {
+
+                    $FormatString = $Format
+                    if ($Format -eq 'js') {
+                        $FormatString = 'json'
                     }
 
-                    ForEach ($Format in $Formats) {
-
-                        $FormatString = $Format
-                        if ($Format -eq 'js') {
-                            $FormatString = 'json'
-                        }
-
-                        $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy -GroupBy $GroupByForThisSplit @ConvertSplat
-                        $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format -GroupBy $GroupByForThisSplit -NetworkPath $NetworkPath.Item.Path @ConvertSplat
-
-                    }
-
-                    [PSCustomObject]$OutputProperties
+                    $OutputProperties["$FormatString`Group"] = ConvertTo-PermissionGroup -Permission $PermissionGroupingsWithChosenProperties -Format $Format -HowToSplit $Permission.SplitBy -GroupBy $GroupByForThisSplit @ConvertSplat
+                    $OutputProperties[$FormatString] = ConvertTo-PermissionList -Permission $PermissionsWithChosenProperties -PermissionGrouping $Selection -ShortestPath @($Permission.SourcePermissions.NetworkPaths.Item.Path)[0] -HowToSplit $Permission.SplitBy -Format $Format -GroupBy $GroupByForThisSplit -NetworkPath $NetworkPath.Item.Path @ConvertSplat
 
                 }
+
+                [PSCustomObject]$OutputProperties
 
             }
 

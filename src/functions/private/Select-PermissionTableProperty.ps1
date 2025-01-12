@@ -37,7 +37,9 @@ function Select-PermissionTableProperty {
         [ref]$IncludeAccountFilterContents,
 
         # Properties of each Account to display on the report (left out: managedby)
-        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description')
+        [string[]]$AccountProperty = @('DisplayName', 'Company', 'Department', 'Title', 'Description'),
+
+        [switch]$NoAccountProperty
 
     )
 
@@ -189,7 +191,7 @@ function Select-PermissionTableProperty {
                             if ($null -ne $GroupString) {
 
                                 # this indicates SplitBy Account GroupBy Item
-                                if ($null -ne $Object.Account) {
+                                if ($NoAccountProperty) {
 
                                     $Props = [ordered]@{
                                         'Path'                 = $ACE.Path
