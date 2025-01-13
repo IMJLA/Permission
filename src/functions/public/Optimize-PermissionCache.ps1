@@ -1,4 +1,4 @@
-function Update-PermissionCache {
+function Optimize-PermissionCache {
 
     <#
     Pre-populate caches in memory to avoid redundant ADSI and CIM queries

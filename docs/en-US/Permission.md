@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1183
+Help Version: 0.0.1185
 Locale: en-US
 ---
 
@@ -98,6 +98,10 @@ Invoke-PermissionAnalyzer [[-AllowDisabledInheritance] <hashtable>] [[-AccountCo
 
 Invoke-PermissionCommand [[-Command] <string>] [-Cache] <ref> [<CommonParameters>]
 
+### [Optimize-PermissionCache](Optimize-PermissionCache.md)
+
+Optimize-PermissionCache [[-Fqdn] <string[]>] [-Cache] <ref> [<CommonParameters>]
+
 ### [Out-Permission](Out-Permission.md)
 
 Out-Permission [[-OutputFormat] <string>] [[-GroupBy] <string>] [[-FormattedPermission] <hashtable>]
@@ -121,9 +125,5 @@ Resolve-PermissionSource [[-SourcePath] <DirectoryInfo[]>] [-Cache] <ref> [<Comm
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 
 Select-PermissionPrincipal [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [-Cache] <ref> [<CommonParameters>]
-
-### [Update-PermissionCache](Update-PermissionCache.md)
-
-Update-PermissionCache [[-Fqdn] <string[]>] [-Cache] <ref> [<CommonParameters>]
 
 

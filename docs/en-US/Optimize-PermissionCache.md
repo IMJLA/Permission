@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# Update-PermissionCache
+# Optimize-PermissionCache
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-Update-PermissionCache [[-Fqdn] <String[]>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
+Optimize-PermissionCache [[-Fqdn] <String[]>] [-Cache] <PSReference> [-ProgressAction <ActionPreference>]
  [<CommonParameters>]
 ```
 

@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1185] - 2025-01-12 - rename function for clarity
+## [0.0.1184] - 2025-01-12 - rename function for clarity
 ## [0.0.1183] - 2025-01-12 - rename functions for clarity
 ## [0.0.1182] - 2025-01-12 - update report verbiage
 ## [0.0.1181] - 2025-01-12 - add logic for correct table property selection based on splitby and groupby
