@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1182
+Help Version: 0.0.1183
 Locale: en-US
 ---
 
@@ -86,9 +86,9 @@ Get-PermissionWhoAmI [[-ThisHostname] <string>]
 
 Get-TimeZoneName [[-Time] <datetime>] [[-TimeZone] <ciminstance>]
 
-### [Initialize-Cache](Initialize-Cache.md)
+### [Initialize-PermissionCache](Initialize-PermissionCache.md)
 
-Initialize-Cache [[-Fqdn] <string[]>] [-Cache] <ref> [<CommonParameters>]
+Initialize-PermissionCache [[-ThreadCount] <ushort>] [[-OutputDir] <string>] [[-TranscriptFile] <string>]
 
 ### [Invoke-PermissionAnalyzer](Invoke-PermissionAnalyzer.md)
 
@@ -97,10 +97,6 @@ Invoke-PermissionAnalyzer [[-AllowDisabledInheritance] <hashtable>] [[-AccountCo
 ### [Invoke-PermissionCommand](Invoke-PermissionCommand.md)
 
 Invoke-PermissionCommand [[-Command] <string>] [-Cache] <ref> [<CommonParameters>]
-
-### [New-PermissionCache](New-PermissionCache.md)
-
-New-PermissionCache [[-ThreadCount] <ushort>] [[-OutputDir] <string>] [[-TranscriptFile] <string>]
 
 ### [Out-Permission](Out-Permission.md)
 
@@ -125,5 +121,9 @@ Resolve-PermissionSource [[-SourcePath] <DirectoryInfo[]>] [-Cache] <ref> [<Comm
 ### [Select-PermissionPrincipal](Select-PermissionPrincipal.md)
 
 Select-PermissionPrincipal [[-ExcludeAccount] <string[]>] [[-IncludeAccount] <string[]>] [[-IgnoreDomain] <string[]>] [-Cache] <ref> [<CommonParameters>]
+
+### [Update-PermissionCache](Update-PermissionCache.md)
+
+Update-PermissionCache [[-Fqdn] <string[]>] [-Cache] <ref> [<CommonParameters>]
 
 

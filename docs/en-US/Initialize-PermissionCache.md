@@ -5,7 +5,7 @@ online version:
 schema: 2.0.0
 ---
 
-# New-PermissionCache
+# Initialize-PermissionCache
 
 ## SYNOPSIS
 {{ Fill in the Synopsis }}
@@ -13,7 +13,7 @@ schema: 2.0.0
 ## SYNTAX
 
 ```
-New-PermissionCache [[-ThreadCount] <UInt16>] [[-OutputDir] <String>] [[-TranscriptFile] <String>]
+Initialize-PermissionCache [[-ThreadCount] <UInt16>] [[-OutputDir] <String>] [[-TranscriptFile] <String>]
 ```
 
 ## DESCRIPTION

@@ -1,4 +1,4 @@
-function New-PermissionCache {
+function Initialize-PermissionCache {
 
     <#
     Create an in-process cache to reduce calls to other processes, disk, or network, and to store repetitive parameters for better readability of code and logs.
