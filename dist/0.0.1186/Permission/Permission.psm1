@@ -374,15 +374,14 @@ function ConvertTo-PermissionGroup {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -491,15 +490,14 @@ function ConvertTo-PermissionList {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -1148,15 +1146,14 @@ function ConvertTo-ScriptHtml {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -1275,15 +1272,14 @@ function Expand-AccountPermissionReference {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -1531,15 +1527,14 @@ function Expand-SourcePermissionReference {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -1715,15 +1710,14 @@ function Get-DetailDivHeader {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -1905,10 +1899,9 @@ function Get-HtmlReportElements {
         |---------|----------|
         | none    | generate 1 report file with all permissions |
         | source  | generate 1 report file per source path (default) |
-        | item    | generate 1 report file per item |
         | account | generate 1 report file per account |
         #>
-        [ValidateSet('account', 'item', 'none', 'source')]
+        [ValidateSet('account', 'none', 'source')]
         [string[]]$SplitBy = 'source',
 
         [String]$Split,
@@ -2284,15 +2277,14 @@ function Get-SummaryDivHeader {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -2332,15 +2324,14 @@ function Get-SummaryTableHeader {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -2410,15 +2401,14 @@ function Group-AccountPermissionReference {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -2660,15 +2650,14 @@ function Group-SourcePermissionReference {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -3425,15 +3414,14 @@ function Resolve-GroupByParameter {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -3599,7 +3587,6 @@ function Resolve-SplitByParameter {
         |---------|----------|
         | none    | generate 1 report file with all permissions |
         | source  | generate 1 report file per source path (default) |
-        | item    | generate 1 report file per item |
         | account | generate 1 report file per account |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -3736,15 +3723,14 @@ function Select-PermissionTableProperty {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -4302,10 +4288,9 @@ function Expand-Permission {
         |---------|----------|
         | none    | generate 1 report file with all permissions |
         | source  | generate 1 report file per source path (default) |
-        | item    | generate 1 report file per item |
         | account | generate 1 report file per account |
         #>
-        [ValidateSet('account', 'item', 'none', 'source')]
+        [ValidateSet('account', 'none', 'source')]
         [string[]]$SplitBy = 'source',
 
         <#
@@ -4316,15 +4301,14 @@ function Expand-Permission {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -4716,15 +4700,14 @@ function Format-Permission {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -5941,15 +5924,14 @@ function Out-Permission {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -6125,15 +6107,14 @@ function Out-PermissionFile {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
@@ -6146,10 +6127,9 @@ function Out-PermissionFile {
         |---------|----------|
         | none    | generate 1 report file with all permissions |
         | source  | generate 1 report file per source path (default) |
-        | item    | generate 1 report file per item |
         | account | generate 1 report file per account |
         #>
-        [ValidateSet('account', 'item', 'none', 'source')]
+        [ValidateSet('account', 'none', 'source')]
         [string[]]$SplitBy = 'source',
 
         # Object output from Invoke-PermissionAnalyzer
@@ -6805,6 +6785,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CachedCimInstance','Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

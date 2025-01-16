@@ -76,10 +76,9 @@ function Get-HtmlReportElements {
         |---------|----------|
         | none    | generate 1 report file with all permissions |
         | source  | generate 1 report file per source path (default) |
-        | item    | generate 1 report file per item |
         | account | generate 1 report file per account |
         #>
-        [ValidateSet('account', 'item', 'none', 'source')]
+        [ValidateSet('account', 'none', 'source')]
         [string[]]$SplitBy = 'source',
 
         [String]$Split,

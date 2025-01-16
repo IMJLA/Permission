@@ -9,7 +9,6 @@ function Resolve-SplitByParameter {
         |---------|----------|
         | none    | generate 1 report file with all permissions |
         | source  | generate 1 report file per source path (default) |
-        | item    | generate 1 report file per item |
         | account | generate 1 report file per account |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]

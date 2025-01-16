@@ -14,15 +14,14 @@ function ConvertTo-ScriptHtml {
         | none    | none    | 1 file with all permissions in a flat list |
         | none    | account | 1 file with all permissions grouped by account |
         | none    | item    | 1 file with all permissions grouped by item |
-        | account | none    | 1 file per account; in each file, sort ACEs by item path |
+        | none    | source    | 1 file with all permissions grouped by source path |
+        | account | none    | 1 file per account; in each file, sort permissions by item path |
         | account | account | (same as -SplitBy account -GroupBy none) |
-        | account | item    | 1 file per account; in each file, group ACEs by item and sort by item path |
-        | item    | none    | 1 file per item; in each file, sort ACEs by account name |
-        | item    | account | 1 file per item; in each file, group ACEs by account and sort by account name |
-        | item    | item    | (same as -SplitBy item -GroupBy none) |
-        | source  | none    | 1 file per source path; in each file, sort ACEs by source path |
-        | source  | account | 1 file per source path; in each file, group ACEs by account and sort by account name |
-        | source  | item    | 1 file per source path; in each file, group ACEs by item and sort by item path |
+        | account | item    | 1 file per account; in each file, group permissions by item and sort by item path |
+        | account | source  | 1 file per account; in each file, group permissions by source path and sort by item path |
+        | source  | none    | 1 file per source path; in each file, sort permissions by item path |
+        | source  | account | 1 file per source path; in each file, group permissions by account and sort by account name |
+        | source  | item    | 1 file per source path; in each file, group permissions by item and sort by item path |
         | source  | source  | (same as -SplitBy source -GroupBy none) |
         #>
         [ValidateSet('account', 'item', 'none', 'source')]
