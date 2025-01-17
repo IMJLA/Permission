@@ -26,8 +26,9 @@ function Get-CachedCimInstance {
     )
 
     $Log = @{
-        'Cache'  = $Cache
-        'Suffix' = " # for ComputerName '$ComputerName'"
+        'Cache'        = $Cache
+        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'Suffix'       = " # for ComputerName '$ComputerName'"
     }
 
     if ($PSBoundParameters.ContainsKey('ClassName')) {
@@ -62,7 +63,7 @@ function Get-CachedCimInstance {
 
     }
 
-    Write-LogMsg @Log -Text "`$CimSession = Get-CachedCimSession -ComputerName '$ComputerName' -Cache `$Cache"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "`$CimSession = Get-CachedCimSession -ComputerName '$ComputerName' -Cache `$Cache"
     $CimSession = Get-CachedCimSession -ComputerName $ComputerName -Cache $Cache
 
     if ($CimSession) {
@@ -80,14 +81,14 @@ function Get-CachedCimInstance {
 
         if ($PSBoundParameters.ContainsKey('ClassName')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -ClassName '$ClassName'" -Expand $GetCimInstanceParams -ExpansionMap $Cache.Value['LogCimMap'].Value
+            Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogCimMap'].Value -Expand $GetCimInstanceParams -Text "Get-CimInstance -ClassName '$ClassName'"
             $CimInstance = Get-CimInstance -ClassName $ClassName @GetCimInstanceParams
 
         }
 
         if ($PSBoundParameters.ContainsKey('Query')) {
 
-            Write-LogMsg @Log -Text "Get-CimInstance -Query '$Query'" -Expand $GetCimInstanceParams -ExpansionMap $Cache.Value['LogCimMap'].Value
+            Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogCimMap'].Value -Expand $GetCimInstanceParams -Text "Get-CimInstance -Query '$Query'"
             $CimInstance = Get-CimInstance -Query $Query @GetCimInstanceParams
 
         }

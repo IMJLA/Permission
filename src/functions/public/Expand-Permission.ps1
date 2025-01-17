@@ -46,7 +46,11 @@ function Expand-Permission {
 
     )
 
-    $Log = @{ 'Cache' = $Cache }
+    $Log = @{
+        'Cache'        = $Cache
+        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+    }
+
     $Progress = Get-PermissionProgress -Activity 'Expand-Permission' -Cache $Cache
     $ProgressSplat = @{
         'Status'           = '0% : Prepare to group permission references, then expand them into objects'

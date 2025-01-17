@@ -56,7 +56,7 @@ function Get-PermissionPrincipal {
             }
 
             $i++
-            Write-LogMsg @Log -Text "ConvertFrom-ResolvedID -IdentityReference '$ThisID'" -Expand $AdsiParams -ExpansionMap $Cache.Value['LogCacheMap'].Value
+            Write-LogMsg @Log -ExpansionMap $Cache.Value['LogCacheMap'].Value -Expand $AdsiParams -Text "ConvertFrom-ResolvedID -IdentityReference '$ThisID'"
             ConvertFrom-ResolvedID -IdentityReference $ThisID @AdsiParams
 
         }
@@ -80,7 +80,7 @@ function Get-PermissionPrincipal {
             AddParam             = $AdsiParams
         }
 
-        Write-LogMsg @Log -Text 'Split-Thread' -Expand $SplitThreadParams
+        Write-LogMsg @Log -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Expand $SplitThreadParams -Text 'Split-Thread'
         Split-Thread @SplitThreadParams
 
     }

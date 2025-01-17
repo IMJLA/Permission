@@ -14,7 +14,10 @@ function Resolve-IdentityReferenceDomainDNS {
 
     )
 
-    $Log = @{ 'Cache' = $Cache }
+    $Log = @{
+        'Cache'        = $Cache
+        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+    }
 
     if ($Cache.Value['WellKnownSidBySid'].Value[$IdentityReference]) {
 
@@ -50,7 +53,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
             if ($KnownSid) {
 
-                #Write-LogMsg @Log -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Known SID pattern match"
+                #Write-LogMsg -Text " # IdentityReference '$IdentityReference' # Domain SID '$DomainSid' # Known SID pattern match" -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
                 $DomainDNS = Find-ServerNameInPath -LiteralPath $ItemPath -Cache $Cache
                 return $DomainDNS
 

@@ -57,7 +57,7 @@ function Expand-PermissionSource {
             }
 
             $i++ # increment $i after the progress to show progress conservatively rather than optimistically
-            Write-LogMsg -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth" -Cache $Cache
+            Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "Get-Subfolder -TargetPath '$ThisFolder' -RecurseDepth $RecurseDepth"
             Get-Subfolder -TargetPath $ThisFolder @GetSubfolderParams
 
         }

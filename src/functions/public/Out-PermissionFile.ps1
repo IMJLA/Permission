@@ -119,6 +119,11 @@ function Out-PermissionFile {
 
     )
 
+    $Log = @{
+        'Cache'        = $Cache
+        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+    }
+
     <#
     Information about the current culture settings.
     This includes information about the current language settings on the system, such as the keyboard layout, and the
@@ -275,23 +280,23 @@ function Out-PermissionFile {
                         ) {
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg @Log -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody @BodyParams
 
                             # Apply the report template to the generated HTML report body and description
                             $ReportParameters = $HtmlElements.ReportParameters
 
-                            Write-LogMsg -Cache $Cache -Text 'New-BootstrapReport @ReportParameters'
+                            Write-LogMsg @Log -Text 'New-BootstrapReport @ReportParameters'
                             New-BootstrapReport -Body $Body @ReportParameters
 
                         } else {
 
                             # Combine the header and table inside a Bootstrap div
-                            Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                            Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
                             $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg @Log -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
                         }
@@ -299,7 +304,7 @@ function Out-PermissionFile {
                         $ReportParameters = $HtmlElements.ReportParameters
 
                         # Apply the report template to the generated HTML report body and description
-                        Write-LogMsg -Cache $Cache -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
+                        Write-LogMsg @Log -Text "New-BootstrapReport @$HtmlElements.ReportParameters"
                         New-BootstrapReport -Body $Body @ReportParameters
 
                     }
@@ -332,28 +337,28 @@ function Out-PermissionFile {
                         ) {
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg @Log -Text "Get-HtmlBody -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody @BodyParams
 
                         } else {
 
                             # Combine the header and table inside a Bootstrap div
-                            Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
+                            Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText '$HtmlElements.SummaryTableHeader' -Content `$FormattedPermission.$Format`Group.Table"
                             $TableOfContents = New-BootstrapDivWithHeading -HeadingText $HtmlElements.SummaryTableHeader -Content $PermissionGroupings.Table -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
                             # Combine all the elements into a single string which will be the innerHtml of the <body> element of the report
-                            Write-LogMsg -Cache $Cache -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
+                            Write-LogMsg @Log -Text "Get-HtmlBody -TableOfContents `$TableOfContents -HtmlFolderPermissions `$FormattedPermission.$Format.Div"
                             $Body = Get-HtmlBody -TableOfContents $TableOfContents @BodyParams
 
                         }
 
                         # Build the JavaScript scripts
-                        Write-LogMsg -Cache $Cache -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
+                        Write-LogMsg @Log -Text "ConvertTo-ScriptHtml -Permission `$Permissions -PermissionGrouping `$PermissionGroupings"
                         $ScriptHtml = ConvertTo-ScriptHtml -Permission $Permissions -PermissionGrouping $PermissionGroupings -GroupBy $GroupBy -Split $Split
                         $ReportParameters = $HtmlElements.ReportParameters
 
                         # Apply the report template to the generated HTML report body and description
-                        Write-LogMsg -Cache $Cache -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
+                        Write-LogMsg @Log -Text "New-BootstrapReport -JavaScript @$HtmlElements.ReportParameters"
                         New-BootstrapReport -JavaScript -AdditionalScriptHtml $ScriptHtml -Body $Body @ReportParameters
 
                     }

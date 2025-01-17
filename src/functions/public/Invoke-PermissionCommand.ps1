@@ -21,9 +21,9 @@ function Invoke-PermissionCommand {
     )
 
     $StepCount = $Steps.Count
-    Write-LogMsg -Cache $Cache -Type Verbose -Text $Command
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache['LogEmptyMap'].Value -Type Verbose -Text $Command
     $ScriptBlock = $Steps[$Command]
-    Write-LogMsg -Cache $Cache -Type Debug -Text $ScriptBlock
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache['LogEmptyMap'].Value -Type Debug -Text $ScriptBlock
     Invoke-Command -ScriptBlock $ScriptBlock
 
 }

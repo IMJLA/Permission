@@ -117,7 +117,10 @@ function Resolve-Ace {
 
     )
 
-    #$Log = @{ 'Cache' = $Cache }
+    #$Log = @{
+    #    'Cache'        = $Cache
+    #    'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+    #}
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -Cache `$Cache" -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
     $DomainDNS = Resolve-IdentityReferenceDomainDNS -IdentityReference $ACE.IdentityReference -ItemPath $ItemPath -Cache $Cache

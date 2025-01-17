@@ -37,7 +37,7 @@ function Resolve-AccessControlList {
         [int]$ProgressInterval = [math]::max(($Count / 100), 1)
         $IntervalCounter = 0
         $i = 0
-        Write-LogMsg @Log -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Expand $ResolveAclParams -Suffix " } # for $Count ACLs" -ExpansionMap $Cache.Value['LogCacheMap'].Value
+        Write-LogMsg @Log -ExpansionMap $Cache.Value['LogCacheMap'].Value -Expand $ResolveAclParams -Text "`$Cache.Value['AclByPath'].Value.Keys | %{ Resolve-Acl -ItemPath '`$_'" -Suffix " } # for $Count ACLs"
 
         ForEach ($ThisPath in $Paths) {
 
@@ -52,7 +52,7 @@ function Resolve-AccessControlList {
             }
 
             $i++ # increment $i after Write-Progress to show progress conservatively rather than optimistically
-            #Write-LogMsg @Log -Text "Resolve-Acl -ItemPath '$ThisPath'" -Expand $ResolveAclParams -ExpansionMap $Cache.Value['LogCacheMap'].Value
+            #Write-LogMsg @Log -ExpansionMap $Cache.Value['LogCacheMap'].Value -Expand $ResolveAclParams -Text "Resolve-Acl -ItemPath '$ThisPath'"
             Resolve-Acl -ItemPath $ThisPath @ResolveAclParams
 
         }
@@ -72,7 +72,7 @@ function Resolve-AccessControlList {
             #DebugOutputStream    = 'Debug'
         }
 
-        Write-LogMsg @Log -Text 'Split-Thread' -Expand $SplitThreadParams
+        Write-LogMsg @Log -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Expand $SplitThreadParams -Text 'Split-Thread'
         Split-Thread @SplitThreadParams
 
     }

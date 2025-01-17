@@ -120,7 +120,7 @@ function Get-AccessControlList {
 
         $StartingLogType = $Cache.Value['LogType'].Value
         $Cache.Value['LogType'].Value = 'Warning' # PS 5.1 will not allow you to override the Splat by manually calling the param, so we must update the splat
-        Write-LogMsg -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists. See verbose log for details." -Cache $Cache
+        Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text " # Errors on $($WarningCache.Keys.Count) items while getting access control lists. See verbose log for details."
         $Cache.Value['LogType'].Value = $StartingLogType
 
     }
@@ -212,7 +212,7 @@ function Get-AccessControlList {
 
         $StartingLogType = $Cache.Value['LogType'].Value
         $Cache.Value['LogType'].Value = 'Error'
-        Write-LogMsg -Text ' # 0 access control lists could be retrieved. Exiting script.' -Cache $Cache
+        Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text ' # 0 access control lists could be retrieved. Exiting script.'
         $Cache.Value['LogType'].Value = $StartingLogType
 
     }

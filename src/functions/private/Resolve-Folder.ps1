@@ -23,7 +23,7 @@ function Resolve-Folder {
             ClassName   = 'Win32_MappedLogicalDisk'
             KeyProperty = 'DeviceID'
         }
-        Write-LogMsg -Text "Get-CachedCimInstance -ComputerName '$ComputerName'" -Expand $CimParams -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value
+        Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value -Expand $CimParams -Text "Get-CachedCimInstance -ComputerName '$ComputerName'"
         $MappedNetworkDrives = Get-CachedCimInstance -ComputerName $ComputerName @CimParams
 
         $MatchingNetworkDrive = $MappedNetworkDrives |
@@ -40,7 +40,7 @@ function Resolve-Folder {
         if ($UNC) {
             # Replace hostname with FQDN in the path
             $Server = $UNC.split('\')[2]
-            Write-LogMsg -Text "ConvertTo-PermissionFqdn -ComputerName '$Server' -Cache `$Cache" -Cache $Cache
+            Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogCacheMap'].Value -Text "ConvertTo-PermissionFqdn -ComputerName '$Server' -Cache `$Cache"
             $FQDN = ConvertTo-PermissionFqdn -ComputerName $Server -Cache $Cache
             $UNC -replace "^\\\\$Server\\", "\\$FQDN\"
         }
@@ -50,7 +50,7 @@ function Resolve-Folder {
         ## Workaround in place: Get-NetDfsEnum -Verbose parameter is not used due to errors when it is used with the PsRunspace module for multithreading
         ## https://github.com/IMJLA/Export-Permission/issues/46
         ## https://github.com/IMJLA/PsNtfs/issues/1
-        Write-LogMsg -Text "Get-NetDfsEnum -FolderPath '$SourcePath'" -Cache $Cache
+        Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "Get-NetDfsEnum -FolderPath '$SourcePath'"
         $AllDfs = Get-NetDfsEnum -FolderPath $SourcePath -ErrorAction SilentlyContinue
 
         if ($AllDfs) {

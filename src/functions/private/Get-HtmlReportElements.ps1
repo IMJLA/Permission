@@ -123,8 +123,12 @@ function Get-HtmlReportElements {
     display format of items such as numbers, currency, and dates.
     #>
     $Culture = $Cache.Value['Culture'].Value
+    $Log = @{
+        'Cache'        = $Cache
+        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+    }
 
-    Write-LogMsg -Cache $Cache -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
+    Write-LogMsg @Log -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
     $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture -SkipFilterCheck |
@@ -132,16 +136,16 @@ function Get-HtmlReportElements {
     New-BootstrapTable
 
     $NetworkPathDivHeader = 'Local source paths were resolved to UNC paths, and UNC source paths were resolved to DFS folder targets'
-    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
+    Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText '$NetworkPathDivHeader' -Content `$NetworkPathTable"
     $NetworkPathDiv = New-BootstrapDivWithHeading -HeadingText $NetworkPathDivHeader -Content $NetworkPathTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
-    Write-LogMsg -Cache $Cache -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
+    Write-LogMsg @Log -Text "Get-SummaryDivHeader -GroupBy $GroupBy"
     $SummaryDivHeader = Get-SummaryDivHeader -GroupBy $GroupBy -Split $Split
 
-    Write-LogMsg -Cache $Cache -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
+    Write-LogMsg @Log -Text "Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy"
     $SummaryTableHeader = Get-SummaryTableHeader -RecurseDepth $RecurseDepth -GroupBy $GroupBy
 
-    Write-LogMsg -Cache $Cache -Text "Get-DetailDivHeader -GroupBy '$GroupBy' -Split '$Split'"
+    Write-LogMsg @Log -Text "Get-DetailDivHeader -GroupBy '$GroupBy' -Split '$Split'"
     $DetailDivHeader = Get-DetailDivHeader -GroupBy $GroupBy -Split $Split
 
     if ($Account) {
@@ -152,17 +156,17 @@ function Get-HtmlReportElements {
         New-BootstrapTable
 
         $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a report per account)'
-        Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
+        Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
         $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
     }
 
-    Write-LogMsg -Cache $Cache -Text "New-HtmlHeading 'Source Paths' -Level 5"
+    Write-LogMsg @Log -Text "New-HtmlHeading 'Source Paths' -Level 5"
     $SourceHeading = New-HtmlHeading 'Source Paths' -Level 5
 
     # Convert the source path(s) to a Bootstrap alert div
     $SourcePathString = $SourcePath -join '<br />'
-    Write-LogMsg -Cache $Cache -Text "New-BootstrapAlert -Class Dark -Text '$SourcePathString'"
+    Write-LogMsg @Log -Text "New-BootstrapAlert -Class Dark -Text '$SourcePathString'"
     $SourceAlert = New-BootstrapAlert -Class Dark -Text $SourcePathString -AdditionalClasses ' small'
 
     # Add the source path div to the parameter splat for New-BootstrapReport
@@ -178,7 +182,7 @@ function Get-HtmlReportElements {
     $ExcludedMembers = ConvertTo-MemberExclusionDiv -NoMembers:$NoMembers -Cache $Cache
 
     # Arrange the exclusion divs into two Bootstrap columns
-    Write-LogMsg -Cache $Cache -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
+    Write-LogMsg @Log -Text "New-BootstrapColumn -Html '`$ExcludedMembers`$ExcludedClasses',`$IgnoredDomains`$ExcludedNames"
     $ExclusionsDiv = New-BootstrapColumn -Html "$ExcludedMembers$ExcludedClasses", "$IgnoredDomains$ExcludedNames" -Width 6
 
     # Convert the list of generated log files to a Bootstrap list group
@@ -201,15 +205,15 @@ function Get-HtmlReportElements {
     $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ReportFileList) -join "`r`n"
 
     # Arrange the lists of generated files in two Bootstrap columns
-    Write-LogMsg -Cache $Cache -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
+    Write-LogMsg @Log -Text "New-BootstrapColumn -Html '`$HtmlReportsHeading`$HtmlReportsDiv',`$HtmlLogsHeading`$HtmlListOfLogs"
     $HtmlDivOfFileColumns = New-BootstrapColumn -Html "$HtmlReportsHeading$HtmlReportsDiv", "$HtmlLogsHeading$HtmlListOfLogs" -Width 6
 
     # Combine the alert and the columns of generated files inside a Bootstrap div
-    Write-LogMsg -Cache $Cache -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
+    Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
     # Generate a footer to include at the bottom of the report
-    Write-LogMsg -Cache $Cache -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
+    Write-LogMsg @Log -Text "Get-ReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
         'ItemCount'                = $ItemCount
         'FormattedPermissionCount' = (

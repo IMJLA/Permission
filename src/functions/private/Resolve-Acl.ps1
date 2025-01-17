@@ -106,7 +106,10 @@ function Resolve-Acl {
 
     )
 
-    #$Log = @{ 'Cache' = $Cache }
+    #$Log = @{
+    #    'Cache'        = $Cache
+    #    'ExpansionMap' = $PermissionCache['LogCacheMap'].Value
+    #}
 
     $AceParams = @{
         AccountProperty = $AccountProperty ; Cache = $Cache ; Type = [guid] ; ItemPath = $ItemPath ;

@@ -15,9 +15,14 @@ function Resolve-PermissionSource {
 
     $Parents = $Cache.Value['ParentBySourcePath']
 
+    $Log = @{
+        'Cache'        = $Cache
+        'ExpansionMap' = $Cache.Value['LogCacheMap'].Value
+    }
+
     ForEach ($ThisSourcePath in $SourcePath) {
 
-        Write-LogMsg -Text "Resolve-Folder -SourcePath '$ThisSourcePath' -Cache `$Cache" -Cache $Cache
+        Write-LogMsg @Log -Text "Resolve-Folder -SourcePath '$ThisSourcePath' -Cache `$Cache"
         $Parents.Value[$ThisSourcePath] = Resolve-Folder -SourcePath $ThisSourcePath -Cache $Cache
 
     }
