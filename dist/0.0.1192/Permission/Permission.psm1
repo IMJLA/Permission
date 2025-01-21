@@ -1786,10 +1786,15 @@ function Get-HtmlBody {
         $HtmlExclusions,
         $SummaryDivHeader,
         $DetailDivHeader,
-        $AccountDiv
+        $AccountDiv,
+        $ErrorDiv
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
+
+    if ($ErrorDiv) {
+        $null = $StringBuilder.Append($ErrorDiv)
+    }
 
     if ($AccountDiv) {
         $null = $StringBuilder.Append((New-HtmlHeading 'Account Details' -Level 5))
@@ -1954,6 +1959,8 @@ function Get-HtmlReportElements {
     Write-LogMsg @Log -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
+    $ErrorDiv = Get-ReportErrorDiv -Cache $Cache
+
     $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture -SkipFilterCheck |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
@@ -2072,6 +2079,7 @@ function Get-HtmlReportElements {
 
     [PSCustomObject]@{
         'AccountDiv'         = $AccountDiv
+        'ErrorDiv'           = $ErrorDiv
         'ReportFooter'       = $ReportFooter
         'HtmlDivOfFiles'     = $HtmlDivOfFiles
         'ExclusionsDiv'      = $ExclusionsDiv
@@ -2265,6 +2273,56 @@ function Get-ReportDescription {
         default {
             "Includes all subfolders with unique permissions (down to $RecurseDepth levels of subfolders)"; break
         }
+
+    }
+
+}
+function Get-ReportErrorDiv {
+
+    param (
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
+
+    )
+
+    $EnumErrors = $Cache.Value['ErrorByItemPath_Enumeration'].Value
+    $AclErrors = $Cache.Value['ErrorByItemPath_AclRetrieval'].Value
+
+    if ($EnumErrors.Keys.Count -gt 0 -or $AclErrors.Keys.Count -gt 0) {
+
+        $StringBuilder = [System.Text.StringBuilder]::new()
+        $Alert = New-BootstrapAlert -Class danger -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
+        $null = $StringBuilder.Append($Alert)
+
+        $EnumErrorObjects = ForEach ($EnumErrorPath in $EnumErrors.Keys) {
+
+            [PSCustomObject]@{
+                'Stage' = 'Item Enumeration'
+                'Item'  = $EnumErrorPath
+                'Error' = $EnumErrors[$EnumErrorPath]
+            }
+
+        }
+
+        $AclErrorObjects = ForEach ($AclErrorPath in $AclErrors.Keys) {
+
+            [PSCustomObject]@{
+                'Stage' = 'ACL Retrieval'
+                'Item'  = $AclErrorPath
+                'Error' = $AclErrors[$AclErrorPath]
+            }
+
+        }
+
+        $ErrorTable = $EnumErrorObjects + $AclErrorObjects |
+        Sort-Object -Property Item, Stage |
+        ConvertTo-Html -Fragment |
+        New-BootstrapTable
+
+        $null = $StringBuilder.Append($ErrorTable)
+        New-BootstrapDiv -Text ($StringBuilder.ToString())
 
     }
 
@@ -6412,14 +6470,15 @@ function Out-PermissionFile {
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
-                    HtmlFolderPermissions = $Permissions.Div
-                    HtmlExclusions        = $HtmlElements.ExclusionsDiv
-                    HtmlFileList          = $HtmlElements.HtmlDivOfFiles
-                    ReportFooter          = $HtmlElements.ReportFooter
-                    SummaryDivHeader      = $HtmlElements.SummaryDivHeader
-                    DetailDivHeader       = $HtmlElements.DetailDivHeader
-                    NetworkPathDiv        = $HtmlElements.NetworkPathDiv
-                    AccountDiv            = $HtmlElements.AccountDiv
+                    'HtmlFolderPermissions' = $Permissions.Div
+                    'HtmlExclusions'        = $HtmlElements.ExclusionsDiv
+                    'HtmlFileList'          = $HtmlElements.HtmlDivOfFiles
+                    'ReportFooter'          = $HtmlElements.ReportFooter
+                    'SummaryDivHeader'      = $HtmlElements.SummaryDivHeader
+                    'DetailDivHeader'       = $HtmlElements.DetailDivHeader
+                    'NetworkPathDiv'        = $HtmlElements.NetworkPathDiv
+                    'AccountDiv'            = $HtmlElements.AccountDiv
+                    'ErrorDiv'              = $HtmlElements.ErrorDiv
                 }
 
                 ForEach ($Level in $SplitDetail) {
@@ -6711,6 +6770,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

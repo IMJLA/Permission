@@ -461,14 +461,15 @@ function Out-PermissionFile {
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
-                    HtmlFolderPermissions = $Permissions.Div
-                    HtmlExclusions        = $HtmlElements.ExclusionsDiv
-                    HtmlFileList          = $HtmlElements.HtmlDivOfFiles
-                    ReportFooter          = $HtmlElements.ReportFooter
-                    SummaryDivHeader      = $HtmlElements.SummaryDivHeader
-                    DetailDivHeader       = $HtmlElements.DetailDivHeader
-                    NetworkPathDiv        = $HtmlElements.NetworkPathDiv
-                    AccountDiv            = $HtmlElements.AccountDiv
+                    'HtmlFolderPermissions' = $Permissions.Div
+                    'HtmlExclusions'        = $HtmlElements.ExclusionsDiv
+                    'HtmlFileList'          = $HtmlElements.HtmlDivOfFiles
+                    'ReportFooter'          = $HtmlElements.ReportFooter
+                    'SummaryDivHeader'      = $HtmlElements.SummaryDivHeader
+                    'DetailDivHeader'       = $HtmlElements.DetailDivHeader
+                    'NetworkPathDiv'        = $HtmlElements.NetworkPathDiv
+                    'AccountDiv'            = $HtmlElements.AccountDiv
+                    'ErrorDiv'              = $HtmlElements.ErrorDiv
                 }
 
                 ForEach ($Level in $SplitDetail) {

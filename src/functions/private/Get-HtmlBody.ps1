@@ -9,10 +9,15 @@ function Get-HtmlBody {
         $HtmlExclusions,
         $SummaryDivHeader,
         $DetailDivHeader,
-        $AccountDiv
+        $AccountDiv,
+        $ErrorDiv
     )
 
     $StringBuilder = [System.Text.StringBuilder]::new()
+
+    if ($ErrorDiv) {
+        $null = $StringBuilder.Append($ErrorDiv)
+    }
 
     if ($AccountDiv) {
         $null = $StringBuilder.Append((New-HtmlHeading 'Account Details' -Level 5))

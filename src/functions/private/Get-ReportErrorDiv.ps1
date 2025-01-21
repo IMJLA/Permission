@@ -1,0 +1,50 @@
+function Get-ReportErrorDiv {
+
+    param (
+
+        # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
+        [Parameter(Mandatory)]
+        [ref]$Cache
+
+    )
+
+    $EnumErrors = $Cache.Value['ErrorByItemPath_Enumeration'].Value
+    $AclErrors = $Cache.Value['ErrorByItemPath_AclRetrieval'].Value
+
+    if ($EnumErrors.Keys.Count -gt 0 -or $AclErrors.Keys.Count -gt 0) {
+
+        $StringBuilder = [System.Text.StringBuilder]::new()
+        $Alert = New-BootstrapAlert -Class danger -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
+        $null = $StringBuilder.Append($Alert)
+
+        $EnumErrorObjects = ForEach ($EnumErrorPath in $EnumErrors.Keys) {
+
+            [PSCustomObject]@{
+                'Stage' = 'Item Enumeration'
+                'Item'  = $EnumErrorPath
+                'Error' = $EnumErrors[$EnumErrorPath]
+            }
+
+        }
+
+        $AclErrorObjects = ForEach ($AclErrorPath in $AclErrors.Keys) {
+
+            [PSCustomObject]@{
+                'Stage' = 'ACL Retrieval'
+                'Item'  = $AclErrorPath
+                'Error' = $AclErrors[$AclErrorPath]
+            }
+
+        }
+
+        $ErrorTable = $EnumErrorObjects + $AclErrorObjects |
+        Sort-Object -Property Item, Stage |
+        ConvertTo-Html -Fragment |
+        New-BootstrapTable
+
+        $null = $StringBuilder.Append($ErrorTable)
+        New-BootstrapDiv -Text ($StringBuilder.ToString())
+
+    }
+
+}

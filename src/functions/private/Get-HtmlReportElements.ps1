@@ -131,6 +131,8 @@ function Get-HtmlReportElements {
     Write-LogMsg @Log -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
     $ReportDescription = Get-ReportDescription -RecurseDepth $RecurseDepth
 
+    $ErrorDiv = Get-ReportErrorDiv -Cache $Cache
+
     $NetworkPathTable = Select-ItemTableProperty -InputObject $NetworkPath -Culture $Culture -SkipFilterCheck |
     ConvertTo-Html -Fragment |
     New-BootstrapTable
@@ -249,6 +251,7 @@ function Get-HtmlReportElements {
 
     [PSCustomObject]@{
         'AccountDiv'         = $AccountDiv
+        'ErrorDiv'           = $ErrorDiv
         'ReportFooter'       = $ReportFooter
         'HtmlDivOfFiles'     = $HtmlDivOfFiles
         'ExclusionsDiv'      = $ExclusionsDiv
