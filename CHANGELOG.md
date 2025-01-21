@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1197] - 2025-01-20 - bugfix append vs appendline
+## [0.0.1196] - 2025-01-20 - bugfix append vs appendline, also add class to bootstrap table
+## [0.0.1195] - 2025-01-20 - bugfix append vs appendline, also add class to bootstrap table
 ## [0.0.1194] - 2025-01-20 - add debug pause
 ## [0.0.1193] - 2025-01-20 - bugfix object aggregation
 ## [0.0.1192] - 2025-01-20 - implement error div

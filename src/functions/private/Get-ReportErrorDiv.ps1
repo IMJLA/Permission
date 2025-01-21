@@ -37,13 +37,13 @@ function Get-ReportErrorDiv {
                     'Error' = $AclErrors[$AclErrorPath]
                 })
         }
-        Pause
+
         $ErrorTable = $ErrorObjects |
         Sort-Object -Property Item, Stage |
         ConvertTo-Html -Fragment |
-        New-BootstrapTable
+        New-BootstrapTable -Class ' table-danger'
 
-        $null = $StringBuilder.Append($ErrorTable)
+        $null = $StringBuilder.AppendLine($ErrorTable)
         New-BootstrapDiv -Text ($StringBuilder.ToString())
 
     }
