@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1191] - 2025-01-20 - rename errorbyitempath_dacl in cache
 ## [0.0.1190] - 2025-01-20 - add errorbyitempath to cache for enumeration and dacl retrieval
 ## [0.0.1189] - 2025-01-17 - use expansionmap param when calling write-logmsg
 ## [0.0.1188] - 2025-01-17 - use expansionmap param when calling write-logmsg
