@@ -2296,27 +2296,28 @@ function Get-ReportErrorDiv {
         $Alert = New-BootstrapAlert -Class danger -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
         $null = $StringBuilder.Append($Alert)
 
-        $EnumErrorObjects = ForEach ($EnumErrorPath in $EnumErrors.Keys) {
+        $ErrorObjects = [System.Collections.Generic.list[PSCustomObject]]::new()
 
-            [PSCustomObject]@{
-                'Stage' = 'Item Enumeration'
-                'Item'  = $EnumErrorPath
-                'Error' = $EnumErrors[$EnumErrorPath]
-            }
+        ForEach ($EnumErrorPath in $EnumErrors.Keys) {
 
-        }
-
-        $AclErrorObjects = ForEach ($AclErrorPath in $AclErrors.Keys) {
-
-            [PSCustomObject]@{
-                'Stage' = 'ACL Retrieval'
-                'Item'  = $AclErrorPath
-                'Error' = $AclErrors[$AclErrorPath]
-            }
+            $ErrorObjects.Add([PSCustomObject]@{
+                    'Stage' = 'Item Enumeration'
+                    'Item'  = $EnumErrorPath
+                    'Error' = $EnumErrors[$EnumErrorPath]
+                })
 
         }
 
-        $ErrorTable = $EnumErrorObjects + $AclErrorObjects |
+        ForEach ($AclErrorPath in $AclErrors.Keys) {
+
+            $ErrorObjects.Add([PSCustomObject]@{
+                    'Stage' = 'ACL Retrieval'
+                    'Item'  = $AclErrorPath
+                    'Error' = $AclErrors[$AclErrorPath]
+                })
+        }
+
+        $ErrorTable = $ErrorObjects |
         Sort-Object -Property Item, Stage |
         ConvertTo-Html -Fragment |
         New-BootstrapTable
@@ -6770,6 +6771,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
