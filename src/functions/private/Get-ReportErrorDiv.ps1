@@ -37,7 +37,7 @@ function Get-ReportErrorDiv {
                     'Error' = $AclErrors[$AclErrorPath]
                 })
         }
-
+        Pause
         $ErrorTable = $ErrorObjects |
         Sort-Object -Property Item, Stage |
         ConvertTo-Html -Fragment |
