@@ -22,8 +22,23 @@ function Get-HtmlReportElements {
         # Timer to measure progress and performance
         $StopWatch,
 
-        $Permission,
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [ValidateSet('account', 'item', 'none', 'source')]
+        [string]$GroupBy = 'item',
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
         $FormattedPermission,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        $Analysis,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [string[]]$FileFormat,
+
+        # Unused.  Here so that the @PSBoundParameters hashtable in Out-PermissionReport can be used as a splat for this function.
+        [String]$OutputFormat,
+
+        $Permission,
         $LogFileList,
         $ReportInstanceId,
         [Hashtable]$AceByGUID,
