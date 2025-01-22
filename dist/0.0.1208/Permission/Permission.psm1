@@ -2169,7 +2169,7 @@ function Get-HtmlReportFooter {
     $Html = $CompletionTime | Select-Object -Property Name, Count, 'Average Time Each' | ConvertTo-Html -Fragment
     $Table = $Html | New-BootstrapTable
     $Div = New-BootstrapDiv -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
-    $CmdHeading = New-HtmlHeading 'Command Run to Generate This Report' -Level 6
+    $CmdHeading = New-HtmlHeading 'Command to Regenerate This Report' -Level 6
     $OriginalCommand = Write-LogMsg -Text 'Export-Permission' -Expand $ParameterDict -Type Output -AddPrefix $false -Buffer ([ref][System.Collections.Concurrent.ConcurrentQueue[System.Collections.Specialized.OrderedDictionary]]::new())
     $CodeBlock = New-HighlightJsCodeBlock -Text $OriginalCommand
     $CodeDiv = New-BootstrapDiv -Text ($CmdHeading + $CodeBlock) -Class 'h-100 p-1 bg-light border rounded-3'
@@ -2180,7 +2180,7 @@ Report instance: $ReportInstanceId
 "@
 
     $Alert = New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' small'
-    "$Div<br />$CmdHeading<br />$CodeDiv<br />$Alert"
+    "$Div<br />$CodeDiv<br />$Alert"
 
 }
 <#
@@ -6658,6 +6658,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
