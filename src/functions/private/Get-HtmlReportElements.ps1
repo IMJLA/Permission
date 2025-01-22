@@ -23,6 +23,7 @@ function Get-HtmlReportElements {
         $StopWatch,
 
         $Permission,
+        $FormattedPermission,
         $LogFileList,
         $ReportInstanceId,
         [Hashtable]$AceByGUID,
