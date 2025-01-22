@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1204] - 2025-01-21 - bugfix move some code to footer
 ## [0.0.1203] - 2025-01-21 - bugfix missing buffer param
 ## [0.0.1202] - 2025-01-21 - add original command to footer
 ## [0.0.1201] - 2025-01-21 - bugfix missing params

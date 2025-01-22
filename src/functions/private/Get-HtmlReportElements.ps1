@@ -171,9 +171,6 @@ function Get-HtmlReportElements {
     Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
-    $OriginalCommand = Write-LogMsg -Text 'Export-Permission' -Expand $ParameterDict -Type Output -AddPrefix $false
-    $CodeBlock = New-BootstrapCodeBlock -Code $OriginalCommand
-
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @Log -Text "Get-HtmlReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{

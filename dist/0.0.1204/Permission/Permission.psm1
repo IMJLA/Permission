@@ -1999,9 +1999,6 @@ function Get-HtmlReportElements {
     Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content '`$HtmlOutputDir`$HtmlDivOfFileColumns'"
     $HtmlDivOfFiles = New-BootstrapDivWithHeading -HeadingText 'Output Folder:' -Content "$HtmlOutputDir$HtmlDivOfFileColumns" -HeadingLevel 6
 
-    $OriginalCommand = Write-LogMsg -Text 'Export-Permission' -Expand $ParameterDict -Type Output -AddPrefix $false
-    $CodeBlock = New-BootstrapCodeBlock -Code $OriginalCommand
-
     # Generate a footer to include at the bottom of the report
     Write-LogMsg @Log -Text "Get-HtmlReportFooter -StopWatch `$StopWatch -ReportInstanceId '$ReportInstanceId' -WhoAmI '$WhoAmI' -ThisFqdn '$ThisFqdn'"
     $FooterParams = @{
@@ -6663,6 +6660,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
