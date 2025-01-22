@@ -14,7 +14,7 @@ function Get-ReportErrorDiv {
     if ($EnumErrors.Keys.Count -gt 0 -or $AclErrors.Keys.Count -gt 0) {
 
         $StringBuilder = [System.Text.StringBuilder]::new()
-        $Alert = New-BootstrapAlert -Class danger -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
+        $Alert = New-BootstrapAlert -Class danger -AdditionalClasses ' small' -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
         $null = $StringBuilder.Append($Alert)
 
         $ErrorObjects = [System.Collections.Generic.list[PSCustomObject]]::new()

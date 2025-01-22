@@ -133,7 +133,7 @@ Report instance: $ReportInstanceId
 "@
 
     $Alert = New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' small'
-    "$Div<br />$CodeDiv<br />$Alert"
+    "$Div$CodeDiv$Alert"
 
 }
 <#

@@ -2180,7 +2180,7 @@ Report instance: $ReportInstanceId
 "@
 
     $Alert = New-BootstrapAlert -Class Light -Text $Text -AdditionalClasses ' small'
-    "$Div<br />$CodeDiv<br />$Alert"
+    "$Div$CodeDiv$Alert"
 
 }
 <#
@@ -2254,7 +2254,7 @@ function Get-ReportErrorDiv {
     if ($EnumErrors.Keys.Count -gt 0 -or $AclErrors.Keys.Count -gt 0) {
 
         $StringBuilder = [System.Text.StringBuilder]::new()
-        $Alert = New-BootstrapAlert -Class danger -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
+        $Alert = New-BootstrapAlert -Class danger -AdditionalClasses ' small' -Text 'Danger! Errors were encountered which could result in permissions missing from this report.'
         $null = $StringBuilder.Append($Alert)
 
         $ErrorObjects = [System.Collections.Generic.list[PSCustomObject]]::new()
@@ -6658,6 +6658,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
