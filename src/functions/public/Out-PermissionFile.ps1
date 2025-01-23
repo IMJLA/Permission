@@ -378,6 +378,8 @@ function Out-PermissionFile {
 
                 if ($File.Path) {
                     $Params['SourcePath'] = $File.Path
+                } else {
+                    $Params['SourcePath'] = $ParameterDict['SourcePath']
                 }
                 $Params['ParameterDict'] = $ParameterDict
                 $Params['NetworkPath'] = $File.NetworkPaths
