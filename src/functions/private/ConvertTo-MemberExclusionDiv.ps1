@@ -27,7 +27,7 @@ function ConvertTo-MemberExclusionDiv {
 
     }
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
     return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content -HeadingLevel 6
 
 }

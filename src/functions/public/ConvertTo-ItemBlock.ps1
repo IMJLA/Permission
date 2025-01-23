@@ -21,7 +21,7 @@ function ConvertTo-ItemBlock {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     Write-LogMsg @Log -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"

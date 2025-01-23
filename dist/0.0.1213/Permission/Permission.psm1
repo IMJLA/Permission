@@ -33,7 +33,7 @@ function ConvertTo-ClassExclusionDiv {
 
     }
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content -HeadingLevel 6
 
 }
@@ -287,7 +287,7 @@ function ConvertTo-IgnoredDomainDiv {
 
     }
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Domains Ignored by Name' -Content $Content -HeadingLevel 6
 
 }
@@ -320,7 +320,7 @@ function ConvertTo-MemberExclusionDiv {
 
     }
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content '$Content'"
     return New-BootstrapDivWithHeading -HeadingText 'Group Members' -Content $Content -HeadingLevel 6
 
 }
@@ -351,7 +351,7 @@ function ConvertTo-NameExclusionDiv {
 
     }
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content `$Content"
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Name' -Content $Content -HeadingLevel 6
 
 }
@@ -1906,7 +1906,7 @@ function Get-HtmlReportElements {
     $WhoAmI = $Cache.Value['WhoAmI'].Value
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     Write-LogMsg @Log -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"
@@ -3139,7 +3139,7 @@ function Resolve-Ace {
 
     #$Log = @{
     #    'Cache'        = $Cache
-    #    'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+    #    'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     #}
 
     #Write-LogMsg @Log -Text "Resolve-IdentityReferenceDomainDNS -IdentityReference '$($ACE.IdentityReference)' -ItemPath '$ItemPath' -Cache `$Cache" -Suffix " # For ACE IdentityReference '$($ACE.IdentityReference)' # For ItemPath '$ItemPath'"
@@ -3499,7 +3499,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     if ($Cache.Value['WellKnownSidBySid'].Value[$IdentityReference]) {
@@ -4153,7 +4153,7 @@ function ConvertTo-ItemBlock {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     Write-LogMsg @Log -Text "`$ObjectsForTable = Select-ItemTableProperty -InputObject `$ItemPermissions -Culture '$Culture'"
@@ -4198,7 +4198,7 @@ function ConvertTo-PermissionFqdn {
 
     )
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache -ThisFqdn:`$$ThisFqdn"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache -ThisFqdn:`$$ThisFqdn"
     ConvertTo-DnsFqdn -ComputerName $ComputerName -Cache $Cache -ThisFqdn:$ThisFqdn
 
 }
@@ -4252,7 +4252,7 @@ function Expand-Permission {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     $Progress = Get-PermissionProgress -Activity 'Expand-Permission' -Cache $Cache
@@ -5157,7 +5157,7 @@ function Get-CachedCimInstance {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
         'Suffix'       = " # for ComputerName '$ComputerName'"
     }
 
@@ -5281,7 +5281,7 @@ function Get-CachedCimSession {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
         'Suffix'       = " # for ComputerName '$ComputerName'"
     }
 
@@ -5389,7 +5389,7 @@ function Get-PermissionParameter {
 
         if (-not $BoundParameter.ContainsKey($ParamName)) {
             try {
-                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -ValueOnly))
+                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -Scope Script -ValueOnly))
             } catch {}
         }
 
@@ -6043,7 +6043,7 @@ function Out-PermissionFile {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     <#
@@ -6685,6 +6685,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionParameter','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

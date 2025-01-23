@@ -13,7 +13,7 @@ function Get-CachedCimSession {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
         'Suffix'       = " # for ComputerName '$ComputerName'"
     }
 

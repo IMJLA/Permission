@@ -45,7 +45,7 @@ function Out-PermissionFile {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     <#

@@ -78,7 +78,7 @@ function Get-HtmlReportElements {
     $WhoAmI = $Cache.Value['WhoAmI'].Value
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     Write-LogMsg @Log -Text "Get-ReportDescription -RecurseDepth $RecurseDepth"

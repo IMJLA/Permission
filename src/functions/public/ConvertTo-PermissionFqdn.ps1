@@ -15,7 +15,7 @@ function ConvertTo-PermissionFqdn {
 
     )
 
-    Write-LogMsg -Cache $Cache -ExpansionMap $PermissionCache['LogEmptyMap'].Value -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache -ThisFqdn:`$$ThisFqdn"
+    Write-LogMsg -Cache $Cache -ExpansionMap $Cache.Value['LogEmptyMap'].Value -Text "ConvertTo-DnsFqdn -ComputerName '$ComputerName' -Cache `$Cache -ThisFqdn:`$$ThisFqdn"
     ConvertTo-DnsFqdn -ComputerName $ComputerName -Cache $Cache -ThisFqdn:$ThisFqdn
 
 }

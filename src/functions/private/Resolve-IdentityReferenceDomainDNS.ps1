@@ -16,7 +16,7 @@ function Resolve-IdentityReferenceDomainDNS {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     if ($Cache.Value['WellKnownSidBySid'].Value[$IdentityReference]) {

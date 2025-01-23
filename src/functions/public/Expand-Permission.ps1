@@ -48,7 +48,7 @@ function Expand-Permission {
 
     $Log = @{
         'Cache'        = $Cache
-        'ExpansionMap' = $PermissionCache['LogEmptyMap'].Value
+        'ExpansionMap' = $Cache.Value['LogEmptyMap'].Value
     }
 
     $Progress = Get-PermissionProgress -Activity 'Expand-Permission' -Cache $Cache
