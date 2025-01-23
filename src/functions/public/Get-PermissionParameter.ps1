@@ -16,7 +16,7 @@ function Get-PermissionParameter {
 
         if (-not $BoundParameter.ContainsKey($ParamName)) {
             try {
-                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -Scope Script -ValueOnly))
+                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -Scope Global -ValueOnly))
             } catch {}
         }
 

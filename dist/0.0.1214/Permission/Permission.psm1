@@ -3283,7 +3283,7 @@ function Resolve-Acl {
 
     #$Log = @{
     #    'Cache'        = $Cache
-    #    'ExpansionMap' = $PermissionCache['LogCacheMap'].Value
+    #    'ExpansionMap' = $Cache.Value['LogCacheMap'].Value
     #}
 
     $AceParams = @{
@@ -5389,7 +5389,7 @@ function Get-PermissionParameter {
 
         if (-not $BoundParameter.ContainsKey($ParamName)) {
             try {
-                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -Scope Script -ValueOnly))
+                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -Scope Global -ValueOnly))
             } catch {}
         }
 
@@ -6685,6 +6685,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionParameter','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 
