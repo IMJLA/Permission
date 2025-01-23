@@ -5371,33 +5371,6 @@ function Get-CachedCimSession {
     }
 
 }
-function Get-PermissionParameter {
-
-    [CmdletBinding()]
-
-    param (
-
-        # $MyInvocation from the calling script
-        [System.Management.Automation.InvocationInfo]$Invocation,
-
-        # $PSBoundParameters from the calling script
-        [System.Collections.Generic.Dictionary`2[System.String, System.Object]]$BoundParameter
-
-    )
-
-    foreach ($ParamName in $Invocation.MyCommand.Parameters.Keys) {
-
-        if (-not $BoundParameter.ContainsKey($ParamName)) {
-            try {
-                $BoundParameter.Add($ParamName, (Get-Variable -Name $ParamName -Scope Global -ValueOnly))
-            } catch {}
-        }
-
-    }
-
-    return $BoundParameter
-
-}
 function Get-PermissionPrincipal {
 
     param (
@@ -6684,7 +6657,8 @@ ForEach ($ThisFile in $CSharpFiles) {
     Add-Type -Path $ThisFile.FullName -ErrorAction Stop
 }
 
-Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionParameter','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

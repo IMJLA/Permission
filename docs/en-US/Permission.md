@@ -2,7 +2,7 @@
 Module Name: Permission
 Module Guid: ded19ba7-2e6d-480e-9cf4-9c5bb56bbc0e
 Download Help Link: {{ Update Download Link }}
-Help Version: 0.0.1214
+Help Version: 0.0.1215
 Locale: en-US
 ---
 
@@ -65,10 +65,6 @@ Get-CachedCimInstance [[-ComputerName] <string>] [[-ClassName] <string>] [[-Name
 ### [Get-CachedCimSession](Get-CachedCimSession.md)
 
 Get-CachedCimSession [[-ComputerName] <string>] [-Cache] <ref> [<CommonParameters>]
-
-### [Get-PermissionParameter](Get-PermissionParameter.md)
-
-Get-PermissionParameter [[-Invocation] <InvocationInfo>] [[-BoundParameter] <Dictionary[string,Object]>] [<CommonParameters>]
 
 ### [Get-PermissionPrincipal](Get-PermissionPrincipal.md)
 
