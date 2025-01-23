@@ -26,15 +26,15 @@ function Expand-ItemPermissionAccountAccessReference {
 
         if ($FirstACEGuid) {
             $ACEList = $AceByGUID.Value[$FirstACEGuid]
-        }
-
-        if ($ACEList -is [System.Collections.IEnumerable]) {
-            $FirstACE = $ACEList[0]
+            if ($ACEList -is [System.Collections.IEnumerable]) {
+                $FirstACE = $ACEList[0]
+            } else {
+                $FirstACE = $ACEList
+            }
+            $ACEProps = $FirstACE.PSObject.Properties.GetEnumerator().Name
         } else {
-            $FirstACE = $ACEList
+            $ACEProps = @()
         }
-
-        $ACEProps = $FirstACE.PSObject.Properties.GetEnumerator().Name
 
     }
 
