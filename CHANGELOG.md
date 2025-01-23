@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1212] - 2025-01-22 - implement get-permissionparameter
+## [0.0.1211] - 2025-01-22 - implement get-permissionparameter
+## [0.0.1210] - 2025-01-22 - implement get-permissionparameter
 ## [0.0.1209] - 2025-01-21 - update report verbiage and appearance
 ## [0.0.1208] - 2025-01-21 - update verbiage
 ## [0.0.1207] - 2025-01-21 - update formatting of footer
