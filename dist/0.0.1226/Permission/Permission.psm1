@@ -255,7 +255,7 @@ function ConvertTo-FileListDiv {
 
         if ($Files) {
 
-            $sb.AppendLine("<li><span class=`"caret caret-down`"><p class=`"font-weight-bold`">$Format</p></span>")
+            $sb.AppendLine("<li><span class=`"caret caret-down font-weight-bold`">$Format</span>")
 
             $List = $Files |
             Sort-Object |
@@ -264,7 +264,6 @@ function ConvertTo-FileListDiv {
 
             $sb.AppendLine($List)
             $sb.AppendLine('</li>')
-
 
         }
 
@@ -6718,6 +6717,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

@@ -14,7 +14,7 @@ function ConvertTo-FileListDiv {
 
         if ($Files) {
 
-            $sb.AppendLine("<li><span class=`"caret caret-down`"><p class=`"font-weight-bold`">$Format</p></span>")
+            $sb.AppendLine("<li><span class=`"caret caret-down font-weight-bold`">$Format</span>")
 
             $List = $Files |
             Sort-Object |
@@ -23,7 +23,6 @@ function ConvertTo-FileListDiv {
 
             $sb.AppendLine($List)
             $sb.AppendLine('</li>')
-
 
         }
 
