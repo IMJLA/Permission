@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1218] - 2025-01-23 - add missing functionality not all files for the report instance were listed
 ## [0.0.1217] - 2025-01-22 - bugfix missing sourcepath
 ## [0.0.1216] - 2025-01-22 - bugfix handle null aceguids when account has been excluded due to script params
 ## [0.0.1215] - 2025-01-22 - remove unworkable func

@@ -37,7 +37,7 @@ function ConvertTo-ClassExclusionDiv {
     return New-BootstrapDivWithHeading -HeadingText 'Accounts Excluded by Class' -Content $Content -HeadingLevel 6
 
 }
-function ConvertTo-FileList {
+function ConvertTo-FileDict {
 
     param (
         [string[]]$Format,
@@ -63,11 +63,13 @@ function ConvertTo-FileList {
         #>
         [int[]]$Detail = @(0..10),
 
-        [String]$FileName
+        [String]$FileName,
+
+        [string[]]$FileList
 
     )
 
-    $FileList = @{}
+    $FileDict = @{}
 
     ForEach ($ThisFormat in $Format) {
 
@@ -87,7 +89,7 @@ function ConvertTo-FileList {
             'Permission report'
         )
 
-        $FileList[$ThisFormat] = switch ($ThisFormat) {
+        $FileDict[$ThisFormat] = switch ($ThisFormat) {
 
             'csv' {
 
@@ -120,53 +122,61 @@ function ConvertTo-FileList {
 
             'html' {
 
-                $Suffix = "_$FileName.htm"
+                ForEach ($ThisFileName in $FileList) {
 
-                ForEach ($Level in $Detail) {
+                    $Suffix = "_$ThisFileName.htm"
 
-                    # Currently no HTML reports are generated for detail levels 8/9
-                    if ($Level -notin 8, 9) {
+                    ForEach ($Level in $Detail) {
 
-                        # Get shorter versions of the detail strings to use in file names
-                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                        # Currently no HTML reports are generated for detail levels 8/9
+                        if ($Level -notin 8, 9) {
 
-                        # Convert the shorter strings to Title Case
-                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                            # Get shorter versions of the detail strings to use in file names
+                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                        # Remove spaces from the shorter strings
-                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                            # Convert the shorter strings to Title Case
+                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                        # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+                            # Remove spaces from the shorter strings
+                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                            # Build the file path
+                            "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+
+                        }
 
                     }
 
-                }
+                    break
 
-                break
+                }
 
             }
 
             'js' {
 
-                $Suffix = "_js_$FileName.htm"
+                ForEach ($ThisFileName in $FileList) {
 
-                ForEach ($Level in $Detail) {
+                    $Suffix = "_js_$ThisFileName.htm"
 
-                    # Currently no JS reports are generated for detail levels 8/9
-                    if ($Level -notin 8, 9) {
+                    ForEach ($Level in $Detail) {
 
-                        # Get shorter versions of the detail strings to use in file names
-                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                        # Currently no JS reports are generated for detail levels 8/9
+                        if ($Level -notin 8, 9) {
 
-                        # Convert the shorter strings to Title Case
-                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                            # Get shorter versions of the detail strings to use in file names
+                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                        # Remove spaces from the shorter strings
-                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                            # Convert the shorter strings to Title Case
+                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                        # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+                            # Remove spaces from the shorter strings
+                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                            # Build the file path
+                            "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+
+                        }
 
                     }
 
@@ -226,7 +236,7 @@ function ConvertTo-FileList {
 
     }
 
-    return $FileList
+    return $FileDict
 
 }
 function ConvertTo-FileListDiv {
@@ -1876,6 +1886,7 @@ function Get-HtmlReportElements {
         [uint64]$IdCount,
         [UInt64]$PrincipalCount,
         [pscustomobject[]]$Account,
+        [string[]]$FileList,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -1938,7 +1949,7 @@ function Get-HtmlReportElements {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a report per account)'
+        $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a file per account)'
         Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
         $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
@@ -1982,7 +1993,7 @@ function Get-HtmlReportElements {
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' small'
 
     # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
-    $ReportFileList = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName
+    $ReportFileList = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName -FileList $FileList
 
     # Convert the hashtable of generated report files to a Bootstrap list group
     $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ReportFileList) -join "`r`n"
@@ -2285,6 +2296,39 @@ function Get-ReportErrorDiv {
 
         $null = $StringBuilder.AppendLine($ErrorTable)
         New-BootstrapDiv -Text ($StringBuilder.ToString())
+
+    }
+
+}
+function Get-ReportFileNameList {
+
+    param (
+        [Parameter(Mandatory = $true)]
+        $ReportFiles,
+        [Parameter(Mandatory = $true)]
+        [string]$Subproperty,
+        [Parameter(Mandatory = $true)]
+        [string]$FileNameProperty,
+        [Parameter(Mandatory = $true)]
+        [string]$FileNameSubproperty
+    )
+
+
+    ForEach ($File in $ReportFiles) {
+
+        if ($Subproperty -eq '') {
+            $Subfile = $File
+        } else {
+            $Subfile = $File.$Subproperty
+        }
+
+        if ($FileNameProperty -eq '') {
+            $FileName = $File.$FileNameSubproperty
+        } else {
+            $FileName = $File.$FileNameProperty.$FileNameSubproperty
+        }
+
+        $FileName -replace '\\\\', '' -replace '\\', '_' -replace '\:', ''
 
     }
 
@@ -6323,6 +6367,8 @@ function Out-PermissionFile {
 
             }
 
+            $FileList = Get-ReportFileNameList -ReportFiles $ReportFiles -Subproperty $Subproperty -FileNameProperty $FileNameProperty -FileNameSubproperty $FileNameSubproperty
+
             ForEach ($File in $ReportFiles) {
 
                 if ($Subproperty -eq '') {
@@ -6357,6 +6403,7 @@ function Out-PermissionFile {
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
                 $Params['Account'] = $File.Account
+                $Params['FileList'] = $FileList
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{
@@ -6660,6 +6707,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

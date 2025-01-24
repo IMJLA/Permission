@@ -352,6 +352,8 @@ function Out-PermissionFile {
 
             }
 
+            $FileList = Get-ReportFileNameList -ReportFiles $ReportFiles -Subproperty $Subproperty -FileNameProperty $FileNameProperty -FileNameSubproperty $FileNameSubproperty
+
             ForEach ($File in $ReportFiles) {
 
                 if ($Subproperty -eq '') {
@@ -386,6 +388,7 @@ function Out-PermissionFile {
                 $Params['Split'] = $Split
                 $Params['FileName'] = $FileName
                 $Params['Account'] = $File.Account
+                $Params['FileList'] = $FileList
                 $HtmlElements = Get-HtmlReportElements @Params
 
                 $BodyParams = @{

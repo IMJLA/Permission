@@ -1,4 +1,4 @@
-function ConvertTo-FileList {
+function ConvertTo-FileDict {
 
     param (
         [string[]]$Format,
@@ -24,11 +24,13 @@ function ConvertTo-FileList {
         #>
         [int[]]$Detail = @(0..10),
 
-        [String]$FileName
+        [String]$FileName,
+
+        [string[]]$FileList
 
     )
 
-    $FileList = @{}
+    $FileDict = @{}
 
     ForEach ($ThisFormat in $Format) {
 
@@ -48,7 +50,7 @@ function ConvertTo-FileList {
             'Permission report'
         )
 
-        $FileList[$ThisFormat] = switch ($ThisFormat) {
+        $FileDict[$ThisFormat] = switch ($ThisFormat) {
 
             'csv' {
 
@@ -81,53 +83,61 @@ function ConvertTo-FileList {
 
             'html' {
 
-                $Suffix = "_$FileName.htm"
+                ForEach ($ThisFileName in $FileList) {
 
-                ForEach ($Level in $Detail) {
+                    $Suffix = "_$ThisFileName.htm"
 
-                    # Currently no HTML reports are generated for detail levels 8/9
-                    if ($Level -notin 8, 9) {
+                    ForEach ($Level in $Detail) {
 
-                        # Get shorter versions of the detail strings to use in file names
-                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                        # Currently no HTML reports are generated for detail levels 8/9
+                        if ($Level -notin 8, 9) {
 
-                        # Convert the shorter strings to Title Case
-                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                            # Get shorter versions of the detail strings to use in file names
+                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                        # Remove spaces from the shorter strings
-                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                            # Convert the shorter strings to Title Case
+                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                        # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+                            # Remove spaces from the shorter strings
+                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                            # Build the file path
+                            "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+
+                        }
 
                     }
 
-                }
+                    break
 
-                break
+                }
 
             }
 
             'js' {
 
-                $Suffix = "_js_$FileName.htm"
+                ForEach ($ThisFileName in $FileList) {
 
-                ForEach ($Level in $Detail) {
+                    $Suffix = "_js_$ThisFileName.htm"
 
-                    # Currently no JS reports are generated for detail levels 8/9
-                    if ($Level -notin 8, 9) {
+                    ForEach ($Level in $Detail) {
 
-                        # Get shorter versions of the detail strings to use in file names
-                        $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
+                        # Currently no JS reports are generated for detail levels 8/9
+                        if ($Level -notin 8, 9) {
 
-                        # Convert the shorter strings to Title Case
-                        $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
+                            # Get shorter versions of the detail strings to use in file names
+                            $ShortDetail = $DetailStrings[$Level] -replace '\([^\)]*\)', ''
 
-                        # Remove spaces from the shorter strings
-                        $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+                            # Convert the shorter strings to Title Case
+                            $TitleCaseDetail = $Culture.TextInfo.ToTitleCase($ShortDetail)
 
-                        # Build the file path
-                        "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+                            # Remove spaces from the shorter strings
+                            $SpacelessDetail = $TitleCaseDetail -replace '\s', ''
+
+                            # Build the file path
+                            "$OutputDir\$Level`_$SpacelessDetail$Suffix"
+
+                        }
 
                     }
 
@@ -187,6 +197,6 @@ function ConvertTo-FileList {
 
     }
 
-    return $FileList
+    return $FileDict
 
 }

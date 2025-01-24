@@ -48,6 +48,7 @@ function Get-HtmlReportElements {
         [uint64]$IdCount,
         [UInt64]$PrincipalCount,
         [pscustomobject[]]$Account,
+        [string[]]$FileList,
 
         # In-process cache to reduce calls to other processes or disk, and store repetitive parameters for better readability of code and logs
         [Parameter(Mandatory)]
@@ -110,7 +111,7 @@ function Get-HtmlReportElements {
         ConvertTo-Html -Fragment |
         New-BootstrapTable
 
-        $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a report per account)'
+        $AccountDivHeader = 'The report only includes permissions for this account (option was used to generate a file per account)'
         Write-LogMsg @Log -Text "New-BootstrapDivWithHeading -HeadingText '$AccountDivHeader' -Content `$AccountTable"
         $AccountDiv = New-BootstrapDivWithHeading -HeadingText $AccountDivHeader -Content $AccountTable -Class 'h-100 p-1 bg-light border rounded-3 table-responsive' -HeadingLevel 6
 
@@ -154,7 +155,7 @@ function Get-HtmlReportElements {
     $HtmlOutputDir = New-BootstrapAlert -Text $OutputDir -Class 'secondary' -AdditionalClasses ' small'
 
     # Convert the list of detail levels and file formats to a hashtable of report files that will be generated
-    $ReportFileList = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName
+    $ReportFileList = ConvertTo-FileList -Detail $Detail -Format $Formats -FileName $FileName -FileList $FileList
 
     # Convert the hashtable of generated report files to a Bootstrap list group
     $HtmlReportsDiv = (ConvertTo-FileListDiv -FileList $ReportFileList) -join "`r`n"
