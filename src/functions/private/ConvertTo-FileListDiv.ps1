@@ -4,22 +4,32 @@ function ConvertTo-FileListDiv {
         [Hashtable]$FileList
     )
 
+    $sb = [System.Text.StringBuilder]::new()
+    $sb.AppendLine('<ul id="FileList">')
+
     ForEach ($Format in ($FileList.Keys | Sort-Object)) {
 
         $Files = $FileList[$Format]
 
         if ($Files) {
 
-            New-BootstrapAlert -Text $Format -Class Dark -Padding ' p-2 mb-0 mt-2'
+            $sb.AppendLine("<li><span class=`"caret`">$Format</span>")
 
-            $Files |
+            $List = $Files |
             Sort-Object |
             Split-Path -Leaf |
-            ConvertTo-HtmlList |
-            ConvertTo-BootstrapListGroup
+            ConvertTo-HtmlList
+
+            $sb.AppendLine($List)
+            $sb.AppendLine('</li>')
+
 
         }
 
     }
+
+    $sb.AppendLine('</ul>')
+    $string = $sb.ToString()
+    New-BootstrapDiv -Text $string
 
 }

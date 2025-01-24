@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1220] - 2025-01-23 - update file list
 ## [0.0.1219] - 2025-01-23 - oops did not mean to replace part of the function name...take 2!
 ## [0.0.1218] - 2025-01-23 - add missing functionality not all files for the report instance were listed
 ## [0.0.1217] - 2025-01-22 - bugfix missing sourcepath
