@@ -18,7 +18,7 @@ function ConvertTo-FileListDiv {
             $List = $Files |
             Sort-Object |
             Split-Path -Leaf |
-            ConvertTo-HtmlList
+            ConvertTo-HtmlList -Class 'nested'
 
             $sb.AppendLine($List)
             $sb.AppendLine('</li>')
