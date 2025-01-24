@@ -2,9 +2,9 @@
 <Configuration>
   <ViewDefinitions>
     <View>
-      <Name>Permission.TargetPermission</Name>
+      <Name>Permission.SourcePermission</Name>
       <ViewSelectedBy>
-        <TypeName>Permission.TargetPermission</TypeName>
+        <TypeName>Permission.SourcePermission</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <AutoSize/>

@@ -147,7 +147,7 @@ function Expand-Permission {
             'GroupBy'        = $GroupBy
             'AceGuidByID'    = $AceGuidByID
         }
-        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-SourcePermissionReference' -Expand $GroupSplat, $CommonParams
+        Write-LogMsg @Log -Text '$SourcePermissionReferences = Group-SourcePermissionReference' -Expand $GroupSplat, $CommonParams
         $SourcePermissionReferences = Group-SourcePermissionReference @GroupSplat @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.

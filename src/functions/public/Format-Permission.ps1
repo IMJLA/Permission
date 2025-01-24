@@ -215,7 +215,7 @@ function Format-Permission {
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
 
             [PSCustomObject]@{
-                PSTypeName   = 'Permission.TargetPermission'
+                PSTypeName   = 'Permission.SourcePermission'
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
 

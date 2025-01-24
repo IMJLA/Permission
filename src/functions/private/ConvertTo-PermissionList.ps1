@@ -483,7 +483,7 @@ function ConvertTo-PermissionList {
                             [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                             [PSCustomObject]@{
-                                PSTypeName = 'Permission.TargetPermissionList'
+                                PSTypeName = 'Permission.SourcePermissionList'
                                 Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                                 Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
@@ -565,7 +565,7 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                PSTypeName = 'Permission.TargetPermissionList'
+                                PSTypeName = 'Permission.SourcePermissionList'
                                 Data       = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
                                 PassThru   = $Permission[$Group.Path]
                                 Grouping   = $Group.Path

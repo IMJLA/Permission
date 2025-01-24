@@ -960,7 +960,7 @@ function ConvertTo-PermissionList {
                             [string[]]$PropNames = @('Path', 'Account', 'Access', 'Due to Membership In', 'Source of Access', 'Name') + $AccountProperty
 
                             [PSCustomObject]@{
-                                PSTypeName = 'Permission.TargetPermissionList'
+                                PSTypeName = 'Permission.SourcePermissionList'
                                 Columns    = Get-ColumnJson -InputObject $StartingPermissions -PropNames $PropNames
                                 Data       = ConvertTo-Json -Compress -InputObject @($ObjectsForJsonData)
                                 Div        = New-BootstrapDiv -Id $DivId -Text ($Heading + $Table) -Class 'h-100 p-1 bg-light border rounded-3 table-responsive'
@@ -1042,7 +1042,7 @@ function ConvertTo-PermissionList {
 
                         ForEach ($Group in $PermissionGrouping) {
                             [PSCustomObject]@{
-                                PSTypeName = 'Permission.TargetPermissionList'
+                                PSTypeName = 'Permission.SourcePermissionList'
                                 Data       = ($Permission[$Group.Path] | ConvertTo-Xml).InnerXml
                                 PassThru   = $Permission[$Group.Path]
                                 Grouping   = $Group.Path
@@ -1559,7 +1559,7 @@ function Expand-SourcePermissionReference {
             ForEach ($Source in $Reference) {
 
                 $SourceProperties = @{
-                    PSTypeName = 'Permission.TargetPermission'
+                    PSTypeName = 'Permission.SourcePermission'
                     Path       = $Source.Path
                 }
 
@@ -1634,7 +1634,7 @@ function Expand-SourcePermissionReference {
             ForEach ($Source in $Reference) {
 
                 $SourceProperties = @{
-                    PSTypeName = 'Permission.TargetPermission'
+                    PSTypeName = 'Permission.SourcePermission'
                     Path       = $Source.Path
                 }
 
@@ -2305,9 +2305,12 @@ function Get-ReportFileNameList {
     param (
         [Parameter(Mandatory = $true)]
         $ReportFiles,
+
         [Parameter(Mandatory = $true)]
         [string]$Subproperty,
+
         [string]$FileNameProperty,
+
         [Parameter(Mandatory = $true)]
         [string]$FileNameSubproperty
     )
@@ -4394,7 +4397,7 @@ function Expand-Permission {
             'GroupBy'        = $GroupBy
             'AceGuidByID'    = $AceGuidByID
         }
-        Write-LogMsg @Log -Text '$TargetPermissionReferences = Group-SourcePermissionReference' -Expand $GroupSplat, $CommonParams
+        Write-LogMsg @Log -Text '$SourcePermissionReferences = Group-SourcePermissionReference' -Expand $GroupSplat, $CommonParams
         $SourcePermissionReferences = Group-SourcePermissionReference @GroupSplat @CommonParams
 
         # Expand reference GUIDs into their associated Access Control Entries and Security Principals.
@@ -4868,7 +4871,7 @@ function Format-Permission {
             Write-Progress -Status "$Percent% (Account $i of $Count)" -CurrentOperation $Target.Path -PercentComplete $Percent @Progress
 
             [PSCustomObject]@{
-                PSTypeName   = 'Permission.TargetPermission'
+                PSTypeName   = 'Permission.SourcePermission'
                 Path         = $Target.Path
                 NetworkPaths = ForEach ($NetworkPath in $Target.NetworkPaths) {
 
@@ -6706,6 +6709,7 @@ ForEach ($ThisFile in $CSharpFiles) {
 }
 
 Export-ModuleMember -Function @('Add-CacheItem','Add-PermissionCacheItem','ConvertTo-ItemBlock','ConvertTo-PermissionFqdn','Expand-Permission','Expand-PermissionSource','Find-CachedCimInstance','Find-ResolvedIDsWithAccess','Find-ServerFqdn','Format-Permission','Format-TimeSpan','Get-AccessControlList','Get-CachedCimInstance','Get-CachedCimSession','Get-PermissionPrincipal','Get-PermissionTrustedDomain','Get-PermissionWhoAmI','Get-TimeZoneName','Initialize-PermissionCache','Invoke-PermissionAnalyzer','Invoke-PermissionCommand','Optimize-PermissionCache','Out-Permission','Out-PermissionFile','Remove-CachedCimSession','Resolve-AccessControlList','Resolve-PermissionSource','Select-PermissionPrincipal')
+
 
 
 

@@ -41,7 +41,7 @@ function Expand-SourcePermissionReference {
             ForEach ($Source in $Reference) {
 
                 $SourceProperties = @{
-                    PSTypeName = 'Permission.TargetPermission'
+                    PSTypeName = 'Permission.SourcePermission'
                     Path       = $Source.Path
                 }
 
@@ -116,7 +116,7 @@ function Expand-SourcePermissionReference {
             ForEach ($Source in $Reference) {
 
                 $SourceProperties = @{
-                    PSTypeName = 'Permission.TargetPermission'
+                    PSTypeName = 'Permission.SourcePermission'
                     Path       = $Source.Path
                 }
 
