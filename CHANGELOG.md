@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.1228] - 2025-01-23 - revert file list changes
+## [0.0.1227] - 2025-01-23 - revert file list changes
 ## [0.0.1226] - 2025-01-23 - remove paragraph
 ## [0.0.1225] - 2025-01-23 - bold folder names
 ## [0.0.1224] - 2025-01-23 - oh it's the nested ul that needs to start active
