@@ -4,6 +4,7 @@ function ConvertTo-FileListDiv {
         [Hashtable]$FileList
     )
 
+    $sb = $null
     $sb = [System.Text.StringBuilder]::new()
     $sb.AppendLine('<ul id="FileList">')
 
@@ -13,7 +14,7 @@ function ConvertTo-FileListDiv {
 
         if ($Files) {
 
-            $sb.AppendLine("<li><span class=`"caret`">$Format</span>")
+            $sb.AppendLine("<li><span class=`"caret caret-down`"><p class=`"font-weight-bold`">$Format</p></span>")
 
             $List = $Files |
             Sort-Object |
