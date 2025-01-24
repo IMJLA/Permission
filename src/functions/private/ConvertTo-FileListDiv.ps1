@@ -13,12 +13,12 @@ function ConvertTo-FileListDiv {
 
         if ($Files) {
 
-            $sb.AppendLine("<li><span class=`"caret caret-down`">$Format</span>")
+            $sb.AppendLine("<li><span class=`"caret`">$Format</span>")
 
             $List = $Files |
             Sort-Object |
             Split-Path -Leaf |
-            ConvertTo-HtmlList -Class 'nested'
+            ConvertTo-HtmlList -Class 'nested active'
 
             $sb.AppendLine($List)
             $sb.AppendLine('</li>')
