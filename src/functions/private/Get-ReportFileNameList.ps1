@@ -3,10 +3,12 @@ function Get-ReportFileNameList {
     param (
         [Parameter(Mandatory = $true)]
         $ReportFiles,
+
         [Parameter(Mandatory = $true)]
         [string]$Subproperty,
-        [Parameter(Mandatory = $true)]
+
         [string]$FileNameProperty,
+
         [Parameter(Mandatory = $true)]
         [string]$FileNameSubproperty
     )
