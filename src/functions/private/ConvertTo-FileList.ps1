@@ -1,4 +1,4 @@
-function ConvertTo-FileDict {
+function ConvertTo-FileList {
 
     param (
         [string[]]$Format,
